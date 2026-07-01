@@ -1,0 +1,6 @@
+/* Layout default : structure page */
+main {
+    max-width: 48rem;
+    margin: 0 auto;
+    padding: calc(var(--space) * 2) var(--space);
+}

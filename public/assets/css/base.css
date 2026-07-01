@@ -1,0 +1,21 @@
+/* Global : reset léger + tokens partagés */
+:root {
+    --font-sans: system-ui, sans-serif;
+    --color-text: #1a1a1a;
+    --color-bg: #fafafa;
+    --space: 1rem;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: var(--font-sans);
+    color: var(--color-text);
+    background: var(--color-bg);
+    line-height: 1.5;
+}

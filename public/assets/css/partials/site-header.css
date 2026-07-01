@@ -1,0 +1,11 @@
+/* Partial site-header */
+.site-header {
+    max-width: 48rem;
+    margin: 0 auto;
+    padding: var(--space);
+}
+
+.site-header__brand {
+    margin: 0;
+    font-weight: 600;
+}

@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+DATA_DIR="${DATA_DIR:-$ROOT/data}"
+if [[ -z "${DB_SQLITE:-}" ]]; then
+  if [[ "$ROOT" == /mnt/* ]]; then
+    _db_hash="$(printf '%s' "$ROOT" | md5sum | awk '{print $1}')"
+    DB="${TMPDIR:-/tmp}/capsule-db-${_db_hash}/database.sqlite"
+  else
+    DB="$DATA_DIR/database.sqlite"
+  fi
+else
+  DB="$DB_SQLITE"
+fi
+SQL="$ROOT/migrations/sqlite_init.sql"
+
+if [[ ! -f "$SQL" ]]; then
+  echo "❌ migrations/sqlite_init.sql introuvable" >&2
+  exit 1
+fi
+
+mkdir -p "$(dirname "$DB")"
+case "${1:-}" in
+  init)  rm -f "$DB" "$DB-shm" "$DB-wal"; sqlite3 "$DB" < "$SQL"; echo "DB initialized at $DB" ;;
+  reset) rm -f "$DB" "$DB-shm" "$DB-wal"; sqlite3 "$DB" < "$SQL"; echo "DB reset at $DB" ;;
+  shell) sqlite3 "$DB" ;;
+  *) echo "Usage: bin/db {init|reset|shell}" >&2; exit 1;;
+esac

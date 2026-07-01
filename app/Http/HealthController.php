@@ -1,0 +1,23 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Http;
+
+use Capsule\Http\Factory\ResponseFactory;
+use Capsule\Http\Message\Response;
+
+final class HealthController
+{
+    public function __construct(private readonly ResponseFactory $responseFactory)
+    {
+    }
+
+    public function health(): Response
+    {
+        return $this->responseFactory->json([
+            'status' => 'ok',
+            'service' => 'capsule-micro',
+        ]);
+    }
+}
