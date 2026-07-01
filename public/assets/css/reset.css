@@ -351,3 +351,8 @@
   [hidden] {
     display: none;
   }
+
+  /* Menu reset */
+  menu {
+    padding: 0;
+  }

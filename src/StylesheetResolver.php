@@ -7,7 +7,7 @@ namespace Capsule;
 /**
  * Résout les feuilles de style à charger pour une page rendue.
  *
- * Convention (sources dans resources/styles/, servies via public/assets/css/) :
+ * Convention (fichiers dans public/assets/css/) :
  *   - layouts/{layout}.css
  *   - pages/{slug}/{slug}.css          (styles de la page)
  *   - pages/{slug}/{section}.css       (sections déclarées dans le YAML)

@@ -8,6 +8,5 @@ if [[ -d "$SRC" ]]; then
   cp -a "$SRC/." "$DEST/"
   echo "Styles copiés : $SRC → $DEST"
 else
-  echo "Aucun dossier $SRC" >&2
-  exit 1
+  echo "Pas de $SRC, CSS servi depuis $DEST"
 fi

@@ -36,11 +36,11 @@ config/          Configuration et DI
 | Besoin | Action |
 |--------|--------|
 | Nouvelle page | `resources/pages/contact.yaml` + `contact.html` |
-| CSS layout | `resources/styles/layouts/{layout}.css` |
-| CSS page | `resources/styles/pages/{slug}/{slug}.css` |
-| CSS section | `resources/styles/pages/{slug}/{section}.css` + `styles_sections` dans le YAML |
-| CSS partial | `resources/styles/partials/{nom}.css` (auto si `{{> nom.html}}`) |
-| Publier le CSS | `make styles` → copie vers `public/assets/css/` |
+| CSS layout | `public/assets/css/layouts/{layout}.css` |
+| CSS page | `public/assets/css/pages/{slug}/{slug}.css` |
+| CSS section | `public/assets/css/pages/{slug}/{section}.css` + `styles_sections` dans le YAML |
+| CSS partial | `public/assets/css/partials/{nom}.css` (auto si `{{> nom.html}}`) |
+| Sync CSS optionnel | `make styles` si vous maintenez aussi `resources/styles/` |
 | Contenu éditable (dashboard) | `resources/pages/*.yaml` |
 | Structure HTML | `resources/pages/*.html` |
 | Nouveau layout | `resources/layouts/blog.html` |

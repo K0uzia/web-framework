@@ -37,7 +37,7 @@ init:         ## Crée data/, applique migration SQLite si absente, génère bin
 	$(LOCAL) init
 	@$(MAKE) styles
 
-styles:       ## Copie resources/styles/ vers public/assets/css/
+styles:       ## Copie resources/styles/ vers public/assets/css/ (optionnel)
 	bash bin/sync-styles
 
 reset:        ## Réinitialise la DB SQLite (ATTENTION: destructive)
