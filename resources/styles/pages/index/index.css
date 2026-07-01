@@ -1,9 +1,0 @@
-/* Page index */
-.page-index h1 {
-    font-size: 2rem;
-    margin-bottom: var(--space);
-}
-
-.page-index > p {
-    font-size: 1.125rem;
-}
