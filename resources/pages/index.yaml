@@ -1,8 +1,0 @@
-schema_type: WebPage
-schema_name: Capsule Micro
-styles_sections: hero, intro
-
-title: Framework PHP
-layout: default
-description: Squelette PHP minimal, pages YAML/HTML et API déclarative.
-message: Bienvenue sur le squelette minimal CapsulePHP.

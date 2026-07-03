@@ -1,0 +1,31 @@
+---
+description: Registry sections YAML — clés avec tirets, variantes, visibilité
+globs: "resources/sections/**/*,src/YamlData.php,src/SectionRegistry.php,app/Http/Dev/SectionsController.php"
+alwaysApply: false
+---
+
+# Registry sections
+
+## YAML (`registry.yaml`)
+
+- Clés avec tirets valides (`grid-3`, `banner`) — parser `YamlData` : `[a-zA-Z_][a-zA-Z0-9_-]*`.
+- Toute nouvelle variante : entrée sous `variants:` + template HTML/CSS correspondant.
+
+## Validation serveur
+
+- `SectionsController::resolveVariant()` — uniquement des clés retournées par `SectionRegistry::getVariants($type)`.
+- Variante invalide → première variante du registry pour ce type.
+
+## Contenu formulaire
+
+- Ne pas persister les champs repeater intermédiaires `content_items_N_*` comme clés `content_*` (filtrer `items_\d+_`).
+
+## Visibilité
+
+- Chaque section en DB : `"visible": true|false`.
+- `false` : masquée sur le site public, visible dans l'éditeur `/dev`.
+
+## Tests
+
+- Étendre `SectionRegistryTest` pour toute variante ajoutée au registry.
+- `SectionsControllerTest` pour add/update/move/destroy et fallback variante.

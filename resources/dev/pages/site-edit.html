@@ -1,0 +1,235 @@
+<div class="dev-site-panel">
+    <div class="dev-page-head">
+        <div>
+            <h1><i class="fa-solid fa-globe" aria-hidden="true"></i> Site</h1>
+            <p class="dev-lead">Identité, en-tête, pied de page et navigation du chrome public.</p>
+        </div>
+        <div class="dev-page-head__actions">
+            <a class="dev-button dev-button--ghost" href="/" target="_blank" rel="noopener noreferrer">
+                <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i> Voir le site
+            </a>
+        </div>
+    </div>
+
+    <div data-dev-tabs>
+        <div class="dev-tabs__list" role="tablist" aria-label="Paramètres du site">
+            <button type="button" class="dev-tabs__tab is-active" role="tab" aria-selected="true" data-tab="identity">Identité</button>
+            <button type="button" class="dev-tabs__tab" role="tab" aria-selected="false" data-tab="header">En-tête</button>
+            <button type="button" class="dev-tabs__tab" role="tab" aria-selected="false" data-tab="footer">Pied de page</button>
+            <button type="button" class="dev-tabs__tab" role="tab" aria-selected="false" data-tab="navigation">Navigation</button>
+        </div>
+
+        <div class="dev-tabs__panel is-active" data-tab-panel="identity">
+            <form method="post" action="/dev/site" class="dev-form" id="identity-form" hx-post="/dev/site" hx-trigger="change, input delay:400ms" hx-target="#identity-saved-status" hx-swap="innerHTML" data-dev-toast-form="Identité enregistrée">
+                <div class="dev-panel">
+                    <div class="dev-panel__head">
+                        <div>
+                            <h2 class="dev-panel__title">Identité</h2>
+                            <p class="dev-panel__desc">Nom, accroche, logo et visuels de référencement. Ces informations sont réutilisées automatiquement dans l'en-tête, le pied de page, l'onglet du navigateur et les partages sur les réseaux sociaux.</p>
+                        </div>
+                        <p class="dev-section-form__status" id="identity-saved-status" aria-live="polite"></p>
+                    </div>
+                    <div class="dev-form--grid dev-form--grid-2">
+                        <div class="dev-field">
+                            <label class="dev-label" for="site_name">Nom du site</label>
+                            <input class="dev-input" id="site_name" type="text" name="site_name" value="{{site_name}}" />
+                        </div>
+                        <div class="dev-field">
+                            <label class="dev-label" for="site_tagline">Accroche</label>
+                            <input class="dev-input" id="site_tagline" type="text" name="site_tagline" value="{{site_tagline}}" />
+                            <span class="dev-hint">Utilisée dans le header (si activé) et disponible pour le référencement.</span>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <!--
+                Les uploaders ci-dessous contiennent chacun leur propre formulaire
+                autonome (soumission ajax indépendante). Ils sont volontairement
+                placés hors du formulaire "identity-form" : un formulaire ne peut
+                pas en contenir un autre en HTML (le navigateur ignore silencieusement
+                la balise imbriquée et associe les champs au mauvais formulaire), ce
+                qui cassait l'upload du logo, du favicon et de l'image de partage.
+            -->
+            <div class="dev-panel">
+                <h2 class="dev-panel__title">Logo</h2>
+                <p class="dev-panel__desc">Affiché dans l'en-tête à la place du nom du site. Formats acceptés : PNG, JPG, SVG, WebP.</p>
+                {{{logo_uploader_html}}}
+            </div>
+
+            <div class="dev-form--grid dev-form--grid-2">
+                <div class="dev-panel">
+                    <h2 class="dev-panel__title">Favicon</h2>
+                    <p class="dev-panel__desc">Icône affichée dans l'onglet du navigateur.</p>
+                    {{{favicon_uploader_html}}}
+                </div>
+                <div class="dev-panel">
+                    <h2 class="dev-panel__title">Image de partage</h2>
+                    <p class="dev-panel__desc">Utilisée sur les réseaux sociaux (Open Graph, Twitter) quand une page est partagée.</p>
+                    {{{og_image_uploader_html}}}
+                </div>
+            </div>
+        </div>
+
+        <div class="dev-tabs__panel" data-tab-panel="header">
+            <form method="post" action="/dev/site" class="dev-form" id="header-form" hx-post="/dev/site" hx-trigger="change, input delay:400ms" hx-target="#header-saved-status" hx-swap="innerHTML" data-dev-toast-form="En-tête enregistré">
+                <div class="dev-panel">
+                    <div class="dev-panel__head">
+                        <div>
+                            <h2 class="dev-panel__title">En-tête du site</h2>
+                            <p class="dev-panel__desc">Contenu et visibilité de la bande d'en-tête affichée en haut de chaque page publique.</p>
+                        </div>
+                        <p class="dev-section-form__status" id="header-saved-status" aria-live="polite"></p>
+                    </div>
+
+                    <div class="dev-setting-row">
+                        <div class="dev-setting-row__text">
+                            <span class="dev-setting-row__title">Afficher l'en-tête</span>
+                            <span class="dev-setting-row__desc">Désactivez pour masquer entièrement le bandeau (logo, navigation, bouton) sur tout le site.</span>
+                        </div>
+                        <label class="dev-switch">
+                            <input type="hidden" name="partial_header" value="0" />
+                            <input type="checkbox" name="partial_header" value="1" {{partial_header_checked}} />
+                            <span class="dev-switch__track" aria-hidden="true"></span>
+                            <span class="visually-hidden">Afficher l'en-tête</span>
+                        </label>
+                    </div>
+
+                    <div class="dev-setting-row">
+                        <div class="dev-setting-row__text">
+                            <span class="dev-setting-row__title">Afficher l'accroche</span>
+                            <span class="dev-setting-row__desc">Affiche l'accroche du site (onglet Identité) sous le nom, dans l'en-tête.</span>
+                        </div>
+                        <label class="dev-switch">
+                            <input type="hidden" name="show_tagline_in_header" value="0" />
+                            <input type="checkbox" name="show_tagline_in_header" value="1" {{show_tagline_checked}} />
+                            <span class="dev-switch__track" aria-hidden="true"></span>
+                            <span class="visually-hidden">Afficher l'accroche</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="dev-panel">
+                    <h2 class="dev-panel__title">Bouton d'action</h2>
+                    <p class="dev-panel__desc">Un bouton mis en avant, affiché à droite de la navigation.</p>
+                    <div class="dev-setting-row">
+                        <div class="dev-setting-row__text">
+                            <span class="dev-setting-row__title">Afficher le bouton</span>
+                        </div>
+                        <label class="dev-switch">
+                            <input type="hidden" name="header_cta_enabled" value="0" />
+                            <input type="checkbox" name="header_cta_enabled" value="1" {{header_cta_enabled_checked}} />
+                            <span class="dev-switch__track" aria-hidden="true"></span>
+                            <span class="visually-hidden">Afficher le bouton</span>
+                        </label>
+                    </div>
+                    <div class="dev-form--grid dev-form--grid-2">
+                        <div class="dev-field">
+                            <label class="dev-label" for="header_cta_label">Libellé</label>
+                            <input class="dev-input" id="header_cta_label" type="text" name="header_cta_label" value="{{header_cta_label}}" />
+                        </div>
+                        <div class="dev-field">
+                            <label class="dev-label" for="header_cta_href">Lien</label>
+                            {{{header_cta_target_html}}}
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="dev-tabs__panel" data-tab-panel="footer">
+            <form method="post" action="/dev/site" class="dev-form" id="footer-form" hx-post="/dev/site" hx-trigger="change, input delay:400ms" hx-target="#footer-saved-status" hx-swap="innerHTML" data-dev-toast-form="Pied de page enregistré">
+                <div class="dev-panel">
+                    <div class="dev-panel__head">
+                        <div>
+                            <h2 class="dev-panel__title">Pied de page</h2>
+                            <p class="dev-panel__desc">Contenu et visibilité du pied de page affiché en bas de chaque page publique.</p>
+                        </div>
+                        <p class="dev-section-form__status" id="footer-saved-status" aria-live="polite"></p>
+                    </div>
+
+                    <div class="dev-setting-row">
+                        <div class="dev-setting-row__text">
+                            <span class="dev-setting-row__title">Afficher le pied de page</span>
+                            <span class="dev-setting-row__desc">Désactivez pour masquer entièrement le pied de page sur tout le site.</span>
+                        </div>
+                        <label class="dev-switch">
+                            <input type="hidden" name="partial_footer" value="0" />
+                            <input type="checkbox" name="partial_footer" value="1" {{partial_footer_checked}} />
+                            <span class="dev-switch__track" aria-hidden="true"></span>
+                            <span class="visually-hidden">Afficher le pied de page</span>
+                        </label>
+                    </div>
+
+                    <div class="dev-field">
+                        <label class="dev-label" for="footer_text">Texte du pied de page</label>
+                        <input class="dev-input" id="footer_text" type="text" name="footer_text" value="{{footer_text}}" placeholder="© {year} {name}" />
+                        <span class="dev-hint">Jetons disponibles : <code>{year}</code>, <code>{name}</code> (repris depuis l'onglet Identité).</span>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="dev-tabs__panel" data-tab-panel="navigation">
+            <div class="dev-panel">
+                <div class="dev-panel__head">
+                    <div>
+                        <h2 class="dev-panel__title">Navigation</h2>
+                        <p class="dev-panel__desc">Mode actuel : <strong>{{nav_mode_label}}</strong>. Glissez-déposez pour réordonner les liens.</p>
+                    </div>
+                    <div class="dev-page-head__actions">
+                        <form method="post" action="/dev/site/nav/sync" data-dev-ajax="nav">
+                            <button type="submit" class="dev-button dev-button--ghost dev-button--sm">
+                                <i class="fa-solid fa-arrows-rotate" aria-hidden="true"></i> Synchroniser les pages
+                            </button>
+                        </form>
+                        <form method="post" action="/dev/site/nav/reset" data-dev-ajax="nav-reload" data-confirm="Revenir à la navigation automatique ?">
+                            <button type="submit" class="dev-button dev-button--ghost dev-button--sm">Mode auto</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="dev-field" style="max-width: 320px; margin-bottom: var(--space-5);">
+                    <label class="dev-label" for="home_label">Libellé de l'accueil (mode auto)</label>
+                    <input class="dev-input" id="home_label" name="home_label" type="text" value="{{home_label}}" form="header-form" />
+                </div>
+
+                <div id="dev-nav-list" aria-live="polite">
+                    {{{nav_panel_html}}}
+                </div>
+
+                <div class="dev-add-section" role="region" aria-labelledby="add-nav-heading">
+                    <h3 id="add-nav-heading" class="dev-add-section__title">Ajouter un lien</h3>
+                    <form method="post" action="/dev/site/nav/add" data-dev-ajax="nav" class="dev-form--grid dev-form--grid-2" data-dev-toast-form="Lien ajouté">
+                        <div class="dev-field">
+                            <label class="dev-label" for="nav_label">Libellé</label>
+                            <input class="dev-input" id="nav_label" type="text" name="nav_label" required />
+                        </div>
+                        <div class="dev-field">
+                            <label class="dev-label" for="nav_type">Style</label>
+                            <select class="dev-input dev-select" id="nav_type" name="nav_type">
+                                <option value="page">Page du site</option>
+                                <option value="link">Lien externe</option>
+                                <option value="button">Bouton mis en avant</option>
+                            </select>
+                        </div>
+                        <div class="dev-field" id="nav-slug-field">
+                            <label class="dev-label" for="nav_slug">Page</label>
+                            <select class="dev-input dev-select" id="nav_slug" name="nav_slug">
+                                {{{page_options_html}}}
+                            </select>
+                        </div>
+                        <div class="dev-field" id="nav-href-field" hidden>
+                            <label class="dev-label" for="nav_href">URL</label>
+                            <input class="dev-input" id="nav_href" type="text" name="nav_href" placeholder="https://exemple.fr" />
+                        </div>
+                        <div class="dev-form__full">
+                            <button type="submit" class="dev-button"><i class="fa-solid fa-plus" aria-hidden="true"></i> Ajouter</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/assets/js/dev-site-edit.js" defer></script>

@@ -6,12 +6,6 @@ namespace Capsule;
 
 /**
  * Résout les feuilles de style à charger pour une page rendue.
- *
- * Convention (fichiers dans public/assets/css/) :
- *   - layouts/{layout}.css
- *   - pages/{slug}/{slug}.css          (styles de la page)
- *   - pages/{slug}/{section}.css       (sections déclarées dans le YAML)
- *   - partials/{partial}.css
  */
 final class StylesheetResolver
 {
@@ -22,7 +16,8 @@ final class StylesheetResolver
     }
 
     /**
-     * @param array<string, mixed> $meta Données YAML / frontmatter de la page
+     * @param array<string, mixed>                          $meta
+     * @param list<array{type: string, variant: string}>    $sectionRefs
      *
      * @return list<string> Chemins publics (/assets/css/…)
      */
@@ -31,14 +26,26 @@ final class StylesheetResolver
         string $pageSlug,
         string $pageBody,
         array $meta = [],
+        array $sectionRefs = [],
     ): array {
         $candidates = [];
 
         $slug = $this->safeName($pageSlug);
 
         $this->push($candidates, 'base.css');
+        $this->push($candidates, 'sections/shared.css');
         $this->push($candidates, 'layouts/' . $this->safeName($layout) . '.css');
+        $this->push($candidates, 'partials/site-header.css');
+        $this->push($candidates, 'partials/site-footer.css');
         $this->push($candidates, 'pages/' . $slug . '/' . $slug . '.css');
+
+        foreach ($sectionRefs as $ref) {
+            $type = $this->safeName($ref['type'] ?? '');
+            $variant = $this->safeName($ref['variant'] ?? 'default');
+            if ($type !== '') {
+                $this->push($candidates, 'sections/' . $type . '/' . $variant . '.css');
+            }
+        }
 
         foreach ($this->extractSections($meta) as $section) {
             $this->push($candidates, 'pages/' . $slug . '/' . $this->safeName($section) . '.css');

@@ -153,22 +153,30 @@ install_deps() {
 # --- SQLite actions -----------------------------------------------------------
 sqlite_apply_migration_fresh() {
     need sqlite3
-    local mig
+    local mig seed
     mig="$(resolve_migration)"
+    seed="$ROOT/migrations/seed_default_site.sql"
     rm -f "$DB_SQLITE" "$DB_SQLITE-shm" "$DB_SQLITE-wal"
     sqlite3 "$DB_SQLITE" <"$mig"
+    if [[ -f "$seed" ]]; then
+        sqlite3 "$DB_SQLITE" <"$seed"
+    fi
     ok "SQLite initialisée (fresh): $DB_SQLITE"
 }
 
 sqlite_apply_migration_if_absent() {
     need sqlite3
-    local mig
+    local mig seed
     mig="$(resolve_migration)"
+    seed="$ROOT/migrations/seed_default_site.sql"
     if [[ -f "$DB_SQLITE" ]]; then
         log "DB déjà présente: $DB_SQLITE (skip init). Utilise 'reset' pour repartir de zéro."
     else
-        : >"$DB_SQLITE"
+        mkdir -p "$(dirname "$DB_SQLITE")"
         sqlite3 "$DB_SQLITE" <"$mig"
+        if [[ -f "$seed" ]]; then
+            sqlite3 "$DB_SQLITE" <"$seed"
+        fi
         ok "SQLite initialisée: $DB_SQLITE"
     fi
 }

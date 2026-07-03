@@ -97,7 +97,12 @@ capsule/
 ├── public/                     # Document root (seul dossier exposé au web)
 │   ├── index.php               # Front controller
 │   ├── .htaccess               # Rewrite Apache
-│   └── assets/                 # CSS, JS, images, favicon
+│   └── assets/
+│       └── css/                # Feuilles de style (voir § 6.4)
+│           ├── base.css
+│           ├── layouts/
+│           ├── pages/{slug}/
+│           └── partials/
 │
 ├── resources/                  # Front source (non exécuté directement)
 │   ├── pages/                  # Pages .html (routage automatique)
@@ -118,6 +123,7 @@ capsule/
 │   ├── PageScanner.php
 │   ├── PageRenderer.php
 │   ├── PageRoute.php
+│   ├── StylesheetResolver.php  # Résolution auto des CSS page/layout/section
 │   ├── Http/                   # Request, Response, ResponseFactory
 │   └── Middleware/             # ErrorBoundary, SecurityHeaders
 │
@@ -205,115 +211,112 @@ sequenceDiagram
 
 ---
 
-## 5. Capsule Pages (front HTML)
+## 5. Capsule Pages (SQLite + sections)
 
-### 5.1 Format recommandé : YAML + HTML
+### 5.1 Modèle de données
 
-Chaque page utilise **deux fichiers** au même emplacement :
+Les pages vivent en **SQLite** (`data/database.sqlite`), pas en fichiers YAML/HTML.
 
-| Fichier | Rôle | Modifié par le dashboard |
-|---------|------|--------------------------|
-| `nom.yaml` | Données (texte, métadonnées, liens) | Oui |
-| `nom.html` | Structure HTML + `{{variables}}` | Rarement |
+| Table | Rôle |
+|-------|------|
+| `pages` | slug, title, layout, description, `sections` (JSON), `meta` (JSON SEO) |
+| `site_settings` | thème global (`theme` JSON → variables CSS) |
 
-Exemple `resources/pages/contact.yaml` :
+Slug vide `''` = page d'accueil `/`.
 
-```yaml
-title: Contact
-layout: default
-description: Page de contact du site
-message: Écrivez-nous, nous vous répondons sous 48 h.
-cta:
-  label: Envoyer un message
-  href: mailto:contact@example.com
+Exemple `sections` JSON :
+
+```json
+[
+  {
+    "id": "hero-1",
+    "type": "hero",
+    "variant": "centered",
+    "content": { "title": "Bienvenue", "subtitle": "…" },
+    "style": { "bg": "primary", "padding": "xl" }
+  }
+]
 ```
 
-Exemple `resources/pages/contact.html` :
+Les templates HTML des sections sont dans `resources/sections/{type}/{variant}.html` (bibliothèque framework).
 
-```html
-<h1>{{title}}</h1>
-<p>{{message}}</p>
-<a href="{{cta.href}}">{{cta.label}}</a>
+### 5.2 Initialisation
+
+```bash
+bin/db init    # schéma + seed (accueil avec hero, features, cta)
+bin/db reset   # repart de zéro
 ```
 
-Le framework charge automatiquement le `.yaml` **jumeau** du `.html` (même nom de base).
+### 5.3 Routage
 
-### 5.2 Priorité des données
+`PageRegistry` lit les pages publiées en DB et enregistre `GET /{slug}`.
 
-Fusion des variables (la dernière source l'emporte) :
+### 5.4 Dashboard développeur (`/dev`)
 
-1. Frontmatter inline dans le `.html` (optionnel, rétrocompat)
-2. Fichier `.yaml` / `.yml` jumeau
-3. Paramètres d'URL dynamiques (`slug`, etc.)
+| URL | Rôle |
+|-----|------|
+| `/dev` | Login (`DEV_PASSWORD`) |
+| `/dev/pages` | Liste / création de pages |
+| `/dev/pages/{slug}` | Éditeur sections + aperçu iframe (`/dev/preview/{slug}`) |
+| `/dev/site` | Identité, navigation, CTA header, partials header/footer |
+| `/dev/theme` | Couleurs, polices, espacement + aperçu (`/dev/preview/_`) |
+| `/dev/preview/{slug}` | Rendu public sans contrainte `published` (iframe uniquement) |
 
-### 5.3 Frontmatter inline (optionnel)
+#### Flux site builder
 
-Toujours supporté pour les pages simples :
+1. `make init` puis `/dev` — pages, sections, publication.
+2. `/dev/site` — nom, pied de page, navigation (pages + liens externes + boutons), CTA header optionnel.
+3. `/dev/theme` — tokens CSS (`--color-*`, `--font-*`, `--spacing-section`).
+4. Publier les pages ; la nav auto suit les pages publiées tant qu'aucune édition nav explicite n'a lieu.
 
-```html
----
-title: Contact
-layout: default
----
-<h1>{{title}}</h1>
+#### Navigation (`site_settings.site`)
+
+```json
+{
+  "nav_mode": "auto",
+  "nav_items": [
+    { "id": "nav-1", "type": "page", "slug": "", "label": "Accueil", "visible": true },
+    { "id": "nav-2", "type": "link", "href": "https://…", "label": "GitHub", "visible": true },
+    { "id": "nav-3", "type": "button", "href": "/contact", "label": "Contact", "visible": true }
+  ],
+  "header_cta": { "enabled": false, "label": "", "href": "" }
+}
 ```
 
-Si un fichier `contact.yaml` existe, ses clés **écrasent** le frontmatter inline.
+- `nav_mode: auto` — liens dérivés des pages publiées (`home_label` pour l'accueil).
+- Première sauvegarde nav explicite → `nav_mode: custom` et persistance de `nav_items`.
+- `visible: false` masque une entrée sur le site public ; l'éditeur conserve le réglage.
 
-### 5.4 Mapping fichier vers URL
+#### Sections
 
-| Fichiers | URL générée |
-|----------|-------------|
-| `index.yaml` + `index.html` | `/` |
-| `about.yaml` + `about.html` | `/about` |
-| `contact/index.yaml` + `contact/index.html` | `/contact` |
-| `blog/[slug].yaml` + `blog/[slug].html` | `/blog/{slug}` |
+- Variantes déclarées dans `resources/sections/registry.yaml` (clés avec tirets autorisées, ex. `grid-3`).
+- `SectionsController` valide la variante via `SectionRegistry::getVariants()` ; fallback sur la première variante valide.
+- Champ `visible` sur chaque section : masquée sur le site public, toujours éditable dans `/dev`.
 
-Règles :
+#### Thème et CSS
 
-- Le routage se base sur le fichier `.html`
-- Extension `.yaml` ou `.yml` pour les données (non routée seule)
-- `index` : segment URL omis
-- `[nom]` : paramètre dynamique
-- Pas de `..`, fichiers hors `resources/pages/` ignorés
+- `{{{stylesheets}}}` puis `{{{theme_css}}}` dans `resources/layouts/default.html` (cascade correcte).
+- `public/assets/css/base.css` — structure uniquement ; pas de couleurs/polices fixes dans `:root`.
+- `SiteRepository::themeCss()` injecte les variables depuis la DB.
 
-### 5.5 Pages dynamiques
+#### Requêtes HX / AJAX dev
 
-`resources/pages/blog/[slug].yaml` :
+- Trait `DevHx` : en-tête `HX-Request` détecté sans sensibilité à la casse.
+- Partials dev sans layout complet ; `data-dev-ajax` dans `dev.js` pour sections et nav.
+- `preview_url` des écrans avec iframe : toujours `/dev/preview/…` (CSP `frame-ancestors 'self'` sur `/dev/*`).
 
-```yaml
-title: Article
-layout: default
+Le dashboard **client** (`/admin`) est prévu en phase 3.
+
+### 5.5 Backup
+
+```bash
+bin/site export > backup.json
+bin/site import < backup.json
 ```
 
-`resources/pages/blog/[slug].html` :
+### 5.6 Legacy YAML (optionnel)
 
-```html
-<h1>{{title}}</h1>
-<p>Slug : {{slug}}</p>
-```
-
-Le paramètre `slug` vient de l'URL et est fusionné dans les variables.
-
-### 5.6 Clés YAML courantes
-
-| Clé | Rôle | Défaut |
-|-----|------|--------|
-| `title` | Titre page (layout, SEO) | vide |
-| `layout` | Nom du layout sans extension | `default` |
-| `description` | Meta description | vide |
-
-Blocs imbriqués (un niveau) : `cta.label`, `cta.href` accessibles via `{{cta.label}}`.
-
-### 5.7 Dashboard (évolution)
-
-Un futur dashboard n'a qu'à **lire/écrire les `.yaml`** : le HTML reste stable. Exemple de flux :
-
-```text
-GET  /admin/pages/contact  → formulaire basé sur contact.yaml
-POST /admin/pages/contact  → réécrit contact.yaml
-GET  /contact                → page publique mise à jour
-```
+`YamlData` et `Frontmatter` restent pour `resources/sections/registry.yaml` et usage legacy. Les pages publiques ne passent plus par `resources/pages/*.yaml`.
 
 ---
 
@@ -333,7 +336,7 @@ Exemple `resources/layouts/default.html` :
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{{title}}</title>
     <meta name="description" content="{{description}}" />
-    <link rel="stylesheet" href="/assets/css/main.css" />
+    {{{stylesheets}}}
 </head>
 <body>
     {{> header.html}}
@@ -346,6 +349,7 @@ Exemple `resources/layouts/default.html` :
 ```
 
 - `{{{content}}}` : corps de la page (HTML non ré-échappé, déjà sûr côté template)
+- `{{{stylesheets}}}` : balises `<link>` injectées automatiquement par `StylesheetResolver`
 - `layout: blog` dans le frontmatter charge `resources/layouts/blog.html`
 
 ### 6.2 Partials
@@ -367,7 +371,60 @@ Inclusion : `{{> header.html}}`
 
 Résolution : `resources/partials/` en priorité, puis `resources/layouts/`.
 
-### 6.3 SEO et données structurées
+### 6.3 CSS
+
+Emplacement : `public/assets/css/`
+
+Convention pour rester propre : **un dossier par page**, les fichiers CSS à l'intérieur.
+
+```
+public/assets/css/
+├── base.css                        # global (tokens, reset léger)
+├── layouts/
+│   └── default.css                 # layout default
+├── pages/
+│   └── {slug}/                     # slug = nom du fichier page (ex. index, about)
+│       ├── {slug}.css              # styles propres à la page
+│       ├── hero.css                # section (optionnel)
+│       └── intro.css               # section (optionnel)
+└── partials/
+    └── site-header.css             # partial réutilisable
+```
+
+| Fichier | Quand le créer |
+|---------|----------------|
+| `pages/{slug}/{slug}.css` | À chaque nouvelle page |
+| `pages/{slug}/{section}.css` | Une section HTML avec styles dédiés |
+| `layouts/{layout}.css` | Styles du layout (`layout:` dans le YAML) |
+| `partials/{nom}.css` | Partial inclus via `{{> nom.html}}` |
+
+**Chargement automatique** : `StylesheetResolver` (via `PageRenderer`) génère les `<link>` dans le layout. Ordre de résolution :
+
+1. `base.css`
+2. `layouts/{layout}.css`
+3. `pages/{slug}/{slug}.css`
+4. `pages/{slug}/{section}.css` — sections déclarées dans le YAML
+5. `partials/{partial}.css` — partials détectés dans le HTML ou le YAML
+
+Déclarer les sections CSS dans le YAML de la page :
+
+```yaml
+title: Accueil
+layout: default
+styles_sections: hero, intro
+```
+
+Exemple pour une page `about` :
+
+```
+resources/pages/about.yaml
+resources/pages/about.html
+public/assets/css/pages/about/about.css
+```
+
+Ne pas lier les CSS manuellement dans le layout : tout passe par `{{{stylesheets}}}`.
+
+### 6.4 SEO et données structurées
 
 Le layout `default.html` inclut :
 
@@ -851,7 +908,7 @@ server {
 
 ### 17.4 Assets statiques
 
-Placer CSS/JS/images dans `public/assets/`. Référencer avec chemins absolus : `/assets/css/main.css`.
+Placer CSS/JS/images dans `public/assets/`. Le CSS page suit `public/assets/css/pages/{slug}/{fichier}.css` (voir § 6.3). Les feuilles sont injectées automatiquement ; ne pas hardcoder de `<link>` dans les layouts.
 
 ---
 
@@ -892,7 +949,8 @@ message: Notre histoire.
 <p>{{message}}</p>
 ```
 
-3. Aucune route à déclarer : le scan automatique expose `GET /about`.
+3. Créer `public/assets/css/pages/about/about.css` (styles de la page).
+4. Aucune route à déclarer : le scan automatique expose `GET /about`.
 
 ### 18.4 Exemple : endpoint API complet
 

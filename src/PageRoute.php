@@ -10,7 +10,7 @@ final class PageRoute
      * @param list<string> $paramNames
      */
     public function __construct(
-        public readonly string $file,
+        public readonly string $slug,
         public readonly string $pattern,
         public readonly array $paramNames = [],
     ) {

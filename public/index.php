@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Capsule\Http\Emitter\SapiEmitter;
 use Capsule\Http\Message\Request;
 use Capsule\Kernel;
+use Capsule\Middleware\DevAuth;
 use Capsule\Middleware\ErrorBoundary;
 use Capsule\Middleware\SecurityHeaders;
 
@@ -16,6 +17,7 @@ $request = Request::fromGlobals();
 
 $middlewares = [
     $container->get(ErrorBoundary::class),
+    $container->get(DevAuth::class),
     $container->get(SecurityHeaders::class),
 ];
 

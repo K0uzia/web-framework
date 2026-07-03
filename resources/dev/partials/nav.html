@@ -1,0 +1,33 @@
+<nav class="dev-nav" aria-label="Navigation du tableau de bord">
+    <a class="dev-nav__brand" href="/dev/overview">
+        <span class="dev-nav__brand-mark" aria-hidden="true"><i class="fa-solid fa-layer-group"></i></span>
+        <span class="dev-nav__brand-text">Capsule</span>
+    </a>
+    <div class="dev-nav__links">
+        <a href="/dev/overview" class="dev-nav__link {{nav_active_overview}}"{{{nav_aria_overview}}}>
+            <i class="fa-solid fa-gauge-high" aria-hidden="true"></i><span>Tableau de bord</span>
+        </a>
+        <a href="/dev/pages" class="dev-nav__link {{nav_active_pages}}"{{{nav_aria_pages}}}>
+            <i class="fa-solid fa-file-lines" aria-hidden="true"></i><span>Pages</span>
+        </a>
+        <a href="/dev/site" class="dev-nav__link {{nav_active_site}}"{{{nav_aria_site}}}>
+            <i class="fa-solid fa-globe" aria-hidden="true"></i><span>Site</span>
+        </a>
+        <a href="/dev/theme" class="dev-nav__link {{nav_active_theme}}"{{{nav_aria_theme}}}>
+            <i class="fa-solid fa-palette" aria-hidden="true"></i><span>Thème</span>
+        </a>
+    </div>
+    <div class="dev-nav__footer">
+        <a href="/" target="_blank" rel="noopener noreferrer" class="dev-nav__ghost-btn">
+            <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i><span>Voir le site</span>
+        </a>
+        <button type="button" class="dev-nav__ghost-btn" data-dev-theme-toggle aria-pressed="false">
+            <i class="fa-solid fa-moon" aria-hidden="true" data-theme-icon></i><span data-theme-label>Thème sombre</span>
+        </button>
+        <form method="post" action="/dev/logout">
+            <button type="submit" class="dev-nav__ghost-btn dev-nav__ghost-btn--full">
+                <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i><span>Déconnexion</span>
+            </button>
+        </form>
+    </div>
+</nav>

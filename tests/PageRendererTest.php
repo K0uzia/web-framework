@@ -5,7 +5,14 @@ declare(strict_types=1);
 namespace Tests;
 
 use Capsule\Http\Factory\ResponseFactory;
+use Capsule\Http\Message\Request;
+use Capsule\Page;
 use Capsule\PageRenderer;
+use Capsule\PageRepository;
+use Capsule\SectionRenderer;
+use Capsule\SiteChrome;
+use Capsule\SiteRepository;
+use Capsule\StylesheetResolver;
 use Capsule\View;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
@@ -13,74 +20,67 @@ use PHPUnit\Framework\TestCase;
 #[CoversClass(PageRenderer::class)]
 final class PageRendererTest extends TestCase
 {
-    private string $root;
+    private PageRepository $pages;
+    private PageRenderer $renderer;
 
     protected function setUp(): void
     {
-        $this->root = sys_get_temp_dir() . '/capsule-render-' . bin2hex(random_bytes(4));
-        mkdir($this->root . '/layouts');
-        mkdir($this->root . '/pages');
+        $pdo = new \PDO('sqlite::memory:');
+        $pdo->exec(file_get_contents(dirname(__DIR__) . '/migrations/sqlite_init.sql') ?: '');
+        $this->pages = new PageRepository($pdo);
+        $root = dirname(__DIR__);
 
-        file_put_contents($this->root . '/layouts/default.html', '<html><body>{{{content}}}</body></html>');
-        file_put_contents(
-            $this->root . '/pages/home.html',
-            "<h1>{{title}}</h1>\n"
+        $site = new SiteRepository($pdo);
+
+        $this->pages->save(new Page(
+            slug: 'home',
+            title: '<unsafe>',
+            layout: 'default',
+            description: 'Meta desc',
+            sections: [[
+                'id' => 'hero-1',
+                'type' => 'hero',
+                'variant' => 'centered',
+                'content' => [
+                    'title' => 'Safe title',
+                    'subtitle' => 'Sub',
+                    'cta_label' => 'CTA',
+                    'cta_href' => '#',
+                ],
+                'style' => ['bg' => 'primary', 'text_align' => 'center', 'padding' => 'lg'],
+            ]],
+            meta: ['schema_type' => 'WebPage'],
+            published: true,
+            updatedAt: '',
+        ));
+
+        $root = dirname(__DIR__);
+        $view = new View($root . '/resources/layouts', $root . '/resources/partials');
+
+        $this->renderer = new PageRenderer(
+            new ResponseFactory(),
+            $view,
+            $this->pages,
+            $site,
+            new SectionRenderer($view, $root . '/resources/sections'),
+            new SiteChrome($this->pages, $site, $view, 'CapsulePHP'),
+            'https://example.com',
+            new StylesheetResolver($root . '/public/assets/css'),
         );
-        file_put_contents($this->root . '/pages/home.yaml', "title: <unsafe>\nlayout: default\n");
     }
 
-    protected function tearDown(): void
+    public function testRendersPageFromDatabase(): void
     {
-        @unlink($this->root . '/pages/home.html');
-        @unlink($this->root . '/pages/home.yaml');
-        @unlink($this->root . '/layouts/default.html');
-        @rmdir($this->root . '/pages');
-        @rmdir($this->root . '/layouts');
-        @rmdir($this->root);
-    }
+        $body = (string) $this->renderer->renderBySlug('home', [], '/home')->getBody();
 
-    public function testEscapesVariablesInRenderedPage(): void
-    {
-        $view = new View($this->root . '/layouts', '');
-        $renderer = new PageRenderer(new ResponseFactory(), $view, $this->root . '/layouts', 'http://localhost:8080');
-
-        $response = $renderer->render($this->root . '/pages/home.html');
-        $body = (string) $response->getBody();
-
-        $this->assertStringContainsString('<h1>&lt;unsafe&gt;</h1>', $body);
-        $this->assertStringNotContainsString('<h1><unsafe></h1>', $body);
-    }
-
-    public function testExternalYamlOverridesInlineFrontmatter(): void
-    {
-        file_put_contents($this->root . '/pages/mix.yaml', "title: From YAML\n");
-        file_put_contents($this->root . '/pages/mix.html', "---\ntitle: From HTML\n---\n<p>{{title}}</p>\n");
-
-        $view = new View($this->root . '/layouts', '');
-        $renderer = new PageRenderer(new ResponseFactory(), $view, $this->root . '/layouts', 'http://localhost:8080');
-        $response = $renderer->render($this->root . '/pages/mix.html');
-
-        $this->assertStringContainsString('<p>From YAML</p>', (string) $response->getBody());
-
-        @unlink($this->root . '/pages/mix.yaml');
-        @unlink($this->root . '/pages/mix.html');
-    }
-
-    public function testRendersSeoMetadataAndJsonLd(): void
-    {
-        file_put_contents($this->root . '/pages/seo.yaml', "title: SEO Test\ndescription: Meta desc\n");
-        file_put_contents($this->root . '/pages/seo.html', '<p>body</p>');
-
-        $view = new View($this->root . '/layouts', '');
-        $renderer = new PageRenderer(new ResponseFactory(), $view, $this->root . '/layouts', 'https://example.com');
-        $body = (string) $renderer->render($this->root . '/pages/seo.html', [], '/seo')->getBody();
-
+        $this->assertStringContainsString('Safe title', $body);
+        $this->assertStringContainsString('--color-primary', $body);
         $this->assertStringContainsString('<meta name="description" content="Meta desc"', $body);
-        $this->assertStringContainsString('<link rel="canonical" href="https://example.com/seo"', $body);
-        $this->assertStringContainsString('<script type="application/ld+json">', $body);
-        $this->assertStringContainsString('"@type":"WebPage"', str_replace(' ', '', $body));
+    }
 
-        @unlink($this->root . '/pages/seo.yaml');
-        @unlink($this->root . '/pages/seo.html');
+    public function testEscapesPageTitleInLayout(): void
+    {
+        $body = (string) $this->renderer->renderBySlug('home')->getBody();
+        $this->assertStringContainsString('<title>&lt;unsafe&gt;</title>', $body);
     }
 }

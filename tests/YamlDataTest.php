@@ -39,6 +39,21 @@ YAML);
         $this->assertSame('/about', $data['cta']['href']);
     }
 
+    public function testParsesHyphenatedKeys(): void
+    {
+        $data = YamlData::parse(<<<'YAML'
+features:
+  variants:
+    grid-3:
+      label: Grille 3 colonnes
+YAML);
+
+        $this->assertIsArray($data['features']);
+        $this->assertIsArray($data['features']['variants']);
+        $this->assertArrayHasKey('grid-3', $data['features']['variants']);
+        $this->assertSame('Grille 3 colonnes', $data['features']['variants']['grid-3']['label']);
+    }
+
     public function testSiblingDataFile(): void
     {
         $dir = sys_get_temp_dir() . '/capsule-yaml-' . bin2hex(random_bytes(4));

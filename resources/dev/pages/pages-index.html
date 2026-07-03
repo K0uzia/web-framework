@@ -1,0 +1,44 @@
+<div class="dev-pages">
+    <div class="dev-page-head">
+        <div>
+            <h1><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Pages</h1>
+            <p class="dev-lead">{{pages_count}} page(s) dans ce site.</p>
+        </div>
+        <div class="dev-page-head__actions">
+            <a class="dev-button" href="/dev/pages/new"><i class="fa-solid fa-plus" aria-hidden="true"></i> Nouvelle page</a>
+        </div>
+    </div>
+
+    <div class="dev-table-toolbar">
+        <div class="dev-search">
+            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+            <input type="text" class="dev-input" id="dev-pages-search" placeholder="Rechercher une page..." aria-label="Rechercher une page" />
+        </div>
+    </div>
+
+    <p class="dev-empty {{empty_class}}" id="dev-pages-empty">
+        <i class="fa-solid fa-file-circle-plus" aria-hidden="true"></i>
+        Aucune page pour le moment. Créez votre première page pour commencer.
+    </p>
+
+    <div class="dev-table-wrap {{table_class}}" id="dev-pages-table-wrap">
+        <table class="dev-table">
+            <thead>
+                <tr>
+                    <th scope="col">Page</th>
+                    <th scope="col">Statut</th>
+                    <th scope="col">Mise à jour</th>
+                    <th scope="col"><span class="visually-hidden">Actions</span></th>
+                </tr>
+            </thead>
+            <tbody id="dev-pages-rows">
+                {{{rows_html}}}
+            </tbody>
+        </table>
+    </div>
+    <p class="dev-empty visually-hidden" id="dev-pages-no-match">
+        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+        Aucune page ne correspond à votre recherche.
+    </p>
+</div>
+<script src="/assets/js/dev-pages-index.js" defer></script>

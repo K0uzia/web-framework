@@ -27,6 +27,7 @@ final class Request
      * @param string|null $host Hôte de la requête
      * @param int|null $port Port de la requête
      * @param string|null $rawBody Corps brut de la requête
+     * @param array<string, array<string, mixed>> $files Fichiers envoyés ($_FILES)
      */
     public function __construct(
         public readonly string $method,
@@ -38,7 +39,8 @@ final class Request
         public readonly string $scheme = 'http',
         public readonly ?string $host = null,
         public readonly ?int $port = null,
-        public readonly ?string $rawBody = null
+        public readonly ?string $rawBody = null,
+        public readonly array $files = [],
     ) {
     }
 
@@ -104,6 +106,7 @@ final class Request
             host: $host,
             port: $port,
             rawBody: $rawBody,
+            files: $_FILES,
         );
     }
 

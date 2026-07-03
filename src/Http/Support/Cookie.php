@@ -19,6 +19,24 @@ final class Cookie
     ) {
     }
 
+    /**
+     * @param array{path?:string,domain?:string,secure?:bool,httpOnly?:bool,sameSite?:string,maxAge?:int,expires?:int} $options
+     */
+    public static function create(string $name, string $value, array $options = []): self
+    {
+        return new self(
+            name: $name,
+            value: $value,
+            expires: $options['expires'] ?? null,
+            maxAge: $options['maxAge'] ?? null,
+            path: $options['path'] ?? '/',
+            domain: $options['domain'] ?? null,
+            secure: $options['secure'] ?? false,
+            httpOnly: $options['httpOnly'] ?? true,
+            sameSite: $options['sameSite'] ?? 'Lax',
+        );
+    }
+
     public function toHeader(): string
     {
         $p = [rawurlencode($this->name) . '=' . rawurlencode($this->value)];

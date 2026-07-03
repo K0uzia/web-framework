@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark light" />
+    <title>{{title}} - Capsule Dev</title>
+    <link rel="icon" href="/assets/favicon-dev.svg" type="image/svg+xml" />
+    <script src="/assets/js/dev-theme-init.js"></script>
+    <link rel="stylesheet" href="/assets/vendor/fontawesome/css/all.min.css" />
+    <link rel="stylesheet" href="/assets/css/dev.css" />
+    <script src="/assets/js/dev.js" defer></script>
+</head>
+<body class="dev-shell {{body_class}}">
+    <div class="dev-app" data-dev-app>
+        <button type="button" class="dev-sidebar-overlay" data-dev-sidebar-close tabindex="-1" aria-hidden="true"></button>
+        <aside class="dev-sidebar" id="dev-sidebar">
+            {{> nav.html}}
+        </aside>
+        <div class="dev-main">
+            <header class="dev-topbar">
+                <button type="button" class="dev-topbar__icon-btn dev-topbar__menu-btn" data-dev-sidebar-toggle aria-label="Ouvrir le menu" aria-controls="dev-sidebar" aria-expanded="false">
+                    <i class="fa-solid fa-bars" aria-hidden="true"></i>
+                </button>
+                <nav class="dev-breadcrumb" aria-label="Fil d'ariane">{{{crumb_html}}}</nav>
+                <div class="dev-topbar__spacer"></div>
+                <button type="button" class="dev-topbar__btn" data-dev-cmdk-open>
+                    <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                    <span>Rechercher</span>
+                    <kbd class="dev-kbd">Ctrl K</kbd>
+                </button>
+            </header>
+            <main class="dev-content" id="main-content">
+                <p class="dev-flash" role="status">{{flash}}</p>
+                {{{content}}}
+            </main>
+        </div>
+    </div>
+
+    <div class="dev-modal" id="dev-cmdk" hidden>
+        <button type="button" class="dev-modal__backdrop" data-dev-cmdk-close tabindex="-1" aria-hidden="true"></button>
+        <div class="dev-cmdk__panel" role="dialog" aria-modal="true" aria-label="Navigation rapide">
+            <div class="dev-cmdk__search">
+                <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                <input type="text" id="dev-cmdk-input" placeholder="Aller à..." autocomplete="off" aria-label="Rechercher une section" />
+            </div>
+            <ul class="dev-cmdk__list" id="dev-cmdk-list">
+                <li><a href="/dev/overview" data-cmdk-item data-cmdk-label="tableau de bord overview accueil"><i class="fa-solid fa-gauge-high" aria-hidden="true"></i> Tableau de bord</a></li>
+                <li><a href="/dev/pages" data-cmdk-item data-cmdk-label="pages liste"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Pages</a></li>
+                <li><a href="/dev/pages/new" data-cmdk-item data-cmdk-label="nouvelle page creer ajouter"><i class="fa-solid fa-plus" aria-hidden="true"></i> Nouvelle page</a></li>
+                <li><a href="/dev/site" data-cmdk-item data-cmdk-label="site navigation identite cta"><i class="fa-solid fa-globe" aria-hidden="true"></i> Site</a></li>
+                <li><a href="/dev/theme" data-cmdk-item data-cmdk-label="theme couleurs polices apparence"><i class="fa-solid fa-palette" aria-hidden="true"></i> Thème</a></li>
+                <li><a href="/" target="_blank" rel="noopener noreferrer" data-cmdk-item data-cmdk-label="voir le site public"><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i> Voir le site</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="dev-modal" id="dev-confirm-modal" hidden>
+        <button type="button" class="dev-modal__backdrop" data-dev-confirm-cancel tabindex="-1" aria-hidden="true"></button>
+        <div class="dev-confirm__panel" role="alertdialog" aria-modal="true" aria-labelledby="dev-confirm-message">
+            <div class="dev-confirm__icon" aria-hidden="true"><i class="fa-solid fa-triangle-exclamation"></i></div>
+            <p class="dev-confirm__message" id="dev-confirm-message"></p>
+            <div class="dev-confirm__actions">
+                <button type="button" class="dev-button dev-button--ghost" data-dev-confirm-cancel>Annuler</button>
+                <button type="button" class="dev-button dev-button--danger" data-dev-confirm-ok>Confirmer</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="dev-toast-container" id="dev-toast-container" aria-live="polite" aria-atomic="true"></div>
+</body>
+</html>

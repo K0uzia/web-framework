@@ -1,0 +1,32 @@
+---
+description: Tokens thème CSS — cascade theme_css, pas de couleurs fixes dans base.css
+globs: "public/assets/css/**/*,resources/layouts/**/*,src/SiteRepository.php"
+alwaysApply: false
+---
+
+# Tokens thème
+
+## Cascade layout
+
+Dans `resources/layouts/default.html` :
+
+1. `{{{stylesheets}}}` (fichiers statiques)
+2. `{{{theme_css}}}` (`<style>` depuis `SiteRepository::themeCss()`)
+
+Le thème DB doit **gagner** sur les fallbacks CSS.
+
+## `base.css`
+
+- `:root` : structure (radius, shadow, space) — **pas** de `--color-*` ni `--font-*` fixes.
+- Utiliser `var(--color-primary, #fallback)` dans les règles si un fallback local est nécessaire.
+
+## Variables injectées
+
+- Couleurs : `--color-primary`, `--color-secondary`, `--color-background`, `--color-text`, `--color-muted`
+- Polices : `--font-heading`, `--font-body`
+- Espacement : `--spacing-section` (utilisé dans `sections/shared.css`)
+
+## Édition
+
+- Dashboard : `/dev/theme`
+- Persistance : clé `theme` dans `site_settings` (SQLite)

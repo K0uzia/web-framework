@@ -6,16 +6,25 @@
     <title>{{title}}</title>
     <meta name="description" content="{{description}}" />
     <link rel="canonical" href="{{canonical}}" />
+    {{{favicon_html}}}
     <meta property="og:title" content="{{title}}" />
     <meta property="og:description" content="{{description}}" />
     <meta property="og:url" content="{{canonical}}" />
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="{{site_name}}" />
+    <meta name="twitter:title" content="{{title}}" />
+    <meta name="twitter:description" content="{{description}}" />
+    {{{og_image_html}}}
     {{{stylesheets}}}
+    {{{theme_css}}}
     <script type="application/ld+json">{{{json_ld}}}</script>
 </head>
-<body>
-    <main>
+<body class="site-body">
+    {{{header_html}}}
+    <main class="site-main">
         {{{content}}}
     </main>
+    {{{footer_html}}}
+    <script src="/assets/js/site-nav.js" defer></script>
 </body>
 </html>

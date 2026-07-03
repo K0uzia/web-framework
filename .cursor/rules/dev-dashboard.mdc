@@ -1,0 +1,29 @@
+---
+description: Conventions dashboard /dev — HX, partials, preview, tests contrôleurs
+globs: "app/Http/Dev/**/*,resources/dev/**/*,public/assets/js/dev.js,tests/Http/Dev/**/*"
+alwaysApply: false
+---
+
+# Dashboard `/dev`
+
+## Requêtes partielles
+
+- Utiliser le trait `DevHx` et `$this->isHx($request)` — jamais `$request->headers['HX-Request']` directement (casse).
+- Réponses HX : `DevDashboard::partial()` ou `partialHtml()` — **pas** `render()` (évite l'injection du layout complet dans un swap ciblé).
+- Formulaires AJAX sections/nav : attribut `data-dev-ajax="sections|nav"` ; `dev.js` envoie `HX-Request: true` et `redirect: manual`.
+
+## Aperçu
+
+- Iframes éditeur : `preview_url` = `/dev/preview/{slug}` ou `/dev/preview/_` pour le thème.
+- Ne pas pointer les iframes vers `/` (CSP publique `frame-ancestors 'none'`).
+
+## Contrôleurs
+
+- Toute nouvelle action POST dev : route dans `config/routes.php` + test dans `tests/Http/Dev/`.
+- Flash hors HX : `withFlash(redirect(...), $message)` ; HX : partial `saved.html` ou partial métier (`nav-panel.html`, `sections-list.html`).
+
+## Nav site
+
+- Persistance via `SiteNavHelper` + `nav_mode` (`auto` | `custom`).
+- Ne pas écraser `nav_items` lors d'une sauvegarde identité sans `update_nav=1`.
+- `visible` par défaut `true` pour les nouvelles entrées.

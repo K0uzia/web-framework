@@ -1,0 +1,5 @@
+<form id="nav-form" method="post" action="/dev/site/nav" hx-post="/dev/site/nav" hx-trigger="change" hx-target="#nav-saved-status" hx-swap="innerHTML" data-dev-ajax="nav" data-dev-toast-form="Navigation enregistrée">
+    <input type="hidden" name="update_nav" value="1" />
+    <p class="dev-section-form__status" id="nav-saved-status" aria-live="polite">{{message}}</p>
+    {{{nav_rows_html}}}
+</form>

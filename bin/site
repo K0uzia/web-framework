@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+DATA_DIR="${DATA_DIR:-$ROOT/data}"
+if [[ -z "${DB_SQLITE:-}" ]]; then
+  if [[ "$ROOT" == /mnt/* ]]; then
+    _db_hash="$(printf '%s' "$ROOT" | md5sum | awk '{print $1}')"
+    DB="${TMPDIR:-/tmp}/capsule-db-${_db_hash}/database.sqlite"
+  else
+    DB="$DATA_DIR/database.sqlite"
+  fi
+else
+  DB="$DB_SQLITE"
+fi
+
+cmd="${1:-}"
+case "$cmd" in
+  export)
+    sqlite3 -json "$DB" "SELECT slug, title, layout, description, sections, meta, published FROM pages ORDER BY slug" > /tmp/capsule-pages.json
+    theme=$(sqlite3 "$DB" "SELECT value FROM site_settings WHERE key='theme'")
+    printf '{"pages":%s,"theme":%s}\n' "$(cat /tmp/capsule-pages.json)" "${theme:-{}}"
+    ;;
+  import)
+    need_file="${2:-}"
+    if [[ ! -f "$need_file" ]]; then
+      echo "Usage: bin/site import <backup.json>" >&2
+      exit 1
+    fi
+    php -r "
+      \$raw = file_get_contents('${need_file}');
+      \$data = json_decode(\$raw, true);
+      if (!is_array(\$data)) { fwrite(STDERR, 'Invalid JSON\n'); exit(1); }
+      \$db = new PDO('sqlite:${DB}');
+      if (isset(\$data['theme'])) {
+        \$stmt = \$db->prepare('INSERT INTO site_settings (key,value,updated_at) VALUES (\'theme\',?,datetime(\'now\')) ON CONFLICT(key) DO UPDATE SET value=excluded.value');
+        \$stmt->execute([json_encode(\$data['theme'])]);
+      }
+      foreach (\$data['pages'] ?? [] as \$p) {
+        \$stmt = \$db->prepare('INSERT INTO pages (slug,title,layout,description,sections,meta,published,updated_at) VALUES (?,?,?,?,?,?,?,datetime(\'now\')) ON CONFLICT(slug) DO UPDATE SET title=excluded.title, layout=excluded.layout, description=excluded.description, sections=excluded.sections, meta=excluded.meta, published=excluded.published');
+        \$stmt->execute([
+          \$p['slug'] ?? '',
+          \$p['title'] ?? '',
+          \$p['layout'] ?? 'default',
+          \$p['description'] ?? '',
+          is_string(\$p['sections'] ?? null) ? \$p['sections'] : json_encode(\$p['sections'] ?? []),
+          is_string(\$p['meta'] ?? null) ? \$p['meta'] : json_encode(\$p['meta'] ?? []),
+          (int) (\$p['published'] ?? 1),
+        ]);
+      }
+      echo \"Import OK\n\";
+    "
+    ;;
+  *)
+    echo "Usage: bin/site {export|import <file>}" >&2
+    exit 1
+    ;;
+esac

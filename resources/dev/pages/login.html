@@ -1,0 +1,16 @@
+<div class="dev-auth-card">
+    <span class="dev-auth-card__mark" aria-hidden="true"><i class="fa-solid fa-layer-group"></i></span>
+    <h1>Connexion</h1>
+    <p class="dev-auth-card__lead">Espace développeur Capsule. Gérez pages, navigation et thème.</p>
+    <p class="dev-flash" role="status">{{flash}}</p>
+    <form method="post" action="/dev/login" class="dev-form">
+        <div class="dev-field">
+            <label class="dev-label" for="dev-password">Mot de passe</label>
+            <input class="dev-input" id="dev-password" type="password" name="password" autocomplete="current-password" placeholder="••••••••" />
+        </div>
+        <button type="submit" class="dev-button">
+            <i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i> Se connecter
+        </button>
+    </form>
+    <p class="dev-hint" style="margin-top: var(--space-5);">Définissez <code>DEV_PASSWORD</code> dans <code>.env</code>. Sans mot de passe, l'accès est ouvert en développement.</p>
+</div>

@@ -9,6 +9,7 @@ final class View
     public function __construct(
         private readonly string $layoutsDir,
         private readonly string $partialsDir = '',
+        private readonly string $pagesDir = '',
     ) {
     }
 
@@ -58,6 +59,12 @@ final class View
     private function resolveTemplate(string $template): string
     {
         $name = ltrim($template, '/');
+        if ($this->pagesDir !== '') {
+            $page = rtrim($this->pagesDir, '/') . '/' . $name;
+            if (is_file($page)) {
+                return $page;
+            }
+        }
         if ($this->partialsDir !== '') {
             $partial = rtrim($this->partialsDir, '/') . '/' . $name;
             if (is_file($partial)) {

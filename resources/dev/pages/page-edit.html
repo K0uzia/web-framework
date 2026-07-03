@@ -1,0 +1,137 @@
+<div class="dev-editor">
+    <div class="dev-page-head">
+        <div>
+            <h1>{{page_title}} {{{page_status_badge}}}</h1>
+            <p class="dev-lead"><code>{{page_path}}</code></p>
+        </div>
+        <div class="dev-page-head__actions">
+            <p class="dev-section-form__status" id="page-saved-status" aria-live="polite"></p>
+            <button type="button" class="dev-button dev-button--ghost" data-dev-modal-open="dev-page-settings">
+                <i class="fa-solid fa-gear" aria-hidden="true"></i> Paramètres
+            </button>
+            <a class="dev-button dev-button--ghost" href="{{page_path}}" target="_blank" rel="noopener noreferrer">
+                <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i> Voir
+            </a>
+            <details class="dev-menu">
+                <summary class="dev-icon-btn" aria-label="Plus d'actions"><i class="fa-solid fa-ellipsis-vertical" aria-hidden="true"></i></summary>
+                <div class="dev-menu__panel" role="menu">
+                    <form method="post" action="/dev/pages/{{page_slug}}/duplicate" role="none">
+                        <button type="submit" role="menuitem"><i class="fa-solid fa-copy" aria-hidden="true"></i> Dupliquer</button>
+                    </form>
+                    <form method="post" action="/dev/pages/{{page_slug}}/delete" role="none" data-confirm="Supprimer définitivement cette page ?">
+                        <button type="submit" role="menuitem" class="dev-menu__danger"><i class="fa-solid fa-trash" aria-hidden="true"></i> Supprimer</button>
+                    </form>
+                </div>
+            </details>
+        </div>
+    </div>
+
+    <div class="dev-builder">
+        <div class="dev-builder__outline">
+            <div class="dev-outline__header">
+                <h2 class="dev-section-title" style="margin-bottom:0;">Blocs de la page</h2>
+                <span class="dev-outline__count">{{sections_count}} bloc(s)</span>
+            </div>
+            <div class="dev-outline" id="dev-sections-list" data-dev-sortable data-dev-sortable-url="/dev/pages/{{page_slug}}/sections/reorder" aria-live="polite">
+                {{{sections_html}}}
+            </div>
+            <div class="dev-add-section">
+                <button type="button" class="dev-add-block-trigger" data-dev-modal-open="dev-block-picker">
+                    <i class="fa-solid fa-plus" aria-hidden="true"></i> Ajouter un bloc
+                </button>
+            </div>
+            <form id="dev-add-section-form" method="post" action="/dev/pages/{{page_slug}}/sections" data-dev-ajax="sections" class="visually-hidden">
+                <input type="hidden" name="type" id="dev-add-section-type" value="" />
+            </form>
+        </div>
+        <div class="dev-builder__preview">
+            <div class="dev-preview-label">
+                <span>Aperçu</span>
+                <div class="dev-device-toolbar" role="group" aria-label="Taille de l'aperçu" data-dev-device-toolbar data-target="page-preview-frame">
+                    <button type="button" class="dev-device-btn is-active" data-device="desktop" aria-label="Bureau" title="Bureau"><i class="fa-solid fa-desktop" aria-hidden="true"></i></button>
+                    <button type="button" class="dev-device-btn" data-device="tablet" aria-label="Tablette" title="Tablette"><i class="fa-solid fa-tablet-screen-button" aria-hidden="true"></i></button>
+                    <button type="button" class="dev-device-btn" data-device="mobile" aria-label="Mobile" title="Mobile"><i class="fa-solid fa-mobile-screen-button" aria-hidden="true"></i></button>
+                </div>
+                <a class="dev-preview-desktop" href="{{preview_url}}" target="_blank" rel="noopener noreferrer">Plein écran <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+            </div>
+            <div class="dev-preview-frame" id="page-preview-frame" data-device="desktop">
+                <iframe id="preview-frame" src="{{preview_url}}" title="Aperçu de la page"></iframe>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="dev-modal" id="dev-page-settings" hidden>
+    <button type="button" class="dev-modal__backdrop" data-dev-modal-close="dev-page-settings" tabindex="-1" aria-hidden="true"></button>
+    <div class="dev-block-picker__panel dev-modal__panel--form" role="dialog" aria-modal="true" aria-label="Paramètres de la page">
+        <div class="dev-block-picker__head">
+            <h2>Paramètres de la page</h2>
+            <button type="button" class="dev-icon-btn" data-dev-modal-close="dev-page-settings" aria-label="Fermer"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+        </div>
+        <div class="dev-modal__body">
+            <form method="post" action="/dev/pages/{{page_slug}}" class="dev-form" hx-post="/dev/pages/{{page_slug}}" hx-trigger="change, input delay:400ms" hx-target="#page-saved-status" hx-swap="innerHTML" data-dev-toast-form="Page enregistrée">
+                <div class="dev-setting-row">
+                    <div class="dev-setting-row__text">
+                        <span class="dev-setting-row__title">Page publiée</span>
+                        <span class="dev-setting-row__desc">Rendre cette page visible sur le site public. Les nouvelles pages sont créées en brouillon.</span>
+                    </div>
+                    <label class="dev-switch">
+                        <input type="hidden" name="published" value="0" />
+                        <input type="checkbox" name="published" value="1" {{page_published_checked}} />
+                        <span class="dev-switch__track" aria-hidden="true"></span>
+                        <span class="visually-hidden">Page publiée</span>
+                    </label>
+                </div>
+
+                <div class="dev-form--grid dev-form--grid-2">
+                    <div class="dev-field">
+                        <label class="dev-label" for="page-title">Titre</label>
+                        <input class="dev-input" id="page-title" type="text" name="title" value="{{page_title}}" />
+                    </div>
+                    <div class="dev-field">
+                        <label class="dev-label" for="page-layout">Gabarit</label>
+                        <select class="dev-input dev-select" id="page-layout" name="layout">
+                            {{{layout_options}}}
+                        </select>
+                    </div>
+                    <div class="dev-field dev-form__full">
+                        <label class="dev-label" for="page-description">Description (SEO)</label>
+                        <input class="dev-input" id="page-description" type="text" name="description" value="{{page_description}}" />
+                    </div>
+                    <div class="dev-field">
+                        <label class="dev-label" for="page-show-header">En-tête sur cette page</label>
+                        <select class="dev-input dev-select" id="page-show-header" name="show_header">
+                            {{{show_header_options}}}
+                        </select>
+                    </div>
+                    <div class="dev-field">
+                        <label class="dev-label" for="page-show-footer">Pied de page sur cette page</label>
+                        <select class="dev-input dev-select" id="page-show-footer" name="show_footer">
+                            {{{show_footer_options}}}
+                        </select>
+                    </div>
+                </div>
+            </form>
+
+            <div class="dev-modal__section">
+                <h3 class="dev-panel__title">Adresse de la page</h3>
+                <p class="dev-panel__desc">Modifier le chemin public de cette page.</p>
+                {{{rename_section_html}}}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="dev-modal" id="dev-block-picker" hidden>
+    <button type="button" class="dev-modal__backdrop" data-dev-modal-close="dev-block-picker" tabindex="-1" aria-hidden="true"></button>
+    <div class="dev-block-picker__panel" role="dialog" aria-modal="true" aria-label="Ajouter un bloc">
+        <div class="dev-block-picker__head">
+            <h2>Ajouter un bloc</h2>
+            <button type="button" class="dev-icon-btn" data-dev-modal-close="dev-block-picker" aria-label="Fermer"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+        </div>
+        <div class="dev-block-picker__grid">
+            {{{block_picker_html}}}
+        </div>
+    </div>
+</div>

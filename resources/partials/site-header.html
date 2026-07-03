@@ -1,3 +1,19 @@
 <header class="site-header">
-    <p class="site-header__brand">{{title}}</p>
+    <div class="site-header__inner">
+        <a class="site-header__brand" href="/">
+            {{{site_brand_html}}}
+            {{{site_tagline_html}}}
+        </a>
+        <div class="site-header__end">
+            <nav class="site-header__nav site-nav" id="site-header-nav" aria-label="Navigation principale">
+                {{{nav_html}}}
+            </nav>
+            {{{header_cta_html}}}
+            <button type="button" class="site-header__toggle" aria-controls="site-header-nav" aria-expanded="false" aria-label="Ouvrir le menu">
+                <span class="site-header__toggle-bar" aria-hidden="true"></span>
+                <span class="site-header__toggle-bar" aria-hidden="true"></span>
+                <span class="site-header__toggle-bar" aria-hidden="true"></span>
+            </button>
+        </div>
+    </div>
 </header>

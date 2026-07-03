@@ -19,6 +19,9 @@ final class SecurityHeaders implements MiddlewareInterface
     {
         $res = $next->handle($request);
 
+        $path = $request->path === '' ? '/' : $request->path;
+        $isDev = str_starts_with($path, '/dev');
+
         $csp = "default-src 'self'; "
             . "style-src 'self' 'unsafe-inline'; "
             . "script-src 'self'; "
@@ -27,7 +30,7 @@ final class SecurityHeaders implements MiddlewareInterface
             . "connect-src 'self'; "
             . "form-action 'self'; "
             . "base-uri 'self'; "
-            . "frame-ancestors 'none'";
+            . ($isDev ? "frame-src 'self'; frame-ancestors 'self';" : "frame-ancestors 'none';");
 
         if (!$res->hasHeader('Content-Security-Policy')) {
             $res = $res->withHeader('Content-Security-Policy', $csp);
@@ -38,7 +41,7 @@ final class SecurityHeaders implements MiddlewareInterface
         if (!$res->hasHeader('Referrer-Policy')) {
             $res = $res->withHeader('Referrer-Policy', 'no-referrer');
         }
-        if (!$res->hasHeader('X-Frame-Options')) {
+        if (!$res->hasHeader('X-Frame-Options') && !$isDev) {
             $res = $res->withHeader('X-Frame-Options', 'DENY');
         }
 

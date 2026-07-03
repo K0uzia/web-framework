@@ -1,0 +1,32 @@
+<div class="dev-page-head">
+    <div>
+        <h1><i class="fa-solid fa-file-circle-plus" aria-hidden="true"></i> Nouvelle page</h1>
+        <p class="dev-lead">Créez une page vide, vous pourrez y ajouter des blocs ensuite.</p>
+    </div>
+</div>
+<div class="dev-panel" style="max-width: 640px;">
+    <form method="post" action="/dev/pages" class="dev-form--grid dev-form--grid-2">
+        <div class="dev-field">
+            <label class="dev-label" for="page-title">Titre</label>
+            <input class="dev-input" id="page-title" type="text" name="title" required placeholder="À propos" />
+        </div>
+        <div class="dev-field">
+            <label class="dev-label" for="page-slug">Adresse <span class="dev-hint">(vide = accueil /)</span></label>
+            <input class="dev-input" id="page-slug" type="text" name="slug" placeholder="a-propos" />
+        </div>
+        <div class="dev-field dev-form__full">
+            <label class="dev-label" for="page-layout">Gabarit</label>
+            <select class="dev-input dev-select" id="page-layout" name="layout">
+                {{{layout_options}}}
+            </select>
+        </div>
+        <div class="dev-field dev-form__full">
+            <label class="dev-label" for="page-description">Description (SEO)</label>
+            <input class="dev-input" id="page-description" type="text" name="description" placeholder="Meta description pour les moteurs de recherche" />
+        </div>
+        <div class="dev-form__full" style="display:flex; gap: var(--space-3);">
+            <button type="submit" class="dev-button"><i class="fa-solid fa-check" aria-hidden="true"></i> Créer la page</button>
+            <a class="dev-button dev-button--ghost" href="/dev/pages">Annuler</a>
+        </div>
+    </form>
+</div>

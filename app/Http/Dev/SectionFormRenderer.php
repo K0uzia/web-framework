@@ -1,0 +1,328 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Http\Dev;
+
+use Capsule\Page;
+use Capsule\PageRepository;
+use Capsule\SectionRegistry;
+
+final class SectionFormRenderer
+{
+    private const ICONS = [
+        'hero' => 'fa-solid fa-panorama',
+        'features' => 'fa-solid fa-table-cells-large',
+        'cta' => 'fa-solid fa-bullhorn',
+    ];
+
+    public function __construct(
+        private readonly SectionRegistry $registry,
+        private readonly PageRepository $pages,
+    ) {
+    }
+
+    public function renderAll(Page $page): string
+    {
+        $slug = SlugCodec::encode($page->slug);
+        $parts = [];
+
+        foreach ($page->sections as $section) {
+            if (!is_array($section)) {
+                continue;
+            }
+            $parts[] = $this->renderOne($slug, $section);
+        }
+
+        if ($parts === []) {
+            return '<p class="dev-empty" id="dev-sections-empty"><i class="fa-solid fa-layer-group" aria-hidden="true"></i>Aucun bloc. Ajoutez-en un ci-dessous pour construire la page.</p>';
+        }
+
+        return implode("\n", $parts);
+    }
+
+    /**
+     * @param array<string, mixed> $section
+     */
+    private function renderOne(string $slug, array $section): string
+    {
+        $id = (string) ($section['id'] ?? '');
+        $type = (string) ($section['type'] ?? '');
+        $variant = (string) ($section['variant'] ?? '');
+        $content = is_array($section['content'] ?? null) ? $section['content'] : [];
+        $style = is_array($section['style'] ?? null) ? $section['style'] : [];
+        $visible = ($section['visible'] ?? true) !== false;
+
+        $typeDef = $this->registry->getTypeDefinition($type);
+        $label = is_string($typeDef['label'] ?? null) ? $typeDef['label'] : $type;
+        $icon = self::ICONS[$type] ?? 'fa-solid fa-square';
+
+        $cardClass = 'dev-section-card' . ($visible ? '' : ' dev-section-card--hidden');
+        $actionUrl = '/dev/pages/' . $slug . '/sections/' . rawurlencode($id);
+        $safeIdAttr = htmlspecialchars($id, ENT_QUOTES);
+        $safeId = preg_replace('/[^a-zA-Z0-9_-]/', '', $id) ?? $id;
+
+        $variantLabel = $variant !== '' ? $this->variantLabel($type, $variant) : '';
+
+        $html = '<article class="' . $cardClass . '" id="section-' . $safeIdAttr . '" data-id="' . $safeIdAttr . '" data-dev-sortable-item draggable="true">';
+        $html .= '<div class="dev-section-card__head">';
+        $html .= '<button type="button" class="dev-icon-btn dev-icon-btn--drag" aria-label="Réorganiser le bloc"><i class="fa-solid fa-grip-vertical" aria-hidden="true"></i></button>';
+        $html .= '<button type="button" class="dev-section-card__toggle" data-dev-accordion-toggle aria-expanded="false" aria-controls="section-body-' . $safeIdAttr . '">';
+        $html .= '<i class="fa-solid fa-chevron-right dev-section-card__chevron" aria-hidden="true"></i>';
+        $html .= '<span class="dev-section-card__icon" aria-hidden="true"><i class="' . $icon . '"></i></span>';
+        $html .= '<span class="dev-section-card__title"><span>' . htmlspecialchars($label, ENT_QUOTES) . '</span>';
+        if ($variantLabel !== '') {
+            $html .= '<span class="dev-section-card__variant">' . htmlspecialchars($variantLabel, ENT_QUOTES) . '</span>';
+        }
+        $html .= '</span>';
+        $html .= '</button>';
+        $html .= '<div class="dev-section-card__actions">';
+        $html .= '<label class="dev-switch dev-switch--sm" title="Afficher sur le site">';
+        $html .= '<input form="form-' . $safeIdAttr . '" type="hidden" name="visible" value="0" />';
+        $html .= '<input form="form-' . $safeIdAttr . '" type="checkbox" name="visible" value="1"' . ($visible ? ' checked' : '') . ' />';
+        $html .= '<span class="dev-switch__track" aria-hidden="true"></span>';
+        $html .= '<span class="visually-hidden">Afficher la section</span>';
+        $html .= '</label>';
+        $html .= $this->buttonForm($slug, $id, 'up', 'fa-arrow-up');
+        $html .= $this->buttonForm($slug, $id, 'down', 'fa-arrow-down');
+        $html .= '<form class="dev-inline-form" method="post" action="' . $actionUrl . '/delete" data-dev-ajax="sections" data-confirm="Supprimer ce bloc ?">';
+        $html .= '<button type="submit" class="dev-icon-btn dev-icon-btn--danger" title="Supprimer" aria-label="Supprimer le bloc"><i class="fa-solid fa-trash" aria-hidden="true"></i></button></form>';
+        $html .= '</div></div>';
+
+        $html .= '<div class="dev-section-card__body" id="section-body-' . $safeIdAttr . '">';
+        $html .= '<form id="form-' . $safeIdAttr . '" class="dev-section-form" hx-post="' . $actionUrl . '" hx-trigger="change, input delay:350ms" hx-target="#section-saved-' . $safeIdAttr . '" hx-swap="innerHTML">';
+
+        $variants = $this->registry->getVariants($type);
+        if ($variants !== []) {
+            $html .= $this->fieldSelect('variant', 'Variante', $variant, $variants, $safeId);
+        }
+
+        foreach ($this->registry->getContentFields($type) as $key => $field) {
+            if (!is_array($field)) {
+                continue;
+            }
+            if (($field['type'] ?? '') === 'repeater') {
+                $html .= $this->renderRepeater($key, $field, $content, $safeId);
+                continue;
+            }
+            if (($field['type'] ?? '') === 'buttons') {
+                $html .= $this->renderButtonsRepeater($field, $content, $safeId);
+                continue;
+            }
+            $fLabel = (string) ($field['label'] ?? $key);
+            $value = (string) ($content[$key] ?? '');
+            $name = 'content_' . $key;
+            $inputType = match ($field['type'] ?? 'text') {
+                'textarea' => 'textarea',
+                'url' => 'url',
+                default => 'text',
+            };
+            $html .= $this->fieldInput($name, $fLabel, $value, $inputType, $safeId);
+        }
+
+        foreach ($this->registry->getStyleFields($type) as $key => $field) {
+            if (!is_array($field)) {
+                continue;
+            }
+            $fLabel = (string) ($field['label'] ?? $key);
+            $name = 'style_' . $key;
+            $current = (string) ($style[$key] ?? '');
+            if (($field['type'] ?? '') === 'select' && is_string($field['options'] ?? null)) {
+                $options = array_map('trim', explode(',', trim($field['options'], '[]')));
+                $html .= $this->fieldSelectRaw($name, $fLabel, $current, $options, $safeId);
+            } elseif (($field['type'] ?? '') === 'color-token') {
+                $html .= $this->fieldSelectRaw($name, $fLabel, $current, ['primary', 'muted', 'background'], $safeId);
+            }
+        }
+
+        $html .= '<div class="dev-section-form__status" id="section-saved-' . $safeIdAttr . '" aria-live="polite"></div>';
+        $html .= '</form></div></article>';
+
+        return $html;
+    }
+
+    private function variantLabel(string $type, string $variant): string
+    {
+        $variants = $this->registry->getVariants($type);
+        $def = $variants[$variant] ?? null;
+        if (is_string($def)) {
+            return $def;
+        }
+        if (is_array($def)) {
+            return (string) ($def['label'] ?? $variant);
+        }
+
+        return $variant;
+    }
+
+    /**
+     * @param array<string, mixed> $field
+     * @param array<string, mixed> $content
+     */
+    private function renderRepeater(string $key, array $field, array $content, string $sectionId): string
+    {
+        if ($key !== 'items') {
+            return '';
+        }
+
+        $items = is_array($content['items'] ?? null) ? $content['items'] : [];
+        $fLabel = (string) ($field['label'] ?? 'Éléments');
+
+        $html = '<fieldset class="dev-fieldset"><legend>' . htmlspecialchars($fLabel, ENT_QUOTES) . '</legend>';
+        $html .= '<div class="dev-repeater">';
+
+        $count = max(count($items), 3);
+        for ($i = 0; $i < $count; $i++) {
+            $item = is_array($items[$i] ?? null) ? $items[$i] : [];
+            $title = (string) ($item['title'] ?? '');
+            $text = (string) ($item['text'] ?? '');
+            $html .= '<div class="dev-repeater__item">';
+            $html .= '<span class="dev-repeater__index" aria-hidden="true">' . ($i + 1) . '</span>';
+            $html .= $this->fieldInput('content_items_' . $i . '_title', 'Titre', $title, 'text', $sectionId . '-item' . $i);
+            $html .= $this->fieldInput('content_items_' . $i . '_text', 'Texte', $text, 'textarea', $sectionId . '-item' . $i);
+            $html .= '</div>';
+        }
+
+        $html .= '</div></fieldset>';
+
+        return $html;
+    }
+
+    /**
+     * @param array<string, array<string, mixed>|string> $variants
+     */
+    private function fieldSelect(string $name, string $label, string $current, array $variants, string $idPrefix = ''): string
+    {
+        $options = [];
+        foreach ($variants as $key => $def) {
+            if (is_string($def)) {
+                $vLabel = $def;
+            } elseif (is_array($def)) {
+                $vLabel = (string) ($def['label'] ?? $key);
+            } else {
+                $vLabel = (string) $key;
+            }
+            $options[(string) $key] = $vLabel;
+        }
+
+        return $this->fieldSelectRaw($name, $label, $current, $options, $idPrefix);
+    }
+
+    /**
+     * @param array<string, mixed> $field
+     * @param array<string, mixed> $content
+     */
+    private function renderButtonsRepeater(array $field, array $content, string $sectionId): string
+    {
+        $fLabel = (string) ($field['label'] ?? 'Boutons');
+
+        $buttons = is_array($content['buttons'] ?? null) ? $content['buttons'] : null;
+        if ($buttons === null) {
+            $legacyLabel = $content['cta_label'] ?? $content['button_label'] ?? null;
+            $legacyHref = $content['cta_href'] ?? $content['button_href'] ?? null;
+            $buttons = ($legacyLabel !== null || $legacyHref !== null)
+                ? [['label' => $legacyLabel ?? '', 'href' => $legacyHref ?? '', 'style' => 'primary']]
+                : [];
+        }
+        $buttons = array_values($buttons);
+
+        $rows = [];
+        foreach ($buttons as $i => $button) {
+            $rows[] = $this->buttonRow((string) $i, is_array($button) ? $button : [], $sectionId);
+        }
+
+        $safeSectionId = htmlspecialchars($sectionId, ENT_QUOTES);
+        $html = '<fieldset class="dev-fieldset dev-fieldset--buttons" data-buttons-repeater>';
+        $html .= '<legend>' . htmlspecialchars($fLabel, ENT_QUOTES) . '</legend>';
+        $html .= '<input type="hidden" name="content_buttons_count" value="' . count($buttons) . '" data-buttons-repeater-count />';
+        $html .= '<div class="dev-repeater dev-repeater--buttons" data-buttons-repeater-list>' . implode('', $rows) . '</div>';
+        $html .= '<button type="button" class="dev-button dev-button--ghost dev-button--sm" data-buttons-repeater-add data-buttons-repeater-section="' . $safeSectionId . '">'
+            . '<i class="fa-solid fa-plus" aria-hidden="true"></i> Ajouter un bouton</button>';
+        $html .= '<template data-buttons-repeater-template>' . $this->buttonRow('__INDEX__', [], $sectionId) . '</template>';
+        $html .= '</fieldset>';
+
+        return $html;
+    }
+
+    /**
+     * @param array<string, mixed> $button
+     */
+    private function buttonRow(string $index, array $button, string $sectionId): string
+    {
+        $label = (string) ($button['label'] ?? '');
+        $href = (string) ($button['href'] ?? '');
+        $style = ($button['style'] ?? 'primary') === 'secondary' ? 'secondary' : 'primary';
+        $idPrefix = $sectionId . '-btn' . $index;
+        $labelName = 'content_buttons_' . $index . '_label';
+        $hrefName = 'content_buttons_' . $index . '_href';
+        $styleName = 'content_buttons_' . $index . '_style';
+        $hrefFieldId = $idPrefix . '-' . $hrefName;
+
+        $html = '<div class="dev-repeater__item dev-repeater__item--button" data-buttons-repeater-row>';
+        $html .= '<div class="dev-repeater__item-fields">';
+        $html .= '<div class="dev-repeater__item-field--label">' . $this->fieldInput($labelName, 'Libellé', $label, 'text', $idPrefix) . '</div>';
+        $html .= '<div class="dev-field dev-repeater__item-field--style"><label class="dev-label" for="' . htmlspecialchars($idPrefix . '-' . $styleName, ENT_QUOTES) . '">Style</label>'
+            . '<select class="dev-input dev-select" id="' . htmlspecialchars($idPrefix . '-' . $styleName, ENT_QUOTES) . '" name="' . htmlspecialchars($styleName, ENT_QUOTES) . '">'
+            . '<option value="primary"' . ($style === 'primary' ? ' selected' : '') . '>Principal</option>'
+            . '<option value="secondary"' . ($style === 'secondary' ? ' selected' : '') . '>Secondaire</option>'
+            . '</select></div>';
+        $html .= '<div class="dev-field dev-repeater__item-field--href"><label class="dev-label" for="' . htmlspecialchars($hrefFieldId, ENT_QUOTES) . '">Lien</label>'
+            . LinkPicker::render($hrefFieldId, $hrefName, $href, $this->pages) . '</div>';
+        $html .= '</div>';
+        $html .= '<button type="button" class="dev-icon-btn dev-icon-btn--danger" data-buttons-repeater-remove aria-label="Supprimer ce bouton" title="Supprimer">'
+            . '<i class="fa-solid fa-trash" aria-hidden="true"></i></button>';
+        $html .= '</div>';
+
+        return $html;
+    }
+
+    /**
+     * @param array<string|int, string> $options
+     */
+    private function fieldSelectRaw(string $name, string $label, string $current, array $options, string $idPrefix = ''): string
+    {
+        $fieldId = ($idPrefix !== '' ? $idPrefix . '-' : '') . $name;
+        $html = '<div class="dev-field"><label class="dev-label" for="' . htmlspecialchars($fieldId, ENT_QUOTES) . '">'
+            . htmlspecialchars($label, ENT_QUOTES) . '</label>';
+        $html .= '<select class="dev-input dev-select" id="' . htmlspecialchars($fieldId, ENT_QUOTES) . '" name="' . htmlspecialchars($name, ENT_QUOTES) . '">';
+        foreach ($options as $value => $optLabel) {
+            $optValue = is_int($value) ? (string) $optLabel : (string) $value;
+            $text = (string) $optLabel;
+            $selected = $optValue === $current ? ' selected' : '';
+            $html .= '<option value="' . htmlspecialchars($optValue, ENT_QUOTES) . '"' . $selected . '>'
+                . htmlspecialchars($text, ENT_QUOTES) . '</option>';
+        }
+        $html .= '</select></div>';
+
+        return $html;
+    }
+
+    private function fieldInput(string $name, string $label, string $value, string $type, string $idPrefix = ''): string
+    {
+        $fieldId = ($idPrefix !== '' ? $idPrefix . '-' : '') . $name;
+        $safeName = htmlspecialchars($name, ENT_QUOTES);
+        $safeLabel = htmlspecialchars($label, ENT_QUOTES);
+        $safeValue = htmlspecialchars($value, ENT_QUOTES);
+        $safeId = htmlspecialchars($fieldId, ENT_QUOTES);
+
+        $html = '<div class="dev-field"><label class="dev-label" for="' . $safeId . '">' . $safeLabel . '</label>';
+        if ($type === 'textarea') {
+            $html .= '<textarea class="dev-input dev-textarea" id="' . $safeId . '" name="' . $safeName . '" rows="3">'
+                . $safeValue . '</textarea>';
+        } else {
+            $html .= '<input class="dev-input" id="' . $safeId . '" type="' . htmlspecialchars($type, ENT_QUOTES) . '" name="' . $safeName . '" value="' . $safeValue . '" />';
+        }
+        $html .= '</div>';
+
+        return $html;
+    }
+
+    private function buttonForm(string $slug, string $id, string $direction, string $icon): string
+    {
+        $title = $direction === 'up' ? 'Monter le bloc' : 'Descendre le bloc';
+
+        return '<form class="dev-inline-form" method="post" action="/dev/pages/' . $slug . '/sections/' . rawurlencode($id) . '/move" data-dev-ajax="sections">'
+            . '<input type="hidden" name="direction" value="' . $direction . '" />'
+            . '<button type="submit" class="dev-icon-btn" title="' . $title . '" aria-label="' . $title . '"><i class="fa-solid ' . $icon . '" aria-hidden="true"></i></button></form>';
+    }
+}

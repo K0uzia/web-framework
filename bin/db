@@ -13,16 +13,24 @@ else
   DB="$DB_SQLITE"
 fi
 SQL="$ROOT/migrations/sqlite_init.sql"
+SEED="$ROOT/migrations/seed_default_site.sql"
 
 if [[ ! -f "$SQL" ]]; then
   echo "❌ migrations/sqlite_init.sql introuvable" >&2
   exit 1
 fi
 
+apply_migrations() {
+  sqlite3 "$DB" < "$SQL"
+  if [[ -f "$SEED" ]]; then
+    sqlite3 "$DB" < "$SEED"
+  fi
+}
+
 mkdir -p "$(dirname "$DB")"
 case "${1:-}" in
-  init)  rm -f "$DB" "$DB-shm" "$DB-wal"; sqlite3 "$DB" < "$SQL"; echo "DB initialized at $DB" ;;
-  reset) rm -f "$DB" "$DB-shm" "$DB-wal"; sqlite3 "$DB" < "$SQL"; echo "DB reset at $DB" ;;
+  init)  rm -f "$DB" "$DB-shm" "$DB-wal"; apply_migrations; echo "DB initialized at $DB" ;;
+  reset) rm -f "$DB" "$DB-shm" "$DB-wal"; apply_migrations; echo "DB reset at $DB" ;;
   shell) sqlite3 "$DB" ;;
   *) echo "Usage: bin/db {init|reset|shell}" >&2; exit 1;;
 esac

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Capsule;
 
+use Capsule\Http\Exception\HttpException;
 use Capsule\Http\Factory\ResponseFactory;
 use Capsule\Http\Message\Response;
 
@@ -12,42 +13,55 @@ final class PageRenderer
     public function __construct(
         private readonly ResponseFactory $responseFactory,
         private readonly View $view,
-        private readonly string $layoutsDir,
+        private readonly PageRepository $pages,
+        private readonly SiteRepository $site,
+        private readonly SectionRenderer $sections,
+        private readonly SiteChrome $chrome,
         private readonly string $baseUrl,
         private readonly StylesheetResolver $stylesheets,
+        private readonly bool $publishedOnly = true,
     ) {
     }
 
     /**
      * @param array<string, string> $params
      */
-    public function render(string $templateFile, array $params = [], string $path = '/'): Response
+    public function renderBySlug(string $slug, array $params = [], string $path = '/', ?bool $publishedOnly = null): Response
     {
-        $raw = file_get_contents($templateFile);
-        if ($raw === false) {
-            throw new \RuntimeException("Cannot read page template: {$templateFile}");
+        $publishedOnly ??= $this->publishedOnly;
+        $page = $this->pages->findBySlug($slug, $publishedOnly);
+        if ($page === null) {
+            throw new HttpException(404, 'Not Found');
         }
 
-        $parsed = Frontmatter::parse($raw);
-        $data = $parsed['meta'];
+        $data = array_merge([
+            'title' => $page->title,
+            'description' => $page->description,
+            'layout' => $page->layout,
+        ], $page->meta, $params);
 
-        $dataFile = YamlData::siblingDataFile($templateFile);
-        if ($dataFile !== null) {
-            $data = array_merge($data, YamlData::loadFile($dataFile));
-        }
-
-        $data = array_merge($data, $params);
-
-        $layout = is_scalar($data['layout'] ?? null) ? (string) $data['layout'] : 'default';
+        $layout = $page->layout;
         unset($data['layout']);
 
-        $data = Seo::apply($data, $path, $this->baseUrl);
+        $theme = $this->site->getTheme();
+        $data['theme'] = $theme;
+        $data['theme_css'] = '<style>' . $this->site->themeCss() . '</style>';
 
-        $pageSlug = pathinfo($templateFile, PATHINFO_FILENAME);
-        $hrefs = $this->stylesheets->resolve($layout, $pageSlug, $parsed['body'], $data);
+        $body = $this->sections->renderAll($page->sections);
+        $data = Seo::apply($data, $path, $this->baseUrl);
+        $data = $this->chrome->enrich($data, $path, $publishedOnly);
+
+        $pageSlugForCss = $slug === '' ? 'index' : $slug;
+        $hrefs = $this->stylesheets->resolve(
+            $layout,
+            $pageSlugForCss,
+            $body,
+            $data,
+            $this->sections->extractSectionRefs($page->sections),
+        );
         $data['stylesheets'] = $this->stylesheets->toHtml($hrefs);
 
-        $html = $this->view->pageFromString($parsed['body'], $data, $layout . '.html');
+        $html = $this->view->pageFromString($body, $data, $layout . '.html');
 
         return $this->responseFactory->html($html);
     }

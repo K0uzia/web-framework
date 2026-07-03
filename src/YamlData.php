@@ -54,7 +54,7 @@ final class YamlData
                 break;
             }
 
-            if (!preg_match('/^([a-zA-Z_][a-zA-Z0-9_]*):\s*(.*)$/', $trimmed, $m)) {
+            if (!preg_match('/^([a-zA-Z_][a-zA-Z0-9_-]*):\s*(.*)$/', $trimmed, $m)) {
                 $i++;
                 continue;
             }

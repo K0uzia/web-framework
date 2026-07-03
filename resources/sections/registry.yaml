@@ -1,0 +1,81 @@
+hero:
+  label: Hero
+  variants:
+    centered:
+      label: Centré
+    split:
+      label: Deux colonnes
+  content_fields:
+    title:
+      type: text
+      label: Titre
+      client_editable: true
+    subtitle:
+      type: textarea
+      label: Sous-titre
+      client_editable: true
+    buttons:
+      type: buttons
+      label: Boutons
+      client_editable: true
+  style_fields:
+    bg:
+      type: color-token
+      label: Fond
+    text_align:
+      type: select
+      label: Alignement
+      options: [left, center, right]
+    padding:
+      type: select
+      label: Espacement
+      options: [sm, md, lg, xl]
+
+features:
+  label: Fonctionnalités
+  variants:
+    grid-3:
+      label: Grille 3 colonnes
+  content_fields:
+    items:
+      type: repeater
+      label: Éléments
+      client_editable: true
+      fields:
+        title:
+          type: text
+          label: Titre
+        text:
+          type: textarea
+          label: Texte
+  style_fields:
+    bg:
+      type: color-token
+      label: Fond
+    padding:
+      type: select
+      label: Espacement
+      options: [sm, md, lg, xl]
+
+cta:
+  label: Appel à l'action
+  variants:
+    banner:
+      label: Bandeau
+  content_fields:
+    title:
+      type: text
+      label: Titre
+      client_editable: true
+    buttons:
+      type: buttons
+      label: Boutons
+      client_editable: true
+  style_fields:
+    bg:
+      type: color-token
+      label: Fond
+    padding:
+      type: select
+      label: Espacement
+      options: [sm, md, lg, xl]

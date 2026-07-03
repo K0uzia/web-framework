@@ -13,7 +13,7 @@ final class HealthController
     {
     }
 
-    public function health(): Response
+    public function health(\Capsule\Http\Message\Request $request): Response
     {
         return $this->responseFactory->json([
             'status' => 'ok',

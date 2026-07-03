@@ -1,0 +1,62 @@
+<div class="dev-overview">
+    <div class="dev-page-head">
+        <div>
+            <h1><i class="fa-solid fa-gauge-high" aria-hidden="true"></i> Tableau de bord</h1>
+            <p class="dev-lead">Vue d'ensemble de {{site_name}}.</p>
+        </div>
+        <div class="dev-page-head__actions">
+            <a class="dev-button" href="/dev/pages/new"><i class="fa-solid fa-plus" aria-hidden="true"></i> Nouvelle page</a>
+        </div>
+    </div>
+
+    <div class="dev-stat-grid">
+        <div class="dev-stat-card">
+            <span class="dev-stat-card__icon" aria-hidden="true"><i class="fa-solid fa-file-lines"></i></span>
+            <div class="dev-stat-card__value">{{stat_pages_total}}</div>
+            <div class="dev-stat-card__label">Pages au total</div>
+        </div>
+        <div class="dev-stat-card">
+            <span class="dev-stat-card__icon" aria-hidden="true"><i class="fa-solid fa-circle-check"></i></span>
+            <div class="dev-stat-card__value">{{stat_pages_published}}</div>
+            <div class="dev-stat-card__label">Publiées</div>
+        </div>
+        <div class="dev-stat-card">
+            <span class="dev-stat-card__icon" aria-hidden="true"><i class="fa-solid fa-pen"></i></span>
+            <div class="dev-stat-card__value">{{stat_pages_drafts}}</div>
+            <div class="dev-stat-card__label">Brouillons</div>
+        </div>
+        <div class="dev-stat-card">
+            <span class="dev-stat-card__icon" aria-hidden="true"><i class="fa-solid fa-signs-post"></i></span>
+            <div class="dev-stat-card__value">{{stat_nav_count}}</div>
+            <div class="dev-stat-card__label">Liens de navigation</div>
+        </div>
+    </div>
+
+    <div class="dev-grid-2">
+        <div>
+            <h2 class="dev-section-title">Pages récentes</h2>
+            {{{recent_pages_html}}}
+        </div>
+        <div>
+            <h2 class="dev-section-title">Thème actif</h2>
+            <div class="dev-panel">
+                <div class="dev-swatch-row">
+                    <span class="dev-swatch" style="background:{{theme_primary}}" title="Primaire"></span>
+                    <span class="dev-swatch" style="background:{{theme_secondary}}" title="Secondaire"></span>
+                    <span class="dev-swatch" style="background:{{theme_background}}" title="Fond"></span>
+                </div>
+                <p class="dev-panel__desc" style="margin-top: var(--space-3); margin-bottom: var(--space-4);">Couleurs principales du site public.</p>
+                <a class="dev-button dev-button--secondary dev-button--sm" href="/dev/theme">
+                    <i class="fa-solid fa-palette" aria-hidden="true"></i> Modifier le thème
+                </a>
+            </div>
+
+            <h2 class="dev-section-title" style="margin-top: var(--space-6);">Raccourcis</h2>
+            <div class="dev-panel" style="display:flex; flex-direction:column; gap: var(--space-2);">
+                <a class="dev-button dev-button--ghost dev-button--sm" href="/dev/site"><i class="fa-solid fa-globe" aria-hidden="true"></i> Paramètres du site</a>
+                <a class="dev-button dev-button--ghost dev-button--sm" href="/dev/pages"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Gérer les pages</a>
+                <a class="dev-button dev-button--ghost dev-button--sm" href="/" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i> Voir le site public</a>
+            </div>
+        </div>
+    </div>
+</div>

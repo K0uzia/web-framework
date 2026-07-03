@@ -31,6 +31,32 @@ final class Response
     }
 
     /**
+     * Crée une réponse JSON (raccourci statique).
+     *
+     * @param array<string,mixed>|\JsonSerializable $data Données à sérialiser en JSON
+     * @param int $status Code de statut HTTP (défaut: 200)
+     */
+    public static function json(array|\JsonSerializable $data, int $status = 200): self
+    {
+        $json = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+
+        return (new self($status, (string) $json))
+            ->withHeader('Content-Type', 'application/json; charset=utf-8');
+    }
+
+    /**
+     * Crée une réponse texte brut (raccourci statique).
+     *
+     * @param string $body Contenu texte
+     * @param int $status Code de statut HTTP (défaut: 200)
+     */
+    public static function text(string $body, int $status = 200): self
+    {
+        return (new self($status, $body))
+            ->withHeader('Content-Type', 'text/plain; charset=utf-8');
+    }
+
+    /**
      * Vérifie si un en-tête existe (insensible à la casse).
      *
      * @param string $name Nom de l'en-tête

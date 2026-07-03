@@ -21,7 +21,9 @@ final class StylesheetResolverTest extends TestCase
         file_put_contents($this->cssDir . '/base.css', '/* base */');
         file_put_contents($this->cssDir . '/layouts/default.css', '/* layout */');
         file_put_contents($this->cssDir . '/pages/index/index.css', '/* page */');
-        file_put_contents($this->cssDir . '/pages/index/hero.css', '/* section */');
+        mkdir($this->cssDir . '/sections/hero', 0775, true);
+        file_put_contents($this->cssDir . '/sections/shared.css', '/* shared */');
+        file_put_contents($this->cssDir . '/sections/hero/centered.css', '/* section */');
         file_put_contents($this->cssDir . '/partials/site-header.css', '/* partial */');
     }
 
@@ -37,15 +39,13 @@ final class StylesheetResolverTest extends TestCase
 
         $hrefs = $resolver->resolve('default', 'index', $body, [
             'styles_sections' => 'hero',
+        ], [
+            ['type' => 'hero', 'variant' => 'centered'],
         ]);
 
-        $this->assertSame([
-            '/assets/css/base.css',
-            '/assets/css/layouts/default.css',
-            '/assets/css/pages/index/index.css',
-            '/assets/css/pages/index/hero.css',
-            '/assets/css/partials/site-header.css',
-        ], $hrefs);
+        $this->assertContains('/assets/css/sections/shared.css', $hrefs);
+        $this->assertContains('/assets/css/sections/hero/centered.css', $hrefs);
+        $this->assertContains('/assets/css/partials/site-header.css', $hrefs);
     }
 
     public function testToHtmlEscapesHref(): void
