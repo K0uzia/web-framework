@@ -1,0 +1,45 @@
+---
+description: Ponctuation obligatoire - interdit le tiret cadratin (—) dans tout le projet
+alwaysApply: true
+---
+
+# Typographie et ponctuation
+
+**Obligatoire** dans le code, les commentaires, la doc, les textes UI, les messages utilisateur, les commits et les réponses de l'agent pour ce dépôt.
+
+## Règle principale
+
+- **Ne jamais utiliser** le tiret cadratin `—` (U+2014).
+- **Préférer** reformuler (virgule, point, deux-points, parenthèses).
+- Le tiret ASCII `-` (U+002D) est autorisé **uniquement quand c'est nécessaire**, pas comme substitut stylistique du cadratin en milieu de phrase.
+
+## Remplacements selon le contexte
+
+| Contexte | À utiliser | Exemple |
+|----------|------------|---------|
+| Titre ou sous-titre | ` - ` ou ` : ` | `Accueil - Mon Site` |
+| Séparation label / valeur | ` : ` | `Email : contact@exemple.fr` |
+| Suite logique (copyright, phrase) | virgule ou rien | `Tous droits réservés, Auteur` |
+| Plage (dates, nombres) | tiret sans espaces | `2024-2026` |
+| Liste ou énumération | virgule, point-virgule ou retour à la ligne | selon le cas |
+| Commentaire technique | ` - ` ou reformulation | `/** Module auth - gestion session */` |
+
+## Quand `-` est acceptable
+
+- **Titres de page** : `Sujet - Marque` (séparateur titre / marque).
+- **Listes techniques** : `Linux - AppImage`, chemins, identifiants, CLI.
+- **Plages ou noms composés** : dates, versions, noms de fichiers.
+
+## Quand éviter `-` au milieu d'une phrase
+
+```text
+❌ Traitement local — rien n'est envoyé sur un serveur.
+✅ Traitement local. Rien n'est envoyé sur un serveur.
+
+❌ Gratuit, open source — sans limite.
+✅ Gratuit et open source, sans limite.
+```
+
+## Vérification
+
+Avant merge ou livraison, chercher `—` dans les fichiers modifiés et remplacer par une reformulation ou un usage légitime de `-`.

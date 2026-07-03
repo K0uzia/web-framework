@@ -1,0 +1,30 @@
+---
+description: Navigation agentique obligatoire - DOM sémantique, WebMCP, llms.txt, stabilité
+alwaysApply: true
+---
+
+# Navigation agentique (agents IA)
+
+Références : [Lighthouse agentic browsing](https://developer.chrome.com/docs/lighthouse/agentic-browsing/scoring?hl=fr).
+
+## Objectif
+
+Pages compréhensibles par les agents IA : DOM sémantique, libellés programmatiques, interactions détectables, mise en page stable.
+
+## Règles
+
+- HTML natif et sémantique : `button`, `a`, `form`, `main`, `nav`, `article`, `section`.
+- Chaque contrôle interactif : nom accessible clair, visible ou via ARIA si nécessaire.
+- Éviter les interactions cachées uniquement en JS si un équivalent HTML déclaratif existe.
+- Formulaires importants : attributs WebMCP `toolname` et `tooldescription` ensemble, `name` unique par champ.
+- Champs exposés à WebMCP : `toolparamdescription` ou `<label>` explicite.
+- Jamais d'attribut WebMCP incomplet (`toolname` sans `tooldescription` ou l'inverse).
+- Maintenir `public/llms.txt` (ou équivalent à la racine publique) si le site expose des parcours utiles aux agents.
+- Éviter les décalages de mise en page : dimensions d'images, zones réservées, pas d'injection tardive avant le contenu existant.
+
+## Vérification
+
+- [ ] Boutons, liens et champs avec nom accessible.
+- [ ] Formulaires importants compréhensibles sans contexte visuel.
+- [ ] Aucun contenu injecté ne déplace brusquement le contenu affiché.
+- [ ] `llms.txt` à jour si la structure du site change.

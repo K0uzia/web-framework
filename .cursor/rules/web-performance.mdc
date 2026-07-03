@@ -1,0 +1,32 @@
+---
+description: Performance web obligatoire - LCP, TBT, CLS, FCP, chargement critique
+alwaysApply: true
+---
+
+# Performance web
+
+Références : [Lighthouse performance](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring?hl=fr), [CLS](https://web.dev/articles/cls?hl=fr).
+
+## Priorités
+
+Prioriser LCP, TBT et CLS.
+
+## Règles
+
+- Éviter le JavaScript inutile au chargement initial (pages marketing, doc, landing).
+- Charger à la demande scripts lourds, WASM et traitements coûteux.
+- Pas de travail synchrone long sur le thread principal à l'initialisation.
+- FCP : CSS critique léger, polices maîtrisées, texte visible rapidement.
+- LCP : ne pas retarder le contenu principal par scripts tiers ou animations.
+- Speed Index : contenu principal rendu sans attendre les composants secondaires.
+- CLS : `width` / `height` sur images, espaces réservés, pas d'injection au-dessus du contenu.
+- Bannières, modales et widgets : position fixe ou espace réservé, sans décaler la page.
+- Ressources tierces justifiées, chargées avec `async`, `defer` ou équivalent.
+- Polices et assets statiques servis en local quand possible (cohérent avec la règle `icons`).
+
+## Vérification
+
+- [ ] Pas de script lourd dans le chemin critique.
+- [ ] Élément principal visible rapidement.
+- [ ] Images et médias avec dimensions ou ratio stable.
+- [ ] Aucun composant tardif ne décale le contenu existant.

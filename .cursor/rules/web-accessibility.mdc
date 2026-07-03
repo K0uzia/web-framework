@@ -1,0 +1,40 @@
+---
+description: Accessibilité obligatoire - HTML natif, ARIA, clavier, contraste, lisibilité
+alwaysApply: true
+---
+
+# Accessibilité et lisibilité
+
+Références : [Lighthouse accessibilité](https://developer.chrome.com/docs/lighthouse/accessibility/scoring?hl=fr), [Google Fonts Knowledge](https://fonts.google.com/knowledge/readability_and_accessibility).
+
+## HTML et ARIA
+
+- Éléments natifs avant ARIA : un vrai `<button>` vaut mieux qu'un `div role="button"`.
+- Boutons, liens, menus et champs : nom accessible descriptif.
+- Labels visibles et noms accessibles alignés autant que possible.
+- Rôles ARIA valides, cohérents, avec attributs requis.
+- Aucun élément focusable caché avec `aria-hidden="true"`.
+- Ordre DOM = ordre visuel pour une tabulation logique.
+- `:focus-visible` visible sur liens et boutons.
+- Pas de piège de focus, sauf modale avec échappement clavier clair.
+
+## Structure et contenu
+
+- Un `<h1>` par page, hiérarchie `h2` > `h3` sans saut de niveau pour le style.
+- Contraste suffisant (WCAG AA minimum pour le texte courant).
+- Images informatives : `alt` descriptif ; décoratives : `alt=""` + `aria-hidden="true"` si pertinent.
+- `width` / `height` ou ratio connu quand possible (CLS).
+
+## Lisibilité
+
+- Corps lisible via tokens typo du projet, pas de micro-texte pour le contenu principal.
+- Longueur de ligne raisonnable sur desktop.
+- Pas de caps prolongé, graisses trop fines ou contrastes faibles sur le texte important.
+- Libellés explicites sur liens et boutons.
+
+## Vérification
+
+- [ ] Navigation complète au clavier.
+- [ ] Aucun bouton ou lien sans texte descriptif.
+- [ ] Pas d'ARIA compensant un HTML natif disponible.
+- [ ] Contenu dynamique accessible aux lecteurs d'écran.

@@ -1,0 +1,54 @@
+---
+description: SEO et métadonnées obligatoires - titre, description, canonical, données structurées
+alwaysApply: true
+---
+
+# SEO et métadonnées
+
+Références : [Google SEO Starter Guide](https://developers.google.com/search/docs/fundamentals/seo-starter-guide?hl=fr), [Lighthouse SEO](https://developer.chrome.com/docs/lighthouse/seo/meta-description?hl=fr).
+
+## Organisation (adapter aux chemins du projet)
+
+| Rôle | Emplacement type |
+|------|------------------|
+| Marque, description par défaut, URL de base | config site / constantes / `site.ts` / `.env` |
+| Balises `<head>` communes | layout racine du framework |
+| Titre, description, canonical par page | template ou métadonnées de chaque page |
+| Contenu indexable | composants, templates, contenu |
+| Favicon, manifest, robots, sitemap | répertoire public statique |
+
+Une source de vérité par donnée : ne pas dupliquer métadonnées ni textes marketing.
+
+## Métadonnées par page indexable
+
+- **`<title>`** : unique, clair, concis. Format type `Sujet - Marque` (tiret ASCII entre sujet et marque).
+- **`meta name="description"`** : 1 à 2 phrases fidèles au contenu visible. Pas de bourrage de mots clés.
+- **`link rel="canonical"`** : URL absolue vers la version principale. Un seul canonical par page.
+- **`meta name="viewport"`** : présent, ne pas retirer.
+- **Open Graph / Twitter** : `og:title`, `og:description`, `og:url`, `og:image` alignés sur titre, description et canonical.
+
+Pages hors index : `noindex` explicite (meta robots ou `robots.txt`), jamais par omission.
+
+**Interdit** : `meta keywords`, titres/descriptions identiques sur toutes les pages, contenu principal chargé uniquement en JS sans équivalent HTML.
+
+## URLs, liens et contenu
+
+- Chemins descriptifs, pas d'IDs opaques dans l'URL publique.
+- Un contenu = une URL canonique ; redirection ou canonical si doublon.
+- Texte d'ancrage descriptif (`Documentation API`, pas `cliquez ici` seul).
+- Liens externes non endossés : `rel="noopener noreferrer"` ; `nofollow` si UGC ou lien non vérifié.
+- `hreflang` seulement si des versions linguistiques réelles existent, avec réciprocité complète.
+- Texte naturel, unique, structuré. Un `h1` par page.
+
+## Données structurées
+
+JSON-LD seulement si le contenu correspond au type ([consignes Google](https://developers.google.com/search/docs/appearance/structured-data/intro-structured-data?hl=fr)) : `WebSite`, `Organization`, `FAQPage` (FAQ réelle), `BreadcrumbList`, etc. JSON valide, champs obligatoires, pas de données inventées.
+
+## Vérification
+
+- [ ] Titre + description uniques sur la page modifiée.
+- [ ] Canonical correct (y compris sous-chemin ou base URL de déploiement).
+- [ ] Un seul `h1`, structure de titres logique.
+- [ ] `alt` revus sur les images ajoutées ou modifiées.
+- [ ] Pas de métadonnées contradictoires avec le contenu visible.
+- [ ] Texte UI sans tiret cadratin (règle `typography-punctuation`).

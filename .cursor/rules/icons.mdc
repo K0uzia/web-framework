@@ -1,0 +1,25 @@
+---
+description: Icônes obligatoires - Font Awesome en local uniquement, pas de CDN
+alwaysApply: true
+---
+
+# Icônes
+
+## Règles obligatoires
+
+1. **Utiliser uniquement Font Awesome** pour les icônes (`fa-*`, composants ou intégration déjà en place dans le projet).
+2. **Héberger en local** : fichiers CSS, JS et polices dans le dépôt (`public/`, `assets/`, `vendor/`, package npm installé et bundlé). **Interdit** : kit en ligne, CDN (`cdnjs`, `jsdelivr`, `kit.fontawesome.com`, etc.).
+3. **Ne pas remplacer** un SVG (ou bloc d'icône SVG) **déjà présent intentionnellement** dans le code : le laisser tel quel.
+4. **Ne pas introduire** d'autres bibliothèques d'icônes (Material Icons CDN, Heroicons inline massif, emoji comme icône UI) sauf demande explicite.
+
+## Intégration locale attendue
+
+- Polices et CSS FA servis depuis le projet (build ou copie statique).
+- Une seule source d'icônes par projet pour cohérence visuelle.
+- Icônes décoratives : `aria-hidden="true"` ; icônes seules cliquables : nom accessible via `aria-label` ou texte adjacent.
+
+## Vérification
+
+- [ ] Aucun lien externe vers Font Awesome ou autre CDN d'icônes.
+- [ ] Classes `fa-*` cohérentes avec la version locale installée.
+- [ ] Pas de mélange FA + autre lib d'icônes sans justification.

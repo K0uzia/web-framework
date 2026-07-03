@@ -1,0 +1,26 @@
+---
+description: Conventions CSS obligatoires - tokens, var(), ordre des propriétés
+globs: "**/*.{css,scss,less,sass}"
+alwaysApply: false
+---
+
+# CSS
+
+S'applique aux feuilles de style et aux blocs `<style>` intégrés.
+
+## Tokens et valeurs
+
+- **Toutes les valeurs de design** (couleurs, espacements, tailles, rayons, ombres, z-index) dans un fichier central de variables du projet (`variables.css`, `_tokens.scss`, `:root`, thème, etc.).
+- **Autres fichiers** : uniquement `var(--token)` et `calc(var(--token) ...)`. Pas de couleurs, px ou rem en dur sauf `0`, `100%`, `auto`, `inherit`, `none`.
+- Si le projet n'a pas encore de fichier tokens, le créer ou l'étendre avant d'ajouter de nouvelles valeurs.
+
+## Structure
+
+- **Pas de nesting CSS** (sauf si le projet utilise déjà un préprocesseur avec convention documentée).
+- **Ordre des propriétés** : position → display (+ flex/grid) → width → height → margin → padding → border → font → color → background → transform → animation → transition → overflow → z-index.
+
+## Vérification
+
+- [ ] Aucune nouvelle valeur magique hors fichier tokens.
+- [ ] Propriétés dans l'ordre attendu.
+- [ ] Sélecteurs plats, pas de nesting inutile.

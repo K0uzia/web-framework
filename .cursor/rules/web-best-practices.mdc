@@ -1,0 +1,30 @@
+---
+description: Bonnes pratiques web obligatoires - HTML, console, images, sécurité liens
+alwaysApply: true
+---
+
+# Bonnes pratiques web
+
+Références : [Lighthouse best practices](https://developer.chrome.com/docs/lighthouse/best-practices/doctype?hl=fr).
+
+## Document HTML
+
+- `<!doctype html>` en tête du document généré.
+- `<meta charset="utf-8" />` tôt dans `<head>`, idéalement en premier élément métier.
+- Conserver la balise viewport ; ne pas la supprimer.
+- `html lang="..."` avec la langue réelle du contenu.
+
+## Qualité et sécurité
+
+- Corriger les erreurs console causées par le code du projet.
+- Pas de `try/catch` vide sauf impossibilité connue et commentée.
+- Images : ratio naturel, sans étirement CSS ; `width` et `height` si dimensions connues.
+- Liens externes en nouvel onglet : `rel="noopener noreferrer"`.
+- Éviter APIs obsolètes et comportements quirks mode.
+
+## Vérification
+
+- [ ] Pas d'erreur console attendue.
+- [ ] Encodage et doctype présents.
+- [ ] Images sans déformation.
+- [ ] Attributs de sécurité des liens externes conservés.

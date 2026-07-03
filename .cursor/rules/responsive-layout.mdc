@@ -1,0 +1,41 @@
+---
+description: Mise en page responsive obligatoire - viewport fluide, zones scrollables, mobile
+globs: "**/*.{css,scss,less,html,php,tsx,jsx,vue,astro,svelte}"
+alwaysApply: false
+---
+
+# Mise en page responsive
+
+Principes universels pour sites publics et interfaces admin. Adapter les noms de classes et fichiers à la structure du projet.
+
+## Viewport et tokens layout
+
+- Hauteur utile : `100dvh` avec repli `100vh` si besoin.
+- Largeurs : `min()`, `clamp()`, `vw`, pas de px fixes seuls pour le contenu principal.
+- Définir des variables CSS pour : hauteur viewport, header, padding page, largeur max conteneur, colonne de texte, gaps, hauteur min cartes en grille.
+- Typographie fluide : `clamp()` + unités relatives, pas de tailles fixes isolées.
+
+## Site public
+
+- Conteneurs : `width: 100%`, `max-width` via token, `padding-inline` via token.
+- Grilles de cartes : `repeat(auto-fill, minmax(min(100%, var(--card-min)), 1fr))`.
+- Sidebar + contenu : colonnes flex/grid avec `minmax()` ; `min-width: 0` sur colonnes pour éviter le débordement horizontal.
+- Modales : `max-height: calc(var(--viewport-h) - marge)`.
+- Images et médias responsives sans déformation.
+
+## Interfaces admin / dashboard
+
+- Zone utile liée à l'écran : contenu principal défile **dans** sa zone, pas sur toute la page si toolbar ou onglets sont fixes.
+- Chaîne flex : conteneur > page > zone scroll (`min-height: 0`, `overflow-y: auto` sur la zone dédiée).
+- Ne pas imposer un `max-width` étroit sur le contenu admin en plein écran si le layout est déjà contraint.
+- Mobile : shell en colonne flex pleine hauteur ; listes en cartes plutôt qu'un tableau horizontal scrollable.
+- Onglets desktop : boutons ; mobile : `<select>` ou menu équivalent si la place manque.
+- Safe area : `env(safe-area-inset-*)` sur le contenu mobile si pertinent.
+- Agenda ou calendrier pleine hauteur : mesurer la hauteur disponible (JS ou CSS), `ResizeObserver` si contenu dynamique.
+
+## Vérification
+
+- [ ] Pas de largeur de contenu principal figée en px seul.
+- [ ] `min-width: 0` sur enfants flex/grid qui tronquent du texte.
+- [ ] Scroll isolé dans la bonne zone (admin).
+- [ ] Lisible et utilisable sur mobile sans scroll horizontal involontaire.
