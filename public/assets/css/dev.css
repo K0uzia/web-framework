@@ -481,6 +481,12 @@
     align-items: center;
     gap: var(--space-2);
     flex-shrink: 0;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.dev-page-head__actions .dev-device-toolbar {
+    flex-shrink: 0;
 }
 
 .dev-section-title {
@@ -1543,7 +1549,7 @@ body.dev-color-screen-pick-open {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: var(--space-5);
-    align-items: start;
+    align-items: stretch;
 }
 
 .dev-builder__outline {
@@ -1818,6 +1824,8 @@ body.dev-color-screen-pick-open {
     display: flex;
     flex-direction: column;
     align-items: stretch;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .dev-preview-label {
@@ -1885,7 +1893,7 @@ body.dev-color-screen-pick-open {
     padding: 0;
 }
 
-/* Mockup mobile : zone écran calée sur le trou du PNG (541×1024, 69/69/420/892) */
+/* Mockup mobile : canvas + overlay SVG (viewBox 483×974, écran 28/65/426/844) */
 
 .dev-preview-frame[data-device="mobile"],
 .dev-preview-frame[data-device="tablet"] {
@@ -1899,58 +1907,81 @@ body.dev-color-screen-pick-open {
 }
 
 .dev-mobile-mockup {
-    --mockup-w: 541;
-    --mockup-h: 1024;
-    --screen-x: 69;
-    --screen-y: 69;
-    --screen-w: 420;
-    --screen-h: 892;
+    --mockup-w: 483;
+    --mockup-h: 974;
+    --screen-x: 28;
+    --screen-y: 65;
+    --screen-w: 426;
+    --screen-h: 844;
+    --screen-rx: 38;
 
-    position: relative;
-    width: min(100%, calc((100vh - var(--topbar-height) - 7.5rem) * var(--mockup-w) / var(--mockup-h)));
+    width: 100%;
+    max-width: min(100%, calc((100vh - var(--topbar-height) - 5rem) * var(--mockup-w) / var(--mockup-h)));
     margin-inline: auto;
-    flex-shrink: 0;
-    line-height: 0;
 }
 
-.dev-mobile-mockup__frame {
-    display: block;
-    width: 100%;
-    height: auto;
-    pointer-events: none;
-    user-select: none;
+.dev-mobile-mockup__canvas {
     position: relative;
-    z-index: 2;
+    width: 100%;
+    aspect-ratio: var(--mockup-w) / var(--mockup-h);
 }
 
 .dev-mobile-mockup__screen {
     position: absolute;
-    z-index: 1;
     left: calc(var(--screen-x) / var(--mockup-w) * 100%);
     top: calc(var(--screen-y) / var(--mockup-h) * 100%);
     width: calc(var(--screen-w) / var(--mockup-w) * 100%);
     height: calc(var(--screen-h) / var(--mockup-h) * 100%);
     overflow: hidden;
-    border-radius: 7.1% / 3.4%;
-    contain: paint;
+    border-radius: calc(var(--screen-rx) / var(--screen-w) * 100%) / calc(var(--screen-rx) / var(--screen-h) * 100%);
+    background: #fff;
+    z-index: 0;
 }
 
-.dev-mobile-mockup__screen iframe {
+.dev-mobile-mockup__overlay {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
+    display: block;
+    pointer-events: none;
+    user-select: none;
+    z-index: 1;
+}
+
+.dev-mobile-mockup__screen iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 390px;
+    height: 844px;
     border: none;
+    transform-origin: 0 0;
     background: #fff;
+}
+
+.dev-preview-frame[data-device="tablet"] .dev-mobile-mockup__screen iframe {
+    width: 768px;
+    height: 1024px;
 }
 
 /* Tablette : cadre CSS, pas de coque téléphone */
 
+.dev-preview-frame[data-device="tablet"] .dev-mobile-mockup__overlay {
+    display: none;
+}
+
 .dev-preview-frame[data-device="tablet"] .dev-mobile-mockup {
     --mockup-w: 768;
     --mockup-h: 1024;
+    --screen-x: 0;
+    --screen-y: 0;
+    --screen-w: 768;
+    --screen-h: 1024;
+    --screen-rx: 12;
 
-    width: min(100%, calc((100vh - var(--topbar-height) - 7.5rem) * var(--mockup-w) / var(--mockup-h)));
+    width: 100%;
+    max-width: min(100%, calc((100vh - var(--topbar-height) - 5rem) * var(--mockup-w) / var(--mockup-h)));
     padding: 14px 12px 16px;
     border-radius: 22px;
     border: 2px solid #353945;
@@ -1960,14 +1991,8 @@ body.dev-color-screen-pick-open {
     box-sizing: border-box;
 }
 
-[data-theme="light"] .dev-preview-frame[data-device="tablet"] .dev-mobile-mockup {
-    border-color: #c5cad6;
-    background: linear-gradient(165deg, #f4f5f8 0%, #e8eaef 100%);
-    box-shadow: 0 16px 38px rgb(20 21 26 / 0.1);
-}
-
-.dev-preview-frame[data-device="tablet"] .dev-mobile-mockup__frame {
-    display: none;
+.dev-preview-frame[data-device="tablet"] .dev-mobile-mockup__canvas {
+    aspect-ratio: var(--mockup-w) / var(--mockup-h);
 }
 
 .dev-preview-frame[data-device="tablet"] .dev-mobile-mockup__screen {
@@ -1976,8 +2001,14 @@ body.dev-color-screen-pick-open {
     top: auto;
     width: 100%;
     height: auto;
-    aspect-ratio: 768 / 1024;
+    aspect-ratio: var(--mockup-w) / var(--mockup-h);
     border-radius: 12px;
+}
+
+[data-theme="light"] .dev-preview-frame[data-device="tablet"] .dev-mobile-mockup {
+    border-color: #c5cad6;
+    background: linear-gradient(165deg, #f4f5f8 0%, #e8eaef 100%);
+    box-shadow: 0 16px 38px rgb(20 21 26 / 0.1);
 }
 
 /* Aperçu masquable (éditeur en-tête / pied de page) */

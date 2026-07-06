@@ -50,40 +50,103 @@
         } catch (e) {
             frame.src = frame.src;
         }
+        window.setTimeout(syncPreviewScale, 100);
     }
 
-    var PREVIEW_VIEWPORT_WIDTHS = {
-        mobile: 390,
-        tablet: 768,
+    var PREVIEW_DEVICES = {
+        mobile: { width: 390, height: 844 },
+        tablet: { width: 768, height: 1024 },
     };
 
-    function previewDeviceWidth(device) {
-        return PREVIEW_VIEWPORT_WIDTHS[device] || PREVIEW_VIEWPORT_WIDTHS.mobile;
+    function syncPreviewScale() {
+        var frame = document.getElementById('preview-frame');
+        if (!frame) {
+            return;
+        }
+        var host = frame.closest('.dev-preview-frame');
+        var screen = frame.closest('.dev-mobile-mockup__screen');
+        if (!host || !screen) {
+            frame.style.transform = '';
+            return;
+        }
+
+        var device = host.getAttribute('data-device') || 'mobile';
+        var profile = PREVIEW_DEVICES[device];
+        if (!profile) {
+            return;
+        }
+
+        var screenWidth = screen.clientWidth;
+        var screenHeight = screen.clientHeight;
+        if (screenWidth <= 0 || screenHeight <= 0) {
+            return;
+        }
+
+        var scaleX = screenWidth / profile.width;
+        var scaleY = screenHeight / profile.height;
+        var scale = Math.max(scaleX, scaleY);
+        var offsetX = (screenWidth - profile.width * scale) / 2;
+        var offsetY = (screenHeight - profile.height * scale) / 2;
+
+        frame.style.width = profile.width + 'px';
+        frame.style.height = profile.height + 'px';
+        frame.style.transform = 'translate(' + offsetX + 'px, ' + offsetY + 'px) scale(' + scale + ')';
+        frame.style.transformOrigin = '0 0';
     }
 
-    function updatePreviewViewport() {
-        var frame = document.getElementById('preview-frame');
-        if (!frame || !frame.getAttribute('src')) {
+    function stripPreviewViewportParam(frame) {
+        var src = frame.getAttribute('src');
+        if (!src || src.indexOf('viewport=') === -1) {
             return;
         }
-
-        var host = frame.closest('.dev-preview-frame');
-        var device = host ? host.getAttribute('data-device') || 'mobile' : 'mobile';
-        var width = previewDeviceWidth(device);
-
-        var url;
         try {
-            url = new URL(frame.getAttribute('src'), window.location.origin);
+            var url = new URL(src, window.location.origin);
+            url.searchParams.delete('viewport');
+            frame.setAttribute('src', url.pathname + url.search + url.hash);
         } catch (e) {
-            return;
+            /* URL invalide */
+        }
+    }
+
+    function initPreviewScale(frame) {
+        stripPreviewViewportParam(frame);
+
+        if (!frame.dataset.devPreviewScaleInit) {
+            frame.dataset.devPreviewScaleInit = '1';
+
+            var mockup = frame.closest('.dev-mobile-mockup');
+            var canvas = mockup ? mockup.querySelector('.dev-mobile-mockup__canvas') : null;
+            var host = frame.closest('.dev-preview-frame');
+            var screen = frame.closest('.dev-mobile-mockup__screen');
+            var overlayImg = mockup ? mockup.querySelector('.dev-mobile-mockup__overlay image') : null;
+            if (overlayImg && !overlayImg.complete) {
+                overlayImg.addEventListener('load', syncPreviewScale);
+            }
+            if (typeof ResizeObserver !== 'undefined') {
+                if (canvas) {
+                    new ResizeObserver(function () {
+                        syncPreviewScale();
+                    }).observe(canvas);
+                }
+                if (screen) {
+                    new ResizeObserver(function () {
+                        syncPreviewScale();
+                    }).observe(screen);
+                }
+            }
+            if (host && typeof ResizeObserver !== 'undefined') {
+                new ResizeObserver(function () {
+                    syncPreviewScale();
+                }).observe(host);
+            }
+
+            if (!window.__devPreviewScaleResize) {
+                window.__devPreviewScaleResize = true;
+                window.addEventListener('resize', syncPreviewScale);
+            }
         }
 
-        if (url.searchParams.get('viewport') === String(width)) {
-            return;
-        }
-
-        url.searchParams.set('viewport', String(width));
-        frame.setAttribute('src', url.pathname + url.search + url.hash);
+        syncPreviewScale();
     }
 
     function applyPreviewEmbedClass(frame) {
@@ -110,13 +173,14 @@
             frame.dataset.devPreviewEmbedInit = '1';
             frame.addEventListener('load', function () {
                 applyPreviewEmbedClass(frame);
+                syncPreviewScale();
             });
         }
         if (frame.contentDocument && frame.contentDocument.readyState === 'complete') {
             applyPreviewEmbedClass(frame);
         }
 
-        updatePreviewViewport();
+        initPreviewScale(frame);
     }
 
     function isFullLayoutHtml(html) {
@@ -1115,7 +1179,7 @@
                 if (target) {
                     target.setAttribute('data-device', btn.getAttribute('data-device'));
                 }
-                updatePreviewViewport();
+                syncPreviewScale();
             });
         });
     });
