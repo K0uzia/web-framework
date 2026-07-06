@@ -33,12 +33,50 @@ final class PreviewController
 
         $response = $this->pages->renderBySlug($decoded, $params, $path, false);
 
+        $viewport = $this->parseViewportWidth($request->query['viewport'] ?? null);
+        if ($viewport !== null) {
+            $response = $this->injectViewport($response, $viewport);
+        }
+
         $chromeOnly = $request->query['chrome_only'] ?? '';
         if ($chromeOnly === 'header' || $chromeOnly === 'footer') {
             $response = $this->isolateChrome($response, $chromeOnly);
         }
 
         return $response;
+    }
+
+    private function parseViewportWidth(mixed $raw): ?int
+    {
+        if (!is_string($raw) && !is_int($raw)) {
+            return null;
+        }
+
+        $width = (int) $raw;
+
+        return $width >= 320 && $width <= 1200 ? $width : null;
+    }
+
+    private function injectViewport(Response $response, int $width): Response
+    {
+        $html = $response->getBody();
+        if (!is_string($html)) {
+            return $response;
+        }
+
+        $tag = '<meta name="viewport" content="width=' . $width . '" />';
+        $replaced = preg_replace(
+            '/<meta\s+name="viewport"\s+content="[^"]*"\s*\/?>/i',
+            $tag,
+            $html,
+            1,
+        );
+
+        if (!is_string($replaced) || $replaced === $html) {
+            $replaced = str_replace('</head>', '    ' . $tag . "\n</head>", $html);
+        }
+
+        return $response->withBody($replaced);
     }
 
     /**

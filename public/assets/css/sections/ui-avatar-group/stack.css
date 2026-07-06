@@ -1,0 +1,7 @@
+.section-ui-avatar-group__stack { display: flex; justify-content: center; }
+.section-ui-avatar-group__avatar {
+    width: 2.75rem; height: 2.75rem; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
+    background: var(--color-primary, #0f172a); color: #fff; font-size: 0.75rem; font-weight: 600;
+    border: 2px solid var(--color-background, #fff); margin-inline-start: -0.5rem;
+}
+.section-ui-avatar-group__avatar:first-child { margin-inline-start: 0; }

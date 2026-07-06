@@ -1,19 +1,21 @@
-<form method="post" action="/dev/pages" id="dev-page-new-form" class="dev-form dev-form--grid dev-form--grid-2" data-dev-ajax="post-redirect" data-dev-toast-form="Page créée en brouillon">
+<form method="post" action="/dev/pages" id="dev-page-new-form" class="dev-form dev-form--grid dev-form--grid-2" data-dev-ajax="post-redirect" data-dev-toast-form="Page créée en brouillon" novalidate>
+    <input type="hidden" name="page_template" id="dev-new-page-template" value="blank" />
+    <script type="application/json" id="dev-page-template-presets">{{{page_template_presets_json}}}</script>
+
     <div class="dev-field dev-form__full">
-        <label class="dev-label" for="dev-new-page-template">Modèle de page</label>
-        <select class="dev-input dev-select" id="dev-new-page-template" name="page_template">
-            {{{page_template_options}}}
-        </select>
-        <span class="dev-hint">Préremplit la page avec des blocs adaptés (landing, tarifs, contact, etc.).</span>
+        <span class="dev-label">Modèle de page</span>
+        <span class="dev-hint" id="dev-new-page-template-hint">Choisissez une composition de blocs. Les modèles sont publiés automatiquement.</span>
+        {{{page_template_picker_html}}}
     </div>
+
     <div class="dev-field">
         <label class="dev-label" for="dev-new-page-title">Titre</label>
-        <input class="dev-input" id="dev-new-page-title" type="text" name="title" required placeholder="À propos" autocomplete="off" />
+        <input class="dev-input" id="dev-new-page-title" type="text" name="title" placeholder="À propos" autocomplete="off" />
     </div>
     <div class="dev-field">
         <label class="dev-label" for="dev-new-page-slug">Adresse <span class="dev-hint">(vide = accueil /)</span></label>
-        <input class="dev-input" id="dev-new-page-slug" type="text" name="slug" placeholder="a-propos" autocomplete="off" pattern="[a-z][a-z0-9]*(-[a-z0-9]+)*" />
-        <span class="dev-hint">Lettres minuscules et tirets. N'utilisez pas un nombre seul (ex. « 1 »).</span>
+        <input class="dev-input" id="dev-new-page-slug" type="text" name="slug" placeholder="a-propos" autocomplete="off" inputmode="url" />
+        <span class="dev-hint">Lettres minuscules et tirets. Laissez vide pour la page d'accueil.</span>
     </div>
     <div class="dev-field dev-form__full">
         <label class="dev-label" for="dev-new-page-layout">Gabarit</label>

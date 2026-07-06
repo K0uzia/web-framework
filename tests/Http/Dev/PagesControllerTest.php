@@ -63,13 +63,27 @@ final class PagesControllerTest extends TestCase
     public function testStoreAppliesLandingTemplate(): void
     {
         $this->controller->store($this->post(
-            'title=Landing&slug=landing&layout=default&page_template=landing',
+            'title=Landing&slug=landing-test&layout=default&page_template=landing-02',
         ));
 
-        $page = $this->pages->findBySlug('landing', false);
+        $page = $this->pages->findBySlug('landing-test', false);
         $this->assertNotNull($page);
         $this->assertGreaterThanOrEqual(4, count($page->sections));
         $this->assertSame('hero', $page->sections[0]['type'] ?? null);
+        $this->assertTrue($page->published);
+    }
+
+    public function testStorePublishesAboutTemplateWithSuggestedSlug(): void
+    {
+        $this->controller->store($this->post(
+            'title=&slug=&layout=default&page_template=about-1',
+        ));
+
+        $page = $this->pages->findBySlug('about-2', false);
+        $this->assertNotNull($page);
+        $this->assertTrue($page->published);
+        $this->assertSame('À propos', $page->title);
+        $this->assertGreaterThanOrEqual(3, count($page->sections));
     }
 
     public function testStoreRejectsEmptyTitleForAjax(): void

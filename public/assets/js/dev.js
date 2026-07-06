@@ -52,6 +52,40 @@
         }
     }
 
+    var PREVIEW_VIEWPORT_WIDTHS = {
+        mobile: 390,
+        tablet: 768,
+    };
+
+    function previewDeviceWidth(device) {
+        return PREVIEW_VIEWPORT_WIDTHS[device] || PREVIEW_VIEWPORT_WIDTHS.mobile;
+    }
+
+    function updatePreviewViewport() {
+        var frame = document.getElementById('preview-frame');
+        if (!frame || !frame.getAttribute('src')) {
+            return;
+        }
+
+        var host = frame.closest('.dev-preview-frame');
+        var device = host ? host.getAttribute('data-device') || 'mobile' : 'mobile';
+        var width = previewDeviceWidth(device);
+
+        var url;
+        try {
+            url = new URL(frame.getAttribute('src'), window.location.origin);
+        } catch (e) {
+            return;
+        }
+
+        if (url.searchParams.get('viewport') === String(width)) {
+            return;
+        }
+
+        url.searchParams.set('viewport', String(width));
+        frame.setAttribute('src', url.pathname + url.search + url.hash);
+    }
+
     function applyPreviewEmbedClass(frame) {
         try {
             var doc = frame.contentDocument;
@@ -81,6 +115,8 @@
         if (frame.contentDocument && frame.contentDocument.readyState === 'complete') {
             applyPreviewEmbedClass(frame);
         }
+
+        updatePreviewViewport();
     }
 
     function isFullLayoutHtml(html) {
@@ -111,7 +147,9 @@
             if (response.type === 'opaqueredirect' || (response.status >= 300 && response.status < 400)) {
                 var redirect = '';
                 try {
-                    redirect = response.headers.get('Location') || '';
+                    redirect = response.headers.get('X-Dev-Redirect')
+                        || response.headers.get('Location')
+                        || '';
                 } catch (e) {
                     redirect = '';
                 }
@@ -123,7 +161,13 @@
                 });
             }
             return response.text().then(function (text) {
-                return { ok: true, html: text, redirect: '' };
+                var redirect = '';
+                try {
+                    redirect = response.headers.get('X-Dev-Redirect') || '';
+                } catch (e2) {
+                    redirect = '';
+                }
+                return { ok: true, html: text, redirect: redirect };
             });
         }).catch(function () {
             return { ok: false, html: '', redirect: '' };
@@ -757,10 +801,14 @@
         }
         modal.hidden = false;
         if (id === 'dev-page-new') {
-            var form = modal.querySelector('#dev-page-new-form');
-            if (form) {
-                form.reset();
+            document.dispatchEvent(new CustomEvent('dev-page-new-open'));
+            var firstField = modal.querySelector('#dev-new-page-title');
+            if (firstField) {
+                window.requestAnimationFrame(function () {
+                    firstField.focus();
+                });
             }
+            return;
         }
         var input = modal.querySelector('input[type="text"]');
         if (input) {
@@ -1067,6 +1115,7 @@
                 if (target) {
                     target.setAttribute('data-device', btn.getAttribute('data-device'));
                 }
+                updatePreviewViewport();
             });
         });
     });

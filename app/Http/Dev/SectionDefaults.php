@@ -286,6 +286,29 @@ final class SectionDefaults
                 'subtitle' => '30 minutes pour découvrir le produit.',
                 'buttons' => [['label' => 'Choisir un créneau', 'href' => '#', 'style' => 'primary']],
             ],
+            'ui-announcement' => [
+                'text' => 'Nouveau : découvrez notre dernière fonctionnalité.',
+                'href' => '#',
+                'link_label' => 'En savoir plus',
+            ],
+            'ui-divider' => [],
+            'ui-quote' => [
+                'title' => 'La simplicité est la sophistication suprême.',
+                'subtitle' => 'Leonardo da Vinci',
+            ],
+            'ui-rating' => [
+                'title' => '4.9/5',
+                'subtitle' => 'Basé sur 200+ avis',
+            ],
+            'ui-embed' => [
+                'title' => 'Aperçu vidéo',
+                'image_url' => '',
+            ],
+            'ui-card' => [
+                'title' => 'Titre de la carte',
+                'subtitle' => 'Texte descriptif court pour ce composant.',
+                'buttons' => [['label' => 'Action', 'href' => '#', 'style' => 'primary']],
+            ],
             default => [],
         };
     }
@@ -335,6 +358,12 @@ final class SectionDefaults
             'resources' => ['bg' => 'muted', 'padding' => 'lg'],
             'code' => ['bg' => 'muted', 'padding' => 'lg'],
             'demo' => ['bg' => 'primary', 'text_align' => 'center', 'padding' => 'lg'],
+            'ui-announcement' => ['bg' => 'primary', 'padding' => 'sm'],
+            'ui-divider' => ['bg' => 'background', 'padding' => 'sm'],
+            'ui-quote' => ['bg' => 'muted', 'padding' => 'md'],
+            'ui-rating' => ['bg' => 'background', 'padding' => 'md'],
+            'ui-embed' => ['bg' => 'background', 'padding' => 'lg'],
+            'ui-card' => ['bg' => 'muted', 'padding' => 'md'],
             default => ['padding' => 'md'],
         };
     }

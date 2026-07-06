@@ -1,0 +1,986 @@
+landing-accueil:
+  category: landing
+  label: 'Page d''accueil classique'
+  description: 'Hero centré, logos, fonctionnalités, étapes, témoignages, newsletter et CTA.'
+  icon: fa-solid fa-rocket
+  slug: ''
+  title: Accueil
+  seo: Découvrez notre produit et commencez en quelques minutes.
+  publish: true
+  sections:
+    - type: hero
+      variant: centered
+      content:
+        title: Bienvenue
+        subtitle: La solution simple pour avancer plus vite.
+    - type: logos
+      variant: row
+    - type: features
+      variant: grid-3
+    - type: steps
+      variant: row
+    - type: testimonials
+      variant: grid
+    - type: newsletter
+      variant: inline
+    - type: cta
+      variant: banner
+landing-saas:
+  category: landing
+  label: Landing SaaS
+  description: 'Hero deux colonnes, bento, intégrations, tarifs et FAQ.'
+  icon: fa-solid fa-cloud
+  slug: saas
+  title: Produit SaaS
+  seo: Logiciel en ligne pour les équipes modernes.
+  publish: true
+  sections:
+    - type: hero
+      variant: split
+    - type: logos
+      variant: row
+    - type: features
+      variant: bento
+    - type: integrations
+      variant: grid-3
+    - type: pricing
+      variant: cards
+    - type: faq
+      variant: list
+    - type: cta
+      variant: banner
+landing-startup:
+  category: landing
+  label: Landing startup
+  description: 'Hero plein écran, chiffres, fonctionnalités et preuve sociale.'
+  icon: fa-solid fa-lightbulb
+  slug: startup
+  title: Lancez votre projet
+  seo: Une landing percutante pour une jeune entreprise.
+  publish: true
+  sections:
+    - type: hero
+      variant: fullscreen
+    - type: stats
+      variant: grid-4
+    - type: features
+      variant: grid-3
+    - type: testimonials
+      variant: featured
+    - type: cta
+      variant: centered
+landing-agence:
+  category: landing
+  label: Landing agence
+  description: 'Hero visuel, services, galerie et témoignages.'
+  icon: fa-solid fa-palette
+  slug: agence
+  title: Agence créative
+  seo: 'Design, stratégie et réalisations sur mesure.'
+  publish: true
+  sections:
+    - type: hero
+      variant: image-below
+    - type: services
+      variant: grid-3
+    - type: gallery
+      variant: grid
+    - type: testimonials
+      variant: grid
+    - type: cta
+      variant: split
+landing-application:
+  category: landing
+  label: Landing application
+  description: 'Hero inversé, points clés, démo et conversion.'
+  icon: fa-solid fa-mobile-screen
+  slug: application
+  title: Notre application
+  seo: 'Téléchargez l''app et travaillez où vous voulez.'
+  publish: true
+  sections:
+    - type: hero
+      variant: split-left
+    - type: features
+      variant: grid-2
+    - type: stats
+      variant: cards
+    - type: demo
+      variant: centered
+    - type: cta
+      variant: banner
+landing-produit:
+  category: landing
+  label: Landing produit
+  description: 'Badge, points forts, études de cas et CTA.'
+  icon: fa-solid fa-box-open
+  slug: produit
+  title: Découvrir le produit
+  seo: 'Vue d''ensemble des bénéfices et des cas clients.'
+  publish: true
+  sections:
+    - type: hero
+      variant: badge
+      content:
+        badge: Nouveau
+        title: Le produit qui change la donne
+    - type: highlights
+      variant: two-col
+    - type: features
+      variant: bento
+    - type: case-studies
+      variant: cards
+    - type: cta
+      variant: banner
+landing-mobile:
+  category: landing
+  label: Landing mobile
+  description: 'Accroche centrée, liste de fonctions, téléchargement.'
+  icon: fa-solid fa-mobile
+  slug: mobile
+  title: Application mobile
+  seo: Une expérience fluide sur iOS et Android.
+  publish: true
+  sections:
+    - type: hero
+      variant: centered
+    - type: features
+      variant: list
+    - type: stats
+      variant: row
+    - type: testimonials
+      variant: grid-2
+    - type: download
+      variant: banner
+    - type: cta
+      variant: centered
+landing-api:
+  category: landing
+  label: Landing API
+  description: 'Hero minimal, extrait de code et intégrations.'
+  icon: fa-solid fa-code
+  slug: api
+  title: API développeurs
+  seo: Intégrez notre API en quelques lignes de code.
+  publish: true
+  sections:
+    - type: hero
+      variant: minimal
+    - type: code
+      variant: split
+    - type: features
+      variant: grid-3
+    - type: integrations
+      variant: list
+    - type: cta
+      variant: banner
+landing-open-source:
+  category: landing
+  label: Landing open source
+  description: 'Communauté, fonctionnalités et équipe contributrice.'
+  icon: fa-solid fa-code-branch
+  slug: open-source
+  title: Projet open source
+  seo: 'Contribuez, forkez et construisons ensemble.'
+  publish: true
+  sections:
+    - type: hero
+      variant: centered
+    - type: community
+      variant: grid
+    - type: features
+      variant: grid-3
+    - type: team
+      variant: grid
+    - type: cta
+      variant: centered
+landing-evenement:
+  category: landing
+  label: Landing événement
+  description: 'Badge, programme et intervenants.'
+  icon: fa-solid fa-calendar-days
+  slug: evenement
+  title: Événement à venir
+  seo: Inscrivez-vous à notre prochain rendez-vous.
+  publish: true
+  sections:
+    - type: hero
+      variant: badge
+      content:
+        badge: Événement
+        title: Rejoignez-nous en direct
+    - type: timeline
+      variant: row
+    - type: team
+      variant: cards
+    - type: cta
+      variant: banner
+landing-lancement:
+  category: landing
+  label: Landing lancement
+  description: 'Vidéo hero, liste d''attente et logos.'
+  icon: fa-solid fa-bullhorn
+  slug: lancement
+  title: Bientôt disponible
+  seo: Soyez parmi les premiers informés du lancement.
+  publish: true
+  sections:
+    - type: hero
+      variant: video
+    - type: waitlist
+      variant: centered
+    - type: logos
+      variant: marquee
+    - type: features
+      variant: grid-3
+    - type: cta
+      variant: banner
+landing-entreprise:
+  category: landing
+  label: Landing entreprise
+  description: 'Hero split, secteurs, conformité et preuves.'
+  icon: fa-solid fa-building
+  slug: entreprise
+  title: Solutions entreprise
+  seo: 'Sécurité, échelle et accompagnement dédié.'
+  publish: true
+  sections:
+    - type: hero
+      variant: split
+    - type: industries
+      variant: cards
+    - type: compliance
+      variant: prose
+    - type: stats
+      variant: row
+    - type: logos
+      variant: row
+    - type: cta
+      variant: banner
+landing-creatif:
+  category: landing
+  label: Landing portfolio créatif
+  description: 'Plein écran, galerie, projets et contact.'
+  icon: fa-solid fa-images
+  slug: portfolio-creatif
+  title: Portfolio
+  seo: Réalisations récentes et projets phares.
+  publish: true
+  sections:
+    - type: hero
+      variant: fullscreen
+    - type: gallery
+      variant: masonry
+    - type: projects
+      variant: featured
+    - type: testimonials
+      variant: featured
+    - type: contact
+      variant: cards
+landing-education:
+  category: landing
+  label: Landing éducation
+  description: 'Processus pédagogique, ressources et conversion.'
+  icon: fa-solid fa-graduation-cap
+  slug: education
+  title: Formation et ressources
+  seo: Apprenez à votre rythme avec nos guides.
+  publish: true
+  sections:
+    - type: hero
+      variant: centered
+    - type: process
+      variant: vertical
+    - type: features
+      variant: grid-3
+    - type: resources
+      variant: grid-2
+    - type: cta
+      variant: banner
+landing-sante:
+  category: landing
+  label: Landing santé
+  description: 'Message rassurant, conformité et fonctionnalités.'
+  icon: fa-solid fa-heart-pulse
+  slug: sante
+  title: Santé et bien-être
+  seo: Des outils fiables pour les professionnels de santé.
+  publish: true
+  sections:
+    - type: hero
+      variant: split
+    - type: stats
+      variant: centered
+    - type: features
+      variant: grid-3
+    - type: compliance
+      variant: centered
+    - type: cta
+      variant: banner
+landing-finance:
+  category: landing
+  label: Landing finance
+  description: 'Hero épuré, chiffres denses et témoignages.'
+  icon: fa-solid fa-chart-pie
+  slug: finance
+  title: Services financiers
+  seo: 'Clarté, performance et transparence.'
+  publish: true
+  sections:
+    - type: hero
+      variant: minimal
+    - type: stats
+      variant: grid-4
+    - type: features
+      variant: grid-4
+    - type: testimonials
+      variant: grid-2
+    - type: cta
+      variant: banner
+landing-ecommerce:
+  category: landing
+  label: Landing e-commerce
+  description: 'Visuel sous le titre, tarifs et avis clients.'
+  icon: fa-solid fa-cart-shopping
+  slug: ecommerce
+  title: Boutique en ligne
+  seo: Vendez plus avec une vitrine optimisée.
+  publish: true
+  sections:
+    - type: hero
+      variant: image-below
+    - type: features
+      variant: bento
+    - type: testimonials
+      variant: grid
+    - type: pricing
+      variant: compact
+    - type: cta
+      variant: centered
+landing-conference:
+  category: landing
+  label: Landing conférence
+  description: 'Intervenants, agenda et sponsors.'
+  icon: fa-solid fa-microphone
+  slug: conference
+  title: Conférence annuelle
+  seo: 'Programme, speakers et billetterie.'
+  publish: true
+  sections:
+    - type: hero
+      variant: badge
+      content:
+        badge: Conférence
+        title: Rencontrez les experts
+    - type: team
+      variant: grid
+    - type: timeline
+      variant: vertical
+    - type: logos
+      variant: grid
+    - type: cta
+      variant: banner
+landing-partenaires:
+  category: landing
+  label: Landing partenaires
+  description: 'Logos défilants, études de cas et stats.'
+  icon: fa-solid fa-handshake
+  slug: partenaires
+  title: Nos partenaires
+  seo: Un écosystème de confiance autour du produit.
+  publish: true
+  sections:
+    - type: hero
+      variant: centered
+    - type: logos
+      variant: marquee
+    - type: case-studies
+      variant: grid-3
+    - type: stats
+      variant: row
+    - type: cta
+      variant: split
+landing-beta:
+  category: landing
+  label: Landing bêta
+  description: 'Liste d''attente, FAQ courte et preuves.'
+  icon: fa-solid fa-flask
+  slug: beta
+  title: Programme bêta
+  seo: Testez les prochaines fonctionnalités en avant-première.
+  publish: true
+  sections:
+    - type: hero
+      variant: minimal
+    - type: waitlist
+      variant: inline
+    - type: features
+      variant: grid-2
+    - type: faq
+      variant: compact
+    - type: logos
+      variant: row
+blog-index:
+  category: blog
+  label: 'Blog, liste'
+  description: 'Hero, grille d''articles, newsletter et CTA.'
+  icon: fa-solid fa-newspaper
+  slug: blog
+  title: Blog
+  seo: 'Articles, guides et actualités.'
+  publish: true
+  sections:
+    - type: hero
+      variant: centered
+    - type: blog
+      variant: grid-3
+    - type: newsletter
+      variant: inline
+    - type: cta
+      variant: centered
+blog-magazine:
+  category: blog
+  label: Blog magazine
+  description: Article à la une et flux secondaire.
+  icon: fa-solid fa-book-open
+  slug: magazine
+  title: Magazine
+  seo: Longs formats et dossiers thématiques.
+  publish: true
+  sections:
+    - type: hero
+      variant: split
+    - type: blog
+      variant: featured
+    - type: blog
+      variant: list
+    - type: newsletter
+      variant: split
+blog-article:
+  category: blog
+  label: Article de blog
+  description: 'Hero minimal, corps de texte et CTA de fin.'
+  icon: fa-solid fa-file-lines
+  slug: article-exemple
+  title: 'Titre de l''article'
+  seo: 'Résumé court de l''article pour les moteurs de recherche.'
+  publish: true
+  sections:
+    - type: hero
+      variant: minimal
+      content:
+        title: 'Titre de l''article'
+    - type: content
+      variant: prose
+    - type: cta
+      variant: centered
+      content:
+        title: 'Envie d''aller plus loin ?'
+blog-auteur:
+  category: blog
+  label: Page auteur
+  description: 'Présentation de l''auteur et ses articles.'
+  icon: fa-solid fa-user-pen
+  slug: auteur
+  title: 'À propos de l''auteur'
+  seo: Biographie et publications récentes.
+  publish: true
+  sections:
+    - type: hero
+      variant: centered
+    - type: content
+      variant: columns-2
+    - type: blog
+      variant: list
+    - type: cta
+      variant: banner
+blog-categories:
+  category: blog
+  label: Blog par catégories
+  description: 'Badge, grille thématique et ressources.'
+  icon: fa-solid fa-tags
+  slug: categories-blog
+  title: Catégories
+  seo: Parcourez les articles par thème.
+  publish: true
+  sections:
+    - type: hero
+      variant: badge
+      content:
+        badge: Thèmes
+        title: Explorez par catégorie
+    - type: blog
+      variant: grid-2
+    - type: resources
+      variant: list
+    - type: newsletter
+      variant: banner
+pricing-standard:
+  category: pricing
+  label: Tarifs standard
+  description: 'Grille tarifaire, comparaison et FAQ.'
+  icon: fa-solid fa-tags
+  slug: tarifs
+  title: Tarifs
+  seo: Des formules simples et transparentes pour chaque besoin.
+  publish: true
+  sections:
+    - type: hero
+      variant: centered
+    - type: pricing
+      variant: cards
+    - type: compare
+      variant: table
+    - type: faq
+      variant: list
+    - type: cta
+      variant: banner
+pricing-saas:
+  category: pricing
+  label: Tarifs SaaS
+  description: 'Plans en grille, comparatif et témoignages.'
+  icon: fa-solid fa-layer-group
+  slug: tarifs-saas
+  title: Abonnements
+  seo: Choisissez le plan adapté à votre équipe.
+  publish: true
+  sections:
+    - type: hero
+      variant: split
+    - type: pricing
+      variant: grid-3
+    - type: compare
+      variant: cards
+    - type: testimonials
+      variant: grid
+    - type: cta
+      variant: centered
+pricing-compare:
+  category: pricing
+  label: Comparatif de formules
+  description: Tableau comparatif et tarifs compacts.
+  icon: fa-solid fa-scale-balanced
+  slug: comparatif-tarifs
+  title: Comparer les offres
+  seo: Toutes les options côte à côte.
+  publish: true
+  sections:
+    - type: hero
+      variant: minimal
+    - type: compare
+      variant: simple
+    - type: pricing
+      variant: compact
+    - type: faq
+      variant: two-col
+    - type: cta
+      variant: banner
+pricing-enterprise:
+  category: pricing
+  label: Tarifs entreprise
+  description: 'Offre sur mesure, fonctionnalités et contact.'
+  icon: fa-solid fa-building-columns
+  slug: tarifs-entreprise
+  title: Entreprise
+  seo: Devis personnalisé et accompagnement dédié.
+  publish: true
+  sections:
+    - type: hero
+      variant: badge
+      content:
+        badge: Sur mesure
+        title: Parlons de votre besoin
+    - type: pricing
+      variant: simple
+    - type: features
+      variant: grid-3
+    - type: contact
+      variant: split
+    - type: cta
+      variant: banner
+pricing-simple:
+  category: pricing
+  label: Tarifs simples
+  description: 'Peu de formules, FAQ courte.'
+  icon: fa-solid fa-coins
+  slug: prix
+  title: Nos prix
+  seo: 'Une offre claire, sans surprise.'
+  publish: true
+  sections:
+    - type: hero
+      variant: centered
+    - type: pricing
+      variant: compact
+    - type: faq
+      variant: compact
+    - type: cta
+      variant: centered
+changelog-liste:
+  category: changelog
+  label: Changelog liste
+  description: Historique des versions en liste.
+  icon: fa-solid fa-clock-rotate-left
+  slug: changelog
+  title: Journal des versions
+  seo: Nouveautés et corrections par version.
+  publish: true
+  sections:
+    - type: hero
+      variant: centered
+    - type: changelog
+      variant: list
+changelog-timeline:
+  category: changelog
+  label: Changelog frise
+  description: Versions sur une frise chronologique.
+  icon: fa-solid fa-timeline
+  slug: changelog-frise
+  title: Évolution du produit
+  seo: Les jalons majeurs version après version.
+  publish: true
+  sections:
+    - type: hero
+      variant: minimal
+    - type: changelog
+      variant: timeline
+    - type: newsletter
+      variant: inline
+changelog-compact:
+  category: changelog
+  label: Changelog compact
+  description: Notes de version denses et CTA.
+  icon: fa-solid fa-list
+  slug: notes-version
+  title: Notes de version
+  seo: Résumé rapide des dernières mises à jour.
+  publish: true
+  sections:
+    - type: hero
+      variant: centered
+    - type: changelog
+      variant: compact
+    - type: cta
+      variant: centered
+changelog-roadmap:
+  category: changelog
+  label: Roadmap produit
+  description: Feuille de route et journal.
+  icon: fa-solid fa-road
+  slug: roadmap
+  title: Feuille de route
+  seo: Ce qui arrive et ce qui vient de sortir.
+  publish: true
+  sections:
+    - type: hero
+      variant: split
+    - type: timeline
+      variant: vertical
+    - type: changelog
+      variant: list
+    - type: cta
+      variant: banner
+about-equipe:
+  category: about
+  label: À propos et équipe
+  description: 'Mission, chiffres et grille équipe.'
+  icon: fa-solid fa-user-group
+  slug: equipe
+  title: Notre équipe
+  seo: Les personnes derrière le produit.
+  publish: true
+  sections:
+    - type: hero
+      variant: centered
+      content:
+        title: À propos de nous
+    - type: about
+      variant: split
+    - type: stats
+      variant: row
+    - type: team
+      variant: grid
+    - type: cta
+      variant: banner
+about-mission:
+  category: about
+  label: Mission et valeurs
+  description: Présentation centrée et frise.
+  icon: fa-solid fa-compass
+  slug: mission
+  title: Notre mission
+  seo: Ce qui nous guide au quotidien.
+  publish: true
+  sections:
+    - type: hero
+      variant: split
+    - type: about
+      variant: centered
+    - type: stats
+      variant: cards
+    - type: timeline
+      variant: timeline
+    - type: cta
+      variant: centered
+about-histoire:
+  category: about
+  label: Notre histoire
+  description: Récit visuel et équipe en cartes.
+  icon: fa-solid fa-landmark
+  slug: notre-histoire
+  title: Notre histoire
+  seo: Les étapes clés de notre parcours.
+  publish: true
+  sections:
+    - type: hero
+      variant: image-below
+    - type: about
+      variant: cards
+    - type: timeline
+      variant: vertical
+    - type: team
+      variant: grid-2
+    - type: cta
+      variant: banner
+contact-formulaire:
+  category: contact
+  label: Contact formulaire
+  description: 'Accroche, coordonnées et FAQ.'
+  icon: fa-solid fa-envelope
+  slug: contact
+  title: Contact
+  seo: 'Contactez-nous, nous répondons sous 24 h ouvrées.'
+  publish: true
+  sections:
+    - type: hero
+      variant: centered
+    - type: contact
+      variant: cards
+    - type: faq
+      variant: list
+contact-bureaux:
+  category: contact
+  label: Contact bureaux
+  description: 'Colonnes contact et texte d''information.'
+  icon: fa-solid fa-location-dot
+  slug: bureaux
+  title: Nos bureaux
+  seo: Adresses et horaires de nos sites.
+  publish: true
+  sections:
+    - type: hero
+      variant: split
+    - type: contact
+      variant: split
+    - type: stats
+      variant: row
+    - type: content
+      variant: prose
+contact-support:
+  category: contact
+  label: Support client
+  description: FAQ support et formulaire liste.
+  icon: fa-solid fa-headset
+  slug: support
+  title: Support
+  seo: Aide rapide pour vos questions techniques.
+  publish: true
+  sections:
+    - type: hero
+      variant: minimal
+    - type: contact
+      variant: list
+    - type: faq
+      variant: two-col
+    - type: cta
+      variant: banner
+integrations-catalogue:
+  category: integrations
+  label: Catalogue intégrations
+  description: 'Grille d''outils connectés et logos.'
+  icon: fa-solid fa-plug
+  slug: integrations
+  title: Intégrations
+  seo: Connectez votre stack en quelques clics.
+  publish: true
+  sections:
+    - type: hero
+      variant: centered
+    - type: integrations
+      variant: grid-3
+    - type: logos
+      variant: row
+    - type: cta
+      variant: banner
+integrations-partenaires:
+  category: integrations
+  label: Intégrations partenaires
+  description: 'Bento, témoignages et études de cas.'
+  icon: fa-solid fa-puzzle-piece
+  slug: integrations-partenaires
+  title: Écosystème partenaires
+  seo: Des connecteurs validés par nos partenaires.
+  publish: true
+  sections:
+    - type: hero
+      variant: badge
+      content:
+        badge: Partenaires
+        title: Intégrations certifiées
+    - type: integrations
+      variant: bento
+    - type: testimonials
+      variant: grid
+    - type: case-studies
+      variant: split
+integrations-developpeurs:
+  category: integrations
+  label: Intégrations développeurs
+  description: 'Code, liste technique et ressources.'
+  icon: fa-solid fa-terminal
+  slug: integrations-dev
+  title: Pour les développeurs
+  seo: 'Documentation, SDK et exemples de code.'
+  publish: true
+  sections:
+    - type: hero
+      variant: split
+    - type: code
+      variant: centered
+    - type: integrations
+      variant: list
+    - type: resources
+      variant: grid-3
+    - type: cta
+      variant: banner
+faq-generale:
+  category: faq
+  label: FAQ générale
+  description: Accordéon de questions et CTA.
+  icon: fa-solid fa-circle-question
+  slug: faq
+  title: FAQ
+  seo: Réponses aux questions les plus fréquentes.
+  publish: true
+  sections:
+    - type: hero
+      variant: centered
+    - type: faq
+      variant: list
+    - type: cta
+      variant: banner
+      content:
+        title: 'Une autre question ?'
+faq-produit:
+  category: faq
+  label: FAQ produit
+  description: Deux colonnes et contact rapide.
+  icon: fa-solid fa-circle-info
+  slug: faq-produit
+  title: FAQ produit
+  seo: 'Tout savoir sur l''utilisation du produit.'
+  publish: true
+  sections:
+    - type: hero
+      variant: minimal
+    - type: faq
+      variant: two-col
+    - type: contact
+      variant: centered
+    - type: cta
+      variant: centered
+product-overview:
+  category: product
+  label: Vue produit
+  description: 'Présentation, stats et démo.'
+  icon: fa-solid fa-cube
+  slug: produit-apercu
+  title: 'Vue d''ensemble'
+  seo: 'Comprenez la valeur du produit en un coup d''œil.'
+  publish: true
+  sections:
+    - type: hero
+      variant: split
+    - type: features
+      variant: grid-3
+      content:
+        title: Ce que vous gagnez
+    - type: stats
+      variant: row
+    - type: demo
+      variant: centered
+    - type: cta
+      variant: banner
+product-detail:
+  category: product
+  label: Fiche produit
+  description: 'Hero immersif, comparatif et preuves.'
+  icon: fa-solid fa-box
+  slug: fiche-produit
+  title: Fiche produit
+  seo: 'Détails, différenciation et retours clients.'
+  publish: true
+  sections:
+    - type: hero
+      variant: fullscreen
+    - type: highlights
+      variant: bullets
+    - type: features
+      variant: bento
+    - type: compare
+      variant: table
+    - type: testimonials
+      variant: featured
+    - type: cta
+      variant: cards
+feature-grille:
+  category: feature
+  label: Fonctionnalités grille
+  description: Hero split et grille de points clés.
+  icon: fa-solid fa-table-cells-large
+  slug: fonctionnalites
+  title: Fonctionnalités
+  seo: Découvrez les points clés du produit.
+  publish: true
+  sections:
+    - type: hero
+      variant: split
+    - type: features
+      variant: grid-3
+    - type: stats
+      variant: row
+    - type: cta
+      variant: banner
+feature-deep-dive:
+  category: feature
+  label: Fonctionnalité détaillée
+  description: 'Badge, processus et étapes numérotées.'
+  icon: fa-solid fa-magnifying-glass-chart
+  slug: fonctionnalite-detail
+  title: Fonction en détail
+  seo: Plongée dans une capacité clé du produit.
+  publish: true
+  sections:
+    - type: hero
+      variant: badge
+      content:
+        badge: Focus
+        title: Une fonctionnalité essentielle
+    - type: features
+      variant: list
+    - type: process
+      variant: row
+    - type: steps
+      variant: numbered
+    - type: cta
+      variant: centered
+blank:
+  category: blank
+  label: Page vide
+  description: 'Aucun bloc, vous composez la page vous-même.'
+  icon: fa-solid fa-file
+  slug: ''
+  title: ''
+  seo: ''
+  publish: false
+  sections: []

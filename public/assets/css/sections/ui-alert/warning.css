@@ -1,0 +1,11 @@
+.section-ui-alert--warning .section-ui-alert__box {
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: var(--radius-md, 0.5rem);
+    padding: var(--space-md);
+    background: var(--color-muted, #f8fafc);
+}
+.section-ui-alert--info .section-ui-alert__box { border-color: #93c5fd; background: #eff6ff; }
+.section-ui-alert--success .section-ui-alert__box { border-color: #86efac; background: #f0fdf4; }
+.section-ui-alert--warning .section-ui-alert__box { border-color: #fcd34d; background: #fffbeb; }
+.section-ui-alert__title { font-weight: 600; margin: 0 0 0.25rem; }
+.section-ui-alert__text { margin: 0; opacity: 0.9; }

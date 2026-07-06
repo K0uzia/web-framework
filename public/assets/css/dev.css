@@ -1541,8 +1541,8 @@ body.dev-color-screen-pick-open {
 
 .dev-builder {
     display: grid;
-    grid-template-columns: minmax(300px, 420px) minmax(0, 1fr);
-    gap: var(--space-6);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--space-5);
     align-items: start;
 }
 
@@ -1555,6 +1555,7 @@ body.dev-color-screen-pick-open {
     top: calc(var(--topbar-height) + var(--space-5));
     max-height: calc(100vh - var(--topbar-height) - var(--space-10));
     overflow-y: auto;
+    max-width: 420px;
 }
 
 .dev-outline__header {
@@ -1811,7 +1812,12 @@ body.dev-color-screen-pick-open {
 .dev-builder__preview {
     position: sticky;
     top: calc(var(--topbar-height) + var(--space-5));
+    max-height: calc(100vh - var(--topbar-height) - var(--space-5));
     min-width: 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
 }
 
 .dev-preview-label {
@@ -1879,16 +1885,31 @@ body.dev-color-screen-pick-open {
     padding: 0;
 }
 
-/* Mockup mobile : iframe sous la coque PNG */
+/* Mockup mobile : zone écran calée sur le trou du PNG (541×1024, 69/69/420/892) */
 
-.dev-preview-frame[data-device="mobile"] {
+.dev-preview-frame[data-device="mobile"],
+.dev-preview-frame[data-device="tablet"] {
     width: 100%;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    overflow: hidden;
 }
 
 .dev-mobile-mockup {
+    --mockup-w: 541;
+    --mockup-h: 1024;
+    --screen-x: 69;
+    --screen-y: 69;
+    --screen-w: 420;
+    --screen-h: 892;
+
     position: relative;
-    width: min(100%, calc((100vh - var(--topbar-height) - 160px) * 541 / 1024));
+    width: min(100%, calc((100vh - var(--topbar-height) - 7.5rem) * var(--mockup-w) / var(--mockup-h)));
     margin-inline: auto;
+    flex-shrink: 0;
     line-height: 0;
 }
 
@@ -1902,29 +1923,41 @@ body.dev-color-screen-pick-open {
     z-index: 2;
 }
 
-.dev-preview-frame[data-device="mobile"] iframe {
+.dev-mobile-mockup__screen {
     position: absolute;
-    left: 12.754158%;
-    top: 6.738281%;
-    width: 77.634011%;
-    height: 87.109375%;
-    min-height: 0;
-    border: none;
-    border-radius: 7.1% / 3.4%;
-    background: #fff;
     z-index: 1;
+    left: calc(var(--screen-x) / var(--mockup-w) * 100%);
+    top: calc(var(--screen-y) / var(--mockup-h) * 100%);
+    width: calc(var(--screen-w) / var(--mockup-w) * 100%);
+    height: calc(var(--screen-h) / var(--mockup-h) * 100%);
+    overflow: hidden;
+    border-radius: 7.1% / 3.4%;
+    contain: paint;
 }
 
-.dev-preview-frame[data-device="tablet"] .dev-mobile-mockup {
+.dev-mobile-mockup__screen iframe {
+    position: absolute;
+    inset: 0;
     width: 100%;
-    max-width: 768px;
-    aspect-ratio: auto;
-    max-height: none;
+    height: 100%;
+    border: none;
+    background: #fff;
+}
+
+/* Tablette : cadre CSS, pas de coque téléphone */
+
+.dev-preview-frame[data-device="tablet"] .dev-mobile-mockup {
+    --mockup-w: 768;
+    --mockup-h: 1024;
+
+    width: min(100%, calc((100vh - var(--topbar-height) - 7.5rem) * var(--mockup-w) / var(--mockup-h)));
     padding: 14px 12px 16px;
     border-radius: 22px;
     border: 2px solid #353945;
     background: linear-gradient(165deg, #22252e 0%, #16181f 100%);
     box-shadow: 0 20px 44px rgb(0 0 0 / 0.32);
+    line-height: normal;
+    box-sizing: border-box;
 }
 
 [data-theme="light"] .dev-preview-frame[data-device="tablet"] .dev-mobile-mockup {
@@ -1937,16 +1970,13 @@ body.dev-color-screen-pick-open {
     display: none;
 }
 
-.dev-preview-frame[data-device="tablet"] {
+.dev-preview-frame[data-device="tablet"] .dev-mobile-mockup__screen {
+    position: relative;
+    left: auto;
+    top: auto;
     width: 100%;
-}
-
-.dev-preview-frame[data-device="tablet"] iframe {
-    position: static;
-    width: 100%;
-    max-width: 100%;
-    height: min(560px, calc(100vh - var(--topbar-height) - 220px));
-    min-height: 400px;
+    height: auto;
+    aspect-ratio: 768 / 1024;
     border-radius: 12px;
 }
 
@@ -2098,6 +2128,78 @@ body.dev-color-screen-pick-open {
 }
 
 .dev-modal__panel--form { max-width: 640px; }
+
+.dev-modal__panel--page-templates {
+    max-width: min(960px, 96vw);
+    max-height: min(88vh, 52rem);
+    display: flex;
+    flex-direction: column;
+}
+
+.dev-modal__panel--page-templates .dev-modal__body {
+    overflow-y: auto;
+    flex: 1;
+    min-height: 0;
+}
+
+.dev-page-template-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
+    gap: var(--space-3);
+    margin-top: var(--space-3);
+    max-height: 14rem;
+    overflow-y: auto;
+    padding: var(--space-1);
+}
+
+.dev-page-template-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-1);
+    padding: var(--space-3);
+    text-align: left;
+    background: var(--dev-surface-2);
+    border: 1px solid var(--dev-border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: border-color 0.15s ease, background 0.15s ease;
+    min-height: 5.5rem;
+}
+
+.dev-page-template-card:hover {
+    border-color: var(--dev-border-strong);
+    background: var(--dev-surface-3);
+}
+
+.dev-page-template-card.is-selected {
+    border-color: var(--color-primary, #3b82f6);
+    background: color-mix(in srgb, var(--color-primary, #3b82f6) 8%, var(--dev-surface-2));
+}
+
+.dev-page-template-card.is-hidden {
+    display: none;
+}
+
+.dev-page-template-card .dev-block-card__title {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.dev-page-template-card .dev-block-card__desc {
+    font-size: 0.75rem;
+    color: var(--dev-text-muted);
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.dev-page-template-filters {
+    margin-top: var(--space-2);
+}
 
 .dev-modal__body {
     padding: var(--space-5);
@@ -2531,11 +2633,7 @@ body.dev-color-screen-pick-open {
 
     .dev-builder { grid-template-columns: 1fr; }
     .dev-builder__outline, .dev-builder__preview { position: static; max-height: none; }
-    .dev-mobile-mockup {
-        width: min(100%, calc((100vh - var(--topbar-height) - 120px) * 541 / 1024));
-    }
-
-    .dev-preview-frame[data-device="tablet"] iframe { height: 60vh; min-height: 360px; }
+    .dev-builder__outline { max-width: none; }
 
     .dev-stat-grid { grid-template-columns: repeat(2, 1fr); }
     .dev-grid-2 { grid-template-columns: 1fr; }

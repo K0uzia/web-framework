@@ -50,6 +50,8 @@ final class PagesController
             'table_class' => $empty ? 'visually-hidden' : '',
             'layout_options' => $this->buildLayoutOptions('default'),
             'page_template_options' => PageTemplates::buildOptionsHtml(),
+            'page_template_presets_json' => PageTemplates::presetsJson(),
+            'page_template_picker_html' => (new PageTemplatePickerRenderer())->renderPickerHtml(),
             'flash' => $this->ui->flashFromRequest($request),
         ]);
     }
@@ -109,8 +111,13 @@ final class PagesController
     public function store(Request $request): Response
     {
         $data = FormData::fromRequest($request);
-        $slug = trim($data['slug'] ?? '');
+        $templateId = trim($data['page_template'] ?? 'blank');
+        $slug = PageSlug::normalize(trim($data['slug'] ?? ''));
         $title = trim($data['title'] ?? '');
+
+        if ($title === '' && $templateId !== 'blank') {
+            $title = PageTemplates::presetTitle($templateId);
+        }
 
         if ($title === '') {
             return $this->respondPageActionError($request, '/dev/pages', 'Le titre est requis.');
@@ -121,7 +128,14 @@ final class PagesController
             $layout = 'default';
         }
 
-        $slug = PageSlug::normalize($slug);
+        if ($slug === '' && $templateId !== 'blank') {
+            $slug = PageTemplates::resolveSlug($templateId, $this->pages->findBySlug('', false) !== null);
+        }
+
+        if ($slug !== '') {
+            $slug = $this->uniqueSlug($slug);
+        }
+
         $slugError = PageSlug::validate($slug);
         if ($slugError !== null) {
             return $this->respondPageActionError($request, '/dev/pages', $slugError);
@@ -139,21 +153,30 @@ final class PagesController
             );
         }
 
+        $description = trim($data['description'] ?? '');
+        if ($description === '' && $templateId !== 'blank') {
+            $description = PageTemplates::presetDescription($templateId);
+        }
+
+        $published = PageTemplates::publishByDefault($templateId);
+
         $this->pages->save(new Page(
             slug: $slug,
             title: $title,
             layout: $layout,
-            description: trim($data['description'] ?? ''),
-            sections: PageTemplates::sections(trim($data['page_template'] ?? 'blank')),
+            description: $description,
+            sections: PageTemplates::sections($templateId),
             meta: [],
-            published: false,
+            published: $published,
             updatedAt: '',
         ));
+
+        $message = $published ? 'Page créée et publiée' : 'Page créée en brouillon';
 
         return $this->respondPageAction(
             $request,
             '/dev/pages/' . SlugCodec::encode($slug),
-            'Page créée en brouillon',
+            $message,
         );
     }
 
@@ -442,7 +465,8 @@ final class PagesController
     private function respondPageAction(Request $request, string $redirectTo, string $message): Response
     {
         if ($this->isHx($request)) {
-            return $this->ui->withFlash($this->ui->redirect($redirectTo), $message);
+            return $this->ui->withFlash($this->ui->redirect($redirectTo), $message)
+                ->withHeader('X-Dev-Redirect', $redirectTo);
         }
 
         return $this->ui->withFlash($this->ui->redirect($redirectTo), $message . '.');

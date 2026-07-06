@@ -1,0 +1,29 @@
+.section-ui-card__box {
+    padding: var(--space-lg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-background);
+    box-shadow: var(--shadow-sm);
+}
+
+.section-ui-card__box h3 {
+    margin: 0 0 var(--space-sm);
+    font-size: 1.125rem;
+}
+
+.section-ui-card__box p {
+    margin: 0 0 var(--space-md);
+    color: var(--color-secondary);
+}
+
+.section-ui-card__box--horizontal {
+    display: grid;
+    gap: var(--space-md);
+    align-items: center;
+}
+
+@media (min-width: 640px) {
+    .section-ui-card__box--horizontal {
+        grid-template-columns: 1fr auto;
+    }
+}

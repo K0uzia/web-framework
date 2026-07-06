@@ -133,6 +133,7 @@ final class SectionRegistry
         'resource',
         'code',
         'demo',
+        'ui',
     ];
 
     /**

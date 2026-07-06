@@ -1,0 +1,4 @@
+.section-ui-card__grid { display: grid; gap: var(--space-md); grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); }
+.section-ui-card__card { padding: var(--space-md); border-radius: var(--radius-md, 0.5rem); background: var(--color-background, #fff); box-shadow: 0 1px 2px rgb(0 0 0 / 0.06); }
+.section-ui-card__title { margin: 0 0 0.5rem; font-size: 1.05rem; }
+.section-ui-card__text { margin: 0; color: var(--color-text-muted, #64748b); }

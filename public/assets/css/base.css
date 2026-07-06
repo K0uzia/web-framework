@@ -111,6 +111,9 @@ html.is-preview-embed,
 html.is-preview-embed body {
     scrollbar-width: none;
     -ms-overflow-style: none;
+    overflow-x: hidden;
+    min-height: 0;
+    height: auto;
 }
 
 html.is-preview-embed::-webkit-scrollbar,

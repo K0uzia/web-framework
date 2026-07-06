@@ -1741,3 +1741,183 @@ demo:
     fullscreen:
       label: Plein écran
       description: Démo immersive plein écran.
+
+ui-announcement:
+  label: Annonce
+  group: ui
+  icon: fa-solid fa-bullhorn
+  description: Bandeau d'annonce compact (composant shadcn Announcement).
+  variants:
+    strip:
+      label: Bandeau
+      description: Message sur une ligne avec lien optionnel.
+    centered:
+      label: Centré
+      description: Annonce centrée avec bouton.
+  content_fields:
+    text:
+      type: text
+      label: Message
+      client_editable: true
+    href:
+      type: text
+      label: Lien (optionnel)
+      client_editable: true
+    link_label:
+      type: text
+      label: Libellé du lien
+      client_editable: true
+  style_fields:
+    bg:
+      type: color-token
+      label: Fond
+    padding:
+      type: select
+      label: Espacement
+      options: [sm, md]
+
+ui-divider:
+  label: Séparateur
+  group: ui
+  icon: fa-solid fa-minus
+  description: Ligne de séparation visuelle entre sections.
+  variants:
+    line:
+      label: Ligne
+      description: Trait horizontal discret.
+    space:
+      label: Espacement
+      description: Espace vertical sans trait.
+  content_fields: {}
+  style_fields:
+    bg:
+      type: color-token
+      label: Fond
+    padding:
+      type: select
+      label: Espacement
+      options: [sm, md]
+
+ui-quote:
+  label: Citation
+  group: ui
+  icon: fa-solid fa-quote-left
+  description: Bloc citation (composant pull quote).
+  variants:
+    centered:
+      label: Centré
+      description: Citation centrée avec guillemets.
+    left:
+      label: Aligné à gauche
+      description: Citation en marge gauche.
+  content_fields:
+    title:
+      type: text
+      label: Citation
+      client_editable: true
+    subtitle:
+      type: text
+      label: Auteur
+      client_editable: true
+  style_fields:
+    bg:
+      type: color-token
+      label: Fond
+    padding:
+      type: select
+      label: Espacement
+      options: [sm, md, lg]
+
+ui-rating:
+  label: Note
+  group: ui
+  icon: fa-solid fa-star
+  description: Affichage de note ou évaluation.
+  variants:
+    inline:
+      label: En ligne
+      description: Étoiles et libellé sur une ligne.
+    card:
+      label: Carte
+      description: Note dans une carte mise en avant.
+  content_fields:
+    title:
+      type: text
+      label: Note (ex. 4.9/5)
+      client_editable: true
+    subtitle:
+      type: text
+      label: Libellé
+      client_editable: true
+  style_fields:
+    bg:
+      type: color-token
+      label: Fond
+    padding:
+      type: select
+      label: Espacement
+      options: [sm, md]
+
+ui-embed:
+  label: Média intégré
+  group: ui
+  icon: fa-solid fa-photo-film
+  description: Zone vidéo ou image intégrée (composant embed).
+  variants:
+    centered:
+      label: Centré
+      description: Média centré avec ratio 16:9.
+    wide:
+      label: Large
+      description: Média pleine largeur du conteneur.
+  content_fields:
+    title:
+      type: text
+      label: Titre accessible
+      client_editable: true
+    image_url:
+      type: text
+      label: URL image ou vidéo
+      client_editable: true
+  style_fields:
+    bg:
+      type: color-token
+      label: Fond
+    padding:
+      type: select
+      label: Espacement
+      options: [sm, md, lg]
+
+ui-card:
+  label: Carte
+  group: ui
+  icon: fa-solid fa-id-card
+  description: Carte de contenu isolée (composant Card shadcn).
+  variants:
+    simple:
+      label: Simple
+      description: Titre, texte et bouton dans une carte.
+    horizontal:
+      label: Horizontale
+      description: Carte en deux colonnes.
+  content_fields:
+    title:
+      type: text
+      label: Titre
+      client_editable: true
+    subtitle:
+      type: textarea
+      label: Texte
+      client_editable: true
+    buttons:
+      type: buttons
+      label: Boutons
+      client_editable: true
+  style_fields:
+    bg:
+      type: color-token
+      label: Fond
+    padding:
+      type: select
+      label: Espacement
+      options: [sm, md, lg]

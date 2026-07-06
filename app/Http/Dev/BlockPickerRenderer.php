@@ -49,6 +49,7 @@ final class BlockPickerRenderer
         'resource' => 'Ressources',
         'code' => 'Exemples de code',
         'demo' => 'Démo',
+        'ui' => 'Composants UI',
     ];
 
     public function __construct(private readonly SectionRegistry $registry)

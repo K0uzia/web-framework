@@ -1,0 +1,25 @@
+.section-ui-announcement__inner {
+    text-align: center;
+}
+
+.section-ui-announcement__text {
+    margin: 0;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+.section-ui-announcement__link {
+    color: inherit;
+    font-weight: 600;
+    text-underline-offset: 2px;
+}
+
+.section-ui-announcement--strip.section--bg-primary .section-ui-announcement__link {
+    color: #fff;
+}
+
+.section-ui-announcement--strip.section--bg-muted .section-ui-announcement__link,
+.section-ui-announcement--strip.section--bg-background .section-ui-announcement__link {
+    color: var(--color-primary, #2563eb);
+}
