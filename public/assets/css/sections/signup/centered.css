@@ -1,0 +1,6 @@
+.section-signup--centered .section-inner,
+.section-signup--centered .section-signup__inner {
+    text-align: center;
+    margin-inline: auto;
+}
+

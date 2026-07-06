@@ -27,6 +27,7 @@ final class SecurityHeaders implements MiddlewareInterface
             . "script-src 'self'; "
             . "img-src 'self' data:; "
             . "font-src 'self'; "
+            . "media-src 'self' blob:; "
             . "connect-src 'self'; "
             . "form-action 'self'; "
             . "base-uri 'self'; "

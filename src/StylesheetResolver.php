@@ -36,15 +36,20 @@ final class StylesheetResolver
         $this->push($candidates, 'sections/shared.css');
         $this->push($candidates, 'layouts/' . $this->safeName($layout) . '.css');
         $this->push($candidates, 'partials/site-header.css');
+        $this->push($candidates, 'partials/site-chrome-buttons.css');
         $this->push($candidates, 'partials/site-footer.css');
         $this->push($candidates, 'pages/' . $slug . '/' . $slug . '.css');
 
         foreach ($sectionRefs as $ref) {
             $type = $this->safeName($ref['type'] ?? '');
             $variant = $this->safeName($ref['variant'] ?? 'default');
-            if ($type !== '') {
-                $this->push($candidates, 'sections/' . $type . '/' . $variant . '.css');
+            if ($type === '') {
+                continue;
             }
+            foreach (SectionLayoutFamilies::cssFamilies($variant) as $family) {
+                $this->push($candidates, 'sections/' . $type . '/' . $family . '.css');
+            }
+            $this->push($candidates, 'sections/' . $type . '/' . $variant . '.css');
         }
 
         foreach ($this->extractSections($meta) as $section) {

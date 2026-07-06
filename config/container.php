@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Http\Dev\AuthController;
+use App\Http\Dev\ChromeController;
 use App\Http\Dev\MediaController;
 use App\Http\Dev\FontUploader;
 use App\Http\Dev\MediaUploader;
@@ -106,6 +107,7 @@ return (function (): Container {
     $c->set(PagesController::class, static fn (Container $c) => new PagesController(
         $c->get(DevDashboard::class),
         $c->get(PageRepository::class),
+        $c->get(SiteRepository::class),
         $c->get(SectionRegistry::class),
         $c->get(SectionFormRenderer::class),
         $c->get(LayoutRegistry::class),
@@ -127,6 +129,11 @@ return (function (): Container {
         $c->get(SiteRepository::class),
         $c->get(MediaUploader::class),
         $c->get(ResponseFactory::class),
+    ));
+    $c->set(ChromeController::class, static fn (Container $c) => new ChromeController(
+        $c->get(DevDashboard::class),
+        $c->get(SiteRepository::class),
+        $c->get(PageRepository::class),
     ));
     $c->set(SiteController::class, static fn (Container $c) => new SiteController(
         $c->get(DevDashboard::class),

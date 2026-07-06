@@ -93,4 +93,25 @@ final class SectionRendererTest extends TestCase
             ['type' => 'cta', 'variant' => 'banner'],
         ], $refs);
     }
+
+    public function testRendersHeroVariants(): void
+    {
+        foreach (['centered', 'split', 'split-left', 'fullscreen', 'image-below', 'badge', 'minimal', 'video'] as $variant) {
+            $html = $this->renderer->renderOne([
+                'id' => 'hero-' . $variant,
+                'type' => 'hero',
+                'variant' => $variant,
+                'content' => [
+                    'title' => 'Titre',
+                    'subtitle' => 'Sous-titre',
+                    'badge' => 'Nouveau',
+                    'buttons' => [['label' => 'Go', 'href' => '#', 'style' => 'primary']],
+                ],
+                'style' => ['bg' => 'background', 'text_align' => 'center', 'padding' => 'xl'],
+            ]);
+
+            $this->assertStringContainsString('section-hero--' . $variant, $html, 'Variant ' . $variant);
+            $this->assertStringContainsString('Titre', $html);
+        }
+    }
 }

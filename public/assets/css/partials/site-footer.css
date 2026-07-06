@@ -12,10 +12,26 @@
     padding: var(--space-xl) var(--space-md);
 }
 
+.site-footer__zone {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-sm, 0.75rem);
+    min-width: 0;
+}
+
+.site-footer__zone:empty {
+    display: none;
+}
+
 @media (min-width: 768px) {
     .site-footer__inner {
         grid-template-columns: 1.4fr 1fr;
         align-items: start;
+    }
+
+    .site-footer__zone--right {
+        align-items: flex-end;
     }
 
     .site-footer__legal {
@@ -35,6 +51,14 @@
 
 .site-footer__name:hover {
     color: var(--color-primary);
+}
+
+.site-footer__logo {
+    display: block;
+    height: 24px;
+    width: auto;
+    max-width: 160px;
+    object-fit: contain;
 }
 
 .site-footer__tagline {

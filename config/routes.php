@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Http\Dev\AuthController;
+use App\Http\Dev\ChromeController;
 use App\Http\Dev\MediaController;
 use App\Http\Dev\OverviewController;
 use App\Http\Dev\PagesController;
@@ -25,11 +26,20 @@ $devRoutes = [
     'POST /dev/pages/{slug}/delete' => [PagesController::class, 'destroy'],
     'POST /dev/pages/{slug}/duplicate' => [PagesController::class, 'duplicate'],
     'POST /dev/pages/{slug}/rename' => [PagesController::class, 'rename'],
+    'POST /dev/pages/{slug}/set-home' => [PagesController::class, 'setHome'],
     'POST /dev/pages/{slug}/sections/reorder' => [SectionsController::class, 'reorder'],
+    'POST /dev/pages/{slug}/sections/restore' => [SectionsController::class, 'restore'],
     'POST /dev/pages/{slug}/sections' => [SectionsController::class, 'add'],
     'POST /dev/pages/{slug}/sections/{id}' => [SectionsController::class, 'update'],
     'POST /dev/pages/{slug}/sections/{id}/move' => [SectionsController::class, 'move'],
     'POST /dev/pages/{slug}/sections/{id}/delete' => [SectionsController::class, 'destroy'],
+    'GET /dev/chrome' => [ChromeController::class, 'index'],
+    'GET /dev/chrome/{type}/{id}' => [ChromeController::class, 'edit'],
+    'POST /dev/chrome/{type}' => [ChromeController::class, 'update'],
+    'POST /dev/chrome/{type}/create' => [ChromeController::class, 'create'],
+    'POST /dev/chrome/{type}/{id}/duplicate' => [ChromeController::class, 'duplicate'],
+    'POST /dev/chrome/{type}/{id}/activate' => [ChromeController::class, 'activate'],
+    'POST /dev/chrome/{type}/{id}/delete' => [ChromeController::class, 'delete'],
     'GET /dev/site' => [SiteController::class, 'edit'],
     'POST /dev/site' => [SiteController::class, 'update'],
     'POST /dev/site/nav' => [SiteController::class, 'updateNav'],

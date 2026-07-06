@@ -12,6 +12,7 @@ use Capsule\LayoutRegistry;
 use Capsule\Page;
 use Capsule\PageRepository;
 use Capsule\SectionRegistry;
+use Capsule\SiteRepository;
 
 final class PagesController
 {
@@ -20,6 +21,7 @@ final class PagesController
     public function __construct(
         private readonly DevDashboard $ui,
         private readonly PageRepository $pages,
+        private readonly SiteRepository $site,
         private readonly SectionRegistry $registry,
         private readonly SectionFormRenderer $sectionForms,
         private readonly LayoutRegistry $layouts,
@@ -46,21 +48,15 @@ final class PagesController
             'is_empty' => $empty,
             'empty_class' => $empty ? '' : 'visually-hidden',
             'table_class' => $empty ? 'visually-hidden' : '',
+            'layout_options' => $this->buildLayoutOptions('default'),
+            'page_template_options' => PageTemplates::buildOptionsHtml(),
             'flash' => $this->ui->flashFromRequest($request),
         ]);
     }
 
     public function createForm(Request $request): Response
     {
-        return $this->ui->render('page-new.html', [
-            'title' => 'Nouvelle page',
-            'crumb_html' => Breadcrumb::render([
-                ['label' => 'Pages', 'href' => '/dev/pages'],
-                ['label' => 'Nouvelle page'],
-            ]),
-            'layout_options' => $this->buildLayoutOptions('default'),
-            'flash' => $this->ui->flashFromRequest($request),
-        ]);
+        return $this->ui->redirect('/dev/pages#new');
     }
 
     private function pageRow(Page $page): string
@@ -72,6 +68,12 @@ final class PagesController
         $home = $page->slug === '' ? '<span class="dev-badge dev-badge--info">Accueil</span>' : '';
         $updated = $this->formatDate($page->updatedAt);
 
+        $menuActions = '<form method="post" action="/dev/pages/' . $slug . '/duplicate" role="none"><button type="submit" role="menuitem"><i class="fa-solid fa-copy" aria-hidden="true"></i> Dupliquer</button></form>';
+        if ($page->slug !== '') {
+            $menuActions .= '<form method="post" action="/dev/pages/' . $slug . '/set-home" role="none" data-dev-ajax="post-redirect" data-dev-redirect="/dev/pages" data-dev-toast-form="Page définie comme accueil"><button type="submit" role="menuitem"><i class="fa-solid fa-house" aria-hidden="true"></i> Définir comme accueil</button></form>';
+        }
+        $menuActions .= '<form method="post" action="/dev/pages/' . $slug . '/delete" role="none" data-dev-ajax="post-redirect" data-dev-redirect="/dev/pages" data-dev-toast-form="Page supprimée" data-dev-confirm="Supprimer définitivement la page « ' . htmlspecialchars($page->title, ENT_QUOTES) . ' » ? Cette action est irréversible."><button type="submit" role="menuitem" class="dev-menu__danger"><i class="fa-solid fa-trash" aria-hidden="true"></i> Supprimer</button></form>';
+
         return '<tr data-page-row data-title="' . htmlspecialchars(mb_strtolower($page->title), ENT_QUOTES)
             . '" data-path="' . htmlspecialchars(mb_strtolower($page->routePath()), ENT_QUOTES) . '">'
             . '<td><a class="dev-table__link" href="/dev/pages/' . $slug . '">'
@@ -80,16 +82,15 @@ final class PagesController
             . '</a></td>'
             . '<td>' . $status . ' ' . $home . '</td>'
             . '<td class="dev-table__muted">' . htmlspecialchars($updated, ENT_QUOTES) . '</td>'
-            . '<td class="dev-table__actions">'
+            . '<td class="dev-table__actions"><div class="dev-table__actions-inner">'
             . '<a class="dev-icon-btn" href="/dev/pages/' . $slug . '" title="Éditer" aria-label="Éditer ' . htmlspecialchars($page->title, ENT_QUOTES) . '"><i class="fa-solid fa-pen" aria-hidden="true"></i></a>'
             . '<a class="dev-icon-btn" href="' . htmlspecialchars($page->routePath(), ENT_QUOTES) . '" target="_blank" rel="noopener" title="Voir" aria-label="Voir la page"><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>'
             . '<details class="dev-menu">'
             . '<summary class="dev-icon-btn" aria-label="Plus d\'actions"><i class="fa-solid fa-ellipsis-vertical" aria-hidden="true"></i></summary>'
             . '<div class="dev-menu__panel" role="menu">'
-            . '<form method="post" action="/dev/pages/' . $slug . '/duplicate" role="none"><button type="submit" role="menuitem"><i class="fa-solid fa-copy" aria-hidden="true"></i> Dupliquer</button></form>'
-            . '<form method="post" action="/dev/pages/' . $slug . '/delete" role="none" data-confirm="Supprimer définitivement cette page ?"><button type="submit" role="menuitem" class="dev-menu__danger"><i class="fa-solid fa-trash" aria-hidden="true"></i> Supprimer</button></form>'
+            . $menuActions
             . '</div></details>'
-            . '</td></tr>';
+            . '</div></td></tr>';
     }
 
     private function formatDate(string $value): string
@@ -112,9 +113,7 @@ final class PagesController
         $title = trim($data['title'] ?? '');
 
         if ($title === '') {
-            $response = $this->ui->redirect('/dev/pages/new');
-
-            return $this->ui->withFlash($response, 'Le titre est requis.');
+            return $this->respondPageActionError($request, '/dev/pages', 'Le titre est requis.');
         }
 
         $layout = trim($data['layout'] ?? 'default');
@@ -122,18 +121,40 @@ final class PagesController
             $layout = 'default';
         }
 
+        $slug = PageSlug::normalize($slug);
+        $slugError = PageSlug::validate($slug);
+        if ($slugError !== null) {
+            return $this->respondPageActionError($request, '/dev/pages', $slugError);
+        }
+
+        if ($slug !== '' && $this->pages->findBySlug($slug, false) !== null) {
+            return $this->respondPageActionError($request, '/dev/pages', 'Cette adresse est déjà utilisée par une autre page.');
+        }
+
+        if ($slug === '' && $this->pages->findBySlug('', false) !== null) {
+            return $this->respondPageActionError(
+                $request,
+                '/dev/pages',
+                'Une page d\'accueil existe déjà. Définissez une autre page comme accueil avant d\'en créer une nouvelle.',
+            );
+        }
+
         $this->pages->save(new Page(
             slug: $slug,
             title: $title,
             layout: $layout,
             description: trim($data['description'] ?? ''),
-            sections: [],
+            sections: PageTemplates::sections(trim($data['page_template'] ?? 'blank')),
             meta: [],
             published: false,
             updatedAt: '',
         ));
 
-        return $this->ui->redirect('/dev/pages/' . SlugCodec::encode($slug));
+        return $this->respondPageAction(
+            $request,
+            '/dev/pages/' . SlugCodec::encode($slug),
+            'Page créée en brouillon',
+        );
     }
 
     public function edit(Request $request, string $slug = ''): Response
@@ -166,10 +187,18 @@ final class PagesController
             'show_header_options' => $this->buildVisibilityOptions((string) ($page->meta['show_header'] ?? 'default')),
             'show_footer_options' => $this->buildVisibilityOptions((string) ($page->meta['show_footer'] ?? 'default')),
             'preview_url' => '/dev/preview/' . SlugCodec::encode($page->slug),
+            'view_url' => $page->published
+                ? $page->routePath()
+                : '/dev/preview/' . SlugCodec::encode($page->slug),
+            'view_url_label' => $page->published ? 'Voir' : 'Aperçu',
             'sections_html' => $this->sectionForms->renderAll($page),
             'sections_count' => count($page->sections),
-            'block_picker_html' => $this->buildBlockPickerHtml(),
+            'block_picker_html' => (new BlockPickerRenderer($this->registry))->renderPickerHtml(),
             'rename_section_html' => $this->buildRenameSectionHtml($page),
+            'home_section_html' => $this->buildHomeSectionHtml($page),
+            'page_home_menu_html' => $page->slug === ''
+                ? ''
+                : '<form method="post" action="/dev/pages/' . SlugCodec::encode($page->slug) . '/set-home" role="none" data-dev-ajax="post-redirect" data-dev-redirect="/dev/pages/_" data-dev-toast-form="Page définie comme accueil"><button type="submit" role="menuitem"><i class="fa-solid fa-house" aria-hidden="true"></i> Définir comme accueil</button></form>',
             'flash' => $this->ui->flashFromRequest($request),
         ]);
     }
@@ -199,7 +228,7 @@ final class PagesController
 
         $slug = SlugCodec::encode($page->slug);
 
-        return '<form method="post" action="/dev/pages/' . $slug . '/rename" class="dev-form--grid dev-form--grid-2" data-confirm="Changer l\'adresse de cette page ?">'
+        return '<form method="post" action="/dev/pages/' . $slug . '/rename" class="dev-form--grid dev-form--grid-2" data-dev-confirm="Changer l\'adresse de cette page ? Les liens existants vers l\'ancienne adresse ne fonctionneront plus.">'
             . '<div class="dev-field dev-form__full">'
             . '<label class="dev-label" for="new_slug">Nouvelle adresse</label>'
             . '<input class="dev-input" id="new_slug" type="text" name="new_slug" value="' . htmlspecialchars($page->slug, ENT_QUOTES) . '" pattern="[a-z0-9]+(-[a-z0-9]+)*" />'
@@ -210,34 +239,18 @@ final class PagesController
             . '</div></form>';
     }
 
-    private function buildBlockPickerHtml(): string
+    private function buildHomeSectionHtml(Page $page): string
     {
-        $icons = [
-            'hero' => 'fa-solid fa-panorama',
-            'features' => 'fa-solid fa-table-cells-large',
-            'cta' => 'fa-solid fa-bullhorn',
-        ];
-        $descriptions = [
-            'hero' => 'Grand titre d\'introduction avec accroche et bouton d\'action.',
-            'features' => 'Grille de points clés avec titre et texte.',
-            'cta' => 'Bandeau d\'appel à l\'action avec bouton.',
-        ];
-
-        $cards = [];
-        foreach ($this->registry->getTypes() as $type) {
-            $def = $this->registry->getTypeDefinition($type);
-            $label = is_string($def['label'] ?? null) ? $def['label'] : $type;
-            $icon = $icons[$type] ?? 'fa-solid fa-square';
-            $desc = $descriptions[$type] ?? '';
-
-            $cards[] = '<button type="button" class="dev-block-card" data-block-type="' . htmlspecialchars($type, ENT_QUOTES) . '">'
-                . '<span class="dev-block-card__icon" aria-hidden="true"><i class="' . $icon . '"></i></span>'
-                . '<span class="dev-block-card__title">' . htmlspecialchars($label, ENT_QUOTES) . '</span>'
-                . '<span class="dev-block-card__desc">' . htmlspecialchars($desc, ENT_QUOTES) . '</span>'
-                . '</button>';
+        if ($page->slug === '') {
+            return '<p class="dev-hint">Cette page est actuellement la page d\'accueil du site (<code>/</code>).</p>';
         }
 
-        return implode('', $cards);
+        $slug = SlugCodec::encode($page->slug);
+
+        return '<form method="post" action="/dev/pages/' . $slug . '/set-home" data-dev-ajax="post-redirect" data-dev-redirect="/dev/pages/_" data-dev-toast-form="Page définie comme accueil">'
+            . '<p class="dev-hint">Remplace la page d\'accueil actuelle. L\'ancienne page d\'accueil prendra l\'adresse <code>/' . htmlspecialchars($page->slug, ENT_QUOTES) . '</code>.</p>'
+            . '<button type="submit" class="dev-button dev-button--secondary"><i class="fa-solid fa-house" aria-hidden="true"></i> Définir comme page d\'accueil</button>'
+            . '</form>';
     }
 
     public function update(Request $request, string $slug = ''): Response
@@ -285,11 +298,41 @@ final class PagesController
     public function destroy(Request $request, string $slug = ''): Response
     {
         $decoded = SlugCodec::decode($slug);
-        if ($decoded !== '') {
-            $this->pages->delete($decoded);
+        $page = $this->pages->findBySlug($decoded, false);
+        if ($page === null) {
+            return $this->respondPageAction($request, '/dev/pages', 'Page introuvable.');
         }
 
-        return $this->ui->withFlash($this->ui->redirect('/dev/pages'), 'Page supprimée.');
+        if ($decoded === '') {
+            return $this->respondPageActionError(
+                $request,
+                '/dev/pages',
+                'Impossible de supprimer la page d\'accueil. Définissez d\'abord une autre page comme accueil.',
+            );
+        }
+
+        $this->pages->delete($decoded);
+        $this->removeNavReferencesToPage($decoded);
+
+        return $this->respondPageAction($request, '/dev/pages', 'Page supprimée.');
+    }
+
+    public function setHome(Request $request, string $slug = ''): Response
+    {
+        $decoded = SlugCodec::decode($slug);
+        if ($decoded === '') {
+            return $this->respondPageAction($request, '/dev/pages/_', 'Cette page est déjà la page d\'accueil.');
+        }
+
+        $page = $this->pages->findBySlug($decoded, false);
+        if ($page === null) {
+            return $this->respondPageActionError($request, '/dev/pages', 'Page introuvable.');
+        }
+
+        $this->swapHomeInNav($decoded);
+        $this->pages->setHomePage($decoded);
+
+        return $this->respondPageAction($request, '/dev/pages/_', 'Page définie comme accueil.');
     }
 
     public function duplicate(Request $request, string $slug = ''): Response
@@ -334,10 +377,11 @@ final class PagesController
             return $this->ui->redirect('/dev/pages/' . SlugCodec::encode($page->slug));
         }
 
-        if ($newSlug !== '' && !preg_match('/^[a-z0-9]+(-[a-z0-9]+)*$/', $newSlug)) {
+        $slugError = PageSlug::validate($newSlug);
+        if ($slugError !== null) {
             return $this->ui->withFlash(
                 $this->ui->redirect('/dev/pages/' . SlugCodec::encode($page->slug)),
-                'Adresse invalide : lettres minuscules, chiffres et tirets uniquement.',
+                $slugError,
             );
         }
 
@@ -393,5 +437,76 @@ final class PagesController
         }
 
         return implode('', $options);
+    }
+
+    private function respondPageAction(Request $request, string $redirectTo, string $message): Response
+    {
+        if ($this->isHx($request)) {
+            return $this->ui->withFlash($this->ui->redirect($redirectTo), $message);
+        }
+
+        return $this->ui->withFlash($this->ui->redirect($redirectTo), $message . '.');
+    }
+
+    private function respondPageActionError(Request $request, string $redirectTo, string $message): Response
+    {
+        if ($this->isHx($request)) {
+            return new Response(422, $message);
+        }
+
+        return $this->ui->withFlash($this->ui->redirect($redirectTo), $message);
+    }
+
+    private function removeNavReferencesToPage(string $slug): void
+    {
+        $site = $this->site->getSite();
+        $items = is_array($site['nav_items'] ?? null) ? $site['nav_items'] : [];
+        if ($items === []) {
+            return;
+        }
+
+        $filtered = array_values(array_filter(
+            $items,
+            static fn (array $item): bool => !(
+                ($item['type'] ?? '') === 'page'
+                && (string) ($item['slug'] ?? '') === $slug
+            ),
+        ));
+
+        if ($filtered === $items) {
+            return;
+        }
+
+        $site['nav_items'] = $filtered;
+        $this->site->setSite($site);
+    }
+
+    private function swapHomeInNav(string $newHomeSlug): void
+    {
+        $site = $this->site->getSite();
+        $items = is_array($site['nav_items'] ?? null) ? $site['nav_items'] : [];
+        if ($items === []) {
+            return;
+        }
+
+        $changed = false;
+        foreach ($items as $i => $item) {
+            if (($item['type'] ?? '') !== 'page') {
+                continue;
+            }
+            $itemSlug = (string) ($item['slug'] ?? '');
+            if ($itemSlug === $newHomeSlug) {
+                $items[$i]['slug'] = '';
+                $changed = true;
+            } elseif ($itemSlug === '') {
+                $items[$i]['slug'] = $newHomeSlug;
+                $changed = true;
+            }
+        }
+
+        if ($changed) {
+            $site['nav_items'] = $items;
+            $this->site->setSite($site);
+        }
     }
 }

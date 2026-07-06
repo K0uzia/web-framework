@@ -6,7 +6,7 @@
         </div>
         <div class="dev-page-head__actions">
             <p class="dev-section-form__status" id="theme-saved-status" aria-live="polite"></p>
-            <form method="post" action="/dev/theme/reset" data-dev-ajax="theme-reset" data-confirm="Réinitialiser le thème aux valeurs par défaut ?">
+            <form method="post" action="/dev/theme/reset" data-dev-ajax="theme-reset" data-dev-confirm="Réinitialiser le thème aux valeurs par défaut ?">
                 <button type="submit" class="dev-button dev-button--ghost">
                     <i class="fa-solid fa-arrow-rotate-left" aria-hidden="true"></i> Réinitialiser
                 </button>
@@ -14,7 +14,7 @@
         </div>
     </div>
 
-    <div class="dev-builder">
+    <div class="dev-builder dev-builder--theme">
         <div>
             <div data-dev-tabs>
                 <div class="dev-tabs__list" role="tablist" aria-label="Paramètres du thème">
@@ -27,72 +27,55 @@
                     <div class="dev-tabs__panel is-active" data-tab-panel="colors">
                         <div class="dev-panel">
                             <h2 class="dev-panel__title">Palette</h2>
-                            <p class="dev-panel__desc">Ces couleurs pilotent l'ensemble du site public via des variables CSS.</p>
-                            <div class="dev-form--grid dev-form--grid-2">
+                            <p class="dev-panel__desc">Ces couleurs pilotent l'ensemble du site public via des variables CSS. La pipette analyse la couleur calculée de l'élément cliqué (page, aperçu ou autre fenêtre).</p>
+                            <div class="dev-color-grid">
                                 <div class="dev-field">
                                     <label class="dev-label" for="color_primary">Primaire</label>
                                     <div class="dev-color-field" data-color-sync>
                                         <input type="color" id="color_primary" name="color_primary" value="{{color_primary}}" />
-                                        <input type="text" data-color-text value="{{color_primary}}" aria-label="Valeur hexadécimale primaire" />
+                                        <input class="dev-input dev-input--sm" type="text" data-color-text value="{{color_primary}}" aria-label="Valeur hexadécimale primaire" />
+                                        <button type="button" class="dev-icon-btn dev-color-field__pick" data-color-eyedropper aria-label="Prélever une couleur" title="Prélever la couleur d'un élément"><i class="fa-solid fa-eyedropper" aria-hidden="true"></i></button>
                                     </div>
                                 </div>
                                 <div class="dev-field">
                                     <label class="dev-label" for="color_secondary">Secondaire</label>
                                     <div class="dev-color-field" data-color-sync>
                                         <input type="color" id="color_secondary" name="color_secondary" value="{{color_secondary}}" />
-                                        <input type="text" data-color-text value="{{color_secondary}}" aria-label="Valeur hexadécimale secondaire" />
+                                        <input class="dev-input dev-input--sm" type="text" data-color-text value="{{color_secondary}}" aria-label="Valeur hexadécimale secondaire" />
+                                        <button type="button" class="dev-icon-btn dev-color-field__pick" data-color-eyedropper aria-label="Prélever une couleur" title="Prélever la couleur d'un élément"><i class="fa-solid fa-eyedropper" aria-hidden="true"></i></button>
                                     </div>
                                 </div>
                                 <div class="dev-field">
                                     <label class="dev-label" for="color_background">Fond</label>
                                     <div class="dev-color-field" data-color-sync>
                                         <input type="color" id="color_background" name="color_background" value="{{color_background}}" />
-                                        <input type="text" data-color-text value="{{color_background}}" aria-label="Valeur hexadécimale de fond" />
+                                        <input class="dev-input dev-input--sm" type="text" data-color-text value="{{color_background}}" aria-label="Valeur hexadécimale de fond" />
+                                        <button type="button" class="dev-icon-btn dev-color-field__pick" data-color-eyedropper aria-label="Prélever une couleur" title="Prélever la couleur d'un élément"><i class="fa-solid fa-eyedropper" aria-hidden="true"></i></button>
                                     </div>
                                 </div>
                                 <div class="dev-field">
                                     <label class="dev-label" for="color_text">Texte</label>
                                     <div class="dev-color-field" data-color-sync>
                                         <input type="color" id="color_text" name="color_text" value="{{color_text}}" />
-                                        <input type="text" data-color-text value="{{color_text}}" aria-label="Valeur hexadécimale du texte" />
+                                        <input class="dev-input dev-input--sm" type="text" data-color-text value="{{color_text}}" aria-label="Valeur hexadécimale du texte" />
+                                        <button type="button" class="dev-icon-btn dev-color-field__pick" data-color-eyedropper aria-label="Prélever une couleur" title="Prélever la couleur d'un élément"><i class="fa-solid fa-eyedropper" aria-hidden="true"></i></button>
                                     </div>
                                 </div>
                                 <div class="dev-field">
                                     <label class="dev-label" for="color_muted">Surface atténuée</label>
                                     <div class="dev-color-field" data-color-sync>
                                         <input type="color" id="color_muted" name="color_muted" value="{{color_muted}}" />
-                                        <input type="text" data-color-text value="{{color_muted}}" aria-label="Valeur hexadécimale surface atténuée" />
+                                        <input class="dev-input dev-input--sm" type="text" data-color-text value="{{color_muted}}" aria-label="Valeur hexadécimale surface atténuée" />
+                                        <button type="button" class="dev-icon-btn dev-color-field__pick" data-color-eyedropper aria-label="Prélever une couleur" title="Prélever la couleur d'un élément"><i class="fa-solid fa-eyedropper" aria-hidden="true"></i></button>
                                     </div>
                                 </div>
                                 <div class="dev-field">
                                     <label class="dev-label" for="color_border">Bordures</label>
                                     <div class="dev-color-field" data-color-sync>
                                         <input type="color" id="color_border" name="color_border" value="{{color_border}}" />
-                                        <input type="text" data-color-text value="{{color_border}}" aria-label="Valeur hexadécimale des bordures" />
+                                        <input class="dev-input dev-input--sm" type="text" data-color-text value="{{color_border}}" aria-label="Valeur hexadécimale des bordures" />
+                                        <button type="button" class="dev-icon-btn dev-color-field__pick" data-color-eyedropper aria-label="Prélever une couleur" title="Prélever la couleur d'un élément"><i class="fa-solid fa-eyedropper" aria-hidden="true"></i></button>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="dev-tabs__panel" data-tab-panel="typography">
-                        <div class="dev-panel">
-                            <h2 class="dev-panel__title">Polices</h2>
-                            <p class="dev-panel__desc">Choisissez une police système (aucun chargement réseau) ou une police importée ci-dessous.</p>
-                            <div class="dev-form--grid dev-form--grid-2">
-                                <div class="dev-field">
-                                    <label class="dev-label" for="font_heading_select">Titres</label>
-                                    <select class="dev-input dev-select" id="font_heading_select" data-font-picker="font_heading">
-                                        {{{font_heading_options}}}
-                                    </select>
-                                    <input class="dev-input dev-input--sm" type="text" id="font_heading" name="font_heading" value="{{font_heading}}" placeholder="Pile CSS personnalisée" data-font-picker-custom="font_heading" {{font_heading_custom_hidden}} />
-                                </div>
-                                <div class="dev-field">
-                                    <label class="dev-label" for="font_body_select">Corps de texte</label>
-                                    <select class="dev-input dev-select" id="font_body_select" data-font-picker="font_body">
-                                        {{{font_body_options}}}
-                                    </select>
-                                    <input class="dev-input dev-input--sm" type="text" id="font_body" name="font_body" value="{{font_body}}" placeholder="Pile CSS personnalisée" data-font-picker-custom="font_body" {{font_body_custom_hidden}} />
                                 </div>
                             </div>
                         </div>
@@ -101,59 +84,65 @@
                     <div class="dev-tabs__panel" data-tab-panel="layout">
                         <div class="dev-panel">
                             <h2 class="dev-panel__title">Espacement &amp; formes</h2>
-                            <p class="dev-panel__desc">Réglages structurels appliqués à tout le site public : l'air entre les blocs, l'arrondi des boutons/cartes et la largeur maximale du contenu. Observez l'aperçu à droite en modifiant les valeurs.</p>
+                            <p class="dev-panel__desc">Réglages structurels appliqués à tout le site public : l'air entre les blocs, l'arrondi des boutons/cartes et la largeur maximale du contenu.</p>
                             <div class="dev-form--grid dev-form--grid-2">
                                 <div class="dev-field">
                                     <label class="dev-label" for="spacing_section">Espacement entre sections</label>
                                     <input class="dev-input" id="spacing_section" type="text" name="spacing_section" value="{{spacing_section}}" placeholder="4rem" />
-                                    <span class="dev-hint">Espace vertical entre chaque bloc de page (hero, fonctionnalités, etc.).</span>
                                 </div>
                                 <div class="dev-field">
                                     <label class="dev-label" for="layout_radius">Rayon des coins</label>
                                     <input class="dev-input" id="layout_radius" type="text" name="layout_radius" value="{{layout_radius}}" placeholder="10px" />
-                                    <span class="dev-hint">Arrondi des boutons, cartes et champs sur le site public.</span>
                                 </div>
                                 <div class="dev-field dev-form__full">
                                     <label class="dev-label" for="layout_container">Largeur du conteneur</label>
                                     <input class="dev-input" id="layout_container" type="text" name="layout_container" value="{{layout_container}}" placeholder="72rem" />
-                                    <span class="dev-hint">Largeur maximale du contenu centré (en-tête, pied de page et sections).</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </form>
 
-                <!--
-                    Panneau "Polices importées" volontairement hors de "theme-form" :
-                    il contient son propre formulaire de téléversement (multipart) et
-                    un formulaire ne peut pas en contenir un autre en HTML. Il reste
-                    rattaché au système d'onglets (même valeur data-tab-panel) donc
-                    affiché/masqué comme les autres panneaux de l'onglet Typographie.
-                -->
                 <div class="dev-tabs__panel" data-tab-panel="typography">
-                    <div class="dev-panel">
-                        <div class="dev-panel__head">
-                            <div>
-                                <h2 class="dev-panel__title">Polices importées</h2>
-                                <p class="dev-panel__desc">Fichiers hébergés localement (WOFF2, WOFF, TTF, OTF). Le nom de famille est détecté automatiquement quand le format le permet.</p>
+                    <div class="dev-stack dev-stack--lg">
+                        <div class="dev-panel">
+                            <h2 class="dev-panel__title">Polices</h2>
+                            <p class="dev-panel__desc">Choisissez une police système ou une police importée ci-dessous.</p>
+                            <div class="dev-form--grid dev-form--grid-2">
+                                <div class="dev-field">
+                                    <label class="dev-label" for="font_heading_select">Titres</label>
+                                    <select class="dev-input dev-select" id="font_heading_select" data-font-picker="font_heading" form="theme-form">
+                                        {{{font_heading_options}}}
+                                    </select>
+                                    <input class="dev-input dev-input--sm" type="text" id="font_heading" name="font_heading" form="theme-form" value="{{font_heading}}" placeholder="Pile CSS personnalisée" data-font-picker-custom="font_heading" {{font_heading_custom_hidden}} />
+                                </div>
+                                <div class="dev-field">
+                                    <label class="dev-label" for="font_body_select">Corps de texte</label>
+                                    <select class="dev-input dev-select" id="font_body_select" data-font-picker="font_body" form="theme-form">
+                                        {{{font_body_options}}}
+                                    </select>
+                                    <input class="dev-input dev-input--sm" type="text" id="font_body" name="font_body" form="theme-form" value="{{font_body}}" placeholder="Pile CSS personnalisée" data-font-picker-custom="font_body" {{font_body_custom_hidden}} />
+                                </div>
                             </div>
                         </div>
-                        <div id="dev-font-list">
-                            {{{font_manager_html}}}
+
+                        <div class="dev-panel">
+                            <h2 class="dev-panel__title">Polices importées</h2>
+                            <p class="dev-panel__desc">Fichiers hébergés localement (WOFF2, WOFF, TTF, OTF).</p>
+                            <div id="dev-font-list">
+                                {{{font_manager_html}}}
+                            </div>
+                            <form method="post" action="/dev/theme/fonts" enctype="multipart/form-data" class="dev-form--grid dev-form--grid-2 dev-font-upload" data-dev-ajax="font-upload" data-dev-toast-form="Police importée">
+                                <div class="dev-field">
+                                    <label class="dev-label" for="font_file">Fichier de police</label>
+                                    <input class="dev-input" id="font_file" type="file" name="file" accept=".woff2,.woff,.ttf,.otf" required data-dev-autosubmit />
+                                </div>
+                                <div class="dev-field">
+                                    <label class="dev-label" for="font_name">Nom (optionnel)</label>
+                                    <input class="dev-input" id="font_name" type="text" name="font_name" placeholder="Détecté automatiquement si vide" />
+                                </div>
+                            </form>
                         </div>
-                        <form method="post" action="/dev/theme/fonts" enctype="multipart/form-data" class="dev-form--grid dev-form--grid-2 dev-font-upload">
-                            <div class="dev-field">
-                                <label class="dev-label" for="font_file">Fichier de police</label>
-                                <input class="dev-input" id="font_file" type="file" name="file" accept=".woff2,.woff,.ttf,.otf" required />
-                            </div>
-                            <div class="dev-field">
-                                <label class="dev-label" for="font_name">Nom (optionnel)</label>
-                                <input class="dev-input" id="font_name" type="text" name="font_name" placeholder="Détecté automatiquement si vide" />
-                            </div>
-                            <div class="dev-form__full">
-                                <button type="submit" class="dev-button dev-button--secondary"><i class="fa-solid fa-upload" aria-hidden="true"></i> Importer la police</button>
-                            </div>
-                        </form>
                     </div>
                 </div>
             </div>
@@ -163,14 +152,16 @@
             <div class="dev-preview-label">
                 <span>Aperçu live</span>
                 <div class="dev-device-toolbar" role="group" aria-label="Taille de l'aperçu" data-dev-device-toolbar data-target="theme-preview-frame">
-                    <button type="button" class="dev-device-btn is-active" data-device="desktop" aria-label="Bureau" title="Bureau"><i class="fa-solid fa-desktop" aria-hidden="true"></i></button>
                     <button type="button" class="dev-device-btn" data-device="tablet" aria-label="Tablette" title="Tablette"><i class="fa-solid fa-tablet-screen-button" aria-hidden="true"></i></button>
-                    <button type="button" class="dev-device-btn" data-device="mobile" aria-label="Mobile" title="Mobile"><i class="fa-solid fa-mobile-screen-button" aria-hidden="true"></i></button>
+                    <button type="button" class="dev-device-btn is-active" data-device="mobile" aria-label="Mobile" title="Mobile"><i class="fa-solid fa-mobile-screen-button" aria-hidden="true"></i></button>
                 </div>
                 <a class="dev-preview-desktop" href="{{preview_url}}" target="_blank" rel="noopener noreferrer">Ouvrir <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
             </div>
-            <div class="dev-preview-frame" id="theme-preview-frame" data-device="desktop">
-                <iframe id="preview-frame" src="{{preview_url}}" title="Aperçu du thème"></iframe>
+            <div class="dev-preview-frame" id="theme-preview-frame" data-device="mobile">
+                <div class="dev-mobile-mockup">
+                    <iframe id="preview-frame" src="{{preview_url}}" title="Aperçu du thème"></iframe>
+                    <img class="dev-mobile-mockup__frame" src="/assets/img/dev/mobile-mockup-frame.png" alt="" aria-hidden="true" width="541" height="1024" decoding="async">
+                </div>
             </div>
         </div>
     </div>

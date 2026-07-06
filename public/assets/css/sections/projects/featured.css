@@ -1,0 +1,4 @@
+.section-projects--featured .section-projects__grid {
+    grid-auto-rows: minmax(8rem, auto);
+}
+

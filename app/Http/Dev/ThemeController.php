@@ -9,6 +9,7 @@ use Capsule\Http\Message\Request;
 use Capsule\Http\Message\Response;
 use Capsule\Http\Support\FormData;
 use Capsule\SiteRepository;
+use Capsule\ThemeColor;
 
 final class ThemeController
 {
@@ -49,12 +50,12 @@ final class ThemeController
         return $this->ui->render('theme-edit.html', [
             'title' => 'Thème',
             'crumb_html' => Breadcrumb::render([['label' => 'Thème']]),
-            'color_primary' => (string) ($colors['primary'] ?? '#3b82f6'),
-            'color_secondary' => (string) ($colors['secondary'] ?? '#64748b'),
-            'color_background' => (string) ($colors['background'] ?? '#ffffff'),
-            'color_text' => (string) ($colors['text'] ?? '#0f172a'),
-            'color_muted' => (string) ($colors['muted'] ?? '#f1f5f9'),
-            'color_border' => (string) ($colors['border'] ?? '#e2e8f0'),
+            'color_primary' => ThemeColor::normalize((string) ($colors['primary'] ?? ''), '#3b82f6'),
+            'color_secondary' => ThemeColor::normalize((string) ($colors['secondary'] ?? ''), '#64748b'),
+            'color_background' => ThemeColor::normalize((string) ($colors['background'] ?? ''), '#ffffff'),
+            'color_text' => ThemeColor::normalize((string) ($colors['text'] ?? ''), '#0f172a'),
+            'color_muted' => ThemeColor::normalize((string) ($colors['muted'] ?? ''), '#f1f5f9'),
+            'color_border' => ThemeColor::normalize((string) ($colors['border'] ?? ''), '#e2e8f0'),
             'font_heading' => (string) ($fonts['heading'] ?? 'Inter, system-ui, sans-serif'),
             'font_body' => (string) ($fonts['body'] ?? 'system-ui, sans-serif'),
             'font_heading_options' => $heading['html'],
@@ -221,12 +222,12 @@ final class ThemeController
         $spacing = is_array($theme['spacing'] ?? null) ? $theme['spacing'] : [];
         $layout = is_array($theme['layout'] ?? null) ? $theme['layout'] : [];
 
-        $colors['primary'] = $data['color_primary'] ?? $colors['primary'] ?? '#3b82f6';
-        $colors['secondary'] = $data['color_secondary'] ?? $colors['secondary'] ?? '#64748b';
-        $colors['background'] = $data['color_background'] ?? $colors['background'] ?? '#ffffff';
-        $colors['text'] = $data['color_text'] ?? $colors['text'] ?? '#0f172a';
-        $colors['muted'] = $data['color_muted'] ?? $colors['muted'] ?? '#f1f5f9';
-        $colors['border'] = $data['color_border'] ?? $colors['border'] ?? '#e2e8f0';
+        $colors['primary'] = ThemeColor::normalize($data['color_primary'] ?? (string) ($colors['primary'] ?? ''), '#3b82f6');
+        $colors['secondary'] = ThemeColor::normalize($data['color_secondary'] ?? (string) ($colors['secondary'] ?? ''), '#64748b');
+        $colors['background'] = ThemeColor::normalize($data['color_background'] ?? (string) ($colors['background'] ?? ''), '#ffffff');
+        $colors['text'] = ThemeColor::normalize($data['color_text'] ?? (string) ($colors['text'] ?? ''), '#0f172a');
+        $colors['muted'] = ThemeColor::normalize($data['color_muted'] ?? (string) ($colors['muted'] ?? ''), '#f1f5f9');
+        $colors['border'] = ThemeColor::normalize($data['color_border'] ?? (string) ($colors['border'] ?? ''), '#e2e8f0');
         $fonts['heading'] = trim($data['font_heading'] ?? (string) ($fonts['heading'] ?? ''));
         $fonts['body'] = trim($data['font_body'] ?? (string) ($fonts['body'] ?? ''));
         $spacing['section'] = trim($data['spacing_section'] ?? (string) ($spacing['section'] ?? '4rem'));

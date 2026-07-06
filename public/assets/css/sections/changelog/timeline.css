@@ -1,0 +1,7 @@
+.section-changelog--timeline .section-changelog__grid,
+.section-changelog--timeline .section-changelog__row {
+    flex-direction: column;
+    display: flex;
+    gap: var(--space-md);
+}
+

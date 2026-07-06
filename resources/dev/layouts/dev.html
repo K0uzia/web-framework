@@ -47,26 +47,32 @@
             <ul class="dev-cmdk__list" id="dev-cmdk-list">
                 <li><a href="/dev/overview" data-cmdk-item data-cmdk-label="tableau de bord overview accueil"><i class="fa-solid fa-gauge-high" aria-hidden="true"></i> Tableau de bord</a></li>
                 <li><a href="/dev/pages" data-cmdk-item data-cmdk-label="pages liste"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Pages</a></li>
-                <li><a href="/dev/pages/new" data-cmdk-item data-cmdk-label="nouvelle page creer ajouter"><i class="fa-solid fa-plus" aria-hidden="true"></i> Nouvelle page</a></li>
+                <li><a href="/dev/pages#new" data-cmdk-item data-cmdk-label="nouvelle page creer ajouter"><i class="fa-solid fa-plus" aria-hidden="true"></i> Nouvelle page</a></li>
                 <li><a href="/dev/site" data-cmdk-item data-cmdk-label="site navigation identite cta"><i class="fa-solid fa-globe" aria-hidden="true"></i> Site</a></li>
+                <li><a href="/dev/chrome" data-cmdk-item data-cmdk-label="en-tete pied de page header footer variantes partials"><i class="fa-solid fa-table-columns" aria-hidden="true"></i> En-tête &amp; pied de page</a></li>
                 <li><a href="/dev/theme" data-cmdk-item data-cmdk-label="theme couleurs polices apparence"><i class="fa-solid fa-palette" aria-hidden="true"></i> Thème</a></li>
                 <li><a href="/" target="_blank" rel="noopener noreferrer" data-cmdk-item data-cmdk-label="voir le site public"><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i> Voir le site</a></li>
             </ul>
         </div>
     </div>
 
+    <div class="dev-toast-container" id="dev-toast-container" aria-live="polite" aria-atomic="true"></div>
+
     <div class="dev-modal" id="dev-confirm-modal" hidden>
         <button type="button" class="dev-modal__backdrop" data-dev-confirm-cancel tabindex="-1" aria-hidden="true"></button>
-        <div class="dev-confirm__panel" role="alertdialog" aria-modal="true" aria-labelledby="dev-confirm-message">
-            <div class="dev-confirm__icon" aria-hidden="true"><i class="fa-solid fa-triangle-exclamation"></i></div>
-            <p class="dev-confirm__message" id="dev-confirm-message"></p>
-            <div class="dev-confirm__actions">
-                <button type="button" class="dev-button dev-button--ghost" data-dev-confirm-cancel>Annuler</button>
-                <button type="button" class="dev-button dev-button--danger" data-dev-confirm-ok>Confirmer</button>
+        <div class="dev-block-picker__panel dev-modal__panel--form dev-confirm-modal__panel" role="alertdialog" aria-modal="true" aria-labelledby="dev-confirm-title" aria-describedby="dev-confirm-message">
+            <div class="dev-block-picker__head">
+                <h2 id="dev-confirm-title">Confirmer l'action</h2>
+                <button type="button" class="dev-icon-btn" data-dev-confirm-cancel aria-label="Fermer"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+            </div>
+            <div class="dev-modal__body">
+                <p class="dev-confirm-modal__message" id="dev-confirm-message"></p>
+                <div class="dev-confirm-modal__actions">
+                    <button type="button" class="dev-button dev-button--ghost" data-dev-confirm-cancel>Annuler</button>
+                    <button type="button" class="dev-button dev-button--danger" data-dev-confirm-ok>Confirmer</button>
+                </div>
             </div>
         </div>
     </div>
-
-    <div class="dev-toast-container" id="dev-toast-container" aria-live="polite" aria-atomic="true"></div>
 </body>
 </html>

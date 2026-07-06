@@ -1,0 +1,63 @@
+/* Boutons du chrome (en-tête, pied de page, menu mobile) */
+.site-chrome-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.2;
+    text-decoration: none;
+    border-radius: var(--radius-sm, 6px);
+    transition: opacity 0.15s ease, background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    white-space: nowrap;
+}
+
+.site-chrome-btn--primary {
+    color: var(--color-background, #fff);
+    background: var(--color-primary, #2563eb);
+    border: 1px solid transparent;
+}
+
+.site-chrome-btn--primary:hover {
+    opacity: 0.92;
+}
+
+.site-chrome-btn--outline {
+    color: var(--color-text, #0f172a);
+    background: transparent;
+    border: 1px solid var(--color-border, #e2e8f0);
+    font-weight: 500;
+}
+
+.site-chrome-btn--outline:hover {
+    background: color-mix(in srgb, var(--color-text, #0f172a) 5%, transparent);
+    border-color: color-mix(in srgb, var(--color-text, #0f172a) 25%, transparent);
+}
+
+.site-chrome-btn--ghost {
+    color: var(--color-text, #0f172a);
+    background: color-mix(in srgb, var(--color-text, #0f172a) 6%, transparent);
+    border: 1px solid transparent;
+    font-weight: 500;
+}
+
+.site-chrome-btn--ghost:hover {
+    background: color-mix(in srgb, var(--color-text, #0f172a) 10%, transparent);
+}
+
+.site-chrome-btn--link {
+    padding: 0.45rem 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-secondary, #64748b);
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-sm, 6px);
+}
+
+.site-chrome-btn--link:hover {
+    color: var(--color-text, #0f172a);
+    background: color-mix(in srgb, var(--color-text, #0f172a) 6%, transparent);
+}

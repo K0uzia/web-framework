@@ -1,0 +1,6 @@
+.section-banner--centered .section-inner,
+.section-banner--centered .section-banner__inner {
+    text-align: center;
+    margin-inline: auto;
+}
+

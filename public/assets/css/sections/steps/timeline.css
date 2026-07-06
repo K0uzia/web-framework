@@ -1,0 +1,7 @@
+.section-steps--timeline .section-steps__grid,
+.section-steps--timeline .section-steps__row {
+    flex-direction: column;
+    display: flex;
+    gap: var(--space-md);
+}
+

@@ -28,10 +28,12 @@ final class LinkPicker
         string $currentValue,
         PageRepository $pages,
         string $formAttr = '',
+        bool $compact = false,
     ): string {
         $safeId = htmlspecialchars($inputId, ENT_QUOTES);
         $safeName = htmlspecialchars($inputName, ENT_QUOTES);
         $formAttribute = $formAttr !== '' ? ' form="' . htmlspecialchars($formAttr, ENT_QUOTES) . '"' : '';
+        $sizeClass = $compact ? ' dev-input--sm' : '';
 
         $options = ['<option value="">URL personnalisée…</option>'];
         foreach ($pages->allPublished() as $page) {
@@ -48,10 +50,12 @@ final class LinkPicker
         }
 
         return '<div class="dev-link-picker" data-link-picker>'
-            . '<select class="dev-input dev-select" aria-label="Choisir une page ou une section du site" data-link-picker-select>'
+            . '<select class="dev-input dev-select' . $sizeClass . '" aria-label="Choisir une page ou une section du site" data-link-picker-select'
+            . $formAttribute
+            . '>'
             . implode('', $options)
             . '</select>'
-            . '<input class="dev-input" type="text" id="' . $safeId . '" name="' . $safeName . '" value="'
+            . '<input class="dev-input' . $sizeClass . '" type="text" id="' . $safeId . '" name="' . $safeName . '" value="'
             . htmlspecialchars($currentValue, ENT_QUOTES) . '" placeholder="https://exemple.fr ou /page"'
             . $formAttribute . ' data-link-picker-input />'
             . '</div>';

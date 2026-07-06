@@ -46,8 +46,11 @@ final class SiteChrome
             $publicNav = SiteNavHelper::resolvePublicItems($autoItems, $this->pages, $homeLabel);
         }
 
-        $headerCta = is_array($siteInfo['header_cta'] ?? null) ? $siteInfo['header_cta'] : [];
-        $showTagline = ($siteInfo['show_tagline_in_header'] ?? false) === true;
+        $headerVariant = ChromeVariants::resolveHeader($siteInfo, (string) ($data['preview_header_variant'] ?? ''));
+        $footerVariant = ChromeVariants::resolveFooter($siteInfo, (string) ($data['preview_footer_variant'] ?? ''));
+        unset($data['preview_header_variant'], $data['preview_footer_variant']);
+
+        $showTagline = ($headerVariant['brand']['show_tagline'] ?? false) === true;
         $taglineHtml = ($showTagline && $tagline !== '')
             ? '<span class="site-header__tagline">' . htmlspecialchars($tagline, ENT_QUOTES) . '</span>'
             : '';
@@ -62,9 +65,12 @@ final class SiteChrome
         $data['footer_text'] = $footerText;
         $data['current_path'] = $currentPath;
         $data['nav_html'] = SiteNavHelper::renderNavHtml($publicNav, $currentPath);
-        $data['header_cta_html'] = SiteNavHelper::renderHeaderCtaHtml($headerCta);
+        $data['header_cta_html'] = ChromeButtonRenderer::render($headerVariant['cta'], 'primary');
         $data['favicon_html'] = $this->faviconHtml((string) ($siteInfo['favicon_url'] ?? ''));
         $data['og_image_html'] = $this->ogImageHtml((string) ($siteInfo['og_image_url'] ?? ''));
+
+        $data = $this->buildHeaderZones($data, $headerVariant, $name, $logoUrl, $taglineHtml);
+        $data = $this->buildFooterZones($data, $footerVariant, $name, $logoUrl, $tagline);
 
         $partials = is_array($siteInfo['partials'] ?? null) ? $siteInfo['partials'] : [];
         $showHeader = ($partials['header'] ?? true) !== false;
@@ -80,6 +86,143 @@ final class SiteChrome
         $data['footer_html'] = $showFooter
             ? $this->view->render('site-footer.html', $data)
             : '';
+
+        return $data;
+    }
+
+    /**
+     * Construit les trois zones (gauche, centre, droite) de l'en-tête à partir de
+     * la variante résolue (emplacement configuré pour brand, nav, cta, login).
+     *
+     * @param array<string, mixed> $data
+     * @param array<string, mixed> $variant
+     *
+     * @return array<string, mixed>
+     */
+    private function buildHeaderZones(array $data, array $variant, string $name, string $logoUrl, string $taglineHtml): array
+    {
+        $layout = $variant['layout'];
+        $showNav = ($variant['nav']['visible'] ?? true) !== false;
+
+        $ctaHtml = (string) $data['header_cta_html'];
+        $loginHtml = ChromeButtonRenderer::render($variant['login'], 'outline');
+
+        // Sur mobile, les boutons d'action rejoignent le menu déroulant : on en
+        // duplique une copie dans le <nav> (masquée sur desktop via CSS).
+        $menuActions = $ctaHtml . $loginHtml;
+        $navHtml = '';
+        if ($showNav) {
+            $navHtml = '<nav class="site-header__nav site-nav" id="site-header-nav" aria-label="Navigation principale">'
+                . $data['nav_html']
+                . ($menuActions !== '' ? '<div class="site-header__menu-actions">' . $menuActions . '</div>' : '')
+                . '</nav>';
+        }
+
+        $elements = [
+            'brand' => $this->headerBrandHtml($name, $logoUrl, $taglineHtml, $variant['brand']),
+            'nav' => $navHtml,
+            'cta' => $ctaHtml,
+            'login' => $loginHtml,
+        ];
+
+        foreach (ChromeVariants::HEADER_ZONES as $zone) {
+            $html = '';
+            foreach ($elements as $element => $elementHtml) {
+                if (($layout[$element] ?? '') === $zone && $elementHtml !== '') {
+                    $html .= $elementHtml;
+                }
+            }
+            $data['header_zone_' . $zone] = $html;
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param array<string, mixed> $brandConfig
+     */
+    private function headerBrandHtml(string $name, string $logoUrl, string $taglineHtml, array $brandConfig): string
+    {
+        $showLogo = ($brandConfig['show_logo'] ?? true) !== false;
+        $showName = ($brandConfig['show_name'] ?? true) !== false;
+
+        $parts = '';
+        if ($showLogo && $logoUrl !== '') {
+            $parts .= '<img class="site-header__logo" src="' . htmlspecialchars($logoUrl, ENT_QUOTES)
+                . '" alt="' . htmlspecialchars($name, ENT_QUOTES) . '" height="28" />';
+        }
+        if ($showName) {
+            $parts .= '<span class="site-header__name">' . htmlspecialchars($name, ENT_QUOTES) . '</span>';
+        }
+        if ($parts === '') {
+            return '';
+        }
+
+        return '<a class="site-header__brand" href="/">'
+            . '<span class="site-header__brand-main">' . $parts . '</span>'
+            . $taglineHtml . '</a>';
+    }
+
+    /**
+     * @param array<string, mixed> $data
+     * @param array<string, mixed> $variant
+     *
+     * @return array<string, mixed>
+     */
+    private function buildFooterZones(array $data, array $variant, string $name, string $logoUrl, string $tagline): array
+    {
+        $layout = $variant['layout'];
+        $showNav = ($variant['nav']['visible'] ?? true) !== false;
+
+        $showBrandBlock = ($variant['brand']['visible'] ?? true) !== false;
+        $showLogo = ($variant['brand']['show_logo'] ?? true) !== false;
+        $showName = ($variant['brand']['show_name'] ?? true) !== false;
+        $showTagline = ($variant['brand']['show_tagline'] ?? true) !== false;
+
+        $brandHtml = '';
+        if ($showBrandBlock) {
+            $hasNameLink = ($showLogo && $logoUrl !== '') || ($showName && $name !== '');
+            $hasTagline = $showTagline && $tagline !== '';
+            if ($hasNameLink || $hasTagline) {
+                $brandHtml = '<div class="site-footer__brand">';
+                if ($hasNameLink) {
+                    $brandHtml .= '<a class="site-footer__name" href="/">';
+                    if ($showLogo && $logoUrl !== '') {
+                        $brandHtml .= '<img class="site-footer__logo" src="' . htmlspecialchars($logoUrl, ENT_QUOTES)
+                            . '" alt="' . htmlspecialchars($name, ENT_QUOTES) . '" height="24" />';
+                    } elseif ($showName && $name !== '') {
+                        $brandHtml .= htmlspecialchars($name, ENT_QUOTES);
+                    }
+                    $brandHtml .= '</a>';
+                }
+                if ($hasTagline) {
+                    $brandHtml .= '<p class="site-footer__tagline">' . htmlspecialchars($tagline, ENT_QUOTES) . '</p>';
+                }
+                $brandHtml .= '</div>';
+            }
+        }
+
+        $elements = [
+            'brand' => $brandHtml,
+            'nav' => $showNav
+                ? '<nav class="site-footer__nav site-nav" aria-label="Navigation pied de page">' . $data['nav_html'] . '</nav>'
+                : '',
+            'login' => ChromeButtonRenderer::render($variant['login'], 'outline'),
+        ];
+
+        foreach (ChromeVariants::FOOTER_ZONES as $zone) {
+            $html = '';
+            foreach ($elements as $element => $elementHtml) {
+                if (($layout[$element] ?? '') === $zone && $elementHtml !== '') {
+                    $html .= $elementHtml;
+                }
+            }
+            $data['footer_zone_' . $zone] = $html;
+        }
+
+        // Compatibilité avec les gabarits existants.
+        $data['footer_brand_html'] = $brandHtml;
+        $data['footer_nav_html'] = $elements['nav'];
 
         return $data;
     }

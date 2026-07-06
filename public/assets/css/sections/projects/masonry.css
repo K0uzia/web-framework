@@ -1,0 +1,4 @@
+.section-projects--masonry .section-projects__grid {
+    grid-auto-rows: minmax(8rem, auto);
+}
+

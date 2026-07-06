@@ -95,6 +95,80 @@ final class SectionRegistry
         return $editable;
     }
 
+    /** @var list<string> */
+    private const GROUP_ORDER = [
+        'hero',
+        'feature',
+        'integration',
+        'about',
+        'content',
+        'gallery',
+        'pricing',
+        'compare',
+        'cta',
+        'newsletter',
+        'testimonial',
+        'stats',
+        'logos',
+        'team',
+        'faq',
+        'contact',
+        'blog',
+        'project',
+        'timeline',
+        'service',
+        'auth',
+        'career',
+        'compliance',
+        'case-study',
+        'changelog',
+        'community',
+        'download',
+        'industry',
+        'list',
+        'experience',
+        'process',
+        'waitlist',
+        'award',
+        'resource',
+        'code',
+        'demo',
+    ];
+
+    /**
+     * @return list<string>
+     */
+    public function getGroups(): array
+    {
+        $present = [];
+        foreach ($this->getTypes() as $type) {
+            $group = $this->getGroup($type);
+            $present[$group] = true;
+        }
+
+        $ordered = [];
+        foreach (self::GROUP_ORDER as $group) {
+            if (isset($present[$group])) {
+                $ordered[] = $group;
+            }
+        }
+        foreach (array_keys($present) as $group) {
+            if (!in_array($group, $ordered, true)) {
+                $ordered[] = $group;
+            }
+        }
+
+        return $ordered;
+    }
+
+    public function getGroup(string $type): string
+    {
+        $def = $this->getTypeDefinition($type);
+        $group = $def['group'] ?? 'content';
+
+        return is_string($group) && $group !== '' ? $group : 'content';
+    }
+
     /**
      * @return array<string, mixed>
      */

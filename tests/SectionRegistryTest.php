@@ -32,4 +32,15 @@ final class SectionRegistryTest extends TestCase
 
         $this->assertArrayHasKey('banner', $registry->getVariants('cta'));
     }
+
+    public function testLoadsBlockGroups(): void
+    {
+        $registry = new SectionRegistry(dirname(__DIR__) . '/resources/sections/registry.yaml');
+
+        $this->assertSame('hero', $registry->getGroup('hero'));
+        $this->assertContains('pricing', $registry->getGroups());
+        $this->assertContains('about', $registry->getTypes());
+        $this->assertContains('steps', $registry->getTypes());
+        $this->assertSame('gallery', $registry->getGroup('gallery'));
+    }
 }

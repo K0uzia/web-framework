@@ -130,7 +130,12 @@ final class MediaUploader
 
     public function acceptAttribute(string $field): string
     {
-        return implode(',', self::ALLOWED_MIME[$field] ?? []);
+        return match ($field) {
+            'logo' => '.png,.jpg,.jpeg,.webp,.svg,image/png,image/jpeg,image/webp,image/svg+xml',
+            'og_image' => '.png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp',
+            'favicon' => '.ico,.png,.svg,image/x-icon,image/png,image/svg+xml',
+            default => implode(',', self::ALLOWED_MIME[$field] ?? []),
+        };
     }
 
     private function detectMime(string $path): string

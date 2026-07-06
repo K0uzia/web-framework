@@ -37,7 +37,7 @@ final class SectionsController
             return $this->respond($request, $page, '');
         }
 
-        $variant = $this->resolveVariant($type, '');
+        $variant = $this->resolveVariant($type, trim($data['variant'] ?? ''));
 
         $sections = $page->sections;
         $sections[] = [
@@ -45,7 +45,7 @@ final class SectionsController
             'type' => $type,
             'variant' => $variant,
             'visible' => true,
-            'content' => $this->defaultContent($type),
+            'content' => $this->defaultContent($type, $variant),
             'style' => $this->defaultStyle($type),
         ];
 
@@ -99,12 +99,11 @@ final class SectionsController
                 }
             }
 
-            $items = $this->parseRepeaterItems($data);
-            if ($items !== []) {
+            if ($this->hasRepeaterData($data)) {
                 if (!isset($sections[$i]['content']) || !is_array($sections[$i]['content'])) {
                     $sections[$i]['content'] = [];
                 }
-                $sections[$i]['content']['items'] = $items;
+                $sections[$i]['content']['items'] = $this->parseRepeaterItems($data);
             }
 
             if (array_key_exists('content_buttons_count', $data)) {
@@ -220,7 +219,67 @@ final class SectionsController
         $this->saveSections($page, $sections);
         $page = $this->requirePage($slug);
 
-        return $this->respond($request, $page, 'Section supprimée.');
+        return $this->respond($request, $page, '');
+    }
+
+    public function restore(Request $request, string $slug): Response
+    {
+        $page = $this->requirePage($slug);
+        if ($page === null) {
+            return $this->ui->redirect('/dev/pages');
+        }
+
+        $data = FormData::fromRequest($request);
+        $section = $this->parseSectionPayload($data['section'] ?? '');
+        if ($section === null) {
+            return $this->respond($request, $page, '');
+        }
+
+        $id = (string) ($section['id'] ?? '');
+        if ($id === '' || $this->findSectionIndex($page->sections, $id) >= 0) {
+            return $this->respond($request, $page, '');
+        }
+
+        $index = max(0, min((int) ($data['index'] ?? 0), count($page->sections)));
+        $sections = $page->sections;
+        array_splice($sections, $index, 0, [$section]);
+
+        $this->saveSections($page, $sections);
+        $page = $this->requirePage($slug);
+
+        return $this->respond($request, $page, '');
+    }
+
+    /**
+     * @param array<string, string> $data
+     *
+     * @return array<string, mixed>|null
+     */
+    private function parseSectionPayload(string $raw): ?array
+    {
+        if ($raw === '') {
+            return null;
+        }
+
+        $decoded = json_decode($raw, true);
+        if (!is_array($decoded) || !isset($decoded['id'], $decoded['type'])) {
+            return null;
+        }
+
+        if (!isset($decoded['content']) || !is_array($decoded['content'])) {
+            $decoded['content'] = [];
+        }
+        if (!isset($decoded['style']) || !is_array($decoded['style'])) {
+            $decoded['style'] = [];
+        }
+        if (!isset($decoded['variant'])) {
+            $decoded['variant'] = 'default';
+        }
+        if (!isset($decoded['visible'])) {
+            $decoded['visible'] = true;
+        }
+
+        return $decoded;
     }
 
     private function respond(Request $request, ?Page $page, string $flash): Response
@@ -283,19 +342,50 @@ final class SectionsController
 
     /**
      * @param array<string, string> $data
+     */
+    private function hasRepeaterData(array $data): bool
+    {
+        foreach ($data as $key => $_) {
+            if (preg_match('/^content_items_\d+_/', $key)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Regroupe les champs content_items_{i}_{champ} en éléments, avec champs
+     * arbitraires selon le type de bloc. Les éléments entièrement vides sont retirés.
      *
-     * @return list<array{title: string, text: string}>
+     * @param array<string, string> $data
+     *
+     * @return list<array<string, string>>
      */
     private function parseRepeaterItems(array $data): array
     {
+        $grouped = [];
+        foreach ($data as $key => $value) {
+            if (!preg_match('/^content_items_(\d+)_([a-zA-Z0-9_]+)$/', $key, $m)) {
+                continue;
+            }
+            $grouped[(int) $m[1]][$m[2]] = $value;
+        }
+
+        ksort($grouped);
+
         $items = [];
-        $i = 0;
-        while (array_key_exists('content_items_' . $i . '_title', $data)) {
-            $items[] = [
-                'title' => $data['content_items_' . $i . '_title'] ?? '',
-                'text' => $data['content_items_' . $i . '_text'] ?? '',
-            ];
-            $i++;
+        foreach ($grouped as $item) {
+            $hasContent = false;
+            foreach ($item as $value) {
+                if (trim($value) !== '') {
+                    $hasContent = true;
+                    break;
+                }
+            }
+            if ($hasContent) {
+                $items[] = $item;
+            }
         }
 
         return $items;
@@ -326,31 +416,9 @@ final class SectionsController
     /**
      * @return array<string, mixed>
      */
-    private function defaultContent(string $type): array
+    private function defaultContent(string $type, string $variant = ''): array
     {
-        return match ($type) {
-            'hero' => [
-                'title' => 'Nouveau hero',
-                'subtitle' => 'Sous-titre',
-                'buttons' => [
-                    ['label' => 'Action', 'href' => '#', 'style' => 'primary'],
-                ],
-            ],
-            'features' => [
-                'items' => [
-                    ['title' => 'Point 1', 'text' => 'Description'],
-                    ['title' => 'Point 2', 'text' => 'Description'],
-                    ['title' => 'Point 3', 'text' => 'Description'],
-                ],
-            ],
-            'cta' => [
-                'title' => 'Appel à l\'action',
-                'buttons' => [
-                    ['label' => 'Commencer', 'href' => '#', 'style' => 'primary'],
-                ],
-            ],
-            default => [],
-        };
+        return SectionDefaults::content($type, $variant);
     }
 
     private function resolveVariant(string $type, string $requested): string
@@ -369,11 +437,6 @@ final class SectionsController
      */
     private function defaultStyle(string $type): array
     {
-        return match ($type) {
-            'hero' => ['bg' => 'primary', 'text_align' => 'center', 'padding' => 'xl'],
-            'features' => ['bg' => 'muted', 'padding' => 'lg'],
-            'cta' => ['bg' => 'primary', 'padding' => 'lg'],
-            default => ['padding' => 'md'],
-        };
+        return SectionDefaults::style($type);
     }
 }

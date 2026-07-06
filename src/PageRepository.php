@@ -102,6 +102,38 @@ final class PageRepository
         $stmt->execute(['slug' => $slug]);
     }
 
+    public function setHomePage(string $slug): void
+    {
+        if ($slug === '') {
+            return;
+        }
+
+        $this->pdo->beginTransaction();
+
+        try {
+            $temp = '__home_' . bin2hex(random_bytes(4));
+            $stmt = $this->pdo->prepare('UPDATE pages SET slug = :new WHERE slug = :old');
+
+            $stmt->execute(['new' => $temp, 'old' => $slug]);
+            if ($stmt->rowCount() === 0) {
+                $this->pdo->rollBack();
+
+                return;
+            }
+
+            if ($this->findBySlug('', false) !== null) {
+                $stmt->execute(['new' => $slug, 'old' => '']);
+            }
+
+            $stmt->execute(['new' => '', 'old' => $temp]);
+            $this->pdo->commit();
+        } catch (\Throwable $e) {
+            $this->pdo->rollBack();
+
+            throw $e;
+        }
+    }
+
     /**
      * @param array<string, mixed> $row
      */

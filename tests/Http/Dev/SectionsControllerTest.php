@@ -66,6 +66,21 @@ final class SectionsControllerTest extends TestCase
         $this->assertStringContainsString('dev-section-card', (string) $response->getBody());
     }
 
+    public function testAddHeroUsesRequestedVariant(): void
+    {
+        $this->controller->add($this->hxPost(
+            '/dev/pages/about/sections',
+            'type=hero&variant=fullscreen',
+        ), 'about');
+
+        $page = $this->pages->findBySlug('about', false);
+        $this->assertNotNull($page);
+        $last = $page->sections[array_key_last($page->sections)];
+        $this->assertSame('hero', $last['type']);
+        $this->assertSame('fullscreen', $last['variant']);
+        $this->assertSame('Construisez quelque chose d\'exceptionnel', $last['content']['title'] ?? null);
+    }
+
     public function testUpdateFallsBackWhenVariantInvalid(): void
     {
         $this->controller->update($this->hxPost(
@@ -117,6 +132,35 @@ final class SectionsControllerTest extends TestCase
         $page = $this->pages->findBySlug('about', false);
         $this->assertCount(1, $page->sections);
         $this->assertSame('cta', $page->sections[0]['type']);
+    }
+
+    public function testRestoreReinsertsDeletedSectionAtRequestedIndex(): void
+    {
+        $this->controller->add($this->post('/dev/pages/about/sections', 'type=cta'), 'about');
+
+        $page = $this->pages->findBySlug('about', false);
+        $this->assertNotNull($page);
+        $this->assertCount(2, $page->sections);
+        $hero = $page->sections[0];
+        $ctaId = (string) $page->sections[1]['id'];
+
+        $this->controller->destroy($this->hxPost(
+            '/dev/pages/about/sections/' . rawurlencode((string) $hero['id']) . '/delete',
+            '',
+        ), 'about', (string) $hero['id']);
+
+        $page = $this->pages->findBySlug('about', false);
+        $this->assertCount(1, $page->sections);
+
+        $this->controller->restore($this->hxPost(
+            '/dev/pages/about/sections/restore',
+            'section=' . rawurlencode((string) json_encode($hero, JSON_UNESCAPED_UNICODE)) . '&index=0',
+        ), 'about');
+
+        $page = $this->pages->findBySlug('about', false);
+        $this->assertCount(2, $page->sections);
+        $this->assertSame((string) $hero['id'], $page->sections[0]['id']);
+        $this->assertSame($ctaId, $page->sections[1]['id']);
     }
 
     public function testReorderAppliesRequestedOrderAndKeepsUnknownIdsAtEnd(): void

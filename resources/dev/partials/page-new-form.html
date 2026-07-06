@@ -1,0 +1,32 @@
+<form method="post" action="/dev/pages" id="dev-page-new-form" class="dev-form dev-form--grid dev-form--grid-2" data-dev-ajax="post-redirect" data-dev-toast-form="Page créée en brouillon">
+    <div class="dev-field dev-form__full">
+        <label class="dev-label" for="dev-new-page-template">Modèle de page</label>
+        <select class="dev-input dev-select" id="dev-new-page-template" name="page_template">
+            {{{page_template_options}}}
+        </select>
+        <span class="dev-hint">Préremplit la page avec des blocs adaptés (landing, tarifs, contact, etc.).</span>
+    </div>
+    <div class="dev-field">
+        <label class="dev-label" for="dev-new-page-title">Titre</label>
+        <input class="dev-input" id="dev-new-page-title" type="text" name="title" required placeholder="À propos" autocomplete="off" />
+    </div>
+    <div class="dev-field">
+        <label class="dev-label" for="dev-new-page-slug">Adresse <span class="dev-hint">(vide = accueil /)</span></label>
+        <input class="dev-input" id="dev-new-page-slug" type="text" name="slug" placeholder="a-propos" autocomplete="off" pattern="[a-z][a-z0-9]*(-[a-z0-9]+)*" />
+        <span class="dev-hint">Lettres minuscules et tirets. N'utilisez pas un nombre seul (ex. « 1 »).</span>
+    </div>
+    <div class="dev-field dev-form__full">
+        <label class="dev-label" for="dev-new-page-layout">Gabarit</label>
+        <select class="dev-input dev-select" id="dev-new-page-layout" name="layout">
+            {{{layout_options}}}
+        </select>
+    </div>
+    <div class="dev-field dev-form__full">
+        <label class="dev-label" for="dev-new-page-description">Description (SEO)</label>
+        <input class="dev-input" id="dev-new-page-description" type="text" name="description" placeholder="Meta description pour les moteurs de recherche" autocomplete="off" />
+    </div>
+    <div class="dev-form__full dev-form__actions">
+        <button type="submit" class="dev-button"><i class="fa-solid fa-check" aria-hidden="true"></i> Créer la page</button>
+        <button type="button" class="dev-button dev-button--ghost" data-dev-modal-close="dev-page-new">Annuler</button>
+    </div>
+</form>

@@ -1,0 +1,5 @@
+@media (min-width: 768px) {
+    .section-services--grid-4 .section-services__grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}

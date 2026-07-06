@@ -60,7 +60,7 @@ final class SiteControllerTest extends TestCase
     {
         $this->controller->addNav($this->hxPost(
             '/dev/site/nav/add',
-            'nav_type=link&nav_label=GitHub&nav_href=https%3A%2F%2Fgithub.com',
+            'nav_type=link&nav_label=GitHub&nav_target=https%3A%2F%2Fgithub.com',
         ));
 
         $site = $this->site->getSite();
@@ -85,7 +85,7 @@ final class SiteControllerTest extends TestCase
     {
         $this->controller->addNav($this->hxPost(
             '/dev/site/nav/add',
-            'nav_type=button&nav_label=Contact&nav_href=%2Fcontact',
+            'nav_type=button&nav_label=Contact&nav_target=%2Fcontact',
         ));
 
         $id = (string) $this->site->getSite()['nav_items'][array_key_last($this->site->getSite()['nav_items'])]['id'];
@@ -104,7 +104,7 @@ final class SiteControllerTest extends TestCase
     {
         $this->controller->addNav($this->hxPost(
             '/dev/site/nav/add',
-            'nav_type=link&nav_label=Docs&nav_href=https%3A%2F%2Fdocs.example',
+            'nav_type=link&nav_label=Docs&nav_target=https%3A%2F%2Fdocs.example',
         ));
 
         $this->controller->syncNav($this->hxPost('/dev/site/nav/sync', ''));
@@ -119,7 +119,7 @@ final class SiteControllerTest extends TestCase
     {
         $this->controller->addNav($this->hxPost(
             '/dev/site/nav/add',
-            'nav_type=link&nav_label=Blog&nav_href=%2Fblog',
+            'nav_type=link&nav_label=Blog&nav_target=%2Fblog',
         ));
 
         $site = $this->site->getSite();
@@ -144,7 +144,7 @@ final class SiteControllerTest extends TestCase
 
         $this->controller->updateNav($this->hxPost(
             '/dev/site/nav',
-            'update_nav=1&nav_item_' . $id . '_type=link&nav_item_' . $id . '_href=https%3A%2F%2Fexample.com',
+            'update_nav=1&nav_item_' . $id . '_type=link&nav_item_' . $id . '_target=https%3A%2F%2Fexample.com',
         ));
 
         $updated = $this->site->getSite()['nav_items'];
@@ -157,14 +157,14 @@ final class SiteControllerTest extends TestCase
     {
         $this->controller->addNav($this->hxPost(
             '/dev/site/nav/add',
-            'nav_type=link&nav_label=Temp&nav_href=https%3A%2F%2Fexample.com',
+            'nav_type=link&nav_label=Temp&nav_target=https%3A%2F%2Fexample.com',
         ));
         $site = $this->site->getSite();
         $id = (string) $site['nav_items'][array_key_last($site['nav_items'])]['id'];
 
         $this->controller->updateNav($this->hxPost(
             '/dev/site/nav',
-            'update_nav=1&nav_item_' . $id . '_type=page&nav_item_' . $id . '_slug=about',
+            'update_nav=1&nav_item_' . $id . '_type=page&nav_item_' . $id . '_target=%2Fabout',
         ));
 
         $updated = $this->site->getSite()['nav_items'];
@@ -173,15 +173,33 @@ final class SiteControllerTest extends TestCase
         $this->assertSame('about', $entry['slug']);
     }
 
+    public function testUpdateNavCanChangeTypeFromPageToButton(): void
+    {
+        $this->controller->syncNav($this->hxPost('/dev/site/nav/sync', ''));
+        $site = $this->site->getSite();
+        $id = (string) $site['nav_items'][0]['id'];
+
+        $this->controller->updateNav($this->hxPost(
+            '/dev/site/nav',
+            'update_nav=1&nav_item_' . $id . '_type=button',
+        ));
+
+        $updated = $this->site->getSite()['nav_items'];
+        $entry = array_values(array_filter($updated, static fn (array $i): bool => ($i['id'] ?? '') === $id))[0];
+        $this->assertSame('button', $entry['type']);
+        $this->assertSame('/', $entry['href']);
+        $this->assertSame('', $entry['slug']);
+    }
+
     public function testReorderNavAppliesRequestedOrder(): void
     {
         $this->controller->addNav($this->hxPost(
             '/dev/site/nav/add',
-            'nav_type=link&nav_label=GitHub&nav_href=https%3A%2F%2Fgithub.com',
+            'nav_type=link&nav_label=GitHub&nav_target=https%3A%2F%2Fgithub.com',
         ));
         $this->controller->addNav($this->hxPost(
             '/dev/site/nav/add',
-            'nav_type=link&nav_label=Docs&nav_href=https%3A%2F%2Fdocs.example',
+            'nav_type=link&nav_label=Docs&nav_target=https%3A%2F%2Fdocs.example',
         ));
 
         $items = $this->site->getSite()['nav_items'];

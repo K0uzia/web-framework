@@ -1,0 +1,15 @@
+.section-download__inner {
+    max-width: var(--container-narrow);
+    margin: 0 auto;
+    text-align: center;
+}
+
+.section-download__inner h2 {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 600;
+    margin-bottom: var(--space);
+}
+
+.section-download__inner .section-buttons {
+    justify-content: center;
+}

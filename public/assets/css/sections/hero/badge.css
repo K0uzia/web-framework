@@ -1,0 +1,43 @@
+.section-hero--badge .section-hero__inner {
+    max-width: var(--container-narrow);
+    margin: 0 auto;
+}
+
+.section-hero--badge .section-hero__badge {
+    display: inline-block;
+    margin-bottom: var(--space);
+    padding: 0.35rem 0.85rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--color-primary);
+    background: color-mix(in srgb, var(--color-primary) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-primary) 25%, transparent);
+    border-radius: 999px;
+}
+
+.section-hero--badge h1 {
+    font-size: clamp(2.25rem, 5vw, 3.5rem);
+    font-weight: 600;
+    margin-bottom: var(--space);
+}
+
+.section-hero--badge .section-hero__subtitle {
+    font-size: clamp(1rem, 2vw, 1.125rem);
+    max-width: 36rem;
+    margin: 0 auto var(--space-lg);
+    color: var(--color-secondary);
+}
+
+.section--align-center .section-hero--badge .section-hero__badge {
+    display: inline-block;
+}
+
+.section--align-center .section-hero--badge .section-hero__subtitle {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.section--align-center .section-hero--badge .section-buttons {
+    justify-content: center;
+}

@@ -1,0 +1,6 @@
+.section-logos--centered .section-inner,
+.section-logos--centered .section-logos__inner {
+    text-align: center;
+    margin-inline: auto;
+}
+

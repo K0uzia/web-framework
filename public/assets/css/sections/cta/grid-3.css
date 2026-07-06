@@ -1,0 +1,5 @@
+@media (min-width: 768px) {
+    .section-cta--grid-3 .section-cta__grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}

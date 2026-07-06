@@ -1,0 +1,6 @@
+.section-newsletter--centered .section-inner,
+.section-newsletter--centered .section-newsletter__inner {
+    text-align: center;
+    margin-inline: auto;
+}
+

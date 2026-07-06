@@ -77,6 +77,17 @@ final class ThemeControllerTest extends TestCase
         $this->assertStringContainsString('/dev/preview/_', $body);
     }
 
+    public function testEditNormalizesInvalidColorValuesForColorInputs(): void
+    {
+        $theme = $this->site->getTheme();
+        $theme['colors']['background'] = 'rgba(0, 0, 0, 0)';
+        $this->site->setTheme($theme);
+
+        $body = (string) $this->controller->edit(new Request('GET', '/dev/theme', [], [], [], []))->getBody();
+
+        $this->assertStringContainsString('id="color_background" name="color_background" value="#ffffff"', $body);
+    }
+
     public function testUpdatePersistsThemeAndReturnsHxPartial(): void
     {
         $response = $this->controller->update(new Request(

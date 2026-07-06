@@ -93,6 +93,27 @@ final class SiteChromeTest extends TestCase
         $this->assertStringContainsString('site-header__logo', $data['header_html']);
     }
 
+    public function testHeaderZonesAreBuiltForZoneBasedTemplate(): void
+    {
+        $pdo = new \PDO('sqlite::memory:');
+        $pdo->exec(file_get_contents(dirname(__DIR__) . '/migrations/sqlite_init.sql') ?: '');
+
+        $pages = new PageRepository($pdo);
+        $site = new SiteRepository($pdo);
+        $pages->save(new Page('', 'Home', 'default', '', [], [], true, ''));
+
+        $site->setSite(['name' => 'Demo', 'logo_url' => '/assets/logo.png']);
+
+        $root = dirname(__DIR__);
+        $view = new View($root . '/resources/layouts', $root . '/resources/partials');
+        $chrome = new SiteChrome($pages, $site, $view, 'Fallback');
+        $data = $chrome->enrich([], '/');
+
+        $this->assertStringContainsString('site-header__brand', $data['header_zone_left']);
+        $this->assertStringContainsString('site-header__nav', $data['header_zone_right']);
+        $this->assertStringContainsString('site-footer__brand', $data['footer_brand_html']);
+    }
+
     public function testCustomNavRendersLinkButtonAndHeaderCta(): void
     {
         $pdo = new \PDO('sqlite::memory:');
@@ -124,9 +145,125 @@ final class SiteChromeTest extends TestCase
 
         $this->assertStringContainsString('href="https://example.com"', $data['nav_html']);
         $this->assertStringContainsString('site-nav__link--button', $data['nav_html']);
-        $this->assertStringContainsString('site-header__cta', $data['header_html']);
+        $this->assertStringContainsString('site-chrome-btn--primary', $data['header_html']);
         $this->assertStringContainsString('Contact', $data['header_html']);
         $this->assertSame('', $data['footer_html']);
+    }
+
+    public function testHeaderLoginButtonAndZonePlacement(): void
+    {
+        $pdo = new \PDO('sqlite::memory:');
+        $pdo->exec(file_get_contents(dirname(__DIR__) . '/migrations/sqlite_init.sql') ?: '');
+
+        $pages = new PageRepository($pdo);
+        $site = new SiteRepository($pdo);
+        $pages->save(new Page('', 'Home', 'default', '', [], [], true, ''));
+
+        $site->setSite([
+            'name' => 'Demo',
+            'header_login' => ['enabled' => true, 'label' => 'Se connecter', 'href' => '/login'],
+            'header_layout' => ['brand' => 'center', 'nav' => 'left', 'cta' => 'right', 'login' => 'right'],
+        ]);
+
+        $root = dirname(__DIR__);
+        $view = new View($root . '/resources/layouts', $root . '/resources/partials');
+        $chrome = new SiteChrome($pages, $site, $view, 'Fallback');
+        $data = $chrome->enrich([], '/');
+
+        $this->assertStringContainsString('site-chrome-btn', $data['header_zone_right']);
+        $this->assertStringContainsString('Se connecter', $data['header_zone_right']);
+        $this->assertStringContainsString('site-header__brand', $data['header_zone_center']);
+        $this->assertStringContainsString('site-header__nav', $data['header_zone_left']);
+        $this->assertStringContainsString('site-chrome-btn', $data['header_html']);
+    }
+
+    public function testHeaderBrandTogglesHideLogoAndName(): void
+    {
+        $pdo = new \PDO('sqlite::memory:');
+        $pdo->exec(file_get_contents(dirname(__DIR__) . '/migrations/sqlite_init.sql') ?: '');
+
+        $pages = new PageRepository($pdo);
+        $site = new SiteRepository($pdo);
+        $pages->save(new Page('', 'Home', 'default', '', [], [], true, ''));
+
+        $site->setSite([
+            'name' => 'Demo',
+            'logo_url' => '/assets/logo.png',
+            'header_brand' => ['show_logo' => true, 'show_name' => false],
+        ]);
+
+        $root = dirname(__DIR__);
+        $view = new View($root . '/resources/layouts', $root . '/resources/partials');
+        $chrome = new SiteChrome($pages, $site, $view, 'Fallback');
+        $data = $chrome->enrich([], '/');
+
+        $this->assertStringContainsString('site-header__logo', $data['header_zone_left']);
+        $this->assertStringNotContainsString('site-header__name', $data['header_zone_left']);
+    }
+
+    public function testFooterZonesPlaceNavAndLogin(): void
+    {
+        $pdo = new \PDO('sqlite::memory:');
+        $pdo->exec(file_get_contents(dirname(__DIR__) . '/migrations/sqlite_init.sql') ?: '');
+
+        $pages = new PageRepository($pdo);
+        $site = new SiteRepository($pdo);
+        $pages->save(new Page('', 'Home', 'default', '', [], [], true, ''));
+
+        $site->setSite([
+            'name' => 'Demo',
+            'footer_login' => ['enabled' => true, 'label' => 'Connexion', 'href' => '/login'],
+            'footer_layout' => ['brand' => 'right', 'nav' => 'left', 'login' => 'left'],
+        ]);
+
+        $root = dirname(__DIR__);
+        $view = new View($root . '/resources/layouts', $root . '/resources/partials');
+        $chrome = new SiteChrome($pages, $site, $view, 'Fallback');
+        $data = $chrome->enrich([], '/');
+
+        $this->assertStringContainsString('site-footer__nav', $data['footer_zone_left']);
+        $this->assertStringContainsString('site-chrome-btn', $data['footer_zone_left']);
+        $this->assertStringContainsString('site-footer__brand', $data['footer_zone_right']);
+    }
+
+    public function testActiveHeaderVariantDrivesRendering(): void
+    {
+        $pdo = new \PDO('sqlite::memory:');
+        $pdo->exec(file_get_contents(dirname(__DIR__) . '/migrations/sqlite_init.sql') ?: '');
+
+        $pages = new PageRepository($pdo);
+        $site = new SiteRepository($pdo);
+        $pages->save(new Page('', 'Home', 'default', '', [], [], true, ''));
+
+        $site->setSite([
+            'name' => 'Demo',
+            'header_variants' => [
+                [
+                    'id' => 'default',
+                    'name' => 'Par défaut',
+                    'nav' => ['visible' => true],
+                ],
+                [
+                    'id' => 'minimal',
+                    'name' => 'Minimal',
+                    'nav' => ['visible' => false],
+                    'login' => ['enabled' => true, 'label' => 'Connexion', 'href' => '/login'],
+                ],
+            ],
+            'active_header_variant' => 'minimal',
+        ]);
+
+        $root = dirname(__DIR__);
+        $view = new View($root . '/resources/layouts', $root . '/resources/partials');
+        $chrome = new SiteChrome($pages, $site, $view, 'Fallback');
+        $data = $chrome->enrich([], '/');
+
+        $this->assertStringNotContainsString('site-header__nav', $data['header_html']);
+        $this->assertStringContainsString('site-chrome-btn', $data['header_html']);
+
+        // La variante prévisualisée peut différer de la variante active.
+        $preview = $chrome->enrich(['preview_header_variant' => 'default'], '/');
+        $this->assertStringContainsString('site-header__nav', $preview['header_html']);
     }
 
     public function testPageLevelOverrideHidesHeaderEvenWhenSiteShowsItByDefault(): void

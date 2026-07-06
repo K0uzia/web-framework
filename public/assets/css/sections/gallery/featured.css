@@ -1,0 +1,4 @@
+.section-gallery--featured .section-gallery__grid {
+    grid-auto-rows: minmax(8rem, auto);
+}
+

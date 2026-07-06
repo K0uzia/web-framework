@@ -1,0 +1,5 @@
+@media (min-width: 768px) {
+    .section-process--grid-3 .section-process__grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}

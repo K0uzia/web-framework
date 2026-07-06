@@ -33,6 +33,7 @@ final class DevDashboard
     {
         if ($section === '') {
             $section = match (true) {
+                str_starts_with($template, 'chrome') => 'chrome',
                 str_starts_with($template, 'site') => 'site',
                 str_starts_with($template, 'theme') => 'theme',
                 str_starts_with($template, 'overview') => 'overview',
@@ -54,7 +55,7 @@ final class DevDashboard
      */
     public static function withNav(array $data, string $section): array
     {
-        foreach (['overview', 'pages', 'site', 'theme'] as $key) {
+        foreach (['overview', 'pages', 'site', 'chrome', 'theme'] as $key) {
             $active = $section === $key;
             $data['nav_active_' . $key] = $active ? 'is-active' : '';
             $data['nav_aria_' . $key] = $active ? ' aria-current="page"' : '';

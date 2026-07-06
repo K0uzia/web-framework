@@ -105,3 +105,17 @@ img {
 .section--bg-primary .section-cta__button:hover {
     background: rgb(255 255 255 / 0.92);
 }
+
+/* Aperçu embarqué dans l'éditeur : scroll conservé, barre masquée */
+html.is-preview-embed,
+html.is-preview-embed body {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+html.is-preview-embed::-webkit-scrollbar,
+html.is-preview-embed body::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
+}

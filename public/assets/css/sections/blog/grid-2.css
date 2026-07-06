@@ -1,0 +1,5 @@
+@media (min-width: 768px) {
+    .section-blog--grid-2 .section-blog__grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

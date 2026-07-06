@@ -1,0 +1,10 @@
+@media (min-width: 768px) {
+    .section-download--split .section-inner,
+    .section-download--split .section-download__inner {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-lg);
+        align-items: center;
+    }
+}
+

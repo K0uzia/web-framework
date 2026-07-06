@@ -5,16 +5,9 @@
     min-height: 100vh;
 }
 
-/*
- * Pas de "flex: 1" ni de min-height forcée ici : sur une page courte ou de
- * hauteur moyenne, cela étirait artificiellement la zone de contenu jusqu'à
- * 60vh et créait un grand vide blanc entre le dernier bloc et le pied de
- * page. Le pied de page suit maintenant naturellement le contenu ; sur les
- * pages très courtes, .site-body garde min-height: 100vh pour que le fond
- * (et le pied de page) couvrent tout de même l'écran.
- */
 .site-main {
-    display: block;
+    flex: 1;
+    min-height: 60vh;
 }
 
 .visually-hidden {

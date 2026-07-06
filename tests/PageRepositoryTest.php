@@ -48,6 +48,19 @@ final class PageRepositoryTest extends TestCase
         $this->assertNotNull($page);
         $this->assertSame('/', $page->routePath());
     }
+
+    public function testSetHomePageSwapsWithCurrentHome(): void
+    {
+        $this->pages->save(new Page('', 'Home', 'default', '', [], [], true, ''));
+        $this->pages->save(new Page('about', 'About', 'default', '', [], [], true, ''));
+
+        $this->pages->setHomePage('about');
+
+        $home = $this->pages->findBySlug('', false);
+        $former = $this->pages->findBySlug('about', false);
+        $this->assertSame('About', $home?->title);
+        $this->assertSame('Home', $former?->title);
+    }
 }
 
 final class SiteRepositoryTest extends TestCase

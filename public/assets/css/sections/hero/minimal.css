@@ -1,0 +1,14 @@
+.section-hero--minimal .section-hero__inner--minimal {
+    max-width: var(--container-narrow);
+    margin: 0 auto;
+}
+
+.section-hero--minimal h1 {
+    font-size: clamp(2rem, 4.5vw, 3rem);
+    font-weight: 600;
+    margin-bottom: var(--space);
+}
+
+.section--align-center .section-hero--minimal .section-buttons {
+    justify-content: center;
+}

@@ -10,11 +10,7 @@ use Capsule\SectionRegistry;
 
 final class SectionFormRenderer
 {
-    private const ICONS = [
-        'hero' => 'fa-solid fa-panorama',
-        'features' => 'fa-solid fa-table-cells-large',
-        'cta' => 'fa-solid fa-bullhorn',
-    ];
+    private const FALLBACK_ICON = 'fa-solid fa-square';
 
     public function __construct(
         private readonly SectionRegistry $registry,
@@ -55,7 +51,7 @@ final class SectionFormRenderer
 
         $typeDef = $this->registry->getTypeDefinition($type);
         $label = is_string($typeDef['label'] ?? null) ? $typeDef['label'] : $type;
-        $icon = self::ICONS[$type] ?? 'fa-solid fa-square';
+        $icon = is_string($typeDef['icon'] ?? null) && $typeDef['icon'] !== '' ? $typeDef['icon'] : self::FALLBACK_ICON;
 
         $cardClass = 'dev-section-card' . ($visible ? '' : ' dev-section-card--hidden');
         $actionUrl = '/dev/pages/' . $slug . '/sections/' . rawurlencode($id);
@@ -64,7 +60,10 @@ final class SectionFormRenderer
 
         $variantLabel = $variant !== '' ? $this->variantLabel($type, $variant) : '';
 
-        $html = '<article class="' . $cardClass . '" id="section-' . $safeIdAttr . '" data-id="' . $safeIdAttr . '" data-dev-sortable-item draggable="true">';
+        $sectionJson = json_encode($section, JSON_UNESCAPED_UNICODE);
+        $sectionJson = is_string($sectionJson) ? $sectionJson : '{}';
+
+        $html = '<article class="' . $cardClass . '" id="section-' . $safeIdAttr . '" data-id="' . $safeIdAttr . '" data-section="' . htmlspecialchars($sectionJson, ENT_QUOTES) . '" data-dev-sortable-item draggable="true">';
         $html .= '<div class="dev-section-card__head">';
         $html .= '<button type="button" class="dev-icon-btn dev-icon-btn--drag" aria-label="Réorganiser le bloc"><i class="fa-solid fa-grip-vertical" aria-hidden="true"></i></button>';
         $html .= '<button type="button" class="dev-section-card__toggle" data-dev-accordion-toggle aria-expanded="false" aria-controls="section-body-' . $safeIdAttr . '">';
@@ -85,12 +84,12 @@ final class SectionFormRenderer
         $html .= '</label>';
         $html .= $this->buttonForm($slug, $id, 'up', 'fa-arrow-up');
         $html .= $this->buttonForm($slug, $id, 'down', 'fa-arrow-down');
-        $html .= '<form class="dev-inline-form" method="post" action="' . $actionUrl . '/delete" data-dev-ajax="sections" data-confirm="Supprimer ce bloc ?">';
+        $html .= '<form class="dev-inline-form" method="post" action="' . $actionUrl . '/delete" data-dev-section-delete>';
         $html .= '<button type="submit" class="dev-icon-btn dev-icon-btn--danger" title="Supprimer" aria-label="Supprimer le bloc"><i class="fa-solid fa-trash" aria-hidden="true"></i></button></form>';
         $html .= '</div></div>';
 
         $html .= '<div class="dev-section-card__body" id="section-body-' . $safeIdAttr . '">';
-        $html .= '<form id="form-' . $safeIdAttr . '" class="dev-section-form" hx-post="' . $actionUrl . '" hx-trigger="change, input delay:350ms" hx-target="#section-saved-' . $safeIdAttr . '" hx-swap="innerHTML">';
+        $html .= '<form id="form-' . $safeIdAttr . '" class="dev-section-form" hx-post="' . $actionUrl . '" hx-trigger="change, input delay:350ms" hx-target="#section-saved-' . $safeIdAttr . '" hx-swap="innerHTML" data-dev-toast-form="Bloc enregistré">';
 
         $variants = $this->registry->getVariants($type);
         if ($variants !== []) {
@@ -129,7 +128,7 @@ final class SectionFormRenderer
             $current = (string) ($style[$key] ?? '');
             if (($field['type'] ?? '') === 'select' && is_string($field['options'] ?? null)) {
                 $options = array_map('trim', explode(',', trim($field['options'], '[]')));
-                $html .= $this->fieldSelectRaw($name, $fLabel, $current, $options, $safeId);
+                $html .= $this->fieldSelectRaw($name, $fLabel, $current, $this->styleSelectOptions($key, $options), $safeId);
             } elseif (($field['type'] ?? '') === 'color-token') {
                 $html .= $this->fieldSelectRaw($name, $fLabel, $current, ['primary', 'muted', 'background'], $safeId);
             }
@@ -168,18 +167,29 @@ final class SectionFormRenderer
         $items = is_array($content['items'] ?? null) ? $content['items'] : [];
         $fLabel = (string) ($field['label'] ?? 'Éléments');
 
+        $itemFields = is_array($field['fields'] ?? null) && $field['fields'] !== []
+            ? $field['fields']
+            : ['title' => ['type' => 'text', 'label' => 'Titre'], 'text' => ['type' => 'textarea', 'label' => 'Texte']];
+
         $html = '<fieldset class="dev-fieldset"><legend>' . htmlspecialchars($fLabel, ENT_QUOTES) . '</legend>';
+        $html .= '<p class="dev-hint">Les éléments entièrement vides sont retirés à l\'enregistrement.</p>';
         $html .= '<div class="dev-repeater">';
 
-        $count = max(count($items), 3);
+        // Toujours une ligne vide en plus pour ajouter un élément sans JS.
+        $count = max(count($items) + 1, 3);
         for ($i = 0; $i < $count; $i++) {
             $item = is_array($items[$i] ?? null) ? $items[$i] : [];
-            $title = (string) ($item['title'] ?? '');
-            $text = (string) ($item['text'] ?? '');
             $html .= '<div class="dev-repeater__item">';
             $html .= '<span class="dev-repeater__index" aria-hidden="true">' . ($i + 1) . '</span>';
-            $html .= $this->fieldInput('content_items_' . $i . '_title', 'Titre', $title, 'text', $sectionId . '-item' . $i);
-            $html .= $this->fieldInput('content_items_' . $i . '_text', 'Texte', $text, 'textarea', $sectionId . '-item' . $i);
+            foreach ($itemFields as $fKey => $fDef) {
+                if (!is_array($fDef)) {
+                    continue;
+                }
+                $subLabel = (string) ($fDef['label'] ?? $fKey);
+                $subType = ($fDef['type'] ?? 'text') === 'textarea' ? 'textarea' : 'text';
+                $value = (string) ($item[$fKey] ?? '');
+                $html .= $this->fieldInput('content_items_' . $i . '_' . $fKey, $subLabel, $value, $subType, $sectionId . '-item' . $i);
+            }
             $html .= '</div>';
         }
 
@@ -274,6 +284,38 @@ final class SectionFormRenderer
         $html .= '</div>';
 
         return $html;
+    }
+
+    /**
+     * Libellés lisibles pour les champs de style à options fixes.
+     *
+     * @param list<string> $rawOptions
+     *
+     * @return array<string, string>
+     */
+    private function styleSelectOptions(string $fieldKey, array $rawOptions): array
+    {
+        $labelMaps = [
+            'padding' => [
+                'sm' => 'Compact',
+                'md' => 'Normal',
+                'lg' => 'Large',
+                'xl' => 'Très large',
+            ],
+            'text_align' => [
+                'left' => 'Gauche',
+                'center' => 'Centre',
+                'right' => 'Droite',
+            ],
+        ];
+        $labels = $labelMaps[$fieldKey] ?? [];
+
+        $options = [];
+        foreach ($rawOptions as $value) {
+            $options[$value] = $labels[$value] ?? $value;
+        }
+
+        return $options;
     }
 
     /**

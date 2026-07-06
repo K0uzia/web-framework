@@ -85,4 +85,13 @@ final class LinkPickerTest extends TestCase
 
         $this->assertStringContainsString('value="https://example.com"', $html);
     }
+
+    public function testSelectHasValidLinkPickerAttributeForJavascript(): void
+    {
+        $html = LinkPicker::render('field-id', 'field_name', '', $this->pages, 'chrome-variant-form');
+
+        $this->assertStringContainsString('data-link-picker-select', $html);
+        $this->assertStringNotContainsString('data-link-picker-select"', $html);
+        $this->assertStringContainsString('form="chrome-variant-form"', $html);
+    }
 }

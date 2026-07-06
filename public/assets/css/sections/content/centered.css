@@ -1,0 +1,6 @@
+.section-content--centered .section-inner,
+.section-content--centered .section-content__inner {
+    text-align: center;
+    margin-inline: auto;
+}
+

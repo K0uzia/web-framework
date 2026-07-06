@@ -40,18 +40,55 @@
 .site-header__inner {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     gap: var(--space-md, 1.5rem);
     max-width: var(--container, 72rem);
     margin: 0 auto;
     padding: 0.85rem var(--space-md, 1.5rem);
 }
 
-.site-header__end {
+.site-header__zone {
     display: flex;
     align-items: center;
     gap: var(--space-sm, 0.75rem);
-    margin-left: auto;
+    min-width: 0;
+}
+
+.site-header__zone--left {
+    flex: 1 1 0;
+    justify-content: flex-start;
+}
+
+.site-header__zone--center {
+    flex: 0 1 auto;
+    justify-content: center;
+}
+
+.site-header__zone--center:empty {
+    display: none;
+}
+
+.site-header__zone--right {
+    flex: 1 1 0;
+    justify-content: flex-end;
+}
+
+.site-header__login {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+    padding: 0.5rem 0.9rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-text, #0f172a);
+    text-decoration: none;
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: var(--radius-sm, 6px);
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.site-header__login:hover {
+    background: color-mix(in srgb, var(--color-text, #0f172a) 5%, transparent);
+    border-color: color-mix(in srgb, var(--color-text, #0f172a) 25%, transparent);
 }
 
 .site-header__cta {
@@ -96,6 +133,12 @@
     color: var(--color-text, #0f172a);
     flex-shrink: 0;
     gap: 0.1rem;
+}
+
+.site-header__brand-main {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .site-header__name {
@@ -148,7 +191,7 @@
 }
 
 @media (max-width: 767px) {
-    .site-header__end {
+    .site-header__inner {
         position: relative;
     }
 
@@ -160,7 +203,7 @@
         display: none;
         position: absolute;
         top: calc(100% + 0.5rem);
-        right: 0;
+        right: var(--space-md, 1.5rem);
         min-width: 12rem;
         flex-direction: column;
         align-items: stretch;
@@ -179,6 +222,57 @@
     .site-nav__link {
         width: 100%;
     }
+
+    /* Les boutons d'action rejoignent le menu déroulant : leurs doublons
+       dans la barre sont masqués quand le menu existe. */
+    .site-header__inner:has(.site-header__nav) .site-header__zone > .site-chrome-btn {
+        display: none;
+    }
+
+    .site-header__menu-actions {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.35rem;
+        margin-top: 0.35rem;
+        padding-top: 0.5rem;
+        border-top: 1px solid var(--color-border, #e2e8f0);
+    }
+
+    .site-header__menu-actions .site-chrome-btn {
+        justify-content: center;
+        width: 100%;
+    }
+
+    /* Pas de menu déroulant : le burger est inutile et les boutons
+       restants se compactent pour tenir sur une ligne. */
+    .site-header__inner:not(:has(.site-header__nav)) .site-header__toggle {
+        display: none;
+    }
+
+    .site-header__inner:not(:has(.site-header__nav)) .site-chrome-btn {
+        padding: 0.4rem 0.7rem;
+        font-size: 0.8125rem;
+    }
+
+    /* Le nom du site se tronque plutôt que de pousser les actions hors écran. */
+    .site-header__brand,
+    .site-header__brand-main {
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    .site-header__name {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        display: block;
+        max-width: 45vw;
+    }
+
+    .site-header__tagline {
+        display: none;
+    }
 }
 
 @media (min-width: 768px) {
@@ -187,6 +281,10 @@
     }
 
     .site-header__toggle {
+        display: none;
+    }
+
+    .site-header__menu-actions {
         display: none;
     }
 }

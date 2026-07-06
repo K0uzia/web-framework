@@ -5,7 +5,9 @@
             <p class="dev-lead">{{pages_count}} page(s) dans ce site.</p>
         </div>
         <div class="dev-page-head__actions">
-            <a class="dev-button" href="/dev/pages/new"><i class="fa-solid fa-plus" aria-hidden="true"></i> Nouvelle page</a>
+            <button type="button" class="dev-button" data-dev-modal-open="dev-page-new">
+                <i class="fa-solid fa-plus" aria-hidden="true"></i> Nouvelle page
+            </button>
         </div>
     </div>
 
@@ -18,7 +20,8 @@
 
     <p class="dev-empty {{empty_class}}" id="dev-pages-empty">
         <i class="fa-solid fa-file-circle-plus" aria-hidden="true"></i>
-        Aucune page pour le moment. Créez votre première page pour commencer.
+        Aucune page pour le moment.
+        <button type="button" class="dev-button dev-button--ghost" data-dev-modal-open="dev-page-new">Créer votre première page</button>
     </p>
 
     <div class="dev-table-wrap {{table_class}}" id="dev-pages-table-wrap">
@@ -41,4 +44,19 @@
         Aucune page ne correspond à votre recherche.
     </p>
 </div>
+
+<div class="dev-modal" id="dev-page-new" hidden>
+    <button type="button" class="dev-modal__backdrop" data-dev-modal-close="dev-page-new" tabindex="-1" aria-hidden="true"></button>
+    <div class="dev-block-picker__panel dev-modal__panel--form" role="dialog" aria-modal="true" aria-labelledby="dev-page-new-title">
+        <div class="dev-block-picker__head">
+            <h2 id="dev-page-new-title">Nouvelle page</h2>
+            <button type="button" class="dev-icon-btn" data-dev-modal-close="dev-page-new" aria-label="Fermer"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+        </div>
+        <div class="dev-modal__body">
+            <p class="dev-panel__desc">Choisissez un modèle ou partez d'une page vide, puis ajoutez des blocs dans l'éditeur.</p>
+            {{> page-new-form.html}}
+        </div>
+    </div>
+</div>
+
 <script src="/assets/js/dev-pages-index.js" defer></script>

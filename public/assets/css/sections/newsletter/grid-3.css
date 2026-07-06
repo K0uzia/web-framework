@@ -1,0 +1,5 @@
+@media (min-width: 768px) {
+    .section-newsletter--grid-3 .section-newsletter__grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}

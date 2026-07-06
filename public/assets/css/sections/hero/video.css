@@ -1,0 +1,38 @@
+.section-hero--video .section-hero__inner--video {
+    display: grid;
+    gap: var(--space-xl);
+    max-width: var(--container);
+    margin: 0 auto;
+    align-items: center;
+}
+
+@media (min-width: 768px) {
+    .section-hero--video .section-hero__inner--video {
+        grid-template-columns: 1fr 1.2fr;
+    }
+}
+
+.section-hero--video h1 {
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    font-weight: 600;
+}
+
+.section-hero--video .section-hero__media {
+    min-height: 14rem;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+.section-hero--video .section-hero__visual-placeholder {
+    min-height: 14rem;
+    background: var(--color-muted);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+}
+
+.section-hero--video .section-hero__img {
+    width: 100%;
+    min-height: 14rem;
+    object-fit: cover;
+    border-radius: var(--radius-lg);
+}

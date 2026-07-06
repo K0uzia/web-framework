@@ -27,41 +27,24 @@ final class SiteController
     public function edit(Request $request): Response
     {
         $site = $this->site->getSite();
-        $partials = is_array($site['partials'] ?? null) ? $site['partials'] : [];
-        $headerCta = is_array($site['header_cta'] ?? null) ? $site['header_cta'] : [];
 
         return $this->ui->render('site-edit.html', [
             'title' => 'Site',
             'crumb_html' => Breadcrumb::render([['label' => 'Site']]),
             'site_name' => (string) ($site['name'] ?? ''),
             'site_tagline' => (string) ($site['tagline'] ?? ''),
-            'footer_text' => (string) ($site['footer_text'] ?? ''),
             'home_label' => (string) ($site['home_label'] ?? 'Accueil'),
-            'partial_header_checked' => ($partials['header'] ?? true) !== false ? 'checked' : '',
-            'partial_footer_checked' => ($partials['footer'] ?? true) !== false ? 'checked' : '',
-            'header_cta_enabled_checked' => ($headerCta['enabled'] ?? false) === true ? 'checked' : '',
-            'header_cta_label' => (string) ($headerCta['label'] ?? ''),
-            'header_cta_href' => (string) ($headerCta['href'] ?? ''),
-            'header_cta_target_html' => LinkPicker::render(
-                'header_cta_href',
-                'header_cta_href',
-                (string) ($headerCta['href'] ?? ''),
-                $this->pages,
-                'header-form',
-            ),
-            'show_tagline_checked' => ($site['show_tagline_in_header'] ?? false) === true ? 'checked' : '',
-            'logo_url' => (string) ($site['logo_url'] ?? ''),
-            'favicon_url' => (string) ($site['favicon_url'] ?? ''),
-            'og_image_url' => (string) ($site['og_image_url'] ?? ''),
             'logo_uploader_html' => MediaFieldView::render('logo', (string) ($site['logo_url'] ?? ''), $this->media->acceptAttribute('logo')),
             'favicon_uploader_html' => MediaFieldView::render('favicon', (string) ($site['favicon_url'] ?? ''), $this->media->acceptAttribute('favicon')),
             'og_image_uploader_html' => MediaFieldView::render('og_image', (string) ($site['og_image_url'] ?? ''), $this->media->acceptAttribute('og_image')),
             'nav_mode_label' => ($site['nav_mode'] ?? 'auto') === 'custom' ? 'Personnalisée' : 'Automatique (pages publiées)',
             'nav_panel_html' => $this->ui->partialHtml('nav-panel.html', [
                 'nav_rows_html' => $this->buildNavRowsHtml($site),
+                'nav_delete_forms_html' => $this->buildNavDeleteFormsHtml($site),
                 'message' => '',
             ]),
             'page_options_html' => $this->buildPageOptionsHtml($site),
+            'nav_add_target_html' => LinkPicker::render('nav_target', 'nav_target', '', $this->pages),
             'flash' => $this->ui->flashFromRequest($request),
         ]);
     }
@@ -71,35 +54,13 @@ final class SiteController
         $data = FormData::fromRequest($request);
         $site = $this->site->getSite();
 
-        // Le site est édité via plusieurs formulaires indépendants (un par onglet) qui
-        // s'auto-sauvegardent séparément : chaque requête ne contient que les champs de
-        // l'onglet actif. Les champs absents doivent donc conserver leur valeur existante
-        // plutôt que d'être réinitialisés (cases à cocher en particulier).
-        $existingPartials = is_array($site['partials'] ?? null) ? $site['partials'] : [];
-        $existingCta = is_array($site['header_cta'] ?? null) ? $site['header_cta'] : [];
-
+        // Le site est édité via plusieurs formulaires indépendants qui s'auto-sauvegardent
+        // séparément : chaque requête ne contient que les champs du formulaire actif.
+        // Les champs absents conservent donc leur valeur existante. L'en-tête et le pied
+        // de page se gèrent dans l'éditeur dédié (/dev/chrome).
         $site['name'] = trim($data['site_name'] ?? (string) ($site['name'] ?? ''));
         $site['tagline'] = trim($data['site_tagline'] ?? (string) ($site['tagline'] ?? ''));
-        $site['footer_text'] = trim($data['footer_text'] ?? (string) ($site['footer_text'] ?? ''));
         $site['home_label'] = trim($data['home_label'] ?? (string) ($site['home_label'] ?? 'Accueil'));
-        $site['partials'] = [
-            'header' => isset($data['partial_header'])
-                ? $data['partial_header'] === '1'
-                : (($existingPartials['header'] ?? true) !== false),
-            'footer' => isset($data['partial_footer'])
-                ? $data['partial_footer'] === '1'
-                : (($existingPartials['footer'] ?? true) !== false),
-        ];
-        $site['header_cta'] = [
-            'enabled' => isset($data['header_cta_enabled'])
-                ? $data['header_cta_enabled'] === '1'
-                : (($existingCta['enabled'] ?? false) === true),
-            'label' => isset($data['header_cta_label']) ? trim($data['header_cta_label']) : (string) ($existingCta['label'] ?? ''),
-            'href' => isset($data['header_cta_href']) ? trim($data['header_cta_href']) : (string) ($existingCta['href'] ?? ''),
-        ];
-        $site['show_tagline_in_header'] = isset($data['show_tagline_in_header'])
-            ? $data['show_tagline_in_header'] === '1'
-            : (($site['show_tagline_in_header'] ?? false) === true);
         $site['logo_url'] = trim($data['logo_url'] ?? (string) ($site['logo_url'] ?? ''));
         $site['favicon_url'] = trim($data['favicon_url'] ?? (string) ($site['favicon_url'] ?? ''));
         $site['og_image_url'] = trim($data['og_image_url'] ?? (string) ($site['og_image_url'] ?? ''));
@@ -129,8 +90,9 @@ final class SiteController
         $site = $this->site->getSite();
         $items = $this->currentNavItems($site);
 
-        $type = trim($data['nav_type'] ?? 'link');
+        $type = trim($data['nav_type'] ?? 'page');
         $label = trim($data['nav_label'] ?? '');
+        $target = trim($data['nav_target'] ?? '');
         if ($label === '') {
             return $this->respondNav($request, '');
         }
@@ -145,12 +107,12 @@ final class SiteController
         ];
 
         if ($type === 'page') {
-            $entry['slug'] = trim($data['nav_slug'] ?? '');
+            $entry['slug'] = $this->slugFromTarget($target);
         } else {
-            $entry['href'] = trim($data['nav_href'] ?? '');
-            if ($entry['href'] === '') {
+            if ($target === '') {
                 return $this->respondNav($request, '');
             }
+            $entry['href'] = $target;
         }
 
         $items[] = $entry;
@@ -270,6 +232,7 @@ final class SiteController
 
             return $this->ui->partial('nav-panel.html', [
                 'nav_rows_html' => $this->buildNavRowsHtml($site),
+                'nav_delete_forms_html' => $this->buildNavDeleteFormsHtml($site),
                 'message' => $message,
             ]);
         }
@@ -321,11 +284,38 @@ final class SiteController
                 $type = trim($data[$prefix . 'type']);
                 if (in_array($type, ['page', 'link', 'button'], true)) {
                     $items[$i]['type'] = $type;
-                    if ($type === 'page') {
-                        $items[$i]['slug'] = trim($data[$prefix . 'slug'] ?? (string) ($item['slug'] ?? ''));
-                    } else {
-                        $items[$i]['href'] = trim($data[$prefix . 'href'] ?? (string) ($item['href'] ?? ''));
+                }
+            }
+
+            $type = (string) ($items[$i]['type'] ?? 'page');
+            if (isset($data[$prefix . 'target'])) {
+                $target = trim($data[$prefix . 'target']);
+                if ($type === 'page') {
+                    $slug = $this->slugFromTarget($target);
+                    if ($slug === '' && $target === '') {
+                        $slug = trim((string) ($item['slug'] ?? ''));
                     }
+                    $items[$i]['slug'] = $slug;
+                    $items[$i]['href'] = '';
+                } else {
+                    $href = $target;
+                    if ($href === '') {
+                        $href = $this->hrefFromItem($item);
+                    }
+                    $items[$i]['href'] = $href;
+                    $items[$i]['slug'] = '';
+                }
+            } elseif (isset($data[$prefix . 'type'])) {
+                if ($type === 'page') {
+                    $items[$i]['slug'] = trim($data[$prefix . 'slug'] ?? (string) ($item['slug'] ?? ''));
+                    $items[$i]['href'] = '';
+                } else {
+                    $href = trim($data[$prefix . 'href'] ?? (string) ($item['href'] ?? ''));
+                    if ($href === '') {
+                        $href = $this->hrefFromItem($item);
+                    }
+                    $items[$i]['href'] = $href;
+                    $items[$i]['slug'] = '';
                 }
             }
         }
@@ -369,24 +359,21 @@ final class SiteController
             $visible = ($item['visible'] ?? true) !== false;
             $href = (string) ($item['href'] ?? '');
             $slug = (string) ($item['slug'] ?? '');
+            $target = $type === 'page' ? $this->pagePathForSlug($slug) : $href;
 
             $rows[] = '<div class="dev-nav-row" data-dev-sortable-item data-id="' . $safeId . '" draggable="true" data-nav-row>'
                 . '<button type="button" class="dev-icon-btn dev-icon-btn--drag" aria-label="Réorganiser"><i class="fa-solid fa-grip-vertical" aria-hidden="true"></i></button>'
                 . '<div class="dev-nav-row__fields">'
                 . '<input class="dev-input dev-input--sm" type="text" name="nav_item_' . $safeId . '_label" form="nav-form" value="'
                 . htmlspecialchars($label, ENT_QUOTES) . '" aria-label="Libellé" placeholder="Libellé" />'
-                . '<select class="dev-input dev-select dev-select--sm" name="nav_item_' . $safeId . '_type" form="nav-form" aria-label="Style" data-nav-row-type>'
-                . '<option value="page"' . ($type === 'page' ? ' selected' : '') . '>Page</option>'
-                . '<option value="link"' . ($type === 'link' ? ' selected' : '') . '>Lien externe</option>'
-                . '<option value="button"' . ($type === 'button' ? ' selected' : '') . '>Bouton</option>'
+                . '<select class="dev-input dev-select dev-select--sm" name="nav_item_' . $safeId . '_type" form="nav-form" aria-label="Type de lien" data-nav-row-type>'
+                . '<option value="page"' . ($type === 'page' ? ' selected' : '') . '>Page du site</option>'
+                . '<option value="link"' . ($type === 'link' ? ' selected' : '') . '>URL externe</option>'
+                . '<option value="button"' . ($type === 'button' ? ' selected' : '') . '>Bouton mis en avant</option>'
                 . '</select>'
-                . '<select class="dev-input dev-select dev-select--sm" name="nav_item_' . $safeId . '_slug" form="nav-form" aria-label="Page cible"'
-                . ($type !== 'page' ? ' hidden' : '') . ' data-nav-row-slug>'
-                . $this->buildAllPageOptionsHtml($slug)
-                . '</select>'
-                . '<input class="dev-input dev-input--sm" type="text" name="nav_item_' . $safeId . '_href" form="nav-form" value="'
-                . htmlspecialchars($href, ENT_QUOTES) . '" placeholder="https://... ou /page" aria-label="URL cible"'
-                . ($type === 'page' ? ' hidden' : '') . ' data-nav-row-href />'
+                . '<div class="dev-nav-row__target" data-nav-row-target data-nav-type="' . htmlspecialchars($type, ENT_QUOTES) . '">'
+                . LinkPicker::render('nav-target-' . $safeId, 'nav_item_' . $safeId . '_target', $target, $this->pages, 'nav-form', true)
+                . '</div>'
                 . '</div>'
                 . '<label class="dev-switch dev-switch--sm" title="Visible dans le menu">'
                 . '<input type="hidden" name="nav_item_' . $safeId . '_visible" form="nav-form" value="0" />'
@@ -395,16 +382,48 @@ final class SiteController
                 . '<span class="dev-switch__track" aria-hidden="true"></span>'
                 . '<span class="visually-hidden">Visible</span></label>'
                 . '<div class="dev-nav-row__danger">'
-                // Bouton autonome (pas de <form> imbriqué : cette ligne vit déjà
-                // à l'intérieur du formulaire de navigation "nav-form").
-                . '<button type="button" class="dev-icon-btn dev-icon-btn--danger" title="Supprimer" aria-label="Supprimer ce lien"'
-                . ' data-dev-ajax-action="/dev/site/nav/' . rawurlencode($id) . '/delete" data-dev-ajax-mode="nav"'
-                . ' data-confirm="Supprimer ce lien de navigation ?">'
+                . '<button type="submit" class="dev-icon-btn dev-icon-btn--danger" form="nav-delete-' . $safeId . '" title="Supprimer" aria-label="Supprimer ce lien">'
                 . '<i class="fa-solid fa-trash" aria-hidden="true"></i></button>'
                 . '</div></div>';
         }
 
         return '<div class="dev-nav-editor" data-dev-sortable data-dev-sortable-url="/dev/site/nav/reorder">' . implode('', $rows) . '</div>';
+    }
+
+    /**
+     * @param array<string, mixed> $site
+     */
+    private function buildNavDeleteFormsHtml(array $site): string
+    {
+        $forms = [];
+        foreach ($this->currentNavItems($site) as $item) {
+            $id = (string) ($item['id'] ?? '');
+            if ($id === '') {
+                continue;
+            }
+            $safeId = htmlspecialchars($id, ENT_QUOTES);
+            $forms[] = '<form id="nav-delete-' . $safeId . '" class="dev-inline-form visually-hidden" method="post" action="/dev/site/nav/'
+                . rawurlencode($id) . '/delete" data-dev-ajax="nav" data-dev-toast-form="Lien supprimé"></form>';
+        }
+
+        return implode('', $forms);
+    }
+
+    /**
+     * @param array<string, mixed> $item
+     */
+    private function hrefFromItem(array $item): string
+    {
+        $href = trim((string) ($item['href'] ?? ''));
+        if ($href !== '') {
+            return $href;
+        }
+
+        if ((string) ($item['type'] ?? 'page') === 'page') {
+            return $this->pagePathForSlug((string) ($item['slug'] ?? ''));
+        }
+
+        return '';
     }
 
     /**
@@ -446,5 +465,20 @@ final class SiteController
     private function pagePathForSlug(string $slug): string
     {
         return $slug === '' ? '/' : '/' . $slug;
+    }
+
+    private function slugFromTarget(string $target): string
+    {
+        $target = trim($target);
+        if ($target === '' || $target === '/') {
+            return '';
+        }
+
+        $path = parse_url($target, PHP_URL_PATH);
+        if (!is_string($path) || $path === '') {
+            $path = $target;
+        }
+
+        return ltrim($path, '/');
     }
 }

@@ -1,0 +1,26 @@
+.section-faq__item {
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: var(--radius-md, 8px);
+    background: var(--color-background, #fff);
+    overflow: hidden;
+}
+
+.section-faq__item + .section-faq__item {
+    margin-top: var(--space-sm, 0.75rem);
+}
+
+.section-faq__question {
+    padding: var(--space-md, 1.5rem);
+    font-weight: 600;
+    cursor: pointer;
+    list-style: none;
+}
+
+.section-faq__question::-webkit-details-marker { display: none; }
+
+.section-faq__answer {
+    margin: 0;
+    padding: 0 var(--space-md, 1.5rem) var(--space-md, 1.5rem);
+    color: var(--color-secondary, #64748b);
+    line-height: 1.6;
+}

@@ -1,0 +1,114 @@
+<div class="dev-site-panel">
+    <div class="dev-page-head">
+        <div>
+            <h1><i class="fa-solid fa-table-columns" aria-hidden="true"></i> En-tête &amp; pied de page</h1>
+            <p class="dev-lead">Créez des variantes et activez celle affichée sur le site. Cliquez sur une variante pour la modifier.</p>
+        </div>
+        <div class="dev-page-head__actions">
+            <a class="dev-button dev-button--ghost" href="/" target="_blank" rel="noopener noreferrer">
+                <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i> Voir le site
+            </a>
+        </div>
+    </div>
+
+    <div data-dev-tabs>
+        <div class="dev-tabs__list" role="tablist" aria-label="Partials du site">
+            <button type="button" class="dev-tabs__tab {{tab_header_active}}" role="tab" aria-selected="{{tab_header_selected}}" data-tab="header">En-tête</button>
+            <button type="button" class="dev-tabs__tab {{tab_footer_active}}" role="tab" aria-selected="{{tab_footer_selected}}" data-tab="footer">Pied de page</button>
+        </div>
+
+        <div class="dev-tabs__panel {{tab_header_active}}" data-tab-panel="header">
+            <div class="dev-table-toolbar">
+                <p class="dev-lead">{{header_count}} variante(s) d'en-tête. Une seule est active à la fois ; le bouton bascule masque l'en-tête du site.</p>
+                <button type="button" class="dev-button" data-dev-modal-open="dev-header-variant-new">
+                    <i class="fa-solid fa-plus" aria-hidden="true"></i> Nouvelle variante
+                </button>
+            </div>
+            <div class="dev-table-wrap">
+                <table class="dev-table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Variante</th>
+                            <th scope="col">Statut</th>
+                            <th scope="col">Active sur le site</th>
+                            <th scope="col"><span class="visually-hidden">Actions</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{{header_rows_html}}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="dev-tabs__panel {{tab_footer_active}}" data-tab-panel="footer">
+            <div class="dev-table-toolbar">
+                <p class="dev-lead">{{footer_count}} variante(s) de pied de page. Une seule est active à la fois ; le bouton bascule masque le pied de page du site.</p>
+                <button type="button" class="dev-button" data-dev-modal-open="dev-footer-variant-new">
+                    <i class="fa-solid fa-plus" aria-hidden="true"></i> Nouvelle variante
+                </button>
+            </div>
+            <div class="dev-table-wrap">
+                <table class="dev-table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Variante</th>
+                            <th scope="col">Statut</th>
+                            <th scope="col">Active sur le site</th>
+                            <th scope="col"><span class="visually-hidden">Actions</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{{footer_rows_html}}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="dev-modal" id="dev-header-variant-new" hidden>
+    <button type="button" class="dev-modal__backdrop" data-dev-modal-close="dev-header-variant-new" tabindex="-1" aria-hidden="true"></button>
+    <div class="dev-block-picker__panel dev-modal__panel--form" role="dialog" aria-modal="true" aria-label="Nouvelle variante d'en-tête">
+        <div class="dev-block-picker__head">
+            <h2>Nouvelle variante d'en-tête</h2>
+            <button type="button" class="dev-icon-btn" data-dev-modal-close="dev-header-variant-new" aria-label="Fermer"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+        </div>
+        <div class="dev-modal__body">
+            <form method="post" action="/dev/chrome/header/create" class="dev-form">
+                <input type="hidden" name="from" value="{{header_active_id}}" />
+                <div class="dev-field">
+                    <label class="dev-label" for="header_new_name">Nom de la variante</label>
+                    <input class="dev-input" id="header_new_name" type="text" name="variant_name" placeholder="Ex. : En-tête campagne" required />
+                    <span class="dev-hint">La nouvelle variante part d'une copie de la variante active et reste en brouillon tant qu'elle n'est pas activée.</span>
+                </div>
+                <div>
+                    <button type="submit" class="dev-button"><i class="fa-solid fa-plus" aria-hidden="true"></i> Créer la variante</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="dev-modal" id="dev-footer-variant-new" hidden>
+    <button type="button" class="dev-modal__backdrop" data-dev-modal-close="dev-footer-variant-new" tabindex="-1" aria-hidden="true"></button>
+    <div class="dev-block-picker__panel dev-modal__panel--form" role="dialog" aria-modal="true" aria-label="Nouvelle variante de pied de page">
+        <div class="dev-block-picker__head">
+            <h2>Nouvelle variante de pied de page</h2>
+            <button type="button" class="dev-icon-btn" data-dev-modal-close="dev-footer-variant-new" aria-label="Fermer"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+        </div>
+        <div class="dev-modal__body">
+            <form method="post" action="/dev/chrome/footer/create" class="dev-form">
+                <input type="hidden" name="from" value="{{footer_active_id}}" />
+                <div class="dev-field">
+                    <label class="dev-label" for="footer_new_name">Nom de la variante</label>
+                    <input class="dev-input" id="footer_new_name" type="text" name="variant_name" placeholder="Ex. : Pied de page complet" required />
+                    <span class="dev-hint">La nouvelle variante part d'une copie de la variante active et reste en brouillon tant qu'elle n'est pas activée.</span>
+                </div>
+                <div>
+                    <button type="submit" class="dev-button"><i class="fa-solid fa-plus" aria-hidden="true"></i> Créer la variante</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

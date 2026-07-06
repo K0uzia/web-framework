@@ -1,0 +1,6 @@
+.section-cta--centered .section-inner,
+.section-cta--centered .section-cta__inner {
+    text-align: center;
+    margin-inline: auto;
+}
+
