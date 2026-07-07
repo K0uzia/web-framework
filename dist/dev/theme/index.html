@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark light" />
+    <title>Thème - Capsule Dev</title>
+    <link rel="icon" href="/web-framework/assets/favicon-dev.svg" type="image/svg+xml" />
+    <script src="/web-framework/assets/js/dev-theme-init.js"></script>
+    <link rel="stylesheet" href="/web-framework/assets/vendor/fontawesome/css/all.min.css" />
+    <link rel="stylesheet" href="/web-framework/assets/css/dev.css" />
+    <style>:root {
+    --color-primary: #121317;
+    --color-primary-hover: #121317;
+    --color-secondary: #64748b;
+    --color-secondary-hover: #475569;
+    --color-background: #121317;
+    --color-surface: #121317;
+    --color-border: #6a5cf6;
+    --color-text: #ffffff;
+    --color-text-muted: #dbdde1;
+    --color-button-primary-bg: #121317;
+    --color-button-primary-hover: #6a5cf6;
+    --color-button-primary-text: #ffffff;
+    --color-button-secondary-bg: #f1f5f9;
+    --color-button-secondary-hover: #e2e8f0;
+    --color-button-secondary-text: #ffffff;
+    --color-link: #7c73dd;
+    --color-link-hover: #ffffff;
+    --color-success: #1cca3e;
+    --color-warning: #d97706;
+    --color-error: #dc2626;
+    --color-info: #0284c7;
+    --color-focus-ring: #3b82f6;
+    --color-disabled: #94a3b8;
+    --color-muted: var(--color-surface);
+    --color-elevated: var(--color-surface);
+    --font-heading: Inter, system-ui, sans-serif;
+    --font-body: system-ui, sans-serif;
+    --spacing-section: 4rem;
+    --radius-md: 10px;
+    --container: 72rem;
+}</style>
+    <link rel="stylesheet" href="/web-framework/assets/css/dev-theme-bindings.css" />
+    <script src="/web-framework/assets/js/dev.js" defer></script>
+    <link rel="stylesheet" href="/web-framework/assets/css/dev-static.css" />
+    <script>window.__CAPSULE_DEV_STATIC=true;</script>
+    <script src="/web-framework/assets/js/dev-static.js" defer></script>
+</head>
+<div class="dev-static-banner" role="status">Mode démo statique (GitHub Pages). Navigation OK, enregistrement désactivé.</div>
+<body class="dev-shell ">
+    <div class="dev-app" data-dev-app>
+        <button type="button" class="dev-sidebar-overlay" data-dev-sidebar-close tabindex="-1" aria-hidden="true"></button>
+        <aside class="dev-sidebar" id="dev-sidebar">
+            <nav class="dev-nav" aria-label="Navigation du tableau de bord">
+    <a class="dev-nav__brand" href="/web-framework/dev/overview">
+        <span class="dev-nav__brand-mark" aria-hidden="true"><i class="fa-solid fa-layer-group"></i></span>
+        <span class="dev-nav__brand-text">Capsule</span>
+    </a>
+    <div class="dev-nav__links">
+        <a href="/web-framework/dev/overview" class="dev-nav__link ">
+            <i class="fa-solid fa-gauge-high" aria-hidden="true"></i><span>Tableau de bord</span>
+        </a>
+        <a href="/web-framework/dev/pages" class="dev-nav__link ">
+            <i class="fa-solid fa-file-lines" aria-hidden="true"></i><span>Pages</span>
+        </a>
+        <a href="/web-framework/dev/medias" class="dev-nav__link ">
+            <i class="fa-solid fa-photo-film" aria-hidden="true"></i><span>Médias</span>
+        </a>
+        <a href="/web-framework/dev/site" class="dev-nav__link ">
+            <i class="fa-solid fa-globe" aria-hidden="true"></i><span>Site</span>
+        </a>
+        <a href="/web-framework/dev/chrome" class="dev-nav__link ">
+            <i class="fa-solid fa-table-columns" aria-hidden="true"></i><span>En-tête &amp; pied</span>
+        </a>
+        <a href="/web-framework/dev/theme" class="dev-nav__link is-active" aria-current="page">
+            <i class="fa-solid fa-palette" aria-hidden="true"></i><span>Thème</span>
+        </a>
+    </div>
+    <div class="dev-nav__footer">
+        <a href="/web-framework/" target="_blank" rel="noopener noreferrer" class="dev-nav__ghost-btn">
+            <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i><span>Voir le site</span>
+        </a>
+        <button type="button" class="dev-nav__ghost-btn" data-dev-theme-toggle aria-pressed="false">
+            <i class="fa-solid fa-moon" aria-hidden="true" data-theme-icon></i><span data-theme-label>Thème sombre</span>
+        </button>
+        <form method="post" action="/web-framework/dev/logout">
+            <button type="submit" class="dev-nav__ghost-btn dev-nav__ghost-btn--full">
+                <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i><span>Déconnexion</span>
+            </button>
+        </form>
+    </div>
+</nav>
+
+        </aside>
+        <div class="dev-main">
+            <header class="dev-topbar">
+                <button type="button" class="dev-topbar__icon-btn dev-topbar__menu-btn" data-dev-sidebar-toggle aria-label="Ouvrir le menu" aria-controls="dev-sidebar" aria-expanded="false">
+                    <i class="fa-solid fa-bars" aria-hidden="true"></i>
+                </button>
+                <nav class="dev-breadcrumb" aria-label="Fil d'ariane"><span aria-current="page">Thème</span></nav>
+                <div class="dev-topbar__spacer"></div>
+                <button type="button" class="dev-topbar__btn" data-dev-cmdk-open>
+                    <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                    <span>Rechercher</span>
+                    <kbd class="dev-kbd">Ctrl K</kbd>
+                </button>
+            </header>
+            <main class="dev-content" id="main-content">
+                <p class="dev-flash" role="status"></p>
+                <div class="dev-editor">
+    <div class="dev-page-head">
+        <div>
+            <h1><i class="fa-solid fa-palette" aria-hidden="true"></i> Thème</h1>
+            <p class="dev-lead">Couleurs, typographie et mise en page du site public.</p>
+        </div>
+        <div class="dev-page-head__actions">
+            <p class="dev-section-form__status" id="theme-saved-status" aria-live="polite"></p>
+            <form method="post" action="/web-framework/dev/theme/reset" data-dev-ajax="theme-reset" data-dev-confirm="Réinitialiser le thème aux valeurs par défaut ?">
+                <button type="submit" class="dev-button dev-button--ghost">
+                    <i class="fa-solid fa-arrow-rotate-left" aria-hidden="true"></i> Réinitialiser
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="dev-builder dev-builder--theme">
+        <div>
+            <div data-dev-tabs>
+                <div class="dev-tabs__list" role="tablist" aria-label="Paramètres du thème">
+                    <button type="button" class="dev-tabs__tab is-active" role="tab" aria-selected="true" data-tab="colors">Couleurs</button>
+                    <button type="button" class="dev-tabs__tab" role="tab" aria-selected="false" data-tab="typography">Typographie</button>
+                    <button type="button" class="dev-tabs__tab" role="tab" aria-selected="false" data-tab="layout">Mise en page</button>
+                </div>
+
+                <form method="post" action="/web-framework/dev/theme" id="theme-form" hx-post="/dev/theme" hx-trigger="change, input delay:400ms" hx-target="#theme-saved-status" hx-swap="innerHTML" data-dev-toast-form="Thème enregistré">
+                    <div class="dev-tabs__panel is-active" data-tab-panel="colors">
+                        <div class="dev-panel dev-panel--colors">
+                            <p class="dev-hint dev-panel__intro">La pipette prélève la couleur d'un élément dans l'aperçu ou sur la page.</p>
+                            <div class="dev-color-accordion" data-dev-color-accordion><details class="dev-color-group" name="theme-colors"><summary class="dev-color-group__summary"><span class="dev-color-group__heading"><span class="dev-color-group__title-row"><i class="fa-solid fa-palette dev-color-group__title-icon" aria-hidden="true"></i><span class="dev-color-group__title">Palette de base</span></span><span class="dev-color-group__desc">Marque, fonds, texte et bordures.</span></span><i class="fa-solid fa-chevron-down dev-color-group__icon" aria-hidden="true"></i></summary><div class="dev-color-list"><div class="dev-color-row dev-color-row--brand"><span class="dev-color-row__type" title="Couleur de marque"><i class="fa-solid fa-droplet" aria-hidden="true"></i><span class="visually-hidden">Couleur de marque</span></span><div class="dev-color-row__label-wrap"><label class="dev-color-row__label" for="color_primary">Primaire</label><button type="button" class="dev-icon-btn dev-color-row__help" aria-label="Primaire : Couleur principale de la marque, CTA importants, liens actifs." title="Couleur principale de la marque, CTA importants, liens actifs."><i class="fa-solid fa-circle-info" aria-hidden="true"></i></button></div><div class="dev-color-field" data-color-sync><input type="color" id="color_primary" name="color_primary" value="#121317" /><input class="dev-input dev-input--sm" type="text" data-color-text value="#121317" aria-label="Valeur hexadécimale Primaire" /><button type="button" class="dev-icon-btn dev-color-field__pick" data-color-eyedropper aria-label="Prélever une couleur" title="Prélever la couleur d'un élément"><i class="fa-solid fa-eyedropper" aria-hidden="true"></i></button></div></div><div class="dev-color-row dev-color-row--brand"><span class="dev-color-row__type" title="Couleur de marque"><i class="fa-solid fa-droplet" aria-hidden="true"></i><span class="visually-hidden">Couleur de marque</span></span><div class="dev-color-row__label-wrap"><label class="dev-color-row__label" for="color_primary_hover">Primaire au survol</label><button type="button" class="dev-icon-btn dev-color-row__help" aria-label="Primaire au survol : Variante plus foncée ou saturée au survol du primaire." title="Variante plus foncée ou saturée au survol du primaire."><i class="fa-solid fa-circle-info" aria-hidden="true"></i></button></div><div class="dev-color-field" data-color-sync><input type="color" id="color_primary_hover" name="color_primary_hover" value="#121317" /><input class="dev-input dev-input--sm" type="text" data-color-text value="#121317" aria-label="Valeur hexadécimale Primaire au survol" /><button type="button" class="dev-icon-btn dev-color-field__pick" data-color-eyedropper aria-label="Prélever une couleur" title="Prélever la couleur d'un élément"><i class="fa-solid fa-eyedropper" aria-hidden="true"></i></button></div></div><div class="dev-color-row dev-color-row--brand"><span class="dev-color-row__type" title="Couleur de marque"><i class="fa-solid fa-droplet" aria-hidden="true"></i><span class="visually-hidden">Couleur de marque</span></span><div class="dev-color-row__label-wrap"><label class="dev-color-row__label" for="color_secondary">Secondaire</label><button type="button" class="dev-icon-btn dev-color-row__help" aria-label="Secondaire : Accent ou soutien, pour les actions moins prioritaires." title="Accent ou soutien, pour les actions moins prioritaires."><i class="fa-solid fa-circle-info" aria-hidden="true"></i></button></div><div class="dev-color-field" data-color-sync><input type="color" id="color_secondary" name="color_secondary" value="#64748b" /><input class="dev-input dev-input--sm" type="text" data-color-text value="#64748b" aria-label="Valeur hexadécimale Secondaire" /><button type="button" class="dev-icon-btn dev-color-field__pick" data-color-eyedropper aria-label="Prélever une couleur" title="Prélever la couleur d'un élément"><i class="fa-solid fa-eyedropper" aria-hidden="true"></i></button></div></div><div class="dev-color-row dev-color-row--brand"><span class="dev-color-row__type" title="Couleur de marque"><i class="fa-solid fa-droplet" aria-hidden="true"></i><span class="visually-hidden">Couleur de marque</span></span><div class="dev-color-row__label-wrap"><label class="dev-color-row__label" for="color_secondary_hover">Secondaire au survol</label><button type="button" class="dev-icon-btn dev-color-row__help" aria-label="Secondaire au survol : Variante au survol du secondaire." title="Variante au survol du secondaire."><i class="fa-solid fa-circle-info" aria-hidden="true"></i></button></div><div class="dev-color-field" data-color-sync><input type="color" id="color_secondary_hover" name="color_secondary_hover" value="#475569" /><input class="dev-input dev-input--sm" type="text" data-color-text value="#475569" aria-label="Valeur hexadécimale Secondaire au survol" /><button type="button" class="dev-icon-btn dev-color-field__pick" data-color-eyedropper aria-label="Prélever une couleur" title="Prélever la couleur d'un élément"><i class="fa-solid fa-eyedropper" aria-hidden="true"></i></button></div></div><div class="dev-color-row dev-color-row--background"><span class="dev-color-row__type" title="Fond de page"><i class="fa-solid fa-panorama" aria-hidden="true"></i><span class="visually-hidden">Fond de page</span></span><div class="dev-color-row__label-wrap"><label class="dev-color-row__label" for="color_background">Fond de page</label><button type="button" class="dev-icon-btn dev-color-row__help" aria-label="Fond de page : Couleur de fond générale de la page (corps du site, bandes « fond de page »)." title="Couleur de fond générale de la page (corps du site, bandes « fond de page »)."><i class="fa-solid fa-circle-info" aria-hidden="true"></i></button></div><div class="dev-color-field" data-color-sync><input type="color" id="color_background" name="color_background" value="#121317" /><input class="dev-input dev-input--sm" type="text" data-color-text value="#121317" aria-label="Valeur hexadécimale Fond de page" /><button type="button" class="dev-icon-btn dev-color-field__pick" data-color-eyedropper aria-label="Prélever une couleur" title="Prélever la couleur d'un élément"><i class="fa-solid fa-eyedropper" aria-hidden="true"></i></button></div></div><div class="dev-color-row dev-color-row--surface"><span class="dev-color-row__type" title="Surface"><i class="fa-solid fa-layer-group" aria-hidden="true"></i><span class="visually-hidden">Surface</span></span><div class="dev-color-row__label-wrap"><label class="dev-color-row__label" for="color_surface">Surface</label><button type="button" class="dev-icon-btn dev-color-row__help" aria-label="Surface : Fond des cartes, panneaux, pied de page, menus déroulants et bandes atténuées." title="Fond des cartes, panneaux, pied de page, menus déroulants et bandes atténuées."><i class="fa-solid fa-circle-info" aria-hidden="true"></i></button></div><div class="dev-color-field" data-color-sync><input type="color" id="color_surface" name="color_surface" value="#121317" /><input class="dev-input dev-input--sm" type="text" data-color-text value="#121317" aria-label="Valeur hexadécimale Surface" /><button type="button" class="dev-icon-btn dev-color-field__pick" data-color-eyedropper aria-label="Prélever une couleur" title="Prélever la couleur d'un élément"><i class="fa-solid fa-eyedropper" aria-hidden="true"></i></button></div></div><div class="dev-color-row dev-color-row--border"><span class="dev-color-row__type" title="Bordure"><i class="fa-solid fa-border-all" aria-hidden="true"></i><span class="visually-hidden">Bordure</span></span><div class="dev-color-row__label-wrap"><label class="dev-color-row__label" for="color_border">Bordures</label><button type="button" class="dev-icon-btn dev-color-row__help" aria-label="Bordures : Bordures, séparateurs et contours d&#039;inputs." title="Bordures, séparateurs et contours d&#039;inputs."><i class="fa-solid fa-circle-info" aria-hidden="true"></i></button></div><div class="dev-color-field" data-color-sync><input type="color" id="color_border" name="color_border" value="#6a5cf6" /><input class="dev-input dev-input--sm" type="text" data-color-text value="#6a5cf6" aria-label="Valeur hexadécimale Bordures" /><button type="button" class="dev-icon-btn dev-color-field__pick" data-color-eyedropper aria-label="Prélever une couleur" title="Prélever la couleur d'un élément"><i class="fa-solid fa-eyedropper" aria-hidden="true"></i></button></div></div><div class="dev-color-row dev-color-row--text"><span class="dev-color-row__type" title="Texte"><i class="fa-solid fa-font" aria-hidden="true"></i><span class="visually-hidden">Texte</span></span><div class="dev-color-row__label-wrap"><label class="dev-color-row__label" for="color_text">Texte</label><button type="button" class="dev-icon-btn dev-color-row__help" aria-label="Texte : Couleur principale du texte." title="Couleur principale du texte."><i class="fa-solid fa-circle-info" aria-hidden="true"></i></button></div><div class="dev-color-field" data-color-sync><input type="color" id="color_text" name="color_text" value="#ffffff" /><input class="dev-input dev-input--sm" type="text" data-color-text value="#ffffff" aria-label="Valeur hexadécimale Texte" /><button type="button" class="dev-icon-btn dev-color-field__pick" data-color-eyedropper aria-label="Prélever une couleur" title="Prélever la couleur d'un élément"><i class="fa-solid fa-eyedropper" aria-hidden="true"></i></button></div></div><div class="dev-color-row dev-color-row--text"><span class="dev-color-row__type" title="Texte"><i class="fa-solid fa-font" aria-hidden="true"></i><span class="visually-hidden">Texte</span></span><div class="dev-color-row__label-wrap"><label class="dev-color-row__label" for="color_text_muted">Texte atténué</label><button type="button" class="dev-icon-btn dev-color-row__help" aria-label="Texte atténué : Texte secondaire, descriptions et labels moins importants." title="Texte secondaire, descriptions et labels moins importants."><i class="fa-solid fa-circle-info" aria-hidden="true"></i></button></div><div class="dev-color-field" data-color-sync><input type="color" id="color_text_muted" name="color_text_muted" value="#dbdde1" /><input class="dev-input dev-input--sm" type="text" data-color-text value="#dbdde1" aria-label="Valeur hexadécimale Texte atténué" /><button type="button" class="dev-icon-btn dev-color-field__pick" data-color-eyedropper aria-label="Prélever une couleur" title="Prélever la couleur d'un élément"><i class="fa-solid fa-eyedropper" aria-hidden="true"></i></button></div></div></div></details><details class="dev-color-group" name="theme-colors"><summary class="dev-color-group__summary"><span class="dev-color-group__heading"><span class="dev-color-group__title-row"><i class="fa-solid fa-hand-pointer dev-color-group__title-icon" aria-hidden="true"></i><span class="dev-color-group__title">Couleurs d&#039;action</span></span><span class="dev-color-group__desc">Boutons et liens du site.</span></span><i class="fa-solid fa-chevron-down dev-color-group__icon" aria-hidden="true"></i></summary><div class="dev-color-list"><div class="dev-color-row dev-color-row--button-bg"><span class="dev-color-row__type" title="Fond de bouton"><i class="fa-solid fa-square" aria-hidden="true"></i><span class="visually-hidden">Fond de bouton</span></span><div class="dev-color-row__label-wrap"><label class="dev-color-row__label" for="color_button_primary_bg">Bouton principal, fond</label><button type="button" class="dev-icon-btn dev-color-row__help" aria-label="Bouton principal, fond : Fond du bouton principal." title="Fond du bouton principal."><i class="fa-solid fa-circle-info" aria-hidden="true"></i></button></div><div class="dev-color-field" data-color-sync><input type="color" id="color_button_primary_bg" name="color_button_primary_bg" value="#121317" /><input class="dev-input dev-input--sm" type="text" data-color-text value="#121317" aria-label="Valeur hexadécimale Bouton principal, fond" /><button type="button" class="dev-icon-btn dev-color-field__pick" data-color-eyedropper aria-label="Prélever une couleur" title="Prélever la couleur d'un élément"><i class="fa-solid fa-eyedropper" aria-hidden="true"></i></button></div></div><div class="dev-color-row dev-color-row--button-bg"><span class="dev-color-row__type" title="Fond de bouton"><i class="fa-solid fa-square" aria-hidden="true"></i><span class="visually-hidden">Fond de bouton</span></span><div class="dev-color-row__label-wrap"><label class="dev-color-row__label" for="color_button_primary_hover">Bouton principal, survol</label><button type="button" class="dev-icon-btn dev-color-row__help" aria-label="Bouton principal, survol : Fond du bouton principal au survol." title="Fond du bouton principal au survol."><i class="fa-solid fa-circle-info" aria-hidden="true"></i></button></div><div class="dev-color-field" data-color-sync><input type="color" id="color_button_primary_hover" name="color_button_primary_hover" value="#6a5cf6" /><input class="dev-input dev-input--sm" type="text" data-color-text value="#6a5cf6" aria-label="Valeur hexadécimale Bouton principal, survol" /><button type="button" class="dev-icon-btn dev-color-field__pick" data-color-eyedropper aria-label="Prélever une couleur" title="Prélever la couleur d'un élément"><i class="fa-solid fa-eyedropper" aria-hidden="true"></i></button></div></div><div class="dev-color-row dev-color-row--button-text"><span class="dev-color-row__type" title="Texte de bouton"><i class="fa-solid fa-a" aria-hidden="true"></i><span class="visually-hidden">Texte de bouton</span></span><div class="dev-color-row__label-wrap"><label class="dev-color-row__label" for="color_button_primary_text">Bouton principal, texte</label><button type="button" class="dev-icon-btn dev-color-row__help" aria-label="Bouton principal, texte : Texte du bouton principal." title="Texte du bouton principal."><i class="fa-solid fa-circle-info" aria-hidden="true"></i></button></div><div class="dev-color-field" data-color-sync><input type="color" id="color_button_primary_text" name="color_button_primary_text" value="#ffffff" /><input class="dev-input dev-input--sm" type="text" data-color-text value="#ffffff" aria-label="Valeur hexadécimale Bouton principal, texte" /><button type="button" class="dev-icon-btn dev-color-field__pick" data-color-eyedropper aria-label="Prélever une couleur" title="Prélever la couleur d'un élément"><i class="fa-solid fa-eyedropper" aria-hidden="true"></i></button></div></div><div class="dev-color-row dev-color-row--button-bg"><span class="dev-color-row__type" title="Fond de bouton"><i class="fa-solid fa-square" aria-hidden="true"></i><span class="visually-hidden">Fond de bouton</span></span><div class="dev-color-row__label-wrap"><label class="dev-color-row__label" for="color_button_secondary_bg">Bouton secondaire, fond</label><button type="button" class="dev-icon-btn dev-color-row__help" aria-label="Bouton secondaire, fond : Fond du bouton secondaire." title="Fond du bouton secondaire."><i class="fa-solid fa-circle-info" aria-hidden="true"></i></button></div><div class="dev-color-field" data-color-sync><input type="color" id="color_button_secondary_bg" name="color_button_secondary_bg" value="#f1f5f9" /><input class="dev-input dev-input--sm" type="text" data-color-text value="#f1f5f9" aria-label="Valeur hexadécimale Bouton secondaire, fond" /><button type="button" class="dev-icon-btn dev-color-field__pick" data-color-eyedropper aria-label="Prélever une couleur" title="Prélever la couleur d'un élément"><i class="fa-solid fa-eyedropper" aria-hidden="true"></i></button></div></div><div class="dev-color-row dev-color-row--button-bg"><span class="dev-color-row__type" title="Fond de bouton"><i class="fa-solid fa-square" aria-hidden="true"></i><span class="visually-hidden">Fond de bouton</span></span><div class="dev-color-row__label-wrap"><label class="dev-color-row__label" for="color_button_secondary_hover">Bouton secondaire, survol</label><button type="button" class="dev-icon-btn dev-color-row__help" aria-label="Bouton secondaire, survol : Fond du bouton secondaire au survol." title="Fond du bouton secondaire au survol."><i class="fa-solid fa-circle-info" aria-hidden="true"></i></button></div><div class="dev-color-field" data-color-sync><input type="color" id="color_button_secondary_hover" name="color_button_secondary_hover" value="#e2e8f0" /><input class="dev-input dev-input--sm" type="text" data-color-text value="#e2e8f0" aria-label="Valeur hexadécimale Bouton secondaire, survol" /><button type="button" class="dev-icon-btn dev-color-field__pick" data-color-eyedropper aria-label="Prélever une couleur" title="Prélever la couleur d'un élément"><i class="fa-solid fa-eyedropper" aria-hidden="true"></i></button></div></div><div class="dev-color-row dev-color-row--button-text"><span class="dev-color-row__type" title="Texte de bouton"><i class="fa-solid fa-a" aria-hidden="true"></i><span class="visually-hidden">Texte de bouton</span></span><div class="dev-color-row__label-wrap"><label class="dev-color-row__label" for="color_button_secondary_text">Bouton secondaire, texte</label><button type="button" class="dev-icon-btn dev-color-row__help" aria-label="Bouton secondaire, texte : Texte du bouton secondaire." title="Texte du bouton secondaire."><i class="fa-solid fa-circle-info" aria-hidden="true"></i></button></div><div class="dev-color-field" data-color-sync><input type="color" id="color_button_secondary_text" name="color_button_secondary_text" value="#ffffff" /><input class="dev-input dev-input--sm" type="text" data-color-text value="#ffffff" aria-label="Valeur hexadécimale Bouton secondaire, texte" /><button type="button" class="dev-icon-btn dev-color-field__pick" data-color-eyedropper aria-label="Prélever une couleur" title="Prélever la couleur d'un élément"><i class="fa-solid fa-eyedropper" aria-hidden="true"></i></button></div></div><div class="dev-color-row dev-color-row--link"><span class="dev-color-row__type" title="Lien"><i class="fa-solid fa-link" aria-hidden="true"></i><span class="visually-hidden">Lien</span></span><div class="dev-color-row__label-wrap"><label class="dev-color-row__label" for="color_link">Liens</label><button type="button" class="dev-icon-btn dev-color-row__help" aria-label="Liens : Couleur des liens." title="Couleur des liens."><i class="fa-solid fa-circle-info" aria-hidden="true"></i></button></div><div class="dev-color-field" data-color-sync><input type="color" id="color_link" name="color_link" value="#7c73dd" /><input class="dev-input dev-input--sm" type="text" data-color-text value="#7c73dd" aria-label="Valeur hexadécimale Liens" /><button type="button" class="dev-icon-btn dev-color-field__pick" data-color-eyedropper aria-label="Prélever une couleur" title="Prélever la couleur d'un élément"><i class="fa-solid fa-eyedropper" aria-hidden="true"></i></button></div></div><div class="dev-color-row dev-color-row--link"><span class="dev-color-row__type" title="Lien"><i class="fa-solid fa-link" aria-hidden="true"></i><span class="visually-hidden">Lien</span></span><div class="dev-color-row__label-wrap"><label class="dev-color-row__label" for="color_link_hover">Liens au survol</label><button type="button" class="dev-icon-btn dev-color-row__help" aria-label="Liens au survol : Couleur des liens au survol." title="Couleur des liens au survol."><i class="fa-solid fa-circle-info" aria-hidden="true"></i></button></div><div class="dev-color-field" data-color-sync><input type="color" id="color_link_hover" name="color_link_hover" value="#ffffff" /><input class="dev-input dev-input--sm" type="text" data-color-text value="#ffffff" aria-label="Valeur hexadécimale Liens au survol" /><button type="button" class="dev-icon-btn dev-color-field__pick" data-color-eyedropper aria-label="Prélever une couleur" title="Prélever la couleur d'un élément"><i class="fa-solid fa-eyedropper" aria-hidden="true"></i></button></div></div></div></details><details class="dev-color-group" name="theme-colors"><summary class="dev-color-group__summary"><span class="dev-color-group__heading"><span class="dev-color-group__title-row"><i class="fa-solid fa-shield-halved dev-color-group__title-icon" aria-hidden="true"></i><span class="dev-color-group__title">États UI</span></span><span class="dev-color-group__desc">Retours utilisateur et accessibilité.</span></span><i class="fa-solid fa-chevron-down dev-color-group__icon" aria-hidden="true"></i></summary><div class="dev-color-list"><div class="dev-color-row dev-color-row--success"><span class="dev-color-row__type" title="Succès"><i class="fa-solid fa-circle-check" aria-hidden="true"></i><span class="visually-hidden">Succès</span></span><div class="dev-color-row__label-wrap"><label class="dev-color-row__label" for="color_success">Succès</label><button type="button" class="dev-icon-btn dev-color-row__help" aria-label="Succès : Validation, succès, messages positifs." title="Validation, succès, messages positifs."><i class="fa-solid fa-circle-info" aria-hidden="true"></i></button></div><div class="dev-color-field" data-color-sync><input type="color" id="color_success" name="color_success" value="#1cca3e" /><input class="dev-input dev-input--sm" type="text" data-color-text value="#1cca3e" aria-label="Valeur hexadécimale Succès" /><button type="button" class="dev-icon-btn dev-color-field__pick" data-color-eyedropper aria-label="Prélever une couleur" title="Prélever la couleur d'un élément"><i class="fa-solid fa-eyedropper" aria-hidden="true"></i></button></div></div><div class="dev-color-row dev-color-row--warning"><span class="dev-color-row__type" title="Avertissement"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i><span class="visually-hidden">Avertissement</span></span><div class="dev-color-row__label-wrap"><label class="dev-color-row__label" for="color_warning">Avertissement</label><button type="button" class="dev-icon-btn dev-color-row__help" aria-label="Avertissement : Alerte modérée, attention." title="Alerte modérée, attention."><i class="fa-solid fa-circle-info" aria-hidden="true"></i></button></div><div class="dev-color-field" data-color-sync><input type="color" id="color_warning" name="color_warning" value="#d97706" /><input class="dev-input dev-input--sm" type="text" data-color-text value="#d97706" aria-label="Valeur hexadécimale Avertissement" /><button type="button" class="dev-icon-btn dev-color-field__pick" data-color-eyedropper aria-label="Prélever une couleur" title="Prélever la couleur d'un élément"><i class="fa-solid fa-eyedropper" aria-hidden="true"></i></button></div></div><div class="dev-color-row dev-color-row--error"><span class="dev-color-row__type" title="Erreur"><i class="fa-solid fa-circle-xmark" aria-hidden="true"></i><span class="visually-hidden">Erreur</span></span><div class="dev-color-row__label-wrap"><label class="dev-color-row__label" for="color_error">Erreur</label><button type="button" class="dev-icon-btn dev-color-row__help" aria-label="Erreur : Erreur, problème, validation négative." title="Erreur, problème, validation négative."><i class="fa-solid fa-circle-info" aria-hidden="true"></i></button></div><div class="dev-color-field" data-color-sync><input type="color" id="color_error" name="color_error" value="#dc2626" /><input class="dev-input dev-input--sm" type="text" data-color-text value="#dc2626" aria-label="Valeur hexadécimale Erreur" /><button type="button" class="dev-icon-btn dev-color-field__pick" data-color-eyedropper aria-label="Prélever une couleur" title="Prélever la couleur d'un élément"><i class="fa-solid fa-eyedropper" aria-hidden="true"></i></button></div></div><div class="dev-color-row dev-color-row--info"><span class="dev-color-row__type" title="Information"><i class="fa-solid fa-circle-info" aria-hidden="true"></i><span class="visually-hidden">Information</span></span><div class="dev-color-row__label-wrap"><label class="dev-color-row__label" for="color_info">Information</label><button type="button" class="dev-icon-btn dev-color-row__help" aria-label="Information : Information neutre ou pédagogique." title="Information neutre ou pédagogique."><i class="fa-solid fa-circle-info" aria-hidden="true"></i></button></div><div class="dev-color-field" data-color-sync><input type="color" id="color_info" name="color_info" value="#0284c7" /><input class="dev-input dev-input--sm" type="text" data-color-text value="#0284c7" aria-label="Valeur hexadécimale Information" /><button type="button" class="dev-icon-btn dev-color-field__pick" data-color-eyedropper aria-label="Prélever une couleur" title="Prélever la couleur d'un élément"><i class="fa-solid fa-eyedropper" aria-hidden="true"></i></button></div></div><div class="dev-color-row dev-color-row--focus"><span class="dev-color-row__type" title="Focus clavier"><i class="fa-solid fa-bullseye" aria-hidden="true"></i><span class="visually-hidden">Focus clavier</span></span><div class="dev-color-row__label-wrap"><label class="dev-color-row__label" for="color_focus_ring">Contour de focus</label><button type="button" class="dev-icon-btn dev-color-row__help" aria-label="Contour de focus : Contour de focus clavier et accessibilité." title="Contour de focus clavier et accessibilité."><i class="fa-solid fa-circle-info" aria-hidden="true"></i></button></div><div class="dev-color-field" data-color-sync><input type="color" id="color_focus_ring" name="color_focus_ring" value="#3b82f6" /><input class="dev-input dev-input--sm" type="text" data-color-text value="#3b82f6" aria-label="Valeur hexadécimale Contour de focus" /><button type="button" class="dev-icon-btn dev-color-field__pick" data-color-eyedropper aria-label="Prélever une couleur" title="Prélever la couleur d'un élément"><i class="fa-solid fa-eyedropper" aria-hidden="true"></i></button></div></div><div class="dev-color-row dev-color-row--disabled"><span class="dev-color-row__type" title="Élément désactivé"><i class="fa-solid fa-ban" aria-hidden="true"></i><span class="visually-hidden">Élément désactivé</span></span><div class="dev-color-row__label-wrap"><label class="dev-color-row__label" for="color_disabled">Désactivé</label><button type="button" class="dev-icon-btn dev-color-row__help" aria-label="Désactivé : État désactivé, généralement grisé." title="État désactivé, généralement grisé."><i class="fa-solid fa-circle-info" aria-hidden="true"></i></button></div><div class="dev-color-field" data-color-sync><input type="color" id="color_disabled" name="color_disabled" value="#94a3b8" /><input class="dev-input dev-input--sm" type="text" data-color-text value="#94a3b8" aria-label="Valeur hexadécimale Désactivé" /><button type="button" class="dev-icon-btn dev-color-field__pick" data-color-eyedropper aria-label="Prélever une couleur" title="Prélever la couleur d'un élément"><i class="fa-solid fa-eyedropper" aria-hidden="true"></i></button></div></div></div></details></div>
+                        </div>
+                    </div>
+
+                    <div class="dev-tabs__panel" data-tab-panel="layout">
+                        <div class="dev-panel">
+                            <h2 class="dev-panel__title">Espacement &amp; formes</h2>
+                            <p class="dev-panel__desc">Réglages structurels appliqués à tout le site public : l'air entre les blocs, l'arrondi des boutons/cartes et la largeur maximale du contenu.</p>
+                            <div class="dev-form--grid dev-form--grid-2">
+                                <div class="dev-field">
+                                    <label class="dev-label" for="spacing_section">Espacement entre sections</label>
+                                    <input class="dev-input" id="spacing_section" type="text" name="spacing_section" value="4rem" placeholder="4rem" />
+                                </div>
+                                <div class="dev-field">
+                                    <label class="dev-label" for="layout_radius">Rayon des coins</label>
+                                    <input class="dev-input" id="layout_radius" type="text" name="layout_radius" value="10px" placeholder="10px" />
+                                </div>
+                                <div class="dev-field dev-form__full">
+                                    <label class="dev-label" for="layout_container">Largeur du conteneur</label>
+                                    <input class="dev-input" id="layout_container" type="text" name="layout_container" value="72rem" placeholder="72rem" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="dev-tabs__panel" data-tab-panel="typography">
+                    <div class="dev-stack dev-stack--lg">
+                        <div class="dev-panel">
+                            <h2 class="dev-panel__title">Polices</h2>
+                            <p class="dev-panel__desc">Choisissez une police système ou une police importée ci-dessous.</p>
+                            <div class="dev-form--grid dev-form--grid-2">
+                                <div class="dev-field">
+                                    <label class="dev-label" for="font_heading_select">Titres</label>
+                                    <select class="dev-input dev-select" id="font_heading_select" data-font-picker="font_heading" form="theme-form">
+                                        <option value="Inter, system-ui, sans-serif" selected>Inter (si installée), sinon système</option><option value="system-ui, sans-serif">Système (system-ui)</option><option value="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, Helvetica, Arial, sans-serif">Système (natif étendu)</option><option value="Arial, Helvetica, sans-serif">Arial</option><option value="Verdana, Geneva, sans-serif">Verdana</option><option value="&quot;Trebuchet MS&quot;, sans-serif">Trebuchet MS</option><option value="Georgia, &quot;Times New Roman&quot;, Times, serif">Georgia (serif)</option><option value="&quot;Times New Roman&quot;, Times, serif">Times New Roman (serif)</option><option value="&quot;Courier New&quot;, Courier, monospace">Courier New (monospace)</option><option value="__custom__">Personnalisé (CSS)…</option>
+                                    </select>
+                                    <input class="dev-input dev-input--sm" type="text" id="font_heading" name="font_heading" form="theme-form" value="Inter, system-ui, sans-serif" placeholder="Pile CSS personnalisée" data-font-picker-custom="font_heading" hidden />
+                                </div>
+                                <div class="dev-field">
+                                    <label class="dev-label" for="font_body_select">Corps de texte</label>
+                                    <select class="dev-input dev-select" id="font_body_select" data-font-picker="font_body" form="theme-form">
+                                        <option value="Inter, system-ui, sans-serif">Inter (si installée), sinon système</option><option value="system-ui, sans-serif" selected>Système (system-ui)</option><option value="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, Helvetica, Arial, sans-serif">Système (natif étendu)</option><option value="Arial, Helvetica, sans-serif">Arial</option><option value="Verdana, Geneva, sans-serif">Verdana</option><option value="&quot;Trebuchet MS&quot;, sans-serif">Trebuchet MS</option><option value="Georgia, &quot;Times New Roman&quot;, Times, serif">Georgia (serif)</option><option value="&quot;Times New Roman&quot;, Times, serif">Times New Roman (serif)</option><option value="&quot;Courier New&quot;, Courier, monospace">Courier New (monospace)</option><option value="__custom__">Personnalisé (CSS)…</option>
+                                    </select>
+                                    <input class="dev-input dev-input--sm" type="text" id="font_body" name="font_body" form="theme-form" value="system-ui, sans-serif" placeholder="Pile CSS personnalisée" data-font-picker-custom="font_body" hidden />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="dev-panel">
+                            <h2 class="dev-panel__title">Polices importées</h2>
+                            <p class="dev-panel__desc">Fichiers hébergés localement (WOFF2, WOFF, TTF, OTF).</p>
+                            <div id="dev-font-list">
+                                <p class="dev-hint">Aucune police importée. Ajoutez un fichier .woff2, .woff, .ttf ou .otf ci-dessous.</p>
+                            </div>
+                            <form method="post" action="/web-framework/dev/theme/fonts" enctype="multipart/form-data" class="dev-form--grid dev-form--grid-2 dev-font-upload" data-dev-ajax="font-upload" data-dev-toast-form="Police importée">
+                                <div class="dev-field">
+                                    <label class="dev-label" for="font_file">Fichier de police</label>
+                                    <input class="dev-input" id="font_file" type="file" name="file" accept=".woff2,.woff,.ttf,.otf" required data-dev-autosubmit />
+                                </div>
+                                <div class="dev-field">
+                                    <label class="dev-label" for="font_name">Nom (optionnel)</label>
+                                    <input class="dev-input" id="font_name" type="text" name="font_name" placeholder="Détecté automatiquement si vide" />
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="dev-builder__preview">
+            <div class="dev-preview-label">
+                <span>Aperçu live</span>
+                <div class="dev-device-toolbar" role="group" aria-label="Taille de l'aperçu" data-dev-device-toolbar data-target="theme-preview-frame">
+                    <button type="button" class="dev-device-btn" data-device="tablet" aria-label="Tablette" title="Tablette"><i class="fa-solid fa-tablet-screen-button" aria-hidden="true"></i></button>
+                    <button type="button" class="dev-device-btn is-active" data-device="mobile" aria-label="Mobile" title="Mobile"><i class="fa-solid fa-mobile-screen-button" aria-hidden="true"></i></button>
+                </div>
+                <a class="dev-preview-desktop" href="/web-framework/dev/preview/theme" target="_blank" rel="noopener noreferrer">Ouvrir <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+            </div>
+            <div class="dev-preview-frame" id="theme-preview-frame" data-device="mobile">
+                <div class="dev-preview-device">
+                    <iframe id="preview-frame" src="/web-framework/dev/preview/theme" title="Aperçu du thème"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+            </main>
+        </div>
+    </div>
+
+    <div class="dev-modal" id="dev-cmdk" hidden>
+        <button type="button" class="dev-modal__backdrop" data-dev-cmdk-close tabindex="-1" aria-hidden="true"></button>
+        <div class="dev-cmdk__panel" role="dialog" aria-modal="true" aria-label="Navigation rapide">
+            <div class="dev-cmdk__search">
+                <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                <input type="text" id="dev-cmdk-input" placeholder="Aller à..." autocomplete="off" aria-label="Rechercher une section" />
+            </div>
+            <ul class="dev-cmdk__list" id="dev-cmdk-list">
+                <li><a href="/web-framework/dev/overview" data-cmdk-item data-cmdk-label="tableau de bord overview accueil"><i class="fa-solid fa-gauge-high" aria-hidden="true"></i> Tableau de bord</a></li>
+                <li><a href="/web-framework/dev/pages" data-cmdk-item data-cmdk-label="pages liste"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Pages</a></li>
+                <li><a href="/web-framework/dev/pages#new" data-cmdk-item data-cmdk-label="nouvelle page creer ajouter"><i class="fa-solid fa-plus" aria-hidden="true"></i> Nouvelle page</a></li>
+                <li><a href="/web-framework/dev/site" data-cmdk-item data-cmdk-label="site navigation identite cta"><i class="fa-solid fa-globe" aria-hidden="true"></i> Site</a></li>
+                <li><a href="/web-framework/dev/chrome" data-cmdk-item data-cmdk-label="en-tete pied de page header footer variantes partials"><i class="fa-solid fa-table-columns" aria-hidden="true"></i> En-tête &amp; pied de page</a></li>
+                <li><a href="/web-framework/dev/theme" data-cmdk-item data-cmdk-label="theme couleurs polices apparence"><i class="fa-solid fa-palette" aria-hidden="true"></i> Thème</a></li>
+                <li><a href="/web-framework/" target="_blank" rel="noopener noreferrer" data-cmdk-item data-cmdk-label="voir le site public"><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i> Voir le site</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="dev-toast-container" id="dev-toast-container" aria-live="polite" aria-atomic="true"></div>
+
+    <div class="dev-modal" id="dev-confirm-modal" hidden>
+        <button type="button" class="dev-modal__backdrop" data-dev-confirm-cancel tabindex="-1" aria-hidden="true"></button>
+        <div class="dev-block-picker__panel dev-modal__panel--form dev-confirm-modal__panel" role="alertdialog" aria-modal="true" aria-labelledby="dev-confirm-title" aria-describedby="dev-confirm-message">
+            <div class="dev-block-picker__head">
+                <h2 id="dev-confirm-title">Confirmer l'action</h2>
+                <button type="button" class="dev-icon-btn" data-dev-confirm-cancel aria-label="Fermer"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+            </div>
+            <div class="dev-modal__body">
+                <p class="dev-confirm-modal__message" id="dev-confirm-message"></p>
+                <div class="dev-confirm-modal__actions">
+                    <button type="button" class="dev-button dev-button--ghost" data-dev-confirm-cancel>Annuler</button>
+                    <button type="button" class="dev-button dev-button--danger" data-dev-confirm-ok>Confirmer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

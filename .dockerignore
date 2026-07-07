@@ -1,0 +1,10 @@
+.git
+.github
+dist
+node_modules
+.phpunit.cache
+data
+vendor
+tests
+*.md
+.cursor

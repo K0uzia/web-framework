@@ -523,18 +523,35 @@
                     }
                     refreshPreview();
                 }
-                if (mode === 'section-image') {
-                    var imageField = form.closest('[data-dev-section-image]');
+                if (mode === 'section-media') {
+                    var mediaField = form.closest('[data-dev-section-media]');
                     html = safeSwapHtml(html, '');
-                    if (imageField && html.trim() !== '' && !isFullLayoutHtml(html)) {
-                        imageField.outerHTML = html;
+                    if (mediaField && html.trim() !== '' && !isFullLayoutHtml(html)) {
+                        mediaField.outerHTML = html;
                     }
                     if (result.ok) {
-                        showToast(toastMessage || 'Image mise à jour');
+                        showToast(toastMessage || 'Média mis à jour');
                     } else if (html.indexOf('dev-uploader__error') !== -1) {
-                        showToast('Échec de la mise à jour de l\u2019image.', true);
+                        showToast('Échec de la mise à jour du média.', true);
                     }
                     refreshPreview();
+                }
+                if (mode === 'medias-grid') {
+                    html = safeSwapHtml(html, '');
+                    var gridWrap = form.parentElement ? form.parentElement.querySelector('[data-dev-medias-grid]') : null;
+                    if (gridWrap && html.trim() !== '' && !isFullLayoutHtml(html)) {
+                        var replacement = html.match(/<div[^>]+data-dev-medias-grid[^>]*>[\s\S]*<\/div>/);
+                        if (replacement) {
+                            gridWrap.outerHTML = replacement[0];
+                        } else if (html.indexOf('dev-media-grid') !== -1 || html.indexOf('dev-empty') !== -1) {
+                            gridWrap.innerHTML = html;
+                        }
+                    }
+                    if (result.ok) {
+                        showToast(toastMessage || 'Bibliothèque mise à jour');
+                    } else {
+                        showToast('Échec de l\u2019opération sur la bibliothèque.', true);
+                    }
                 }
                 if (mode === 'theme-reset') {
                     window.location.reload();
@@ -567,7 +584,7 @@
                     }
                     return;
                 }
-                if (toastMessage && mode !== 'sections' && mode !== 'nav' && mode.indexOf('media-') !== 0 && mode !== 'section-image') {
+                if (toastMessage && mode !== 'sections' && mode !== 'nav' && mode.indexOf('media-') !== 0 && mode !== 'section-media' && mode !== 'medias-grid') {
                     showToast(result.ok ? toastMessage : 'Échec de l\u2019opération.', !result.ok);
                 }
                 refreshPreview();
@@ -1117,38 +1134,39 @@
                 openSectionEditor(card);
             });
         });
-        initSectionImageFields(scope);
+        initSectionMediaFields(scope);
+        initRepeaterMediaPickers(scope);
     }
 
-    function handleSectionImageResponse(wrap, result, okMessage) {
+    function handleSectionMediaResponse(wrap, result, okMessage) {
         var html = safeSwapHtml(result.html, '');
         var parent = wrap ? wrap.parentElement : null;
         if (wrap && html.trim() !== '' && !isFullLayoutHtml(html)) {
             wrap.outerHTML = html;
             if (parent) {
-                initSectionImageFields(parent);
+                initSectionMediaFields(parent);
             }
         }
         if (result.ok) {
             showToast(okMessage);
         } else if (html.indexOf('dev-uploader__error') !== -1) {
-            showToast('Échec de la mise à jour de l\u2019image.', true);
+            showToast('Échec de la mise à jour du média.', true);
         }
         refreshPreview();
     }
 
-    function initSectionImageFields(scope) {
-        (scope || document).querySelectorAll('[data-dev-section-image]').forEach(function (wrap) {
-            if (wrap.dataset.sectionImageInit === '1') {
+    function initSectionMediaFields(scope) {
+        (scope || document).querySelectorAll('[data-dev-section-media]').forEach(function (wrap) {
+            if (wrap.dataset.sectionMediaInit === '1') {
                 return;
             }
-            wrap.dataset.sectionImageInit = '1';
-            var base = wrap.getAttribute('data-section-image-base');
+            wrap.dataset.sectionMediaInit = '1';
+            var base = wrap.getAttribute('data-section-media-base');
             if (!base) {
                 return;
             }
 
-            var fileInput = wrap.querySelector('[data-dev-section-image-file]');
+            var fileInput = wrap.querySelector('[data-dev-section-media-file]');
             if (fileInput) {
                 fileInput.addEventListener('change', function () {
                     if (!fileInput.files || !fileInput.files[0]) {
@@ -1157,22 +1175,22 @@
                     var fd = new FormData();
                     fd.append('file', fileInput.files[0]);
                     postForm(base + '/upload', fd, true).then(function (result) {
-                        handleSectionImageResponse(wrap, result, 'Image importée');
+                        handleSectionMediaResponse(wrap, result, 'Média importé');
                     });
                     fileInput.value = '';
                 });
             }
 
-            var removeBtn = wrap.querySelector('[data-dev-section-image-remove]');
+            var removeBtn = wrap.querySelector('[data-dev-section-media-remove]');
             if (removeBtn) {
                 removeBtn.addEventListener('click', function () {
                     postForm(base + '/remove', '', false).then(function (result) {
-                        handleSectionImageResponse(wrap, result, 'Image retirée');
+                        handleSectionMediaResponse(wrap, result, 'Média retiré');
                     });
                 });
             }
 
-            wrap.querySelectorAll('[data-dev-section-image-select]').forEach(function (btn) {
+            wrap.querySelectorAll('[data-dev-section-media-select]').forEach(function (btn) {
                 btn.addEventListener('click', function () {
                     var url = btn.getAttribute('data-url') || '';
                     if (!url) {
@@ -1180,9 +1198,36 @@
                     }
                     var body = new URLSearchParams({ url: url }).toString();
                     postForm(base + '/select', body, false).then(function (result) {
-                        handleSectionImageResponse(wrap, result, 'Image sélectionnée');
+                        handleSectionMediaResponse(wrap, result, 'Média sélectionné');
                     });
                 });
+            });
+        });
+    }
+
+    function initRepeaterMediaPickers(scope) {
+        (scope || document).querySelectorAll('[data-dev-repeater-media-pick]').forEach(function (btn) {
+            if (btn.dataset.repeaterMediaInit === '1') {
+                return;
+            }
+            btn.dataset.repeaterMediaInit = '1';
+            btn.addEventListener('click', function () {
+                var targetId = btn.getAttribute('data-target') || '';
+                var url = btn.getAttribute('data-url') || '';
+                var input = targetId ? document.getElementById(targetId) : null;
+                if (!input) {
+                    return;
+                }
+                input.value = url;
+                input.dispatchEvent(new Event('input', { bubbles: true }));
+                input.dispatchEvent(new Event('change', { bubbles: true }));
+                var grid = btn.closest('.dev-media-library__grid--inline');
+                if (grid) {
+                    grid.querySelectorAll('.dev-media-library__pick--selected').forEach(function (el) {
+                        el.classList.remove('dev-media-library__pick--selected');
+                    });
+                    btn.classList.add('dev-media-library__pick--selected');
+                }
             });
         });
     }

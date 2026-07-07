@@ -10,6 +10,7 @@ use Capsule\Http\Message\Request;
 use Capsule\Http\Message\Response;
 use Capsule\Http\Support\FormData;
 use Capsule\MediaLibrary;
+use Capsule\MediaRepository;
 use Capsule\Page;
 use Capsule\PageRepository;
 use Capsule\SectionRegistry;
@@ -24,7 +25,9 @@ final class SectionsController
         private readonly SectionRegistry $registry,
         private readonly SectionFormRenderer $sectionForms,
         private readonly MediaUploader $uploader,
+        private readonly LibraryMediaUploader $libraryUploader,
         private readonly MediaLibrary $mediaLibrary,
+        private readonly MediaRepository $mediaRepository,
     ) {
     }
 
@@ -254,60 +257,77 @@ final class SectionsController
         return $this->respond($request, $page, '');
     }
 
-    public function uploadImage(Request $request, string $slug, string $id): Response
+    public function uploadMedia(Request $request, string $slug, string $id, string $field): Response
     {
         $page = $this->requirePage($slug);
         if ($page === null) {
             return $this->ui->redirect('/dev/pages');
         }
 
+        $field = $this->normalizeMediaField($field);
+        $kind = $this->mediaKindForField($field);
         $error = '';
+
         try {
             $file = $request->files['file'] ?? null;
             if (!is_array($file)) {
                 throw new MediaUploadException('Aucun fichier reçu.');
             }
-            $url = $this->uploader->store('section_image', $file);
-            $this->setSectionImageUrl($page, $id, $url);
+            $url = $kind === 'video'
+                ? $this->libraryUploader->storeVideo($file)
+                : $this->libraryUploader->storeImage($file);
+            if ($this->mediaRepository->findByUrl($url) === null) {
+                $this->mediaRepository->create(
+                    $kind,
+                    $url,
+                    basename($url),
+                    (string) ($file['type'] ?? ''),
+                    (int) ($file['size'] ?? 0),
+                );
+            }
+            $this->setSectionFieldValue($page, $id, $field, $url);
             $page = $this->requirePage($slug);
         } catch (MediaUploadException $e) {
             $error = $e->getMessage();
         }
 
-        return $this->respondImageField($request, $page, $id, $error);
+        return $this->respondMediaField($request, $page, $id, $field, $error);
     }
 
-    public function removeImage(Request $request, string $slug, string $id): Response
+    public function removeMedia(Request $request, string $slug, string $id, string $field): Response
     {
         $page = $this->requirePage($slug);
         if ($page === null) {
             return $this->ui->redirect('/dev/pages');
         }
 
-        $this->clearSectionImageUrl($page, $id);
+        $field = $this->normalizeMediaField($field);
+        $this->clearSectionFieldValue($page, $id, $field);
         $page = $this->requirePage($slug);
 
-        return $this->respondImageField($request, $page, $id, '');
+        return $this->respondMediaField($request, $page, $id, $field, '');
     }
 
-    public function selectImage(Request $request, string $slug, string $id): Response
+    public function selectMedia(Request $request, string $slug, string $id, string $field): Response
     {
         $page = $this->requirePage($slug);
         if ($page === null) {
             return $this->ui->redirect('/dev/pages');
         }
 
+        $field = $this->normalizeMediaField($field);
+        $kind = $this->mediaKindForField($field);
         $data = FormData::fromRequest($request);
         $url = trim($data['url'] ?? '');
         $error = '';
-        if ($url === '' || !$this->mediaLibrary->isAllowedUrl($url)) {
-            $error = 'URL d\'image non autorisée.';
+        if ($url === '' || !$this->mediaLibrary->isAllowedUrl($url, $kind)) {
+            $error = 'URL de média non autorisée.';
         } else {
-            $this->setSectionImageUrl($page, $id, $url, false);
+            $this->setSectionFieldValue($page, $id, $field, $url);
             $page = $this->requirePage($slug);
         }
 
-        return $this->respondImageField($request, $page, $id, $error);
+        return $this->respondMediaField($request, $page, $id, $field, $error);
     }
 
     /**
@@ -342,7 +362,7 @@ final class SectionsController
         return $decoded;
     }
 
-    private function respondImageField(Request $request, ?Page $page, string $sectionId, string $error): Response
+    private function respondMediaField(Request $request, ?Page $page, string $sectionId, string $field, string $error): Response
     {
         if ($page === null) {
             return $this->ui->redirect('/dev/pages');
@@ -360,9 +380,10 @@ final class SectionsController
             return $this->ui->redirect('/dev/pages/' . SlugCodec::encode($page->slug));
         }
 
-        $html = $this->sectionForms->renderImageField(
+        $html = $this->sectionForms->renderMediaField(
             SlugCodec::encode($page->slug),
             $section,
+            $field,
             $error,
         );
 
@@ -372,11 +393,11 @@ final class SectionsController
 
         return $this->ui->withFlash(
             $this->ui->redirect('/dev/pages/' . SlugCodec::encode($page->slug)),
-            $error !== '' ? $error : 'Image mise à jour.',
+            $error !== '' ? $error : 'Média mis à jour.',
         );
     }
 
-    private function setSectionImageUrl(Page $page, string $sectionId, string $url, bool $deletePrevious = true): void
+    private function setSectionFieldValue(Page $page, string $sectionId, string $field, string $url): void
     {
         $sections = $page->sections;
         foreach ($sections as $i => $section) {
@@ -386,18 +407,14 @@ final class SectionsController
             if (!isset($sections[$i]['content']) || !is_array($sections[$i]['content'])) {
                 $sections[$i]['content'] = [];
             }
-            $previous = trim((string) ($sections[$i]['content']['image_url'] ?? ''));
-            if ($deletePrevious && $previous !== '' && $previous !== $url && $this->uploader->isManagedUrl($previous)) {
-                $this->uploader->delete($previous);
-            }
-            $sections[$i]['content']['image_url'] = $url;
+            $sections[$i]['content'][$field] = $url;
             $this->saveSections($page, $sections);
 
             return;
         }
     }
 
-    private function clearSectionImageUrl(Page $page, string $sectionId): void
+    private function clearSectionFieldValue(Page $page, string $sectionId, string $field): void
     {
         $sections = $page->sections;
         foreach ($sections as $i => $section) {
@@ -407,15 +424,23 @@ final class SectionsController
             if (!isset($sections[$i]['content']) || !is_array($sections[$i]['content'])) {
                 $sections[$i]['content'] = [];
             }
-            $previous = trim((string) ($sections[$i]['content']['image_url'] ?? ''));
-            $sections[$i]['content']['image_url'] = '';
+            $sections[$i]['content'][$field] = '';
             $this->saveSections($page, $sections);
-            if ($previous !== '' && $this->uploader->isManagedUrl($previous)) {
-                $this->uploader->delete($previous);
-            }
 
             return;
         }
+    }
+
+    private function normalizeMediaField(string $field): string
+    {
+        $field = preg_replace('/[^a-zA-Z0-9_]/', '', $field) ?? $field;
+
+        return in_array($field, ['image_url', 'video_url', 'url'], true) ? $field : 'image_url';
+    }
+
+    private function mediaKindForField(string $field): string
+    {
+        return $field === 'video_url' ? 'video' : 'image';
     }
 
     private function respond(Request $request, ?Page $page, string $flash): Response

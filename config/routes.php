@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Http\Dev\AuthController;
 use App\Http\Dev\ChromeController;
 use App\Http\Dev\MediaController;
+use App\Http\Dev\MediasController;
 use App\Http\Dev\OverviewController;
 use App\Http\Dev\PagesController;
 use App\Http\Dev\PreviewController;
@@ -53,9 +54,12 @@ $devRoutes = [
     'POST /dev/site/nav/{id}/delete' => [SiteController::class, 'deleteNav'],
     'POST /dev/media/{field}/upload' => [MediaController::class, 'upload'],
     'POST /dev/media/{field}/remove' => [MediaController::class, 'remove'],
-    'POST /dev/pages/{slug}/sections/{id}/image/upload' => [SectionsController::class, 'uploadImage'],
-    'POST /dev/pages/{slug}/sections/{id}/image/remove' => [SectionsController::class, 'removeImage'],
-    'POST /dev/pages/{slug}/sections/{id}/image/select' => [SectionsController::class, 'selectImage'],
+    'POST /dev/pages/{slug}/sections/{id}/media/{field}/upload' => [SectionsController::class, 'uploadMedia'],
+    'POST /dev/pages/{slug}/sections/{id}/media/{field}/remove' => [SectionsController::class, 'removeMedia'],
+    'POST /dev/pages/{slug}/sections/{id}/media/{field}/select' => [SectionsController::class, 'selectMedia'],
+    'GET /dev/medias' => [MediasController::class, 'index'],
+    'POST /dev/medias/upload' => [MediasController::class, 'upload'],
+    'POST /dev/medias/{id}/delete' => [MediasController::class, 'destroy'],
     'GET /dev/theme' => [ThemeController::class, 'edit'],
     'POST /dev/theme' => [ThemeController::class, 'update'],
     'POST /dev/theme/reset' => [ThemeController::class, 'reset'],

@@ -6,7 +6,9 @@ use App\Http\Dev\AuthController;
 use App\Http\Dev\ChromeController;
 use App\Http\Dev\MediaController;
 use App\Http\Dev\FontUploader;
+use App\Http\Dev\LibraryMediaUploader;
 use App\Http\Dev\MediaUploader;
+use App\Http\Dev\MediasController;
 use App\Http\Dev\OverviewController;
 use App\Http\Dev\PagesController;
 use App\Http\Dev\PreviewController;
@@ -24,6 +26,8 @@ use Capsule\Middleware\ErrorBoundary;
 use Capsule\Middleware\SecurityHeaders;
 use Capsule\LayoutRegistry;
 use Capsule\MediaLibrary;
+use Capsule\MediaRepository;
+use Capsule\MediaUsageScanner;
 use Capsule\PageRegistry;
 use Capsule\PageRenderer;
 use Capsule\PageRepository;
@@ -103,7 +107,18 @@ return (function (): Container {
         $c->get(ResponseFactory::class),
         $appConfig['dev_password'],
     ));
+    $c->set(MediaRepository::class, static fn (Container $c) => new MediaRepository(
+        $c->get(Database::class)->pdo(),
+    ));
+    $c->set(MediaUsageScanner::class, static fn (Container $c) => new MediaUsageScanner(
+        $c->get(PageRepository::class),
+        $c->get(SiteRepository::class),
+    ));
+    $c->set(LibraryMediaUploader::class, static fn () => new LibraryMediaUploader(
+        $root . '/public/uploads/media',
+    ));
     $c->set(MediaLibrary::class, static fn (Container $c) => new MediaLibrary(
+        $c->get(MediaRepository::class),
         $root . '/public/uploads/site',
         '/uploads/site',
         $c->get(PageRepository::class),
@@ -113,7 +128,7 @@ return (function (): Container {
         $c->get(SectionRegistry::class),
         $c->get(PageRepository::class),
         $c->get(MediaLibrary::class),
-        $c->get(MediaUploader::class),
+        $c->get(LibraryMediaUploader::class),
     ));
     $c->set(PagesController::class, static fn (Container $c) => new PagesController(
         $c->get(DevDashboard::class),
@@ -129,7 +144,16 @@ return (function (): Container {
         $c->get(SectionRegistry::class),
         $c->get(SectionFormRenderer::class),
         $c->get(MediaUploader::class),
+        $c->get(LibraryMediaUploader::class),
         $c->get(MediaLibrary::class),
+        $c->get(MediaRepository::class),
+    ));
+    $c->set(MediasController::class, static fn (Container $c) => new MediasController(
+        $c->get(DevDashboard::class),
+        $c->get(MediaRepository::class),
+        $c->get(MediaLibrary::class),
+        $c->get(LibraryMediaUploader::class),
+        $c->get(MediaUsageScanner::class),
     ));
     $c->set(MediaUploader::class, static fn () => new MediaUploader(
         $root . '/public/uploads/site',

@@ -1,0 +1,53 @@
+<div class="dev-page-head">
+    <div>
+        <h1><i class="fa-solid fa-photo-film" aria-hidden="true"></i> Médias</h1>
+        <p class="dev-lead">Bibliothèque centralisée des images et vidéos du site. Importez ici, puis sélectionnez-les dans les blocs (hero, galerie, etc.).</p>
+    </div>
+</div>
+
+<div class="dev-medias-page">
+    <div class="dev-tabs__list dev-medias-page__tabs" role="tablist" aria-label="Types de médias">
+        <a href="/dev/medias?tab=images" class="dev-tabs__tab {{tab_images_class}}" role="tab" aria-selected="{{tab_images_selected}}">Images ({{images_count}})</a>
+        <a href="/dev/medias?tab=videos" class="dev-tabs__tab {{tab_videos_class}}" role="tab" aria-selected="{{tab_videos_selected}}">Vidéos ({{videos_count}})</a>
+    </div>
+
+    <div class="dev-tabs__panel {{tab_images_class}}" data-tab-panel="images">
+        <div class="dev-panel">
+            <div class="dev-panel__head">
+                <div>
+                    <h2 class="dev-panel__title">Images</h2>
+                    <p class="dev-panel__desc">PNG, JPG, WebP ou SVG. Conversion WebP automatique quand possible.</p>
+                </div>
+            </div>
+            <form class="dev-inline-form dev-medias-upload" method="post" action="/dev/medias/upload?kind=image" enctype="multipart/form-data" data-dev-ajax="medias-grid" data-dev-toast-form="Image importée">
+                <label class="dev-button dev-button--primary dev-uploader__browse">
+                    <i class="fa-solid fa-upload" aria-hidden="true"></i> Importer une image
+                    <input type="file" name="file" accept=".png,.jpg,.jpeg,.webp,.svg,image/png,image/jpeg,image/webp,image/svg+xml" class="visually-hidden" data-dev-autosubmit aria-label="Importer une image" />
+                </label>
+            </form>
+            <div id="dev-medias-grid-image" data-dev-medias-grid>
+                {{{images_grid_html}}}
+            </div>
+        </div>
+    </div>
+
+    <div class="dev-tabs__panel {{tab_videos_class}}" data-tab-panel="videos">
+        <div class="dev-panel">
+            <div class="dev-panel__head">
+                <div>
+                    <h2 class="dev-panel__title">Vidéos</h2>
+                    <p class="dev-panel__desc">Fichiers MP4, WebM ou OGG locaux (max. 50 Mo). Les liens YouTube se saisissent directement dans les blocs.</p>
+                </div>
+            </div>
+            <form class="dev-inline-form dev-medias-upload" method="post" action="/dev/medias/upload?kind=video" enctype="multipart/form-data" data-dev-ajax="medias-grid" data-dev-toast-form="Vidéo importée">
+                <label class="dev-button dev-button--primary dev-uploader__browse">
+                    <i class="fa-solid fa-upload" aria-hidden="true"></i> Importer une vidéo
+                    <input type="file" name="file" accept=".mp4,.webm,.ogg,video/mp4,video/webm,video/ogg" class="visually-hidden" data-dev-autosubmit aria-label="Importer une vidéo" />
+                </label>
+            </form>
+            <div id="dev-medias-grid-video" data-dev-medias-grid>
+                {{{videos_grid_html}}}
+            </div>
+        </div>
+    </div>
+</div>

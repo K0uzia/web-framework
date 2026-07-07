@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace Capsule;
 
 /**
- * Liste les visuels locaux disponibles pour les blocs (uploads, site, stock).
+ * Liste les médias disponibles pour les blocs (bibliothèque DB, uploads, stock).
  */
 final class MediaLibrary
 {
     public function __construct(
+        private readonly MediaRepository $media,
         private readonly string $uploadsDir,
         private readonly string $publicBasePath = '/uploads/site',
         private readonly ?PageRepository $pages = null,
@@ -20,9 +21,70 @@ final class MediaLibrary
     /**
      * @return list<string>
      */
+    public function availableImageUrls(): array
+    {
+        return $this->mergeUrls(
+            $this->media->urlsByKind('image'),
+            StockImages::all(),
+        );
+    }
+
+    /**
+     * @return list<string>
+     */
+    public function availableVideoUrls(): array
+    {
+        return $this->media->urlsByKind('video');
+    }
+
+    /**
+     * @return list<string>
+     */
     public function availableUrls(): array
     {
-        $urls = [];
+        return $this->availableImageUrls();
+    }
+
+    /**
+     * @return list<array{id: string, kind: string, url: string, filename: string, mime: string, size: int, label: string, created_at: string}>
+     */
+    public function allRecords(?string $kind = null): array
+    {
+        return $this->media->all($kind);
+    }
+
+    public function isAllowedUrl(string $url, string $kind = 'image'): bool
+    {
+        $url = trim($url);
+        if ($url === '' || str_contains($url, '..')) {
+            return false;
+        }
+
+        if ($kind === 'video') {
+            if (preg_match('~^https?://~i', $url) === 1) {
+                return true;
+            }
+
+            return str_starts_with($url, '/uploads/media/')
+                || str_starts_with($url, rtrim($this->publicBasePath, '/') . '/');
+        }
+
+        $uploadPrefix = rtrim($this->publicBasePath, '/') . '/';
+
+        return str_starts_with($url, $uploadPrefix)
+            || str_starts_with($url, '/uploads/media/')
+            || str_starts_with($url, StockImages::BASE . '/');
+    }
+
+    /**
+     * @param list<string> $primary
+     * @param list<string> $extra
+     *
+     * @return list<string>
+     */
+    private function mergeUrls(array $primary, array $extra): array
+    {
+        $urls = $primary;
 
         if ($this->site !== null) {
             $site = $this->site->getSite();
@@ -36,10 +98,9 @@ final class MediaLibrary
 
         if (is_dir($this->uploadsDir)) {
             foreach (glob($this->uploadsDir . '/*') ?: [] as $file) {
-                if (!is_file($file)) {
-                    continue;
+                if (is_file($file)) {
+                    $urls[] = rtrim($this->publicBasePath, '/') . '/' . basename($file);
                 }
-                $urls[] = rtrim($this->publicBasePath, '/') . '/' . basename($file);
             }
         }
 
@@ -53,7 +114,7 @@ final class MediaLibrary
             }
         }
 
-        foreach (StockImages::all() as $url) {
+        foreach ($extra as $url) {
             $urls[] = $url;
         }
 
@@ -63,28 +124,15 @@ final class MediaLibrary
         return $urls;
     }
 
-    public function isAllowedUrl(string $url): bool
-    {
-        $url = trim($url);
-        if ($url === '' || str_contains($url, '..')) {
-            return false;
-        }
-
-        $uploadPrefix = rtrim($this->publicBasePath, '/') . '/';
-
-        return str_starts_with($url, $uploadPrefix)
-            || str_starts_with($url, StockImages::BASE . '/');
-    }
-
     /**
      * @param list<string> $urls
      */
     private function collectFromSection(array $section, array &$urls): void
     {
         $content = is_array($section['content'] ?? null) ? $section['content'] : [];
-        foreach (['image_url', 'url'] as $key) {
+        foreach (['image_url', 'url', 'video_url'] as $key) {
             $url = trim((string) ($content[$key] ?? ''));
-            if ($this->isAllowedUrl($url)) {
+            if ($url !== '' && ($this->isAllowedUrl($url) || $this->isAllowedUrl($url, 'video'))) {
                 $urls[] = $url;
             }
         }
@@ -94,9 +142,9 @@ final class MediaLibrary
             if (!is_array($item)) {
                 continue;
             }
-            foreach (['image_url', 'url'] as $key) {
+            foreach (['image_url', 'url', 'video_url'] as $key) {
                 $url = trim((string) ($item[$key] ?? ''));
-                if ($this->isAllowedUrl($url)) {
+                if ($url !== '' && ($this->isAllowedUrl($url) || $this->isAllowedUrl($url, 'video'))) {
                     $urls[] = $url;
                 }
             }

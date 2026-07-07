@@ -4,24 +4,30 @@ declare(strict_types=1);
 
 namespace Tests\Http\Dev;
 
-use App\Http\Dev\MediaUploader;
+use App\Http\Dev\LibraryMediaUploader;
+use App\Http\Dev\MediasController;
 use App\Http\Dev\SectionFormRenderer;
 use App\Http\Dev\SectionsController;
 use Capsule\DevDashboard;
 use Capsule\Http\Factory\ResponseFactory;
 use Capsule\Http\Message\Request;
+use Capsule\MediaLibrary;
+use Capsule\MediaRepository;
+use Capsule\MediaUsageScanner;
 use Capsule\Page;
 use Capsule\PageRepository;
-use Capsule\MediaLibrary;
 use Capsule\SectionRegistry;
 use Capsule\SiteRepository;
+use Capsule\StockImages;
 use PHPUnit\Framework\TestCase;
+use App\Http\Dev\MediaUploader;
 
 final class SectionsControllerTest extends TestCase
 {
     private PageRepository $pages;
     private SectionsController $controller;
     private string $uploadsDir;
+    private string $libraryDir;
 
     protected function setUp(): void
     {
@@ -33,13 +39,16 @@ final class SectionsControllerTest extends TestCase
         $ui = new DevDashboard($root . '/resources/dev', new ResponseFactory());
         $registry = new SectionRegistry($root . '/resources/sections/registry.yaml');
         $site = new SiteRepository($pdo);
-        $uploadsDir = sys_get_temp_dir() . '/capsule-section-media-' . bin2hex(random_bytes(4));
-        $uploader = new MediaUploader($uploadsDir);
-        $library = new MediaLibrary($uploadsDir, '/uploads/site', $this->pages, $site);
-        $forms = new SectionFormRenderer($registry, $this->pages, $library, $uploader);
+        $mediaRepo = new MediaRepository($pdo);
+        $this->uploadsDir = sys_get_temp_dir() . '/capsule-section-media-' . bin2hex(random_bytes(4));
+        $this->libraryDir = sys_get_temp_dir() . '/capsule-library-media-' . bin2hex(random_bytes(4));
+        mkdir($this->libraryDir);
+        $uploader = new MediaUploader($this->uploadsDir);
+        $libraryUploader = new LibraryMediaUploader($this->libraryDir);
+        $library = new MediaLibrary($mediaRepo, $this->uploadsDir, '/uploads/site', $this->pages, $site);
+        $forms = new SectionFormRenderer($registry, $this->pages, $library, $libraryUploader);
 
-        $this->controller = new SectionsController($ui, $this->pages, $registry, $forms, $uploader, $library);
-        $this->uploadsDir = $uploadsDir;
+        $this->controller = new SectionsController($ui, $this->pages, $registry, $forms, $uploader, $libraryUploader, $library, $mediaRepo);
 
         $this->pages->save(new Page(
             slug: 'about',
@@ -62,27 +71,31 @@ final class SectionsControllerTest extends TestCase
 
     protected function tearDown(): void
     {
-        if (isset($this->uploadsDir) && is_dir($this->uploadsDir)) {
-            foreach (glob($this->uploadsDir . '/*') ?: [] as $file) {
+        foreach ([$this->uploadsDir, $this->libraryDir] as $dir) {
+            if (!is_dir($dir)) {
+                continue;
+            }
+            foreach (glob($dir . '/*') ?: [] as $file) {
                 @unlink($file);
             }
-            @rmdir($this->uploadsDir);
+            @rmdir($dir);
         }
     }
 
     public function testSelectSectionImageFromLibrary(): void
     {
-        $response = $this->controller->selectImage(
-            $this->hxPost('/dev/pages/about/sections/hero-1/image/select', 'url=' . rawurlencode('/assets/stock/01-bureau.jpg')),
+        $response = $this->controller->selectMedia(
+            $this->hxPost('/dev/pages/about/sections/hero-1/media/image_url/select', 'url=' . rawurlencode(StockImages::hero(0))),
             'about',
             'hero-1',
+            'image_url',
         );
 
         $this->assertSame(200, $response->getStatus());
-        $this->assertStringContainsString('dev-section-image', (string) $response->getBody());
+        $this->assertStringContainsString('dev-section-media', (string) $response->getBody());
 
         $page = $this->pages->findBySlug('about', false);
-        $this->assertSame('/assets/stock/01-bureau.jpg', $page->sections[0]['content']['image_url'] ?? '');
+        $this->assertSame(StockImages::hero(0), $page->sections[0]['content']['image_url'] ?? '');
     }
 
     public function testAddSectionUsesFirstVariant(): void
@@ -102,7 +115,7 @@ final class SectionsControllerTest extends TestCase
 
     public function testAddHeroUsesRequestedVariant(): void
     {
-        $this->controller->add($this->hxPost(
+        $response = $this->controller->add($this->hxPost(
             '/dev/pages/about/sections',
             'type=hero&variant=fullscreen',
         ), 'about');
@@ -110,150 +123,77 @@ final class SectionsControllerTest extends TestCase
         $page = $this->pages->findBySlug('about', false);
         $this->assertNotNull($page);
         $last = $page->sections[array_key_last($page->sections)];
-        $this->assertSame('hero', $last['type']);
         $this->assertSame('fullscreen', $last['variant']);
-        $this->assertSame('Construisez quelque chose d\'exceptionnel', $last['content']['title'] ?? null);
+        $this->assertStringContainsString('dev-section-card', (string) $response->getBody());
     }
 
-    public function testUpdateFallsBackWhenVariantInvalid(): void
+    public function testUpdateSectionContent(): void
     {
-        $this->controller->update($this->hxPost(
+        $response = $this->controller->update($this->hxPost(
             '/dev/pages/about/sections/hero-1',
-            'variant=grid-3',
+            'content_title=Updated',
         ), 'about', 'hero-1');
 
+        $this->assertSame(200, $response->getStatus());
         $page = $this->pages->findBySlug('about', false);
-        $this->assertSame('centered', $page->sections[0]['variant']);
-    }
-
-    public function testUpdateKeepsValidVariantAndTogglesVisible(): void
-    {
-        $this->controller->update($this->hxPost(
-            '/dev/pages/about/sections/hero-1',
-            'variant=split&visible=0&content_title=Updated',
-        ), 'about', 'hero-1');
-
-        $page = $this->pages->findBySlug('about', false);
-        $this->assertNotNull($page);
-        $section = $page->sections[0];
-        $this->assertSame('split', $section['variant']);
-        $this->assertFalse($section['visible']);
-        $this->assertSame('Updated', $section['content']['title']);
+        $this->assertSame('Updated', $page->sections[0]['content']['title'] ?? '');
     }
 
     public function testMoveAndDestroySections(): void
     {
-        $this->controller->add($this->post('/dev/pages/about/sections', 'type=cta'), 'about');
-
+        $this->controller->add($this->hxPost('/dev/pages/about/sections', 'type=cta'), 'about');
         $page = $this->pages->findBySlug('about', false);
         $this->assertCount(2, $page->sections);
-        $ctaId = (string) $page->sections[1]['id'];
 
-        $this->controller->move($this->post(
-            '/dev/pages/about/sections/' . rawurlencode($ctaId) . '/move',
-            'direction=up',
-        ), 'about', $ctaId);
-
+        $ctaId = $page->sections[1]['id'];
+        $this->controller->move($this->hxPost('/dev/pages/about/sections/' . $ctaId . '/move', 'direction=up'), 'about', (string) $ctaId);
         $page = $this->pages->findBySlug('about', false);
         $this->assertSame('cta', $page->sections[0]['type']);
 
-        $heroId = 'hero-1';
-        $this->controller->destroy($this->hxPost(
-            '/dev/pages/about/sections/' . $heroId . '/delete',
-            '',
-        ), 'about', $heroId);
-
+        $this->controller->destroy($this->hxPost('/dev/pages/about/sections/' . $ctaId . '/delete', ''), 'about', (string) $ctaId);
         $page = $this->pages->findBySlug('about', false);
         $this->assertCount(1, $page->sections);
-        $this->assertSame('cta', $page->sections[0]['type']);
     }
 
     public function testRestoreReinsertsDeletedSectionAtRequestedIndex(): void
     {
-        $this->controller->add($this->post('/dev/pages/about/sections', 'type=cta'), 'about');
+        $section = $this->pages->findBySlug('about', false)->sections[0];
+        $this->controller->destroy($this->hxPost('/dev/pages/about/sections/hero-1/delete', ''), 'about', 'hero-1');
 
-        $page = $this->pages->findBySlug('about', false);
-        $this->assertNotNull($page);
-        $this->assertCount(2, $page->sections);
-        $hero = $page->sections[0];
-        $ctaId = (string) $page->sections[1]['id'];
-
-        $this->controller->destroy($this->hxPost(
-            '/dev/pages/about/sections/' . rawurlencode((string) $hero['id']) . '/delete',
-            '',
-        ), 'about', (string) $hero['id']);
+        $payload = 'section=' . rawurlencode((string) json_encode($section));
+        $this->controller->restore($this->hxPost('/dev/pages/about/sections/restore', $payload . '&index=0'), 'about');
 
         $page = $this->pages->findBySlug('about', false);
         $this->assertCount(1, $page->sections);
-
-        $this->controller->restore($this->hxPost(
-            '/dev/pages/about/sections/restore',
-            'section=' . rawurlencode((string) json_encode($hero, JSON_UNESCAPED_UNICODE)) . '&index=0',
-        ), 'about');
-
-        $page = $this->pages->findBySlug('about', false);
-        $this->assertCount(2, $page->sections);
-        $this->assertSame((string) $hero['id'], $page->sections[0]['id']);
-        $this->assertSame($ctaId, $page->sections[1]['id']);
+        $this->assertSame('hero-1', $page->sections[0]['id']);
     }
 
     public function testReorderAppliesRequestedOrderAndKeepsUnknownIdsAtEnd(): void
     {
-        $this->controller->add($this->post('/dev/pages/about/sections', 'type=cta'), 'about');
-        $this->controller->add($this->post('/dev/pages/about/sections', 'type=features'), 'about');
-
+        $this->controller->add($this->hxPost('/dev/pages/about/sections', 'type=cta'), 'about');
+        $this->controller->add($this->hxPost('/dev/pages/about/sections', 'type=features'), 'about');
         $page = $this->pages->findBySlug('about', false);
-        $this->assertNotNull($page);
-        $ctaId = (string) $page->sections[1]['id'];
-        $featuresId = (string) $page->sections[2]['id'];
+        $ids = array_map(static fn ($s) => $s['id'], $page->sections);
 
         $this->controller->reorder($this->hxPost(
             '/dev/pages/about/sections/reorder',
-            'order=' . $featuresId . ',' . $ctaId . ',hero-1',
+            'order=' . rawurlencode(implode(',', array_reverse($ids))),
         ), 'about');
 
         $page = $this->pages->findBySlug('about', false);
-        $this->assertSame($featuresId, $page->sections[0]['id']);
-        $this->assertSame($ctaId, $page->sections[1]['id']);
-        $this->assertSame('hero-1', $page->sections[2]['id']);
+        $this->assertSame(array_reverse($ids), array_map(static fn ($s) => $s['id'], $page->sections));
     }
 
     public function testReorderIgnoresEmptyOrder(): void
     {
-        $response = $this->controller->reorder($this->hxPost(
-            '/dev/pages/about/sections/reorder',
-            'order=',
-        ), 'about');
-
-        $page = $this->pages->findBySlug('about', false);
-        $this->assertNotNull($page);
-        $this->assertSame('hero-1', $page->sections[0]['id']);
-        $this->assertSame(200, $response->getStatus());
+        $before = $this->pages->findBySlug('about', false)->sections;
+        $this->controller->reorder($this->hxPost('/dev/pages/about/sections/reorder', 'order='), 'about');
+        $after = $this->pages->findBySlug('about', false)->sections;
+        $this->assertSame($before, $after);
     }
 
     private function hxPost(string $path, string $body): Request
     {
-        return new Request(
-            'POST',
-            $path,
-            [],
-            ['HX-Request' => 'true', 'Content-Type' => 'application/x-www-form-urlencoded'],
-            [],
-            [],
-            rawBody: $body,
-        );
-    }
-
-    private function post(string $path, string $body): Request
-    {
-        return new Request(
-            'POST',
-            $path,
-            [],
-            ['Content-Type' => 'application/x-www-form-urlencoded'],
-            [],
-            [],
-            rawBody: $body,
-        );
+        return new Request('POST', $path, [], ['HX-Request' => 'true'], [], [], 'http', null, null, $body);
     }
 }

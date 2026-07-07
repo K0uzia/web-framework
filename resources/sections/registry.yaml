@@ -49,8 +49,8 @@ hero:
       client_editable: true
       show_for_variants: [split, split-left, image-below, video, fullscreen]
     video_url:
-      type: url
-      label: Vidéo (YouTube, Vimeo ou fichier .mp4)
+      type: video
+      label: Vidéo (YouTube, Vimeo ou fichier local)
       client_editable: true
       show_for_variants: [fullscreen, video]
     buttons:
@@ -331,8 +331,8 @@ gallery:
       client_editable: true
       fields:
         url:
-          type: text
-          label: 'URL de l''image (locale)'
+          type: image
+          label: Image
         title:
           type: text
           label: Légende / texte alternatif
@@ -875,6 +875,9 @@ blog:
         text:
           type: textarea
           label: Texte
+        url:
+          type: image
+          label: Image
   style_fields:
     bg:
       type: color-token
@@ -916,8 +919,8 @@ projects:
       client_editable: true
       fields:
         url:
-          type: text
-          label: 'URL de l''image (locale)'
+          type: image
+          label: Image
         title:
           type: text
           label: Titre du projet

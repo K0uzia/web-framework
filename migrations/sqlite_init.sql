@@ -20,3 +20,17 @@ CREATE TABLE IF NOT EXISTS site_settings (
 );
 
 CREATE INDEX IF NOT EXISTS idx_pages_published ON pages(published);
+
+CREATE TABLE IF NOT EXISTS media (
+    id         TEXT PRIMARY KEY,
+    kind       TEXT NOT NULL CHECK (kind IN ('image', 'video')),
+    url        TEXT NOT NULL UNIQUE,
+    filename   TEXT NOT NULL,
+    mime       TEXT NOT NULL DEFAULT '',
+    size       INTEGER NOT NULL DEFAULT 0,
+    label      TEXT NOT NULL DEFAULT '',
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_media_kind ON media(kind);
+CREATE INDEX IF NOT EXISTS idx_media_created ON media(created_at);

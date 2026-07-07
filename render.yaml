@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: web-framework
+    runtime: docker
+    plan: free
+    healthCheckPath: /api/health
+    envVars:
+      - key: APP_ENV
+        value: prod
+      - key: APP_HTTPS
+        value: "1"
+      - key: APP_URL
+        sync: false
+      - key: DEV_PASSWORD
+        sync: false
+    disk:
+      name: capsule-data
+      mountPath: /app/data
+      sizeGB: 1

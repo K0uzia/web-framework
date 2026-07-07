@@ -69,7 +69,16 @@ foreach ($pages->allPublished() as $page) {
 copyPublicAssets($root . '/public', $outputDir);
 file_put_contents($outputDir . '/.nojekyll', '');
 
-fwrite(STDOUT, "Export terminé : {$exported} page(s) dans {$outputDir}\n");
+require __DIR__ . '/export-dev-static.php';
+
+$phpDevUrl = getenv('DEV_PANEL_URL');
+$phpDevUrl = is_string($phpDevUrl) && $phpDevUrl !== '' ? $phpDevUrl : null;
+
+fwrite(STDOUT, "Export dashboard /dev :\n");
+$devExported = exportDevStatic($container, $outputDir, $basePath, $phpDevUrl);
+$exported += $devExported;
+
+fwrite(STDOUT, "Export terminé : {$exported} fichier(s) dans {$outputDir}\n");
 
 /**
  * @return never

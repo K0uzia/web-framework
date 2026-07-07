@@ -19,7 +19,7 @@ final class SectionFormRenderer
         private readonly SectionRegistry $registry,
         private readonly PageRepository $pages,
         private readonly MediaLibrary $mediaLibrary,
-        private readonly MediaUploader $uploader,
+        private readonly LibraryMediaUploader $libraryUploader,
     ) {
     }
 
@@ -158,22 +158,18 @@ final class SectionFormRenderer
     /**
      * @param array<string, mixed> $section
      */
-    public function renderImageField(string $slug, array $section, string $error = ''): string
+    public function renderMediaField(string $slug, array $section, string $field, string $error = ''): string
     {
         $id = (string) ($section['id'] ?? '');
-        $variant = (string) ($section['variant'] ?? '');
         $content = is_array($section['content'] ?? null) ? $section['content'] : [];
-        $url = trim((string) ($content['image_url'] ?? ''));
+        $url = trim((string) ($content[$field] ?? ''));
+        $kind = $field === 'video_url' ? 'video' : 'image';
+        $library = $kind === 'video'
+            ? $this->mediaLibrary->availableVideoUrls()
+            : $this->mediaLibrary->availableImageUrls();
+        $accept = $this->libraryUploader->acceptAttribute($kind === 'video' ? 'library_video' : 'library_image');
 
-        return SectionImageFieldView::render(
-            $slug,
-            $id,
-            'image_url',
-            $url,
-            $this->mediaLibrary->availableUrls(),
-            $this->uploader->acceptAttribute('section_image'),
-            $error,
-        );
+        return SectionMediaFieldView::render($slug, $id, $field, $url, $kind, $library, $accept, $error);
     }
 
     /**
@@ -184,7 +180,7 @@ final class SectionFormRenderer
     {
         $html = '<div class="dev-stack dev-stack--sm">';
         $simpleFields = [];
-        $imageFields = [];
+        $mediaFields = [];
         $repeaters = [];
 
         foreach ($fields as $key => $field) {
@@ -199,8 +195,8 @@ final class SectionFormRenderer
                 $repeaters['__buttons__'] = $field;
                 continue;
             }
-            if (($field['type'] ?? '') === 'image') {
-                $imageFields[$key] = $field;
+            if (in_array($field['type'] ?? '', ['image', 'video'], true)) {
+                $mediaFields[$key] = $field;
                 continue;
             }
             $simpleFields[$key] = $field;
@@ -220,28 +216,17 @@ final class SectionFormRenderer
                 $html .= $this->fieldInput($name, $fLabel, $value, $inputType, $safeId);
             }
             $html .= '</div>';
-            if (isset($simpleFields['video_url'])) {
-                $html .= '<p class="dev-hint">YouTube, Vimeo ou fichier .mp4 local. Sans URL vidéo, l\'image de secours s\'affiche.</p>';
-            }
         }
 
-        foreach ($imageFields as $key => $field) {
-            $url = trim((string) ($content[$key] ?? ''));
-            $html .= SectionImageFieldView::render(
-                $slug,
-                $sectionId,
-                $key,
-                $url,
-                $this->mediaLibrary->availableUrls(),
-                $this->uploader->acceptAttribute('section_image'),
-            );
+        foreach ($mediaFields as $key => $field) {
+            $html .= $this->renderMediaFieldBlock($slug, $sectionId, $key, $field, $content, false);
         }
 
         foreach ($repeaters as $key => $field) {
             if ($key === '__buttons__') {
                 $html .= $this->renderButtonsRepeater($field, $content, $safeId);
             } else {
-                $html .= $this->renderRepeater($key, $field, $content, $safeId);
+                $html .= $this->renderRepeater($key, $field, $content, $safeId, $slug, $sectionId);
             }
         }
 
@@ -341,7 +326,27 @@ final class SectionFormRenderer
      * @param array<string, mixed> $field
      * @param array<string, mixed> $content
      */
-    private function renderRepeater(string $key, array $field, array $content, string $sectionId): string
+    private function renderMediaFieldBlock(string $slug, string $sectionId, string $key, array $field, array $content, bool $compact): string
+    {
+        $url = trim((string) ($content[$key] ?? ''));
+        $kind = ($field['type'] ?? 'image') === 'video' ? 'video' : 'image';
+        $library = $kind === 'video'
+            ? $this->mediaLibrary->availableVideoUrls()
+            : $this->mediaLibrary->availableImageUrls();
+        $accept = $this->libraryUploader->acceptAttribute($kind === 'video' ? 'library_video' : 'library_image');
+
+        if ($compact) {
+            return SectionMediaFieldView::renderCompact($slug, $sectionId, $key, $url, $kind, $library, $accept);
+        }
+
+        return SectionMediaFieldView::render($slug, $sectionId, $key, $url, $kind, $library, $accept);
+    }
+
+    /**
+     * @param array<string, mixed> $field
+     * @param array<string, mixed> $content
+     */
+    private function renderRepeater(string $key, array $field, array $content, string $sectionId, string $slug, string $rawSectionId): string
     {
         if ($key !== 'items') {
             return '';
@@ -361,10 +366,7 @@ final class SectionFormRenderer
         $html .= '<i class="fa-solid fa-chevron-down dev-form-group__chevron" aria-hidden="true"></i>';
         $html .= '</summary>';
         $html .= '<div class="dev-form-group__body">';
-        if (isset($itemFields['url'])) {
-            $html .= self::stockImageHint();
-        }
-        $html .= '<p class="dev-hint">Les éléments entièrement vides sont retirés à l\'enregistrement.</p>';
+        $html .= '<p class="dev-hint">Les éléments entièrement vides sont retirés à l\'enregistrement. Images et vidéos : bibliothèque dans <a href="/dev/medias">Médias</a>.</p>';
         $html .= '<div class="dev-repeater">';
 
         // Toujours une ligne vide en plus pour ajouter un élément sans JS.
@@ -378,9 +380,14 @@ final class SectionFormRenderer
                     continue;
                 }
                 $subLabel = (string) ($fDef['label'] ?? $fKey);
-                $subType = ($fDef['type'] ?? 'text') === 'textarea' ? 'textarea' : 'text';
                 $value = (string) ($item[$fKey] ?? '');
-                $html .= $this->fieldInput('content_items_' . $i . '_' . $fKey, $subLabel, $value, $subType, $sectionId . '-item' . $i);
+                $name = 'content_items_' . $i . '_' . $fKey;
+                if (in_array($fDef['type'] ?? '', ['image', 'video'], true)) {
+                    $html .= $this->renderRepeaterMediaField($slug, $rawSectionId, $name, $fKey, $fDef, $value, $sectionId . '-item' . $i);
+                    continue;
+                }
+                $subType = ($fDef['type'] ?? 'text') === 'textarea' ? 'textarea' : 'text';
+                $html .= $this->fieldInput($name, $subLabel, $value, $subType, $sectionId . '-item' . $i);
             }
             $html .= '</div>';
         }
@@ -388,6 +395,44 @@ final class SectionFormRenderer
         $html .= '</div></div></details>';
 
         return $html;
+    }
+
+    /**
+     * @param array<string, mixed> $fDef
+     */
+    private function renderRepeaterMediaField(
+        string $slug,
+        string $sectionId,
+        string $inputName,
+        string $fieldKey,
+        array $fDef,
+        string $value,
+        string $idPrefix,
+    ): string {
+        $kind = ($fDef['type'] ?? 'image') === 'video' ? 'video' : 'image';
+        $library = $kind === 'video'
+            ? $this->mediaLibrary->availableVideoUrls()
+            : $this->mediaLibrary->availableImageUrls();
+        $fieldId = $idPrefix . '-' . $inputName;
+        $safeInputId = htmlspecialchars($fieldId, ENT_QUOTES);
+        $label = (string) ($fDef['label'] ?? ($kind === 'video' ? 'Vidéo' : 'Image'));
+
+        $libraryHtml = '';
+        $limit = 6;
+        foreach (array_slice($library, 0, $limit) as $url) {
+            $safeUrl = htmlspecialchars($url, ENT_QUOTES);
+            $selected = $url === $value ? ' dev-media-library__pick--selected' : '';
+            $thumb = $kind === 'video'
+                ? '<i class="fa-solid fa-file-video" aria-hidden="true"></i>'
+                : '<img src="' . $safeUrl . '" alt="" loading="lazy" decoding="async" />';
+            $libraryHtml .= '<button type="button" class="dev-media-library__pick dev-media-library__pick--sm' . $selected . '" data-dev-repeater-media-pick data-target="' . $safeInputId . '" data-url="' . $safeUrl . '" aria-label="Utiliser ce média">' . $thumb . '</button>';
+        }
+
+        return '<div class="dev-field dev-field--repeater-media">'
+            . '<label class="dev-label" for="' . $safeInputId . '">' . htmlspecialchars($label, ENT_QUOTES) . '</label>'
+            . '<input class="dev-input" type="text" id="' . $safeInputId . '" name="' . htmlspecialchars($inputName, ENT_QUOTES) . '" value="' . htmlspecialchars($value, ENT_QUOTES) . '" />'
+            . ($libraryHtml !== '' ? '<div class="dev-media-library__grid dev-media-library__grid--inline">' . $libraryHtml . '</div>' : '')
+            . '</div>';
     }
 
     /**

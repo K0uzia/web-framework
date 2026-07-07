@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests;
 
 use Capsule\MediaLibrary;
+use Capsule\MediaRepository;
 use Capsule\Page;
 use Capsule\PageRepository;
 use Capsule\SiteRepository;
@@ -13,18 +14,19 @@ use PHPUnit\Framework\TestCase;
 
 final class MediaLibraryTest extends TestCase
 {
-    public function testCollectsUploadsStockAndSectionImages(): void
+    public function testCollectsDatabaseUploadsStockAndSectionImages(): void
     {
         $pdo = new \PDO('sqlite::memory:');
         $pdo->exec(file_get_contents(dirname(__DIR__) . '/migrations/sqlite_init.sql') ?: '');
 
         $pages = new PageRepository($pdo);
         $site = new SiteRepository($pdo);
-        $site->setSite(array_merge($site->getSite(), ['logo_url' => '/uploads/site/logo-test.png']));
+        $mediaRepo = new MediaRepository($pdo);
+        $mediaRepo->create('image', '/uploads/media/image-db.webp', 'image-db.webp', 'image/webp', 100);
 
         $uploadsDir = sys_get_temp_dir() . '/capsule-library-' . bin2hex(random_bytes(4));
         mkdir($uploadsDir);
-        file_put_contents($uploadsDir . '/section-abc.webp', 'x');
+        file_put_contents($uploadsDir . '/legacy.png', 'x');
 
         $pages->save(new Page(
             slug: 'home',
@@ -32,11 +34,11 @@ final class MediaLibraryTest extends TestCase
             layout: 'default',
             description: '',
             sections: [[
-                'id' => 'hero-1',
-                'type' => 'hero',
-                'variant' => 'split',
+                'id' => 'gallery-1',
+                'type' => 'gallery',
+                'variant' => 'grid',
                 'visible' => true,
-                'content' => ['image_url' => '/uploads/site/hero-custom.jpg'],
+                'content' => ['items' => [['url' => '/uploads/site/hero-custom.jpg', 'title' => 'A']]],
                 'style' => [],
             ]],
             meta: [],
@@ -44,17 +46,17 @@ final class MediaLibraryTest extends TestCase
             updatedAt: '',
         ));
 
-        $library = new MediaLibrary($uploadsDir, '/uploads/site', $pages, $site);
-        $urls = $library->availableUrls();
+        $library = new MediaLibrary($mediaRepo, $uploadsDir, '/uploads/site', $pages, $site);
+        $urls = $library->availableImageUrls();
 
-        $this->assertContains('/uploads/site/logo-test.png', $urls);
-        $this->assertContains('/uploads/site/section-abc.webp', $urls);
+        $this->assertContains('/uploads/media/image-db.webp', $urls);
+        $this->assertContains('/uploads/site/legacy.png', $urls);
         $this->assertContains('/uploads/site/hero-custom.jpg', $urls);
         $this->assertContains(StockImages::hero(0), $urls);
-        $this->assertTrue($library->isAllowedUrl(StockImages::hero(0)));
+        $this->assertTrue($library->isAllowedUrl('/uploads/media/image-db.webp'));
         $this->assertFalse($library->isAllowedUrl('https://example.com/x.jpg'));
 
-        @unlink($uploadsDir . '/section-abc.webp');
+        @unlink($uploadsDir . '/legacy.png');
         @rmdir($uploadsDir);
     }
 }

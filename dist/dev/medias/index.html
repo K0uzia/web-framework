@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark light" />
+    <title>Médias - Capsule Dev</title>
+    <link rel="icon" href="/web-framework/assets/favicon-dev.svg" type="image/svg+xml" />
+    <script src="/web-framework/assets/js/dev-theme-init.js"></script>
+    <link rel="stylesheet" href="/web-framework/assets/vendor/fontawesome/css/all.min.css" />
+    <link rel="stylesheet" href="/web-framework/assets/css/dev.css" />
+    <style>:root {
+    --color-primary: #121317;
+    --color-primary-hover: #121317;
+    --color-secondary: #64748b;
+    --color-secondary-hover: #475569;
+    --color-background: #121317;
+    --color-surface: #121317;
+    --color-border: #6a5cf6;
+    --color-text: #ffffff;
+    --color-text-muted: #dbdde1;
+    --color-button-primary-bg: #121317;
+    --color-button-primary-hover: #6a5cf6;
+    --color-button-primary-text: #ffffff;
+    --color-button-secondary-bg: #f1f5f9;
+    --color-button-secondary-hover: #e2e8f0;
+    --color-button-secondary-text: #ffffff;
+    --color-link: #7c73dd;
+    --color-link-hover: #ffffff;
+    --color-success: #1cca3e;
+    --color-warning: #d97706;
+    --color-error: #dc2626;
+    --color-info: #0284c7;
+    --color-focus-ring: #3b82f6;
+    --color-disabled: #94a3b8;
+    --color-muted: var(--color-surface);
+    --color-elevated: var(--color-surface);
+    --font-heading: Inter, system-ui, sans-serif;
+    --font-body: system-ui, sans-serif;
+    --spacing-section: 4rem;
+    --radius-md: 10px;
+    --container: 72rem;
+}</style>
+    <link rel="stylesheet" href="/web-framework/assets/css/dev-theme-bindings.css" />
+    <script src="/web-framework/assets/js/dev.js" defer></script>
+    <link rel="stylesheet" href="/web-framework/assets/css/dev-static.css" />
+    <script>window.__CAPSULE_DEV_STATIC=true;</script>
+    <script src="/web-framework/assets/js/dev-static.js" defer></script>
+</head>
+<div class="dev-static-banner" role="status">Mode démo statique (GitHub Pages). Navigation OK, enregistrement désactivé.</div>
+<body class="dev-shell ">
+    <div class="dev-app" data-dev-app>
+        <button type="button" class="dev-sidebar-overlay" data-dev-sidebar-close tabindex="-1" aria-hidden="true"></button>
+        <aside class="dev-sidebar" id="dev-sidebar">
+            <nav class="dev-nav" aria-label="Navigation du tableau de bord">
+    <a class="dev-nav__brand" href="/web-framework/dev/overview">
+        <span class="dev-nav__brand-mark" aria-hidden="true"><i class="fa-solid fa-layer-group"></i></span>
+        <span class="dev-nav__brand-text">Capsule</span>
+    </a>
+    <div class="dev-nav__links">
+        <a href="/web-framework/dev/overview" class="dev-nav__link ">
+            <i class="fa-solid fa-gauge-high" aria-hidden="true"></i><span>Tableau de bord</span>
+        </a>
+        <a href="/web-framework/dev/pages" class="dev-nav__link ">
+            <i class="fa-solid fa-file-lines" aria-hidden="true"></i><span>Pages</span>
+        </a>
+        <a href="/web-framework/dev/medias" class="dev-nav__link is-active" aria-current="page">
+            <i class="fa-solid fa-photo-film" aria-hidden="true"></i><span>Médias</span>
+        </a>
+        <a href="/web-framework/dev/site" class="dev-nav__link ">
+            <i class="fa-solid fa-globe" aria-hidden="true"></i><span>Site</span>
+        </a>
+        <a href="/web-framework/dev/chrome" class="dev-nav__link ">
+            <i class="fa-solid fa-table-columns" aria-hidden="true"></i><span>En-tête &amp; pied</span>
+        </a>
+        <a href="/web-framework/dev/theme" class="dev-nav__link ">
+            <i class="fa-solid fa-palette" aria-hidden="true"></i><span>Thème</span>
+        </a>
+    </div>
+    <div class="dev-nav__footer">
+        <a href="/web-framework/" target="_blank" rel="noopener noreferrer" class="dev-nav__ghost-btn">
+            <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i><span>Voir le site</span>
+        </a>
+        <button type="button" class="dev-nav__ghost-btn" data-dev-theme-toggle aria-pressed="false">
+            <i class="fa-solid fa-moon" aria-hidden="true" data-theme-icon></i><span data-theme-label>Thème sombre</span>
+        </button>
+        <form method="post" action="/web-framework/dev/logout">
+            <button type="submit" class="dev-nav__ghost-btn dev-nav__ghost-btn--full">
+                <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i><span>Déconnexion</span>
+            </button>
+        </form>
+    </div>
+</nav>
+
+        </aside>
+        <div class="dev-main">
+            <header class="dev-topbar">
+                <button type="button" class="dev-topbar__icon-btn dev-topbar__menu-btn" data-dev-sidebar-toggle aria-label="Ouvrir le menu" aria-controls="dev-sidebar" aria-expanded="false">
+                    <i class="fa-solid fa-bars" aria-hidden="true"></i>
+                </button>
+                <nav class="dev-breadcrumb" aria-label="Fil d'ariane"><span aria-current="page">Médias</span></nav>
+                <div class="dev-topbar__spacer"></div>
+                <button type="button" class="dev-topbar__btn" data-dev-cmdk-open>
+                    <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                    <span>Rechercher</span>
+                    <kbd class="dev-kbd">Ctrl K</kbd>
+                </button>
+            </header>
+            <main class="dev-content" id="main-content">
+                <p class="dev-flash" role="status"></p>
+                <div class="dev-page-head">
+    <div>
+        <h1><i class="fa-solid fa-photo-film" aria-hidden="true"></i> Médias</h1>
+        <p class="dev-lead">Bibliothèque centralisée des images et vidéos du site. Importez ici, puis sélectionnez-les dans les blocs (hero, galerie, etc.).</p>
+    </div>
+</div>
+
+<div class="dev-medias-page">
+    <div class="dev-tabs__list dev-medias-page__tabs" role="tablist" aria-label="Types de médias">
+        <a href="/web-framework/dev/medias?tab=images" class="dev-tabs__tab is-active" role="tab" aria-selected="true">Images (0)</a>
+        <a href="/web-framework/dev/medias?tab=videos" class="dev-tabs__tab " role="tab" aria-selected="false">Vidéos (0)</a>
+    </div>
+
+    <div class="dev-tabs__panel is-active" data-tab-panel="images">
+        <div class="dev-panel">
+            <div class="dev-panel__head">
+                <div>
+                    <h2 class="dev-panel__title">Images</h2>
+                    <p class="dev-panel__desc">PNG, JPG, WebP ou SVG. Conversion WebP automatique quand possible.</p>
+                </div>
+            </div>
+            <form class="dev-inline-form dev-medias-upload" method="post" action="/web-framework/dev/medias/upload?kind=image" enctype="multipart/form-data" data-dev-ajax="medias-grid" data-dev-toast-form="Image importée">
+                <label class="dev-button dev-button--primary dev-uploader__browse">
+                    <i class="fa-solid fa-upload" aria-hidden="true"></i> Importer une image
+                    <input type="file" name="file" accept=".png,.jpg,.jpeg,.webp,.svg,image/png,image/jpeg,image/webp,image/svg+xml" class="visually-hidden" data-dev-autosubmit aria-label="Importer une image" />
+                </label>
+            </form>
+            <div id="dev-medias-grid-image" data-dev-medias-grid>
+                <p class="dev-empty"><i class="fa-solid fa-photo-film" aria-hidden="true"></i>Aucun fichier importé.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="dev-tabs__panel " data-tab-panel="videos">
+        <div class="dev-panel">
+            <div class="dev-panel__head">
+                <div>
+                    <h2 class="dev-panel__title">Vidéos</h2>
+                    <p class="dev-panel__desc">Fichiers MP4, WebM ou OGG locaux (max. 50 Mo). Les liens YouTube se saisissent directement dans les blocs.</p>
+                </div>
+            </div>
+            <form class="dev-inline-form dev-medias-upload" method="post" action="/web-framework/dev/medias/upload?kind=video" enctype="multipart/form-data" data-dev-ajax="medias-grid" data-dev-toast-form="Vidéo importée">
+                <label class="dev-button dev-button--primary dev-uploader__browse">
+                    <i class="fa-solid fa-upload" aria-hidden="true"></i> Importer une vidéo
+                    <input type="file" name="file" accept=".mp4,.webm,.ogg,video/mp4,video/webm,video/ogg" class="visually-hidden" data-dev-autosubmit aria-label="Importer une vidéo" />
+                </label>
+            </form>
+            <div id="dev-medias-grid-video" data-dev-medias-grid>
+                <p class="dev-empty"><i class="fa-solid fa-photo-film" aria-hidden="true"></i>Aucun fichier importé.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+            </main>
+        </div>
+    </div>
+
+    <div class="dev-modal" id="dev-cmdk" hidden>
+        <button type="button" class="dev-modal__backdrop" data-dev-cmdk-close tabindex="-1" aria-hidden="true"></button>
+        <div class="dev-cmdk__panel" role="dialog" aria-modal="true" aria-label="Navigation rapide">
+            <div class="dev-cmdk__search">
+                <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                <input type="text" id="dev-cmdk-input" placeholder="Aller à..." autocomplete="off" aria-label="Rechercher une section" />
+            </div>
+            <ul class="dev-cmdk__list" id="dev-cmdk-list">
+                <li><a href="/web-framework/dev/overview" data-cmdk-item data-cmdk-label="tableau de bord overview accueil"><i class="fa-solid fa-gauge-high" aria-hidden="true"></i> Tableau de bord</a></li>
+                <li><a href="/web-framework/dev/pages" data-cmdk-item data-cmdk-label="pages liste"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Pages</a></li>
+                <li><a href="/web-framework/dev/pages#new" data-cmdk-item data-cmdk-label="nouvelle page creer ajouter"><i class="fa-solid fa-plus" aria-hidden="true"></i> Nouvelle page</a></li>
+                <li><a href="/web-framework/dev/site" data-cmdk-item data-cmdk-label="site navigation identite cta"><i class="fa-solid fa-globe" aria-hidden="true"></i> Site</a></li>
+                <li><a href="/web-framework/dev/chrome" data-cmdk-item data-cmdk-label="en-tete pied de page header footer variantes partials"><i class="fa-solid fa-table-columns" aria-hidden="true"></i> En-tête &amp; pied de page</a></li>
+                <li><a href="/web-framework/dev/theme" data-cmdk-item data-cmdk-label="theme couleurs polices apparence"><i class="fa-solid fa-palette" aria-hidden="true"></i> Thème</a></li>
+                <li><a href="/web-framework/" target="_blank" rel="noopener noreferrer" data-cmdk-item data-cmdk-label="voir le site public"><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i> Voir le site</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="dev-toast-container" id="dev-toast-container" aria-live="polite" aria-atomic="true"></div>
+
+    <div class="dev-modal" id="dev-confirm-modal" hidden>
+        <button type="button" class="dev-modal__backdrop" data-dev-confirm-cancel tabindex="-1" aria-hidden="true"></button>
+        <div class="dev-block-picker__panel dev-modal__panel--form dev-confirm-modal__panel" role="alertdialog" aria-modal="true" aria-labelledby="dev-confirm-title" aria-describedby="dev-confirm-message">
+            <div class="dev-block-picker__head">
+                <h2 id="dev-confirm-title">Confirmer l'action</h2>
+                <button type="button" class="dev-icon-btn" data-dev-confirm-cancel aria-label="Fermer"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+            </div>
+            <div class="dev-modal__body">
+                <p class="dev-confirm-modal__message" id="dev-confirm-message"></p>
+                <div class="dev-confirm-modal__actions">
+                    <button type="button" class="dev-button dev-button--ghost" data-dev-confirm-cancel>Annuler</button>
+                    <button type="button" class="dev-button dev-button--danger" data-dev-confirm-ok>Confirmer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
