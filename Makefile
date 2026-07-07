@@ -11,7 +11,7 @@ PORT ?= 8080
   version info deps init reset dev db-shell bin open open-pma doc health styles export-static netlify-build \
   up down restart build pull logs \
   d-init d-setup setup-docker setup-dev vendor-clean dump \
-  phpstan test \
+  phpstan test video-tools video-worker \
   pma pma-stop
 
 # ---------- Aide ----------
@@ -84,6 +84,12 @@ phpstan:      ## Analyse statique
 
 test:         ## Tests unitaires
 	vendor/bin/phpunit --testdox
+
+video-tools:  ## Installe ffmpeg et yt-dlp (apt, pipx ou venv local)
+	bash scripts/install-video-tools.sh
+
+video-worker: ## Worker import vidéo (yt-dlp)
+	php bin/video-import-worker.php
 
 # =====================================================================
 #                       Infra (Docker)

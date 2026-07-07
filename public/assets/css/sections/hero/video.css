@@ -54,7 +54,6 @@
     height: 100%;
     min-height: 12rem;
     border: 0;
-    object-fit: cover;
 }
 
 .section-hero--video .section-hero__visual-placeholder {

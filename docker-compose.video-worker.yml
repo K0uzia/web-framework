@@ -1,0 +1,18 @@
+services:
+  video-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: php bin/video-import-worker.php
+    restart: unless-stopped
+    environment:
+      APP_ENV: prod
+      DB_DSN: sqlite:/app/data/database.sqlite
+      VIDEO_IMPORT_ROOT: /app/public/uploads/media/imports
+    volumes:
+      - ./data:/app/data
+      - ./public/uploads:/app/public/uploads
+    depends_on: []
+
+  # Optionnel : installe yt-dlp dans l'image en ajoutant à Dockerfile :
+  # RUN apt-get update && apt-get install -y ffmpeg python3-pip && pip3 install yt-dlp

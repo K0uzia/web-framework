@@ -12,7 +12,7 @@ final class SectionLayoutFamiliesTest extends TestCase
     public function testGridVariantsShareGridFamily(): void
     {
         $this->assertContains('grid-3', SectionLayoutFamilies::htmlFamilies('grid-2'));
-        $this->assertContains('grid-3', SectionLayoutFamilies::cssFamilies('bento'));
+        $this->assertSame(['shared'], SectionLayoutFamilies::cssFamilies('feature-3'));
     }
 
     public function testVerticalTimelineUsesRowFallback(): void

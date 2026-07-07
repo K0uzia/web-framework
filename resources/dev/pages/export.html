@@ -1,0 +1,94 @@
+<div class="dev-export">
+    <div class="dev-page-head">
+        <div>
+            <h1><i class="fa-solid fa-box-archive" aria-hidden="true"></i> Créer le site</h1>
+            <p class="dev-lead">Générez tous les fichiers HTML, CSS et médias nécessaires pour héberger {{site_name}} en statique.</p>
+        </div>
+        <div class="dev-page-head__actions">
+            <a class="dev-button dev-button--ghost" href="/" target="_blank" rel="noopener noreferrer">
+                <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i> Voir le site
+            </a>
+        </div>
+    </div>
+
+    {{{error_html}}}
+
+    <form
+        method="post"
+        action="/dev/export"
+        class="dev-form dev-stack dev-stack--lg"
+        toolname="export_site"
+        tooldescription="Exporte le site public en fichiers statiques à l'emplacement indiqué."
+    >
+        <div class="dev-panel">
+            <h2 class="dev-panel__title">Emplacement</h2>
+            <p class="dev-panel__desc">Dossier de destination sur votre machine. Le dossier doit être <strong>vide</strong> ou inexistant. Dans le projet, utilisez uniquement un sous-dossier de <code>exports/</code> (ex. <code>exports/mon-site</code>).</p>
+            <div class="dev-field">
+                <label class="dev-label" for="output_path">Chemin du dossier</label>
+                <div class="dev-export-path-row">
+                    <input
+                        class="dev-input"
+                        id="output_path"
+                        type="text"
+                        name="output_path"
+                        value="{{default_output_path}}"
+                        required
+                        autocomplete="off"
+                        spellcheck="false"
+                        toolparamdescription="Chemin relatif au projet (ex. exports/mon-site) ou absolu en dehors du dépôt."
+                    />
+                    <button
+                        type="button"
+                        class="dev-button dev-button--secondary dev-export-browse"
+                        data-dev-export-browse
+                        data-available="{{browse_available}}"
+                        aria-label="Parcourir les dossiers"
+                    >
+                        <i class="fa-solid fa-folder-open" aria-hidden="true"></i> Parcourir
+                    </button>
+                </div>
+                <span class="dev-hint">Le projet lui-même ne peut pas être ciblé. Aucun fichier existant ne sera supprimé automatiquement.</span>
+            </div>
+        </div>
+
+        <details class="dev-panel">
+            <summary class="dev-panel__title" style="cursor: pointer;">Options avancées</summary>
+            <p class="dev-panel__desc" style="margin-top: var(--space-3);">Utiles si le site sera servi sous un sous-dossier ou avec une URL publique différente de l'environnement local.</p>
+            <div class="dev-form--grid dev-form--grid-2" style="margin-top: var(--space-4);">
+                <div class="dev-field">
+                    <label class="dev-label" for="site_url">URL publique du site</label>
+                    <input
+                        class="dev-input"
+                        id="site_url"
+                        type="url"
+                        name="site_url"
+                        value="{{default_site_url}}"
+                        placeholder="https://exemple.fr"
+                        toolparamdescription="URL de base pour les balises canonical et Open Graph."
+                    />
+                    <span class="dev-hint">Laissez vide pour conserver l'URL locale actuelle.</span>
+                </div>
+                <div class="dev-field">
+                    <label class="dev-label" for="base_path">Sous-chemin de déploiement</label>
+                    <input
+                        class="dev-input"
+                        id="base_path"
+                        type="text"
+                        name="base_path"
+                        value="{{default_base_path}}"
+                        placeholder="mon-projet"
+                        spellcheck="false"
+                        toolparamdescription="Préfixe d'URL si le site est servi dans un sous-dossier."
+                    />
+                    <span class="dev-hint">Sans barres. Ex. <code>web-framework</code> pour GitHub Pages de projet.</span>
+                </div>
+            </div>
+        </details>
+
+        <div class="dev-form__actions">
+            <button type="submit" class="dev-button">
+                <i class="fa-solid fa-box-archive" aria-hidden="true"></i> Créer le site
+            </button>
+        </div>
+    </form>
+</div>

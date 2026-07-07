@@ -34,3 +34,35 @@ CREATE TABLE IF NOT EXISTS media (
 
 CREATE INDEX IF NOT EXISTS idx_media_kind ON media(kind);
 CREATE INDEX IF NOT EXISTS idx_media_created ON media(created_at);
+
+CREATE TABLE IF NOT EXISTS video_imports (
+    id                TEXT PRIMARY KEY,
+    source            TEXT NOT NULL CHECK (source IN ('youtube', 'upload')),
+    source_url        TEXT NOT NULL DEFAULT '',
+    youtube_id        TEXT NOT NULL DEFAULT '',
+    user_label        TEXT NOT NULL DEFAULT '',
+    title             TEXT NOT NULL DEFAULT '',
+    duration_sec      INTEGER NOT NULL DEFAULT 0,
+    video_path        TEXT NOT NULL DEFAULT '',
+    thumb_path        TEXT NOT NULL DEFAULT '',
+    public_video_url  TEXT NOT NULL DEFAULT '',
+    public_thumb_url  TEXT NOT NULL DEFAULT '',
+    media_id          TEXT NOT NULL DEFAULT '',
+    status            TEXT NOT NULL DEFAULT 'queued' CHECK (status IN ('queued', 'downloading', 'converting', 'ready', 'failed', 'pending_approval')),
+    progress          INTEGER NOT NULL DEFAULT 0,
+    message           TEXT NOT NULL DEFAULT '',
+    rights_accepted   INTEGER NOT NULL DEFAULT 0,
+    requires_approval INTEGER NOT NULL DEFAULT 0,
+    approved          INTEGER NOT NULL DEFAULT 1,
+    attempts          INTEGER NOT NULL DEFAULT 0,
+    max_attempts      INTEGER NOT NULL DEFAULT 3,
+    file_size         INTEGER NOT NULL DEFAULT 0,
+    format            TEXT NOT NULL DEFAULT 'mp4',
+    owner_id          TEXT NOT NULL DEFAULT 'dev',
+    created_at        TEXT NOT NULL DEFAULT (datetime('now')),
+    updated_at        TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_video_imports_status ON video_imports(status);
+CREATE INDEX IF NOT EXISTS idx_video_imports_owner ON video_imports(owner_id);
+CREATE INDEX IF NOT EXISTS idx_video_imports_created ON video_imports(created_at);

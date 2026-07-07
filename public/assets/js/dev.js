@@ -1136,6 +1136,7 @@
         });
         initSectionMediaFields(scope);
         initRepeaterMediaPickers(scope);
+        initIconPickers(scope);
     }
 
     function handleSectionMediaResponse(wrap, result, okMessage) {
@@ -1167,6 +1168,19 @@
             }
 
             var fileInput = wrap.querySelector('[data-dev-section-media-file]');
+            var urlInput = wrap.querySelector('.dev-input[name^="content_"]');
+            function syncMediaOptionsVisibility() {
+                var options = wrap.querySelector('[data-dev-media-options]');
+                if (!options || !urlInput) {
+                    return;
+                }
+                options.hidden = urlInput.value.trim() === '';
+            }
+            if (urlInput) {
+                urlInput.addEventListener('input', syncMediaOptionsVisibility);
+                urlInput.addEventListener('change', syncMediaOptionsVisibility);
+                syncMediaOptionsVisibility();
+            }
             if (fileInput) {
                 fileInput.addEventListener('change', function () {
                     if (!fileInput.files || !fileInput.files[0]) {
@@ -1205,7 +1219,62 @@
         });
     }
 
+    function initIconPickers(scope) {
+        (scope || document).querySelectorAll('[data-dev-icon-pick]').forEach(function (btn) {
+            if (btn.dataset.iconPickInit === '1') {
+                return;
+            }
+            btn.dataset.iconPickInit = '1';
+            btn.addEventListener('click', function () {
+                var targetId = btn.getAttribute('data-target') || '';
+                var glyph = btn.getAttribute('data-icon') || '';
+                var label = btn.getAttribute('data-label') || '';
+                var input = targetId ? document.getElementById(targetId) : null;
+                if (!input || glyph === '') {
+                    return;
+                }
+                input.value = glyph;
+                input.dispatchEvent(new Event('input', { bubbles: true }));
+                input.dispatchEvent(new Event('change', { bubbles: true }));
+                var picker = btn.closest('[data-dev-icon-picker]');
+                if (picker) {
+                    var previewIcon = picker.querySelector('.dev-icon-picker__glyph i');
+                    var previewLabel = picker.querySelector('[data-dev-icon-label]');
+                    if (previewIcon) {
+                        previewIcon.className = 'fa-solid ' + glyph;
+                    }
+                    if (previewLabel) {
+                        previewLabel.textContent = label || glyph;
+                    }
+                    picker.querySelectorAll('.dev-icon-picker__btn--selected').forEach(function (el) {
+                        el.classList.remove('dev-icon-picker__btn--selected');
+                        el.setAttribute('aria-selected', 'false');
+                    });
+                    btn.classList.add('dev-icon-picker__btn--selected');
+                    btn.setAttribute('aria-selected', 'true');
+                }
+            });
+        });
+    }
+
     function initRepeaterMediaPickers(scope) {
+        (scope || document).querySelectorAll('.dev-field--repeater-media .dev-input[type="text"]').forEach(function (input) {
+            if (input.dataset.repeaterMediaUrlInit === '1') {
+                return;
+            }
+            input.dataset.repeaterMediaUrlInit = '1';
+            input.addEventListener('input', function () {
+                var repeaterField = input.closest('.dev-field--repeater-media');
+                if (!repeaterField) {
+                    return;
+                }
+                var fitField = repeaterField.querySelector('[data-dev-repeater-media-fit]');
+                if (fitField) {
+                    fitField.hidden = input.value.trim() === '';
+                }
+            });
+        });
+
         (scope || document).querySelectorAll('[data-dev-repeater-media-pick]').forEach(function (btn) {
             if (btn.dataset.repeaterMediaInit === '1') {
                 return;
@@ -1221,6 +1290,13 @@
                 input.value = url;
                 input.dispatchEvent(new Event('input', { bubbles: true }));
                 input.dispatchEvent(new Event('change', { bubbles: true }));
+                var repeaterField = input.closest('.dev-field--repeater-media');
+                if (repeaterField) {
+                    var fitField = repeaterField.querySelector('[data-dev-repeater-media-fit]');
+                    if (fitField) {
+                        fitField.hidden = url.trim() === '';
+                    }
+                }
                 var grid = btn.closest('.dev-media-library__grid--inline');
                 if (grid) {
                     grid.querySelectorAll('.dev-media-library__pick--selected').forEach(function (el) {
@@ -2418,6 +2494,60 @@
     });
 
     /* ---------------------------------------------------------------------
+     * Export site : sélecteur de dossier local (zenity / kdialog)
+     * ------------------------------------------------------------------- */
+
+    function initExportBrowse(root) {
+        var btn = root.querySelector('[data-dev-export-browse]');
+        if (!btn) {
+            return;
+        }
+
+        var input = document.getElementById('output_path');
+        if (!input) {
+            return;
+        }
+
+        if (btn.getAttribute('data-available') !== '1') {
+            btn.disabled = true;
+            btn.title = 'Installez zenity ou kdialog pour parcourir les dossiers.';
+            return;
+        }
+
+        btn.addEventListener('click', function () {
+            btn.disabled = true;
+            fetch('/dev/export/browse', {
+                headers: { Accept: 'application/json' },
+                credentials: 'same-origin',
+            })
+                .then(function (res) {
+                    return res.json().then(function (data) {
+                        return { ok: res.ok, data: data };
+                    });
+                })
+                .then(function (result) {
+                    if (result.data.cancelled) {
+                        return;
+                    }
+                    if (!result.ok) {
+                        window.alert(result.data.error || 'Impossible d\'ouvrir le sélecteur de dossier.');
+                        return;
+                    }
+                    if (result.data.path) {
+                        input.value = result.data.path;
+                        input.dispatchEvent(new Event('input', { bubbles: true }));
+                    }
+                })
+                .catch(function () {
+                    window.alert('Impossible d\'ouvrir le sélecteur de dossier.');
+                })
+                .finally(function () {
+                    btn.disabled = false;
+                });
+        });
+    }
+
+    /* ---------------------------------------------------------------------
      * Init on load
      * ------------------------------------------------------------------- */
 
@@ -2430,6 +2560,7 @@
         initNavRows(document);
         initPreviewEmbed();
         showFlashToast();
+        initExportBrowse(document);
         if (window.location.hash === '#new') {
             openModal('dev-page-new');
             history.replaceState(null, '', window.location.pathname + window.location.search);

@@ -1,0 +1,12 @@
+.section-features--feature-9 .section-features__visual--portrait .section-features__figure {
+    aspect-ratio: 4 / 5;
+    max-height: 32rem;
+}
+
+.section-features--feature-9 .section-features__copy--stack .section-features__title {
+    font-size: clamp(1.5rem, 2.5vw, 2.125rem);
+}
+
+.section-features--feature-9 .section-features__body {
+    margin-top: var(--space-md, 1.5rem);
+}

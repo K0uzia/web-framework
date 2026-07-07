@@ -85,6 +85,7 @@ final class StockImages
     {
         return match ($type) {
             'demo', 'ui-embed' => self::product($index),
+            'features' => self::product($index),
             default => self::hero($index),
         };
     }
@@ -94,6 +95,7 @@ final class StockImages
         return match ($type) {
             'projects' => self::project($index),
             'blog' => self::blog($index),
+            'features' => self::product($index),
             'gallery' => self::gallery($index),
             default => self::gallery($index),
         };

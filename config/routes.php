@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Dev\ExportController;
 use App\Http\Dev\AuthController;
 use App\Http\Dev\ChromeController;
 use App\Http\Dev\MediaController;
@@ -12,6 +13,7 @@ use App\Http\Dev\PreviewController;
 use App\Http\Dev\SectionsController;
 use App\Http\Dev\SiteController;
 use App\Http\Dev\ThemeController;
+use App\Http\Dev\VideoImportController;
 use App\Http\HealthController;
 
 $devRoutes = [
@@ -60,11 +62,21 @@ $devRoutes = [
     'GET /dev/medias' => [MediasController::class, 'index'],
     'POST /dev/medias/upload' => [MediasController::class, 'upload'],
     'POST /dev/medias/{id}/delete' => [MediasController::class, 'destroy'],
+    'GET /dev/video-imports' => [VideoImportController::class, 'index'],
+    'POST /dev/video-imports' => [VideoImportController::class, 'store'],
+    'POST /dev/video-imports/{id}/delete' => [VideoImportController::class, 'destroy'],
+    'POST /dev/api/videos/process-queue' => [VideoImportController::class, 'processQueue'],
+    'GET /dev/api/videos/{id}/status' => [VideoImportController::class, 'status'],
+    'GET /dev/api/videos/{id}/stream' => [VideoImportController::class, 'stream'],
+    'POST /dev/api/videos/{id}/approve' => [VideoImportController::class, 'approve'],
     'GET /dev/theme' => [ThemeController::class, 'edit'],
     'POST /dev/theme' => [ThemeController::class, 'update'],
     'POST /dev/theme/reset' => [ThemeController::class, 'reset'],
     'POST /dev/theme/fonts' => [ThemeController::class, 'uploadFont'],
     'POST /dev/theme/fonts/{id}/remove' => [ThemeController::class, 'removeFont'],
+    'GET /dev/export' => [ExportController::class, 'index'],
+    'GET /dev/export/browse' => [ExportController::class, 'browse'],
+    'POST /dev/export' => [ExportController::class, 'export'],
     'GET /dev/preview/{slug}' => [PreviewController::class, 'show'],
 ];
 

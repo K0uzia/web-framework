@@ -59,4 +59,18 @@ final class MediaLibraryTest extends TestCase
         @unlink($uploadsDir . '/legacy.png');
         @rmdir($uploadsDir);
     }
+
+    public function testStockImageRecordsAreReadonly(): void
+    {
+        $pdo = new \PDO('sqlite::memory:');
+        $pdo->exec(file_get_contents(dirname(__DIR__) . '/migrations/sqlite_init.sql') ?: '');
+        $mediaRepo = new MediaRepository($pdo);
+        $library = new MediaLibrary($mediaRepo, sys_get_temp_dir(), '/uploads/site');
+
+        $records = $library->stockImageRecords();
+
+        $this->assertNotEmpty($records);
+        $this->assertTrue($records[0]['readonly']);
+        $this->assertStringStartsWith('/assets/stock/', $records[0]['url']);
+    }
 }

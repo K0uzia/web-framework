@@ -1,0 +1,8 @@
+.section-features--feature-6 .section-features__figure,
+.section-features--feature-7 .section-features__figure {
+    aspect-ratio: 1;
+}
+
+.section-features--feature-7 .section-features__figure--bordered {
+    padding: var(--space-md, 1.5rem);
+}

@@ -1,5 +1,69 @@
-@media (min-width: 768px) {
+/* Grille 4 colonnes : grille minimaliste à séparateurs (shadcn Feature 367 / 342) */
+
+.section-features--grid-4 .section-features__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0;
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: var(--radius-lg, 16px);
+    overflow: hidden;
+    background: var(--color-elevated, #fff);
+}
+
+@media (min-width: 1024px) {
     .section-features--grid-4 .section-features__grid {
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(4, minmax(0, 1fr));
     }
+}
+
+.section-features--grid-4 .section-features__item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm, 0.75rem);
+    padding: var(--space-lg, 2rem) var(--space-md, 1.5rem);
+    border-right: 1px dashed var(--color-border, #e2e8f0);
+    border-bottom: 1px dashed var(--color-border, #e2e8f0);
+    transition: background 0.2s ease;
+}
+
+.section-features--grid-4 .section-features__item:hover {
+    background: color-mix(in srgb, var(--color-primary) 4%, var(--color-elevated));
+}
+
+.section-features--grid-4 .section-features__item:nth-child(2n) {
+    border-right: 0;
+}
+
+@media (min-width: 1024px) {
+    .section-features--grid-4 .section-features__item {
+        border-bottom: 0;
+    }
+
+    .section-features--grid-4 .section-features__item:nth-child(2n) {
+        border-right: 1px dashed var(--color-border, #e2e8f0);
+    }
+
+    .section-features--grid-4 .section-features__item:nth-child(4n) {
+        border-right: 0;
+    }
+}
+
+.section-features--grid-4 .section-features__icon-wrap {
+    width: 2.25rem;
+    height: 2.25rem;
+    color: var(--color-primary);
+    font-size: 1rem;
+}
+
+.section-features--grid-4 .section-features__title {
+    font-size: 0.9375rem;
+    font-weight: 600;
+}
+
+.section-features--grid-4 .section-features__text {
+    font-size: 0.8125rem;
+    line-height: 1.55;
+}
+
+.section-features--grid-4 .section-head {
+    max-width: 36rem;
 }

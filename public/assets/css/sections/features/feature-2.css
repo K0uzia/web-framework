@@ -1,0 +1,8 @@
+.section-features--feature-2 .section-features__visual .section-features__figure {
+    aspect-ratio: 4 / 3;
+    max-height: 28rem;
+}
+
+.section-features--feature-2 .section-buttons {
+    margin-top: var(--space-lg, 2rem);
+}

@@ -19,7 +19,11 @@ final class SectionLayoutFamilies
     {
         $families = [];
 
-        if (preg_match('/^grid(-\d+)?$/', $variant) === 1 || $variant === 'bento' || $variant === 'masonry' || $variant === 'featured') {
+        if ($variant === 'bento') {
+            $families = ['bento'];
+        } elseif (preg_match('/^feature-\d+$/', $variant) === 1) {
+            $families = ['shared'];
+        } elseif (preg_match('/^grid(-\d+)?$/', $variant) === 1 || $variant === 'masonry' || $variant === 'featured') {
             $families = ['grid-3', 'grid'];
         } elseif (in_array($variant, ['row', 'marquee', 'horizontal'], true)) {
             $families = ['row'];

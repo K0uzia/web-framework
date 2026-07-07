@@ -9,17 +9,21 @@ namespace Capsule;
  */
 final class StylesheetResolver
 {
+    private readonly string $assetsRoot;
+
     public function __construct(
         private readonly string $publicCssDir,
         private readonly string $urlPrefix = '/assets/css',
+        private readonly string $assetsUrlPrefix = '/assets',
     ) {
+        $this->assetsRoot = dirname($publicCssDir);
     }
 
     /**
      * @param array<string, mixed>                          $meta
      * @param list<array{type: string, variant: string}>    $sectionRefs
      *
-     * @return list<string> Chemins publics (/assets/css/…)
+     * @return list<string> Chemins publics (/assets/css/… ou /assets/vendor/…)
      */
     public function resolve(
         string $layout,
@@ -34,6 +38,7 @@ final class StylesheetResolver
 
         $this->push($candidates, 'base.css');
         $this->push($candidates, 'sections/shared.css');
+        $this->push($candidates, 'sections/shared/media-fit.css');
         $this->push($candidates, 'layouts/' . $this->safeName($layout) . '.css');
         $this->push($candidates, 'partials/site-header.css');
         $this->push($candidates, 'partials/site-chrome-buttons.css');
@@ -71,10 +76,17 @@ final class StylesheetResolver
             }
         }
 
-        return array_map(
-            fn (string $relative): string => rtrim($this->urlPrefix, '/') . '/' . $relative,
-            $existing,
-        );
+        $hrefs = [];
+        $fontawesome = $this->assetsRoot . '/vendor/fontawesome/css/all.min.css';
+        if (is_file($fontawesome)) {
+            $hrefs[] = rtrim($this->assetsUrlPrefix, '/') . '/vendor/fontawesome/css/all.min.css';
+        }
+
+        foreach ($existing as $relative) {
+            $hrefs[] = rtrim($this->urlPrefix, '/') . '/' . $relative;
+        }
+
+        return $hrefs;
     }
 
     /**

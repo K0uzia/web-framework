@@ -48,6 +48,24 @@ final class StylesheetResolverTest extends TestCase
         $this->assertContains('/assets/css/partials/site-header.css', $hrefs);
     }
 
+    public function testIncludesFontAwesomeWhenVendorPresent(): void
+    {
+        $assetsRoot = dirname($this->cssDir);
+        mkdir($assetsRoot . '/vendor/fontawesome/css', 0775, true);
+        file_put_contents($assetsRoot . '/vendor/fontawesome/css/all.min.css', '/* fa */');
+
+        $resolver = new StylesheetResolver($this->cssDir);
+        $hrefs = $resolver->resolve('default', 'index', '', [], []);
+
+        $this->assertContains('/assets/vendor/fontawesome/css/all.min.css', $hrefs);
+        $this->assertContains('/assets/css/base.css', $hrefs);
+        $this->assertSame(
+            '/assets/vendor/fontawesome/css/all.min.css',
+            $hrefs[0],
+            'Font Awesome doit être chargé avant les feuilles du site',
+        );
+    }
+
     public function testToHtmlEscapesHref(): void
     {
         $resolver = new StylesheetResolver($this->cssDir);

@@ -16,7 +16,7 @@ landing-accueil:
     - type: logos
       variant: row
     - type: features
-      variant: grid-3
+      variant: feature-3
     - type: steps
       variant: row
     - type: testimonials
@@ -42,7 +42,7 @@ landing-saas:
     - type: features
       variant: bento
     - type: integrations
-      variant: grid-3
+      variant: feature-3
     - type: pricing
       variant: cards
     - type: faq
@@ -64,7 +64,7 @@ landing-startup:
     - type: stats
       variant: grid-4
     - type: features
-      variant: grid-3
+      variant: feature-3
     - type: testimonials
       variant: featured
     - type: cta
@@ -82,7 +82,7 @@ landing-agence:
     - type: hero
       variant: image-below
     - type: services
-      variant: grid-3
+      variant: feature-3
     - type: gallery
       variant: grid
     - type: testimonials
@@ -169,7 +169,7 @@ landing-api:
     - type: code
       variant: split
     - type: features
-      variant: grid-3
+      variant: feature-3
     - type: integrations
       variant: list
     - type: cta
@@ -189,7 +189,7 @@ landing-open-source:
     - type: community
       variant: grid
     - type: features
-      variant: grid-3
+      variant: feature-3
     - type: team
       variant: grid
     - type: cta
@@ -232,7 +232,7 @@ landing-lancement:
     - type: logos
       variant: marquee
     - type: features
-      variant: grid-3
+      variant: feature-3
     - type: cta
       variant: banner
 landing-entreprise:
@@ -292,7 +292,7 @@ landing-education:
     - type: process
       variant: vertical
     - type: features
-      variant: grid-3
+      variant: feature-3
     - type: resources
       variant: grid-2
     - type: cta
@@ -312,7 +312,7 @@ landing-sante:
     - type: stats
       variant: centered
     - type: features
-      variant: grid-3
+      variant: feature-3
     - type: compliance
       variant: centered
     - type: cta
@@ -395,7 +395,7 @@ landing-partenaires:
     - type: logos
       variant: marquee
     - type: case-studies
-      variant: grid-3
+      variant: feature-3
     - type: stats
       variant: row
     - type: cta
@@ -433,7 +433,7 @@ blog-index:
     - type: hero
       variant: centered
     - type: blog
-      variant: grid-3
+      variant: feature-3
     - type: newsletter
       variant: inline
     - type: cta
@@ -548,7 +548,7 @@ pricing-saas:
     - type: hero
       variant: split
     - type: pricing
-      variant: grid-3
+      variant: feature-3
     - type: compare
       variant: cards
     - type: testimonials
@@ -593,7 +593,7 @@ pricing-enterprise:
     - type: pricing
       variant: simple
     - type: features
-      variant: grid-3
+      variant: feature-3
     - type: contact
       variant: split
     - type: cta
@@ -807,7 +807,7 @@ integrations-catalogue:
     - type: hero
       variant: centered
     - type: integrations
-      variant: grid-3
+      variant: feature-3
     - type: logos
       variant: row
     - type: cta
@@ -850,7 +850,7 @@ integrations-developpeurs:
     - type: integrations
       variant: list
     - type: resources
-      variant: grid-3
+      variant: feature-3
     - type: cta
       variant: banner
 faq-generale:
@@ -902,7 +902,7 @@ product-overview:
     - type: hero
       variant: split
     - type: features
-      variant: grid-3
+      variant: feature-3
       content:
         title: Ce que vous gagnez
     - type: stats
@@ -946,7 +946,7 @@ feature-grille:
     - type: hero
       variant: split
     - type: features
-      variant: grid-3
+      variant: feature-3
     - type: stats
       variant: row
     - type: cta

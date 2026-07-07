@@ -1,0 +1,72 @@
+<div class="dev-page-head">
+    <div>
+        <h1><i class="fa-solid fa-clapperboard" aria-hidden="true"></i> Import vidéo</h1>
+        <p class="dev-lead">Téléchargez une vidéo YouTube ou importez un fichier local, convertissez-le en MP4 et utilisez-le dans vos blocs sans l'interface YouTube.</p>
+    </div>
+</div>
+
+<div class="dev-panel dev-video-import-page">
+    <div class="dev-panel__head">
+        <div>
+            <h2 class="dev-panel__title">Nouvel import</h2>
+            <p class="dev-panel__desc">Taille maximale : {{max_mb}} Mo.</p>
+        </div>
+    </div>
+
+    {{{worker_banner_html}}}
+
+    <div class="dev-legal-notice" role="note">
+        <h3 class="dev-legal-notice__title"><i class="fa-solid fa-scale-balanced" aria-hidden="true"></i> Avertissement légal</h3>
+        <p>Le téléchargement d'une vidéo nécessite l'autorisation du détenteur des droits. N'utilisez cet outil que pour du contenu dont vous disposez des droits ou d'une autorisation explicite (vos propres vidéos, licences adaptées, domaine public, etc.).</p>
+    </div>
+
+    <form class="dev-video-import-form" method="post" action="/dev/video-imports" enctype="multipart/form-data" data-dev-video-import-form>
+        <div class="dev-field">
+            <label class="dev-label" for="video-import-mode">Source</label>
+            <select class="dev-input dev-select" id="video-import-mode" name="mode" data-dev-video-import-mode>
+                <option value="youtube">URL YouTube</option>
+                <option value="upload">Fichier local</option>
+            </select>
+        </div>
+
+        <div class="dev-field" data-dev-video-import-youtube>
+            <label class="dev-label" for="video-import-url">URL YouTube</label>
+            <input class="dev-input" type="url" id="video-import-url" name="url" placeholder="https://www.youtube.com/watch?v=..." inputmode="url" />
+        </div>
+
+        <div class="dev-field" data-dev-video-import-upload hidden>
+            <label class="dev-label" for="video-import-file">Fichier vidéo</label>
+            <input class="dev-input" type="file" id="video-import-file" name="file" accept="video/mp4,video/webm,video/ogg,video/quicktime,.mp4,.webm,.ogg,.mov,.mkv" />
+        </div>
+
+        <div class="dev-field">
+            <label class="dev-label" for="video-import-label">Libellé (optionnel)</label>
+            <input class="dev-input" type="text" id="video-import-label" name="label" maxlength="120" />
+        </div>
+
+        <div class="dev-field dev-field--checkbox">
+            <label class="dev-checkbox">
+                <input type="checkbox" name="rights_accepted" value="1" required data-dev-video-rights />
+                <span>Je confirme disposer des droits nécessaires sur ce contenu.</span>
+            </label>
+        </div>
+
+        <button type="submit" class="dev-button dev-button--primary">
+            <i class="fa-solid fa-cloud-arrow-down" aria-hidden="true"></i> Lancer l'import
+        </button>
+    </form>
+</div>
+
+<div class="dev-panel">
+    <div class="dev-panel__head">
+        <div>
+            <h2 class="dev-panel__title">Imports récents</h2>
+            <p class="dev-panel__desc">Statut mis à jour automatiquement tant que la page est ouverte.</p>
+        </div>
+    </div>
+    <div data-dev-video-import-list>
+        {{{jobs_html}}}
+    </div>
+</div>
+
+<script src="/assets/js/dev-video-imports.js" defer></script>

@@ -27,7 +27,8 @@ final class MediasController
     public function index(Request $request): Response
     {
         $tab = ($request->query['tab'] ?? 'images') === 'videos' ? 'videos' : 'images';
-        $images = $this->media->all('image');
+        $stockImages = $this->library->stockImageRecords();
+        $importedImages = $this->media->all('image');
         $videos = $this->media->all('video');
 
         return $this->ui->render('medias-index.html', [
@@ -38,9 +39,9 @@ final class MediasController
             'tab_videos_class' => $tab === 'videos' ? 'is-active' : '',
             'tab_images_selected' => $tab === 'images' ? 'true' : 'false',
             'tab_videos_selected' => $tab === 'videos' ? 'true' : 'false',
-            'images_count' => (string) count($images),
+            'images_count' => (string) (count($stockImages) + count($importedImages)),
             'videos_count' => (string) count($videos),
-            'images_grid_html' => $this->renderGrid($images),
+            'images_grid_html' => $this->renderImagesPanel($stockImages, $importedImages),
             'videos_grid_html' => $this->renderGrid($videos),
             'flash' => $this->ui->flashFromRequest($request),
         ], section: 'medias');
@@ -60,7 +61,6 @@ final class MediasController
             $url = $kind === 'video'
                 ? $this->uploader->storeVideo($file)
                 : $this->uploader->storeImage($file);
-            $mime = $this->uploader->acceptAttribute($kind === 'video' ? 'library_video' : 'library_image');
             $this->media->create(
                 $kind,
                 $url,
@@ -110,11 +110,12 @@ final class MediasController
 
     private function respondGrid(Request $request, string $tab, string $message): Response
     {
-        $kind = $tab === 'videos' ? 'video' : 'image';
-        $records = $this->media->all($kind);
-        $html = $this->renderGrid($records);
+        $html = $tab === 'videos'
+            ? $this->renderGrid($this->media->all('video'))
+            : $this->renderImagesPanel($this->library->stockImageRecords(), $this->media->all('image'));
 
         if ($this->isHx($request)) {
+            $kind = $tab === 'videos' ? 'video' : 'image';
             $payload = '<div id="dev-medias-grid-' . $kind . '" data-dev-medias-grid>' . $html . '</div>';
             if ($message !== '') {
                 $payload .= '<p class="dev-hint" data-dev-medias-status hidden>' . htmlspecialchars($message, ENT_QUOTES) . '</p>';
@@ -127,16 +128,42 @@ final class MediasController
     }
 
     /**
-     * @param list<array{id: string, kind: string, url: string, filename: string, mime: string, size: int, label: string, created_at: string}> $records
+     * @param list<array{id: string, kind: string, url: string, filename: string, mime: string, size: int, label: string, created_at: string, readonly?: bool}> $stock
+     * @param list<array{id: string, kind: string, url: string, filename: string, mime: string, size: int, label: string, created_at: string}> $imported
      */
-    private function renderGrid(array $records): string
+    private function renderImagesPanel(array $stock, array $imported): string
+    {
+        $html = '';
+        if ($stock !== []) {
+            $html .= '<div class="dev-medias-section"><h3 class="dev-medias-section__title">Images d\'exemple</h3>'
+                . '<p class="dev-hint">Visuels fournis avec le thème. Utilisables dans les blocs, non supprimables.</p>'
+                . $this->renderGrid($stock, readonly: true)
+                . '</div>';
+        }
+
+        $html .= '<div class="dev-medias-section"><h3 class="dev-medias-section__title">Vos images</h3>';
+        if ($imported === []) {
+            $html .= '<p class="dev-empty"><i class="fa-solid fa-photo-film" aria-hidden="true"></i>Aucun fichier importé.</p>';
+        } else {
+            $html .= $this->renderGrid($imported);
+        }
+        $html .= '</div>';
+
+        return $html;
+    }
+
+    /**
+     * @param list<array{id: string, kind: string, url: string, filename: string, mime: string, size: int, label: string, created_at: string, readonly?: bool}> $records
+     */
+    private function renderGrid(array $records, bool $readonly = false): string
     {
         if ($records === []) {
-            return '<p class="dev-empty"><i class="fa-solid fa-photo-film" aria-hidden="true"></i>Aucun fichier importé.</p>';
+            return '';
         }
 
         $cards = [];
         foreach ($records as $record) {
+            $isReadonly = $readonly || (bool) ($record['readonly'] ?? false);
             $safeId = htmlspecialchars($record['id'], ENT_QUOTES);
             $safeUrl = htmlspecialchars($record['url'], ENT_QUOTES);
             $usages = $this->usage->usages($record['url']);
@@ -151,15 +178,21 @@ final class MediasController
                 $visual = '<img class="dev-media-card__img" src="' . $safeUrl . '" alt="" loading="lazy" decoding="async" />';
             }
 
-            $deleteBtn = $inUse
-                ? '<button type="button" class="dev-icon-btn" disabled title="Média encore utilisé"><i class="fa-solid fa-trash" aria-hidden="true"></i></button>'
-                : '<form class="dev-inline-form" method="post" action="/dev/medias/' . $safeId . '/delete" data-dev-ajax="medias-grid" data-dev-toast-form="Média supprimé">'
+            if ($isReadonly) {
+                $deleteBtn = '<span class="dev-media-card__badge"><i class="fa-solid fa-lock" aria-hidden="true"></i> Exemple</span>';
+            } elseif ($inUse) {
+                $deleteBtn = '<button type="button" class="dev-icon-btn" disabled title="Média encore utilisé"><i class="fa-solid fa-trash" aria-hidden="true"></i></button>';
+            } else {
+                $deleteBtn = '<form class="dev-inline-form" method="post" action="/dev/medias/' . $safeId . '/delete" data-dev-ajax="medias-grid" data-dev-toast-form="Média supprimé">'
                     . '<button type="submit" class="dev-icon-btn dev-icon-btn--danger" aria-label="Supprimer" title="Supprimer"><i class="fa-solid fa-trash" aria-hidden="true"></i></button></form>';
+            }
 
-            $cards[] = '<article class="dev-media-card">'
+            $label = $isReadonly ? ($record['label'] ?? 'Image d\'exemple') : $record['filename'];
+
+            $cards[] = '<article class="dev-media-card' . ($isReadonly ? ' dev-media-card--readonly' : '') . '">'
                 . '<div class="dev-media-card__visual">' . $visual . '</div>'
                 . '<div class="dev-media-card__meta">'
-                . '<p class="dev-media-card__name">' . htmlspecialchars($record['filename'], ENT_QUOTES) . '</p>'
+                . '<p class="dev-media-card__name">' . htmlspecialchars((string) $label, ENT_QUOTES) . '</p>'
                 . '<p class="dev-media-card__url"><code>' . $safeUrl . '</code></p>'
                 . $usageHtml
                 . '</div>'

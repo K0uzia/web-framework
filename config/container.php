@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Dev\ExportController;
 use App\Http\Dev\AuthController;
 use App\Http\Dev\ChromeController;
 use App\Http\Dev\MediaController;
@@ -16,6 +17,7 @@ use App\Http\Dev\SectionFormRenderer;
 use App\Http\Dev\SectionsController;
 use App\Http\Dev\SiteController;
 use App\Http\Dev\ThemeController;
+use App\Http\Dev\VideoImportController;
 use App\Http\HealthController;
 use Capsule\Container;
 use Capsule\Database;
@@ -34,11 +36,26 @@ use Capsule\PageRepository;
 use Capsule\Router;
 use Capsule\SectionRegistry;
 use Capsule\SectionRenderer;
+use Capsule\ProcessRunner;
 use Capsule\SiteChrome;
+use Capsule\ExportPathPicker;
+use Capsule\SiteExportPath;
+use Capsule\SiteExporter;
 use Capsule\SiteRepository;
 use Capsule\StylesheetResolver;
 use Capsule\ThemePreviewRenderer;
+use Capsule\VideoImportCleaner;
+use Capsule\VideoImportConfig;
+use Capsule\VideoImportProcessor;
+use Capsule\VideoImportRepository;
+use Capsule\VideoImportService;
+use Capsule\VideoImportWorkerDispatcher;
+use Capsule\VideoImportWorkerRunner;
+use Capsule\VideoStreamResponder;
 use Capsule\View;
+use Capsule\YtDlpDownloader;
+use Capsule\YouTubeUrlValidator;
+use Capsule\FfmpegConverter;
 
 return (function (): Container {
     $c = new Container();
@@ -109,6 +126,61 @@ return (function (): Container {
     ));
     $c->set(MediaRepository::class, static fn (Container $c) => new MediaRepository(
         $c->get(Database::class)->pdo(),
+    ));
+    $c->set(VideoImportConfig::class, static fn () => VideoImportConfig::fromEnv($root));
+    $c->set(ProcessRunner::class, static fn () => new ProcessRunner());
+    $c->set(YouTubeUrlValidator::class, static fn () => new YouTubeUrlValidator());
+    $c->set(VideoImportRepository::class, static fn (Container $c) => new VideoImportRepository(
+        $c->get(Database::class)->pdo(),
+    ));
+    $c->set(YtDlpDownloader::class, static fn (Container $c) => new YtDlpDownloader(
+        $c->get(ProcessRunner::class),
+        $c->get(VideoImportConfig::class),
+        $c->get(YouTubeUrlValidator::class),
+    ));
+    $c->set(FfmpegConverter::class, static fn (Container $c) => new FfmpegConverter(
+        $c->get(ProcessRunner::class),
+        $c->get(VideoImportConfig::class),
+    ));
+    $c->set(VideoImportProcessor::class, static fn (Container $c) => new VideoImportProcessor(
+        $c->get(VideoImportRepository::class),
+        $c->get(MediaRepository::class),
+        $c->get(VideoImportConfig::class),
+        $c->get(YtDlpDownloader::class),
+        $c->get(FfmpegConverter::class),
+    ));
+    $c->set(VideoImportCleaner::class, static fn (Container $c) => new VideoImportCleaner(
+        $c->get(VideoImportConfig::class),
+        $c->get(MediaRepository::class),
+    ));
+    $c->set(VideoImportWorkerRunner::class, static fn (Container $c) => new VideoImportWorkerRunner(
+        $c->get(VideoImportRepository::class),
+        $c->get(VideoImportProcessor::class),
+    ));
+    $c->set(VideoImportWorkerDispatcher::class, static fn (Container $c) => new VideoImportWorkerDispatcher(
+        $root,
+        $c->get(ProcessRunner::class),
+        $appConfig['is_dev'],
+    ));
+    $c->set(VideoImportService::class, static fn (Container $c) => new VideoImportService(
+        $c->get(VideoImportRepository::class),
+        $c->get(VideoImportConfig::class),
+        $c->get(YouTubeUrlValidator::class),
+        $c->get(VideoImportCleaner::class),
+    ));
+    $c->set(VideoStreamResponder::class, static fn () => new VideoStreamResponder());
+    $c->set(VideoImportController::class, static fn (Container $c) => new VideoImportController(
+        $c->get(DevDashboard::class),
+        $c->get(ResponseFactory::class),
+        $c->get(VideoImportService::class),
+        $c->get(VideoImportRepository::class),
+        $c->get(VideoImportConfig::class),
+        $c->get(VideoStreamResponder::class),
+        $c->get(VideoImportWorkerRunner::class),
+        $c->get(VideoImportWorkerDispatcher::class),
+        $c->get(ProcessRunner::class),
+        $c->get(YtDlpDownloader::class),
+        $appConfig['is_dev'],
     ));
     $c->set(MediaUsageScanner::class, static fn (Container $c) => new MediaUsageScanner(
         $c->get(PageRepository::class),
@@ -199,6 +271,31 @@ return (function (): Container {
         $c->get(DevDashboard::class),
         $c->get(PageRepository::class),
         $c->get(SiteRepository::class),
+    ));
+    $c->set(SiteExportPath::class, static fn () => new SiteExportPath($root));
+    $c->set(ExportPathPicker::class, static fn () => new ExportPathPicker($root));
+    $c->set(SiteExporter::class, static fn (Container $c) => new SiteExporter(
+        $c->get(ResponseFactory::class),
+        $c->get(View::class),
+        $c->get(PageRepository::class),
+        $c->get(SiteRepository::class),
+        $c->get(SectionRenderer::class),
+        $c->get(SiteChrome::class),
+        $c->get(StylesheetResolver::class),
+        $root,
+        $root . '/public',
+        $appConfig['base_url'],
+    ));
+    $c->set(ExportController::class, static fn (Container $c) => new ExportController(
+        $c->get(DevDashboard::class),
+        $c->get(SiteRepository::class),
+        $c->get(SiteExporter::class),
+        $c->get(SiteExportPath::class),
+        $c->get(ExportPathPicker::class),
+        $c->get(ResponseFactory::class),
+        $root,
+        $appConfig['base_url'],
+        $appConfig['is_dev'],
     ));
     $c->set(Router::class, static function (Container $c): Router {
         $registry = $c->get(PageRegistry::class);

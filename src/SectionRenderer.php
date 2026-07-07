@@ -44,6 +44,9 @@ final class SectionRenderer
             return '';
         }
 
+        $variant = $this->normalizeVariant($type, $variant);
+        $section['variant'] = $variant;
+
         $template = $this->resolveTemplate($type, $variant);
         if ($template === null) {
             if ($this->isDev) {
@@ -71,7 +74,7 @@ final class SectionRenderer
             $type = is_string($section['type'] ?? null) ? $section['type'] : '';
             $variant = is_string($section['variant'] ?? null) ? $section['variant'] : 'default';
             if ($type !== '') {
-                $refs[] = ['type' => $type, 'variant' => $variant];
+                $refs[] = ['type' => $type, 'variant' => $this->normalizeVariant($type, $variant)];
             }
         }
 
@@ -193,6 +196,9 @@ final class SectionRenderer
                 ? '<img class="section-hero__img" src="' . htmlspecialchars($imageUrl, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')
                     . '" alt="' . $safeAlt . '" loading="lazy" decoding="async" />'
                 : '<div class="section-hero__visual-placeholder" aria-hidden="true"></div>';
+            $data['feature_image_html'] = $this->featureSectionImageHtml($data['type'], $data['variant'], $content);
+            $data['quote_html'] = $this->featureQuoteHtml($data['type'], $content);
+            $data['checklist_html'] = $this->featureChecklistHtml($data['type'], $data['variant'], $content);
         }
 
         $codeText = trim((string) ($content['code'] ?? $content['text'] ?? ''));
@@ -298,7 +304,7 @@ final class SectionRenderer
                 continue;
             }
 
-            $parts[] = $this->view->renderString($template, $this->itemData($item, $index, $type));
+            $parts[] = $this->view->renderString($template, $this->itemData($item, $index, $type, $variant));
         }
 
         return implode("\n", $parts);
@@ -312,7 +318,7 @@ final class SectionRenderer
      *
      * @return array<string, mixed>
      */
-    private function itemData(array $item, int $index, string $type): array
+    private function itemData(array $item, int $index, string $type, string $variant = 'default'): array
     {
         $data = ['index' => (string) $index];
 
@@ -344,17 +350,27 @@ final class SectionRenderer
         }
         $data['initials'] = $initials;
 
-        $featureIcons = ['fa-bolt', 'fa-shield-halved', 'fa-rocket', 'fa-chart-line', 'fa-wand-magic-sparkles', 'fa-layer-group'];
-        $data['icon'] = $featureIcons[max(0, $index - 1) % count($featureIcons)];
-        $data['featured_class'] = ($type === 'pricing' && $index === 2) ? 'section-pricing__card--featured' : '';
+        $rawIcon = trim((string) ($item['icon'] ?? ''));
+        if ($type === 'features' && $rawIcon === '') {
+            $rawIcon = FontAwesomeIcon::defaultForIndex($index);
+        }
+        $glyph = $rawIcon !== '' ? FontAwesomeIcon::glyph($rawIcon) : '';
+        $data['icon'] = $glyph;
+        $data['icon_class'] = $glyph !== '' ? FontAwesomeIcon::solidClass($glyph) : '';
+        $data['index_padded'] = str_pad((string) $index, 2, '0', STR_PAD_LEFT);
+        $data['featured_class'] = match (true) {
+            $type === 'pricing' && $index === 2 => ' section-pricing__card--featured',
+            $type === 'features' && $variant === 'feature-5' && $index === 1 => ' section-features__item--lead',
+            default => '',
+        };
 
         $imageUrl = StockImages::resolve(
             (string) ($item['url'] ?? ''),
-            static fn (): string => in_array($type, ['gallery', 'projects', 'blog'], true)
+            static fn (): string => in_array($type, ['gallery', 'projects', 'blog', 'features'], true)
                 ? StockImages::itemFallback($type, $index - 1)
                 : '',
         );
-        $data['image_html'] = $this->itemImageHtml($type, $imageUrl, $title);
+        $data['image_html'] = $this->itemImageHtml($type, $imageUrl, $title, $item);
 
         $role = trim((string) ($item['role'] ?? ''));
         $date = trim((string) ($item['date'] ?? ''));
@@ -401,7 +417,10 @@ final class SectionRenderer
         return $data;
     }
 
-    private function itemImageHtml(string $type, string $imageUrl, string $title): string
+    /**
+     * @param array<string, mixed> $item
+     */
+    private function itemImageHtml(string $type, string $imageUrl, string $title, array $item = []): string
     {
         $prefix = 'section-' . $this->safeName($type);
         $safeAlt = htmlspecialchars($title !== '' ? $title : 'Image', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
@@ -409,7 +428,9 @@ final class SectionRenderer
             return '<div class="' . $prefix . '__placeholder" aria-hidden="true"><i class="fa-solid fa-image"></i></div>';
         }
 
-        return '<img class="' . $prefix . '__img" src="' . htmlspecialchars($imageUrl, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')
+        $fitClass = MediaDisplaySettings::imageFitClass($item, $prefix . '__img');
+
+        return '<img class="' . $prefix . '__img ' . $fitClass . '" src="' . htmlspecialchars($imageUrl, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')
             . '" alt="' . $safeAlt . '" width="640" height="480" loading="lazy" decoding="async" />';
     }
 
@@ -439,5 +460,99 @@ final class SectionRenderer
         $sanitized = preg_replace('/[^a-zA-Z0-9_-]/', '', $name) ?? '';
 
         return $sanitized !== '' ? $sanitized : 'default';
+    }
+
+    private function normalizeVariant(string $type, string $variant): string
+    {
+        if ($type !== 'features') {
+            return $variant;
+        }
+
+        return match ($variant) {
+            'grid-3' => 'feature-3',
+            'grid-2' => 'feature-8',
+            'grid-4' => 'feature-10',
+            'bento' => 'feature-5',
+            'list' => 'feature-6',
+            default => $variant,
+        };
+    }
+
+    /**
+     * @param array<string, mixed> $content
+     */
+    private function featureSectionImageHtml(string $type, string $variant, array $content): string
+    {
+        if ($type !== 'features' || !in_array($variant, ['feature-1', 'feature-2', 'feature-6', 'feature-7', 'feature-9'], true)) {
+            return '';
+        }
+
+        $imageUrl = StockImages::resolve(
+            (string) ($content['image_url'] ?? ''),
+            static fn (): string => StockImages::sectionHeroFallback('features'),
+        );
+        $title = trim((string) ($content['title'] ?? ''));
+        $safeAlt = htmlspecialchars($title !== '' ? $title : 'Illustration', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+        $frameClass = $variant === 'feature-7' ? ' section-features__figure--bordered' : '';
+
+        if ($imageUrl === '') {
+            return '<div class="section-features__figure' . $frameClass . '"><div class="section-features__placeholder" aria-hidden="true"><i class="fa-solid fa-image"></i></div></div>';
+        }
+
+        return '<div class="section-features__figure' . $frameClass . '"><img class="section-features__img section-features__img--fit-cover" src="'
+            . htmlspecialchars($imageUrl, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')
+            . '" alt="' . $safeAlt . '" width="640" height="640" loading="lazy" decoding="async" /></div>';
+    }
+
+    /**
+     * @param array<string, mixed> $content
+     */
+    private function featureQuoteHtml(string $type, array $content): string
+    {
+        if ($type !== 'features') {
+            return '';
+        }
+
+        $quote = trim((string) ($content['quote_text'] ?? ''));
+        if ($quote === '') {
+            return '';
+        }
+
+        $author = trim((string) ($content['quote_author'] ?? ''));
+        $html = '<blockquote class="section-features__quote"><p>' . htmlspecialchars($quote, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</p>';
+        if ($author !== '') {
+            $html .= '<footer class="section-features__quote-author">' . htmlspecialchars($author, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</footer>';
+        }
+
+        return $html . '</blockquote>';
+    }
+
+    /**
+     * @param array<string, mixed> $content
+     */
+    private function featureChecklistHtml(string $type, string $variant, array $content): string
+    {
+        if ($type !== 'features' || !in_array($variant, ['feature-6', 'feature-7'], true)) {
+            return '';
+        }
+
+        $items = is_array($content['items'] ?? null) ? $content['items'] : [];
+        $parts = [];
+        foreach ($items as $item) {
+            if (!is_array($item)) {
+                continue;
+            }
+            $line = trim((string) ($item['title'] ?? ''));
+            if ($line === '') {
+                $line = trim((string) ($item['text'] ?? ''));
+            }
+            if ($line === '') {
+                continue;
+            }
+            $parts[] = '<li class="section-features__check-item"><i class="fa-solid fa-check" aria-hidden="true"></i><span>'
+                . htmlspecialchars($line, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</span></li>';
+        }
+
+        return $parts === [] ? '' : '<ul class="section-features__checklist">' . implode('', $parts) . '</ul>';
     }
 }

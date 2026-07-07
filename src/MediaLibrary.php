@@ -53,6 +53,30 @@ final class MediaLibrary
         return $this->media->all($kind);
     }
 
+    /**
+     * @return list<array{id: string, kind: string, url: string, filename: string, mime: string, size: int, label: string, created_at: string, readonly: bool}>
+     */
+    public function stockImageRecords(): array
+    {
+        $records = [];
+        foreach (StockImages::all() as $url) {
+            $filename = basename($url);
+            $records[] = [
+                'id' => 'stock-' . (preg_replace('/[^a-zA-Z0-9_-]/', '', $filename) ?? $filename),
+                'kind' => 'image',
+                'url' => $url,
+                'filename' => $filename,
+                'mime' => 'image/jpeg',
+                'size' => 0,
+                'label' => 'Image d\'exemple',
+                'created_at' => '',
+                'readonly' => true,
+            ];
+        }
+
+        return $records;
+    }
+
     public function isAllowedUrl(string $url, string $kind = 'image'): bool
     {
         $url = trim($url);

@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Dev;
 
+use Capsule\FontAwesomeIcon;
 use Capsule\HeroStyle;
+use Capsule\MediaDisplaySettings;
 use Capsule\MediaLibrary;
 use Capsule\Page;
 use Capsule\PageRepository;
@@ -169,7 +171,7 @@ final class SectionFormRenderer
             : $this->mediaLibrary->availableImageUrls();
         $accept = $this->libraryUploader->acceptAttribute($kind === 'video' ? 'library_video' : 'library_image');
 
-        return SectionMediaFieldView::render($slug, $id, $field, $url, $kind, $library, $accept, $error);
+        return SectionMediaFieldView::render($slug, $id, $field, $url, $kind, $library, $accept, $content, $error);
     }
 
     /**
@@ -226,7 +228,7 @@ final class SectionFormRenderer
             if ($key === '__buttons__') {
                 $html .= $this->renderButtonsRepeater($field, $content, $safeId);
             } else {
-                $html .= $this->renderRepeater($key, $field, $content, $safeId, $slug, $sectionId);
+                $html .= $this->renderRepeater($key, $field, $content, $safeId, $slug, $sectionId, $variant);
             }
         }
 
@@ -336,17 +338,17 @@ final class SectionFormRenderer
         $accept = $this->libraryUploader->acceptAttribute($kind === 'video' ? 'library_video' : 'library_image');
 
         if ($compact) {
-            return SectionMediaFieldView::renderCompact($slug, $sectionId, $key, $url, $kind, $library, $accept);
+            return SectionMediaFieldView::renderCompact($slug, $sectionId, $key, $url, $kind, $library, $accept, $content);
         }
 
-        return SectionMediaFieldView::render($slug, $sectionId, $key, $url, $kind, $library, $accept);
+        return SectionMediaFieldView::render($slug, $sectionId, $key, $url, $kind, $library, $accept, $content);
     }
 
     /**
      * @param array<string, mixed> $field
      * @param array<string, mixed> $content
      */
-    private function renderRepeater(string $key, array $field, array $content, string $sectionId, string $slug, string $rawSectionId): string
+    private function renderRepeater(string $key, array $field, array $content, string $sectionId, string $slug, string $rawSectionId, string $variant = 'default'): string
     {
         if ($key !== 'items') {
             return '';
@@ -376,14 +378,18 @@ final class SectionFormRenderer
             $html .= '<div class="dev-repeater__item">';
             $html .= '<span class="dev-repeater__index" aria-hidden="true">' . ($i + 1) . '</span>';
             foreach ($itemFields as $fKey => $fDef) {
-                if (!is_array($fDef)) {
+                if (!is_array($fDef) || !$this->fieldAppliesToVariant($fDef, $variant)) {
                     continue;
                 }
                 $subLabel = (string) ($fDef['label'] ?? $fKey);
                 $value = (string) ($item[$fKey] ?? '');
                 $name = 'content_items_' . $i . '_' . $fKey;
                 if (in_array($fDef['type'] ?? '', ['image', 'video'], true)) {
-                    $html .= $this->renderRepeaterMediaField($slug, $rawSectionId, $name, $fKey, $fDef, $value, $sectionId . '-item' . $i);
+                    $html .= $this->renderRepeaterMediaField($slug, $rawSectionId, $name, $fKey, $fDef, $item, $sectionId . '-item' . $i);
+                    continue;
+                }
+                if (($fDef['type'] ?? '') === 'icon') {
+                    $html .= $this->renderIconField($name, $subLabel, $value, $sectionId . '-item' . $i);
                     continue;
                 }
                 $subType = ($fDef['type'] ?? 'text') === 'textarea' ? 'textarea' : 'text';
@@ -397,8 +403,41 @@ final class SectionFormRenderer
         return $html;
     }
 
+    private function renderIconField(string $name, string $label, string $value, string $idPrefix): string
+    {
+        $glyph = FontAwesomeIcon::glyph($value, FontAwesomeIcon::defaultForIndex(1));
+        $fieldId = $idPrefix . '-' . $name;
+        $safeId = htmlspecialchars($fieldId, ENT_QUOTES);
+        $safeName = htmlspecialchars($name, ENT_QUOTES);
+        $safeLabel = htmlspecialchars($label, ENT_QUOTES);
+        $labelText = FontAwesomeIcon::catalog()[$glyph] ?? $glyph;
+
+        $html = '<div class="dev-field dev-field--icon">';
+        $html .= '<span class="dev-label">' . $safeLabel . '</span>';
+        $html .= '<input type="hidden" class="dev-input dev-input--icon" id="' . $safeId . '" name="' . $safeName . '" value="' . htmlspecialchars($glyph, ENT_QUOTES) . '" data-dev-icon-input />';
+        $html .= '<div class="dev-icon-picker" data-dev-icon-picker>';
+        $html .= '<div class="dev-icon-picker__preview" aria-live="polite">';
+        $html .= '<span class="dev-icon-picker__glyph" aria-hidden="true"><i class="' . htmlspecialchars(FontAwesomeIcon::solidClass($glyph), ENT_QUOTES) . '"></i></span>';
+        $html .= '<span class="dev-icon-picker__label" data-dev-icon-label>' . htmlspecialchars($labelText, ENT_QUOTES) . '</span>';
+        $html .= '</div>';
+        $html .= '<div class="dev-icon-picker__grid" role="listbox" aria-label="Choisir une icône">';
+        foreach (FontAwesomeIcon::catalog() as $iconGlyph => $iconLabel) {
+            $selected = $iconGlyph === $glyph ? ' dev-icon-picker__btn--selected' : '';
+            $html .= '<button type="button" class="dev-icon-picker__btn' . $selected . '" role="option" aria-label="' . htmlspecialchars($iconLabel, ENT_QUOTES) . '"'
+                . ' data-dev-icon-pick data-target="' . $safeId . '" data-icon="' . htmlspecialchars($iconGlyph, ENT_QUOTES) . '"'
+                . ' data-label="' . htmlspecialchars($iconLabel, ENT_QUOTES) . '"'
+                . ($iconGlyph === $glyph ? ' aria-selected="true"' : ' aria-selected="false"') . '>';
+            $html .= '<i class="' . htmlspecialchars(FontAwesomeIcon::solidClass($iconGlyph), ENT_QUOTES) . '" aria-hidden="true"></i>';
+            $html .= '</button>';
+        }
+        $html .= '</div></div></div>';
+
+        return $html;
+    }
+
     /**
      * @param array<string, mixed> $fDef
+     * @param array<string, mixed> $item
      */
     private function renderRepeaterMediaField(
         string $slug,
@@ -406,9 +445,10 @@ final class SectionFormRenderer
         string $inputName,
         string $fieldKey,
         array $fDef,
-        string $value,
+        array $item,
         string $idPrefix,
     ): string {
+        $value = trim((string) ($item[$fieldKey] ?? ''));
         $kind = ($fDef['type'] ?? 'image') === 'video' ? 'video' : 'image';
         $library = $kind === 'video'
             ? $this->mediaLibrary->availableVideoUrls()
@@ -432,7 +472,37 @@ final class SectionFormRenderer
             . '<label class="dev-label" for="' . $safeInputId . '">' . htmlspecialchars($label, ENT_QUOTES) . '</label>'
             . '<input class="dev-input" type="text" id="' . $safeInputId . '" name="' . htmlspecialchars($inputName, ENT_QUOTES) . '" value="' . htmlspecialchars($value, ENT_QUOTES) . '" />'
             . ($libraryHtml !== '' ? '<div class="dev-media-library__grid dev-media-library__grid--inline">' . $libraryHtml . '</div>' : '')
+            . ($kind === 'image' ? $this->renderRepeaterImageFitSelect($item, $inputName, $idPrefix, $value !== '') : '')
             . '</div>';
+    }
+
+    /**
+     * @param array<string, mixed> $item
+     */
+    private function renderRepeaterImageFitSelect(array $item, string $inputName, string $idPrefix, bool $visible): string
+    {
+        $index = 0;
+        if (preg_match('/content_items_(\d+)_/', $inputName, $m) === 1) {
+            $index = (int) $m[1];
+        }
+        $current = MediaDisplaySettings::imageFit($item);
+        $name = 'content_items_' . $index . '_image_fit';
+        $id = htmlspecialchars($idPrefix . '-image-fit', ENT_QUOTES);
+        $hidden = $visible ? '' : ' hidden';
+        $options = [
+            'cover' => 'Remplir (cover)',
+            'contain' => 'Contenir (contain)',
+            'fill' => 'Étirer (fill)',
+            'none' => 'Taille réelle (none)',
+            'scale-down' => 'Réduire si besoin',
+        ];
+        $html = '<div class="dev-field dev-field--repeater-media-fit"' . $hidden . ' data-dev-repeater-media-fit><label class="dev-label" for="' . $id . '">Adaptation</label><select class="dev-input dev-select" id="' . $id . '" name="' . htmlspecialchars($name, ENT_QUOTES) . '">';
+        foreach ($options as $fit => $fitLabel) {
+            $html .= '<option value="' . htmlspecialchars($fit, ENT_QUOTES) . '"' . ($current === $fit ? ' selected' : '') . '>' . htmlspecialchars($fitLabel, ENT_QUOTES) . '</option>';
+        }
+        $html .= '</select></div>';
+
+        return $html;
     }
 
     /**

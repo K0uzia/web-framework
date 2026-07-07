@@ -50,8 +50,8 @@ YAML);
 
         $this->assertIsArray($data['features']);
         $this->assertIsArray($data['features']['variants']);
-        $this->assertArrayHasKey('grid-3', $data['features']['variants']);
-        $this->assertSame('Grille 3 colonnes', $data['features']['variants']['grid-3']['label']);
+        $this->assertArrayHasKey('feature-1', $data['features']['variants']);
+        $this->assertSame('Feature 1', $data['features']['variants']['feature-1']['label']);
     }
 
     public function testSiblingDataFile(): void

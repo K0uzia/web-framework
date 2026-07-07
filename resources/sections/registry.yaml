@@ -115,23 +115,38 @@ features:
   label: Fonctionnalités
   group: feature
   icon: fa-solid fa-table-cells-large
-  description: Grille de points clés avec titre et texte.
+  description: Blocs fonctionnalités inspirés des Feature 1 à 10 de shadcnblocks.
   variants:
-    grid-3:
-      label: Grille 3 colonnes
-      description: Disposition équilibrée en trois colonnes.
-    grid-2:
-      label: Grille 2 colonnes
-      description: Cartes de fonctionnalités sur deux colonnes responsives.
-    grid-4:
-      label: Grille 4 colonnes
-      description: Vue dense en quatre colonnes sur grand écran.
-    bento:
-      label: Bento
-      description: Grille asymétrique type bento pour mettre un élément en avant.
-    list:
-      label: Liste
-      description: Liste verticale avec titres et textes alignés.
+    feature-1:
+      label: Feature 1
+      description: Deux colonnes, image carrée bordée et bouton contour.
+    feature-2:
+      label: Feature 2
+      description: Split image et texte avec boutons principal et secondaire.
+    feature-3:
+      label: Feature 3
+      description: Cartes avec icône, texte et image en pied de carte.
+    feature-4:
+      label: Feature 4
+      description: Cartes collaboratives avec citation mise en avant.
+    feature-5:
+      label: Feature 5
+      description: Grille bento à deux cartes asymétriques.
+    feature-6:
+      label: Feature 6
+      description: Liste à puces et image carrée côte à côte.
+    feature-7:
+      label: Feature 7
+      description: Checklist face à une image encadrée.
+    feature-8:
+      label: Feature 8
+      description: Titre centré et deux cartes cadre.
+    feature-9:
+      label: Feature 9
+      description: Image à gauche et texte empilé à droite.
+    feature-10:
+      label: Feature 10
+      description: Colonnes à icônes avec séparateurs pointillés.
   content_fields:
     title:
       type: text
@@ -141,11 +156,42 @@ features:
       type: textarea
       label: Sous-titre de section
       client_editable: true
+    text:
+      type: textarea
+      label: Texte (un paragraphe par ligne)
+      client_editable: true
+      hide_for_variants: [feature-1, feature-3, feature-4, feature-5, feature-8, feature-10]
+    image_url:
+      type: image
+      label: Image principale
+      client_editable: true
+      show_for_variants: [feature-1, feature-2, feature-6, feature-7, feature-9]
+    buttons:
+      type: buttons
+      label: Boutons
+      show_for_variants: [feature-1, feature-2]
+    quote_text:
+      type: textarea
+      label: Citation
+      show_for_variants: [feature-4]
+    quote_author:
+      type: text
+      label: Auteur de la citation
+      show_for_variants: [feature-4]
     items:
       type: repeater
       label: Éléments
       client_editable: true
+      hide_for_variants: [feature-1, feature-2, feature-9]
       fields:
+        icon:
+          type: icon
+          label: Icône
+          hide_for_variants: [feature-6, feature-7]
+        url:
+          type: image
+          label: Image
+          hide_for_variants: [feature-6, feature-7, feature-8, feature-10]
         title:
           type: text
           label: Titre

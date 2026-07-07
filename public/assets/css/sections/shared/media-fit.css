@@ -1,0 +1,199 @@
+/* Object-fit pour images et fichiers vidéo locaux. */
+
+.section-hero__img--fit-cover,
+.section-hero__backdrop-img--fit-cover,
+.section-gallery__img--fit-cover,
+.section-blog__img--fit-cover,
+.section-projects__img--fit-cover,
+.section-hero__video-file--fit-cover,
+.section-hero__backdrop-video--fit-cover {
+    object-fit: cover;
+}
+
+.section-hero__img--fit-contain,
+.section-hero__backdrop-img--fit-contain,
+.section-gallery__img--fit-contain,
+.section-blog__img--fit-contain,
+.section-projects__img--fit-contain,
+.section-hero__video-file--fit-contain,
+.section-hero__backdrop-video--fit-contain {
+    object-fit: contain;
+}
+
+.section-hero__img--fit-fill,
+.section-hero__backdrop-img--fit-fill,
+.section-gallery__img--fit-fill,
+.section-blog__img--fit-fill,
+.section-projects__img--fit-fill,
+.section-hero__video-file--fit-fill,
+.section-hero__backdrop-video--fit-fill {
+    object-fit: fill;
+}
+
+.section-hero__img--fit-none,
+.section-hero__backdrop-img--fit-none,
+.section-gallery__img--fit-none,
+.section-blog__img--fit-none,
+.section-projects__img--fit-none,
+.section-hero__video-file--fit-none,
+.section-hero__backdrop-video--fit-none {
+    object-fit: none;
+}
+
+.section-hero__img--fit-scale-down,
+.section-hero__backdrop-img--fit-scale-down,
+.section-gallery__img--fit-scale-down,
+.section-blog__img--fit-scale-down,
+.section-projects__img--fit-scale-down,
+.section-hero__video-file--fit-scale-down,
+.section-hero__backdrop-video--fit-scale-down {
+    object-fit: scale-down;
+}
+
+/* Iframes YouTube / Vimeo : ratio 16:9 via container queries */
+.section-hero__video-frame {
+    container-type: size;
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+}
+
+.section-hero__video--embed {
+    position: relative;
+    overflow: hidden;
+    background: var(--color-surface, #0f172a);
+}
+
+.section-hero__video-frame--backdrop {
+    position: absolute;
+    inset: 0;
+}
+
+.section-hero__video-frame iframe,
+.section-hero__video-frame .section-hero__iframe,
+.section-hero__video-frame .section-hero__backdrop-iframe {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border: 0;
+    transform: translate(-50%, -50%);
+}
+
+.section-hero__video-frame--contain iframe,
+.section-hero__video-frame--contain .section-hero__iframe,
+.section-hero__video-frame--contain .section-hero__backdrop-iframe {
+    width: min(100cqw, calc(100cqh * 16 / 9));
+    height: min(100cqh, calc(100cqw * 9 / 16));
+}
+
+.section-hero__video-frame--cover iframe,
+.section-hero__video-frame--cover .section-hero__iframe,
+.section-hero__video-frame--cover .section-hero__backdrop-iframe {
+    width: max(100cqw, calc(100cqh * 16 / 9));
+    height: max(100cqh, calc(100cqw * 9 / 16));
+}
+
+.section-hero__video-frame--fill iframe,
+.section-hero__video-frame--fill .section-hero__iframe,
+.section-hero__video-frame--fill .section-hero__backdrop-iframe {
+    inset: 0;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transform: none;
+}
+
+.section-hero__video-frame--none iframe,
+.section-hero__video-frame--none .section-hero__iframe,
+.section-hero__video-frame--none .section-hero__backdrop-iframe,
+.section-hero__video-frame--scale-down iframe,
+.section-hero__video-frame--scale-down .section-hero__iframe,
+.section-hero__video-frame--scale-down .section-hero__backdrop-iframe {
+    width: min(100cqw, calc(100cqh * 16 / 9), 1280px);
+    height: min(100cqh, calc(100cqw * 9 / 16), 720px);
+}
+
+/* Sans contrôles : zoom interne pour rogner l'UI YouTube sans casser cover/contain/fill */
+.section-hero__video-frame-zoom {
+    position: absolute;
+    inset: 0;
+}
+
+.section-hero__video-frame--chromeless .section-hero__video-frame-zoom {
+    transform: scale(1.14);
+    transform-origin: center center;
+}
+
+.section-hero__video-frame--backdrop.section-hero__video-frame--chromeless .section-hero__video-frame-zoom {
+    transform: scale(1.22);
+}
+
+.section-hero__video-chrome-mask {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    pointer-events: none;
+    background: var(--color-surface, #0f172a);
+    opacity: 1;
+}
+
+.section-hero__video-chrome-mask--backdrop {
+    z-index: 3;
+    background: rgb(15 23 42);
+}
+
+[data-hero-video-chromeless="1"] .section-hero__video-chrome-mask,
+[data-hero-video-chromeless="1"] .section-hero__iframe,
+[data-hero-video-chromeless="1"] .section-hero__backdrop-iframe {
+    transition: none;
+}
+
+.section-hero__video--no-controls.is-ready .section-hero__video-chrome-mask,
+[data-hero-video-chromeless="1"].is-ready .section-hero__video-chrome-mask {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.section-hero__iframe,
+.section-hero__backdrop-iframe {
+    opacity: 0;
+    transition: opacity 0.7s ease;
+    pointer-events: none;
+}
+
+.section-hero__video--no-controls:not(.is-ready) .section-hero__iframe,
+.section-hero__video--no-controls:not(.is-ready) .section-hero__backdrop-iframe,
+[data-hero-video-chromeless="1"]:not(.is-ready) .section-hero__iframe,
+[data-hero-video-chromeless="1"]:not(.is-ready) .section-hero__backdrop-iframe {
+    opacity: 0;
+}
+
+.section-hero__video--no-controls.is-ready .section-hero__iframe.is-ready,
+.section-hero__video--no-controls.is-ready .section-hero__backdrop-iframe.is-ready,
+[data-hero-video-chromeless="1"].is-ready .section-hero__iframe.is-ready,
+[data-hero-video-chromeless="1"].is-ready .section-hero__backdrop-iframe.is-ready {
+    opacity: 1;
+}
+
+.section-hero__video--embed:not(.section-hero__video--no-controls) .section-hero__iframe.is-ready,
+.section-hero__video--embed:not(.section-hero__video--no-controls) .section-hero__backdrop-iframe.is-ready {
+    opacity: 1;
+}
+
+.section-hero__iframe--no-controls,
+.section-hero__iframe--no-controls.is-ready,
+.section-hero__backdrop-iframe.section-hero__iframe--no-controls,
+.section-hero__backdrop-iframe.section-hero__iframe--no-controls.is-ready {
+    pointer-events: none;
+}
+
+.section-hero--video .section-hero__iframe.is-ready:not(.section-hero__iframe--no-controls) {
+    pointer-events: auto;
+}
+
+.section-hero__video--file video {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
