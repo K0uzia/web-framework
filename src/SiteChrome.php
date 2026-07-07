@@ -40,10 +40,10 @@ final class SiteChrome
         );
 
         $navItems = $this->resolveNavItems($siteInfo, $homeLabel);
-        $publicNav = SiteNavHelper::resolvePublicItems($navItems, $this->pages, $homeLabel);
+        $publicNav = SiteNavHelper::resolvePublicTree($navItems, $this->pages, $homeLabel);
         if ($publicNav === [] && $this->pages->allPublished() !== []) {
             $autoItems = SiteNavHelper::autoFromPages($this->pages, $homeLabel);
-            $publicNav = SiteNavHelper::resolvePublicItems($autoItems, $this->pages, $homeLabel);
+            $publicNav = SiteNavHelper::resolvePublicTree($autoItems, $this->pages, $homeLabel);
         }
 
         $headerVariant = ChromeVariants::resolveHeader($siteInfo, (string) ($data['preview_header_variant'] ?? ''));

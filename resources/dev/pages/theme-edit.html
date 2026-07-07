@@ -25,59 +25,9 @@
 
                 <form method="post" action="/dev/theme" id="theme-form" hx-post="/dev/theme" hx-trigger="change, input delay:400ms" hx-target="#theme-saved-status" hx-swap="innerHTML" data-dev-toast-form="Thème enregistré">
                     <div class="dev-tabs__panel is-active" data-tab-panel="colors">
-                        <div class="dev-panel">
-                            <h2 class="dev-panel__title">Palette</h2>
-                            <p class="dev-panel__desc">Ces couleurs pilotent l'ensemble du site public via des variables CSS. La pipette analyse la couleur calculée de l'élément cliqué (page, aperçu ou autre fenêtre).</p>
-                            <div class="dev-color-grid">
-                                <div class="dev-field">
-                                    <label class="dev-label" for="color_primary">Primaire</label>
-                                    <div class="dev-color-field" data-color-sync>
-                                        <input type="color" id="color_primary" name="color_primary" value="{{color_primary}}" />
-                                        <input class="dev-input dev-input--sm" type="text" data-color-text value="{{color_primary}}" aria-label="Valeur hexadécimale primaire" />
-                                        <button type="button" class="dev-icon-btn dev-color-field__pick" data-color-eyedropper aria-label="Prélever une couleur" title="Prélever la couleur d'un élément"><i class="fa-solid fa-eyedropper" aria-hidden="true"></i></button>
-                                    </div>
-                                </div>
-                                <div class="dev-field">
-                                    <label class="dev-label" for="color_secondary">Secondaire</label>
-                                    <div class="dev-color-field" data-color-sync>
-                                        <input type="color" id="color_secondary" name="color_secondary" value="{{color_secondary}}" />
-                                        <input class="dev-input dev-input--sm" type="text" data-color-text value="{{color_secondary}}" aria-label="Valeur hexadécimale secondaire" />
-                                        <button type="button" class="dev-icon-btn dev-color-field__pick" data-color-eyedropper aria-label="Prélever une couleur" title="Prélever la couleur d'un élément"><i class="fa-solid fa-eyedropper" aria-hidden="true"></i></button>
-                                    </div>
-                                </div>
-                                <div class="dev-field">
-                                    <label class="dev-label" for="color_background">Fond</label>
-                                    <div class="dev-color-field" data-color-sync>
-                                        <input type="color" id="color_background" name="color_background" value="{{color_background}}" />
-                                        <input class="dev-input dev-input--sm" type="text" data-color-text value="{{color_background}}" aria-label="Valeur hexadécimale de fond" />
-                                        <button type="button" class="dev-icon-btn dev-color-field__pick" data-color-eyedropper aria-label="Prélever une couleur" title="Prélever la couleur d'un élément"><i class="fa-solid fa-eyedropper" aria-hidden="true"></i></button>
-                                    </div>
-                                </div>
-                                <div class="dev-field">
-                                    <label class="dev-label" for="color_text">Texte</label>
-                                    <div class="dev-color-field" data-color-sync>
-                                        <input type="color" id="color_text" name="color_text" value="{{color_text}}" />
-                                        <input class="dev-input dev-input--sm" type="text" data-color-text value="{{color_text}}" aria-label="Valeur hexadécimale du texte" />
-                                        <button type="button" class="dev-icon-btn dev-color-field__pick" data-color-eyedropper aria-label="Prélever une couleur" title="Prélever la couleur d'un élément"><i class="fa-solid fa-eyedropper" aria-hidden="true"></i></button>
-                                    </div>
-                                </div>
-                                <div class="dev-field">
-                                    <label class="dev-label" for="color_muted">Surface atténuée</label>
-                                    <div class="dev-color-field" data-color-sync>
-                                        <input type="color" id="color_muted" name="color_muted" value="{{color_muted}}" />
-                                        <input class="dev-input dev-input--sm" type="text" data-color-text value="{{color_muted}}" aria-label="Valeur hexadécimale surface atténuée" />
-                                        <button type="button" class="dev-icon-btn dev-color-field__pick" data-color-eyedropper aria-label="Prélever une couleur" title="Prélever la couleur d'un élément"><i class="fa-solid fa-eyedropper" aria-hidden="true"></i></button>
-                                    </div>
-                                </div>
-                                <div class="dev-field">
-                                    <label class="dev-label" for="color_border">Bordures</label>
-                                    <div class="dev-color-field" data-color-sync>
-                                        <input type="color" id="color_border" name="color_border" value="{{color_border}}" />
-                                        <input class="dev-input dev-input--sm" type="text" data-color-text value="{{color_border}}" aria-label="Valeur hexadécimale des bordures" />
-                                        <button type="button" class="dev-icon-btn dev-color-field__pick" data-color-eyedropper aria-label="Prélever une couleur" title="Prélever la couleur d'un élément"><i class="fa-solid fa-eyedropper" aria-hidden="true"></i></button>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="dev-panel dev-panel--colors">
+                            <p class="dev-hint dev-panel__intro">La pipette prélève la couleur d'un élément dans l'aperçu ou sur la page.</p>
+                            {{{color_fields_html}}}
                         </div>
                     </div>
 
@@ -158,15 +108,8 @@
                 <a class="dev-preview-desktop" href="{{preview_url}}" target="_blank" rel="noopener noreferrer">Ouvrir <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
             </div>
             <div class="dev-preview-frame" id="theme-preview-frame" data-device="mobile">
-                <div class="dev-mobile-mockup">
-                    <div class="dev-mobile-mockup__canvas">
-                        <div class="dev-mobile-mockup__screen">
-                            <iframe id="preview-frame" src="{{preview_url}}" title="Aperçu du thème"></iframe>
-                        </div>
-                        <svg class="dev-mobile-mockup__overlay" viewBox="0 0 483 974" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
-                            <image href="/assets/img/dev/mobile-mockup-frame.png" width="483" height="974"></image>
-                        </svg>
-                    </div>
+                <div class="dev-preview-device">
+                    <iframe id="preview-frame" src="{{preview_url}}" title="Aperçu du thème"></iframe>
                 </div>
             </div>
         </div>

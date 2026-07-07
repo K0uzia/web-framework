@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace App\Http\Dev;
 
+use Capsule\HeroStyle;
+use Capsule\MediaLibrary;
 use Capsule\Page;
 use Capsule\PageRepository;
 use Capsule\SectionRegistry;
+use Capsule\StockImages;
 
 final class SectionFormRenderer
 {
@@ -15,6 +18,8 @@ final class SectionFormRenderer
     public function __construct(
         private readonly SectionRegistry $registry,
         private readonly PageRepository $pages,
+        private readonly MediaLibrary $mediaLibrary,
+        private readonly MediaUploader $uploader,
     ) {
     }
 
@@ -92,52 +97,230 @@ final class SectionFormRenderer
         $html .= '<form id="form-' . $safeIdAttr . '" class="dev-section-form" hx-post="' . $actionUrl . '" hx-trigger="change, input delay:350ms" hx-target="#section-saved-' . $safeIdAttr . '" hx-swap="innerHTML" data-dev-toast-form="Bloc enregistré">';
 
         $variants = $this->registry->getVariants($type);
-        if ($variants !== []) {
-            $html .= $this->fieldSelect('variant', 'Variante', $variant, $variants, $safeId);
+        $html .= $this->renderFormToolbar($variant, $variants, $safeId);
+
+        $contentHtml = $this->renderContentFields(
+            $this->registry->getContentFields($type),
+            $content,
+            $variant,
+            $safeId,
+            $slug,
+            $id,
+        );
+        $styleHtml = $this->renderStyleAccordions(
+            $type,
+            $this->registry->getStyleFields($type),
+            $style,
+            $variant,
+            $safeId,
+        );
+
+        if ($styleHtml !== '') {
+            $tabContentId = 'section-tab-content-' . $safeId;
+            $tabStyleId = 'section-tab-style-' . $safeId;
+            $html .= '<div class="dev-section-form__tabs" data-dev-tabs>';
+            $html .= '<div class="dev-tabs__list dev-section-form__tablist" role="tablist" aria-label="Sections du formulaire de bloc">';
+            $html .= '<button type="button" class="dev-tabs__tab is-active" role="tab" id="' . $tabContentId . '-btn" aria-selected="true" aria-controls="' . $tabContentId . '" data-tab="content" tabindex="0">Contenu</button>';
+            $html .= '<button type="button" class="dev-tabs__tab" role="tab" id="' . $tabStyleId . '-btn" aria-selected="false" aria-controls="' . $tabStyleId . '" data-tab="appearance" tabindex="-1">Apparence</button>';
+            $html .= '</div>';
+            $html .= '<div class="dev-tabs__panel dev-section-form__panel is-active" role="tabpanel" id="' . $tabContentId . '" aria-labelledby="' . $tabContentId . '-btn" data-tab-panel="content">' . $contentHtml . '</div>';
+            $html .= '<div class="dev-tabs__panel dev-section-form__panel" role="tabpanel" id="' . $tabStyleId . '" aria-labelledby="' . $tabStyleId . '-btn" data-tab-panel="appearance">' . $styleHtml . '</div>';
+            $html .= '</div>';
+        } else {
+            $html .= '<div class="dev-section-form__panel dev-section-form__panel--solo">' . $contentHtml . '</div>';
         }
 
-        foreach ($this->registry->getContentFields($type) as $key => $field) {
-            if (!is_array($field)) {
-                continue;
-            }
-            if (($field['type'] ?? '') === 'repeater') {
-                $html .= $this->renderRepeater($key, $field, $content, $safeId);
-                continue;
-            }
-            if (($field['type'] ?? '') === 'buttons') {
-                $html .= $this->renderButtonsRepeater($field, $content, $safeId);
-                continue;
-            }
-            $fLabel = (string) ($field['label'] ?? $key);
-            $value = (string) ($content[$key] ?? '');
-            $name = 'content_' . $key;
-            $inputType = match ($field['type'] ?? 'text') {
-                'textarea' => 'textarea',
-                'url' => 'url',
-                default => 'text',
-            };
-            $html .= $this->fieldInput($name, $fLabel, $value, $inputType, $safeId);
-        }
-
-        foreach ($this->registry->getStyleFields($type) as $key => $field) {
-            if (!is_array($field)) {
-                continue;
-            }
-            $fLabel = (string) ($field['label'] ?? $key);
-            $name = 'style_' . $key;
-            $current = (string) ($style[$key] ?? '');
-            if (($field['type'] ?? '') === 'select' && is_string($field['options'] ?? null)) {
-                $options = array_map('trim', explode(',', trim($field['options'], '[]')));
-                $html .= $this->fieldSelectRaw($name, $fLabel, $current, $this->styleSelectOptions($key, $options), $safeId);
-            } elseif (($field['type'] ?? '') === 'color-token') {
-                $html .= $this->fieldSelectRaw($name, $fLabel, $current, ['primary', 'muted', 'background'], $safeId);
-            }
-        }
-
+        $html .= '<footer class="dev-section-form__footer">';
+        $html .= '<p class="dev-hint dev-section-form__autosave-hint"><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Enregistrement automatique à chaque modification.</p>';
         $html .= '<div class="dev-section-form__status" id="section-saved-' . $safeIdAttr . '" aria-live="polite"></div>';
+        $html .= '</footer>';
         $html .= '</form></div></article>';
 
         return $html;
+    }
+
+    /**
+     * @param array<string, array{label: string}|string> $variants
+     */
+    private function renderFormToolbar(string $variant, array $variants, string $safeId): string
+    {
+        $html = '<div class="dev-section-form__toolbar">';
+        if ($variants !== []) {
+            $html .= '<div class="dev-section-form__toolbar-variant">';
+            $html .= $this->fieldSelect('variant', 'Variante du bloc', $variant, $variants, $safeId);
+            $html .= '</div>';
+        }
+        $html .= '</div>';
+
+        return $html;
+    }
+
+    /**
+     * @param array<string, mixed> $section
+     */
+    public function renderImageField(string $slug, array $section, string $error = ''): string
+    {
+        $id = (string) ($section['id'] ?? '');
+        $variant = (string) ($section['variant'] ?? '');
+        $content = is_array($section['content'] ?? null) ? $section['content'] : [];
+        $url = trim((string) ($content['image_url'] ?? ''));
+
+        return SectionImageFieldView::render(
+            $slug,
+            $id,
+            'image_url',
+            $url,
+            $this->mediaLibrary->availableUrls(),
+            $this->uploader->acceptAttribute('section_image'),
+            $error,
+        );
+    }
+
+    /**
+     * @param array<string, mixed> $fields
+     * @param array<string, mixed> $content
+     */
+    private function renderContentFields(array $fields, array $content, string $variant, string $safeId, string $slug, string $sectionId): string
+    {
+        $html = '<div class="dev-stack dev-stack--sm">';
+        $simpleFields = [];
+        $imageFields = [];
+        $repeaters = [];
+
+        foreach ($fields as $key => $field) {
+            if (!is_array($field) || !$this->fieldAppliesToVariant($field, $variant)) {
+                continue;
+            }
+            if (($field['type'] ?? '') === 'repeater') {
+                $repeaters[$key] = $field;
+                continue;
+            }
+            if (($field['type'] ?? '') === 'buttons') {
+                $repeaters['__buttons__'] = $field;
+                continue;
+            }
+            if (($field['type'] ?? '') === 'image') {
+                $imageFields[$key] = $field;
+                continue;
+            }
+            $simpleFields[$key] = $field;
+        }
+
+        if ($simpleFields !== []) {
+            $html .= '<div class="dev-form-grid dev-form-grid--1">';
+            foreach ($simpleFields as $key => $field) {
+                $fLabel = (string) ($field['label'] ?? $key);
+                $value = (string) ($content[$key] ?? '');
+                $name = 'content_' . $key;
+                $inputType = match ($field['type'] ?? 'text') {
+                    'textarea' => 'textarea',
+                    'url' => 'url',
+                    default => 'text',
+                };
+                $html .= $this->fieldInput($name, $fLabel, $value, $inputType, $safeId);
+            }
+            $html .= '</div>';
+            if (isset($simpleFields['video_url'])) {
+                $html .= '<p class="dev-hint">YouTube, Vimeo ou fichier .mp4 local. Sans URL vidéo, l\'image de secours s\'affiche.</p>';
+            }
+        }
+
+        foreach ($imageFields as $key => $field) {
+            $url = trim((string) ($content[$key] ?? ''));
+            $html .= SectionImageFieldView::render(
+                $slug,
+                $sectionId,
+                $key,
+                $url,
+                $this->mediaLibrary->availableUrls(),
+                $this->uploader->acceptAttribute('section_image'),
+            );
+        }
+
+        foreach ($repeaters as $key => $field) {
+            if ($key === '__buttons__') {
+                $html .= $this->renderButtonsRepeater($field, $content, $safeId);
+            } else {
+                $html .= $this->renderRepeater($key, $field, $content, $safeId);
+            }
+        }
+
+        $html .= '</div>';
+
+        return $html;
+    }
+
+    /**
+     * @param array<string, mixed> $fields
+     * @param array<string, mixed> $style
+     */
+    private function renderStyleAccordions(string $type, array $fields, array $style, string $variant, string $safeId): string
+    {
+        $groups = [
+            'general' => ['label' => 'Général', 'icon' => 'fa-sliders'],
+            'layout' => ['label' => 'Mise en page', 'icon' => 'fa-up-right-and-down-left-from-center'],
+            'typography' => ['label' => 'Typographie', 'icon' => 'fa-font'],
+            'visual' => ['label' => 'Visuel', 'icon' => 'fa-image'],
+        ];
+
+        $byGroup = [];
+        foreach ($fields as $key => $field) {
+            if (!is_array($field) || !$this->fieldAppliesToVariant($field, $variant)) {
+                continue;
+            }
+            $group = (string) ($field['group'] ?? 'general');
+            $byGroup[$group][$key] = $field;
+        }
+
+        if ($byGroup === []) {
+            return '';
+        }
+
+        $html = '<div class="dev-section-form__accordions">';
+        $openFirst = true;
+        foreach ($groups as $groupKey => $groupMeta) {
+            $groupFields = $byGroup[$groupKey] ?? [];
+            if ($groupFields === []) {
+                continue;
+            }
+            $openAttr = $openFirst ? ' open' : '';
+            $openFirst = false;
+            $html .= '<details class="dev-form-group"' . $openAttr . '>';
+            $html .= '<summary class="dev-form-group__summary">';
+            $html .= '<i class="fa-solid ' . $groupMeta['icon'] . '" aria-hidden="true"></i>';
+            $html .= '<span>' . htmlspecialchars($groupMeta['label'], ENT_QUOTES) . '</span>';
+            $html .= '<i class="fa-solid fa-chevron-down dev-form-group__chevron" aria-hidden="true"></i>';
+            $html .= '</summary>';
+            $html .= '<div class="dev-form-group__body dev-form-grid dev-form-grid--2">';
+            foreach ($groupFields as $key => $field) {
+                $fLabel = (string) ($field['label'] ?? $key);
+                $name = 'style_' . $key;
+                $fallback = $type === 'hero' ? (HeroStyle::defaults($variant)[$key] ?? '') : (SectionDefaults::style($type)[$key] ?? '');
+                $current = (string) ($style[$key] ?? $fallback);
+                if (($field['type'] ?? '') === 'select' && is_string($field['options'] ?? null)) {
+                    $options = array_map('trim', explode(',', trim($field['options'], '[]')));
+                    $html .= $this->fieldSelectRaw($name, $fLabel, $current, $this->styleSelectOptions($key, $options), $safeId);
+                } elseif (($field['type'] ?? '') === 'color-token') {
+                    $html .= $this->fieldSelectRaw($name, $fLabel, $current, [
+                        'primary' => 'Primaire',
+                        'muted' => 'Atténué',
+                        'background' => 'Fond de page',
+                    ], $safeId);
+                }
+            }
+            $html .= '</div></details>';
+        }
+        $html .= '</div>';
+
+        return $html;
+    }
+
+    /**
+     * @param array<string, mixed> $field
+     */
+    private function fieldAppliesToVariant(array $field, string $variant): bool
+    {
+        return HeroStyle::fieldAppliesToVariant($field, $variant);
     }
 
     private function variantLabel(string $type, string $variant): string
@@ -171,7 +354,16 @@ final class SectionFormRenderer
             ? $field['fields']
             : ['title' => ['type' => 'text', 'label' => 'Titre'], 'text' => ['type' => 'textarea', 'label' => 'Texte']];
 
-        $html = '<fieldset class="dev-fieldset"><legend>' . htmlspecialchars($fLabel, ENT_QUOTES) . '</legend>';
+        $html = '<details class="dev-form-group dev-form-group--repeater" open>';
+        $html .= '<summary class="dev-form-group__summary">';
+        $html .= '<i class="fa-solid fa-list" aria-hidden="true"></i>';
+        $html .= '<span>' . htmlspecialchars($fLabel, ENT_QUOTES) . '</span>';
+        $html .= '<i class="fa-solid fa-chevron-down dev-form-group__chevron" aria-hidden="true"></i>';
+        $html .= '</summary>';
+        $html .= '<div class="dev-form-group__body">';
+        if (isset($itemFields['url'])) {
+            $html .= self::stockImageHint();
+        }
         $html .= '<p class="dev-hint">Les éléments entièrement vides sont retirés à l\'enregistrement.</p>';
         $html .= '<div class="dev-repeater">';
 
@@ -193,7 +385,7 @@ final class SectionFormRenderer
             $html .= '</div>';
         }
 
-        $html .= '</div></fieldset>';
+        $html .= '</div></div></details>';
 
         return $html;
     }
@@ -242,14 +434,19 @@ final class SectionFormRenderer
         }
 
         $safeSectionId = htmlspecialchars($sectionId, ENT_QUOTES);
-        $html = '<fieldset class="dev-fieldset dev-fieldset--buttons" data-buttons-repeater>';
-        $html .= '<legend>' . htmlspecialchars($fLabel, ENT_QUOTES) . '</legend>';
+        $html = '<details class="dev-form-group dev-form-group--buttons" open>';
+        $html .= '<summary class="dev-form-group__summary">';
+        $html .= '<i class="fa-solid fa-hand-pointer" aria-hidden="true"></i>';
+        $html .= '<span>' . htmlspecialchars($fLabel, ENT_QUOTES) . '</span>';
+        $html .= '<i class="fa-solid fa-chevron-down dev-form-group__chevron" aria-hidden="true"></i>';
+        $html .= '</summary>';
+        $html .= '<div class="dev-form-group__body">';
         $html .= '<input type="hidden" name="content_buttons_count" value="' . count($buttons) . '" data-buttons-repeater-count />';
         $html .= '<div class="dev-repeater dev-repeater--buttons" data-buttons-repeater-list>' . implode('', $rows) . '</div>';
         $html .= '<button type="button" class="dev-button dev-button--ghost dev-button--sm" data-buttons-repeater-add data-buttons-repeater-section="' . $safeSectionId . '">'
             . '<i class="fa-solid fa-plus" aria-hidden="true"></i> Ajouter un bouton</button>';
         $html .= '<template data-buttons-repeater-template>' . $this->buttonRow('__INDEX__', [], $sectionId) . '</template>';
-        $html .= '</fieldset>';
+        $html .= '</div></details>';
 
         return $html;
     }
@@ -306,6 +503,42 @@ final class SectionFormRenderer
                 'left' => 'Gauche',
                 'center' => 'Centre',
                 'right' => 'Droite',
+            ],
+            'min_height' => [
+                'auto' => 'Automatique',
+                'large' => 'Grande',
+                'viewport' => 'Plein écran',
+            ],
+            'content_width' => [
+                'narrow' => 'Étroit',
+                'default' => 'Standard',
+                'wide' => 'Large',
+            ],
+            'title_size' => [
+                'sm' => 'Petit',
+                'md' => 'Moyen',
+                'lg' => 'Grand',
+                'xl' => 'Très grand',
+                'display' => 'Affichage',
+            ],
+            'subtitle_size' => [
+                'sm' => 'Petit',
+                'md' => 'Moyen',
+                'lg' => 'Grand',
+                'hidden' => 'Masqué',
+            ],
+            'image_border' => [
+                'none' => 'Aucune',
+                'thin' => 'Fine',
+            ],
+            'image_radius' => [
+                'none' => 'Aucun',
+                'md' => 'Moyen',
+                'lg' => 'Grand',
+            ],
+            'image_shadow' => [
+                'none' => 'Aucune',
+                'md' => 'Légère',
             ],
         ];
         $labels = $labelMaps[$fieldKey] ?? [];
@@ -366,5 +599,10 @@ final class SectionFormRenderer
         return '<form class="dev-inline-form" method="post" action="/dev/pages/' . $slug . '/sections/' . rawurlencode($id) . '/move" data-dev-ajax="sections">'
             . '<input type="hidden" name="direction" value="' . $direction . '" />'
             . '<button type="submit" class="dev-icon-btn" title="' . $title . '" aria-label="' . $title . '"><i class="fa-solid ' . $icon . '" aria-hidden="true"></i></button></form>';
+    }
+
+    private static function stockImageHint(): string
+    {
+        return '<p class="dev-hint">Visuels d\'exemple dans <code>/assets/stock/</code>. Importez un fichier ou collez une URL locale du site.</p>';
     }
 }

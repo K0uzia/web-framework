@@ -9,7 +9,7 @@ use Capsule\Http\Message\Request;
 use Capsule\Http\Message\Response;
 use Capsule\Http\Support\FormData;
 use Capsule\SiteRepository;
-use Capsule\ThemeColor;
+use Capsule\ThemePalette;
 
 final class ThemeController
 {
@@ -38,7 +38,7 @@ final class ThemeController
     public function edit(Request $request): Response
     {
         $theme = $this->site->getTheme();
-        $colors = is_array($theme['colors'] ?? null) ? $theme['colors'] : [];
+        $colors = ThemePalette::normalize(is_array($theme['colors'] ?? null) ? $theme['colors'] : []);
         $fonts = is_array($theme['fonts'] ?? null) ? $theme['fonts'] : [];
         $spacing = is_array($theme['spacing'] ?? null) ? $theme['spacing'] : [];
         $layout = is_array($theme['layout'] ?? null) ? $theme['layout'] : [];
@@ -50,12 +50,7 @@ final class ThemeController
         return $this->ui->render('theme-edit.html', [
             'title' => 'Thème',
             'crumb_html' => Breadcrumb::render([['label' => 'Thème']]),
-            'color_primary' => ThemeColor::normalize((string) ($colors['primary'] ?? ''), '#3b82f6'),
-            'color_secondary' => ThemeColor::normalize((string) ($colors['secondary'] ?? ''), '#64748b'),
-            'color_background' => ThemeColor::normalize((string) ($colors['background'] ?? ''), '#ffffff'),
-            'color_text' => ThemeColor::normalize((string) ($colors['text'] ?? ''), '#0f172a'),
-            'color_muted' => ThemeColor::normalize((string) ($colors['muted'] ?? ''), '#f1f5f9'),
-            'color_border' => ThemeColor::normalize((string) ($colors['border'] ?? ''), '#e2e8f0'),
+            'color_fields_html' => ThemePalette::renderFieldsHtml($colors),
             'font_heading' => (string) ($fonts['heading'] ?? 'Inter, system-ui, sans-serif'),
             'font_body' => (string) ($fonts['body'] ?? 'system-ui, sans-serif'),
             'font_heading_options' => $heading['html'],
@@ -66,7 +61,7 @@ final class ThemeController
             'spacing_section' => (string) ($spacing['section'] ?? '4rem'),
             'layout_radius' => (string) ($layout['radius'] ?? '10px'),
             'layout_container' => (string) ($layout['container'] ?? '72rem'),
-            'preview_url' => '/dev/preview/_',
+            'preview_url' => '/dev/preview/theme',
             'flash' => $this->ui->flashFromRequest($request),
         ]);
     }
@@ -222,12 +217,7 @@ final class ThemeController
         $spacing = is_array($theme['spacing'] ?? null) ? $theme['spacing'] : [];
         $layout = is_array($theme['layout'] ?? null) ? $theme['layout'] : [];
 
-        $colors['primary'] = ThemeColor::normalize($data['color_primary'] ?? (string) ($colors['primary'] ?? ''), '#3b82f6');
-        $colors['secondary'] = ThemeColor::normalize($data['color_secondary'] ?? (string) ($colors['secondary'] ?? ''), '#64748b');
-        $colors['background'] = ThemeColor::normalize($data['color_background'] ?? (string) ($colors['background'] ?? ''), '#ffffff');
-        $colors['text'] = ThemeColor::normalize($data['color_text'] ?? (string) ($colors['text'] ?? ''), '#0f172a');
-        $colors['muted'] = ThemeColor::normalize($data['color_muted'] ?? (string) ($colors['muted'] ?? ''), '#f1f5f9');
-        $colors['border'] = ThemeColor::normalize($data['color_border'] ?? (string) ($colors['border'] ?? ''), '#e2e8f0');
+        $colors = ThemePalette::fromForm($data, $colors);
         $fonts['heading'] = trim($data['font_heading'] ?? (string) ($fonts['heading'] ?? ''));
         $fonts['body'] = trim($data['font_body'] ?? (string) ($fonts['body'] ?? ''));
         $spacing['section'] = trim($data['spacing_section'] ?? (string) ($spacing['section'] ?? '4rem'));

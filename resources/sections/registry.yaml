@@ -33,6 +33,7 @@ hero:
       type: text
       label: Badge / annonce
       client_editable: true
+      show_for_variants: [badge]
     title:
       type: text
       label: Titre
@@ -41,10 +42,17 @@ hero:
       type: textarea
       label: Sous-titre
       client_editable: true
+      hide_for_variants: [minimal]
     image_url:
-      type: text
-      label: Image (URL)
+      type: image
+      label: Image
       client_editable: true
+      show_for_variants: [split, split-left, image-below, video, fullscreen]
+    video_url:
+      type: url
+      label: Vidéo (YouTube, Vimeo ou fichier .mp4)
+      client_editable: true
+      show_for_variants: [fullscreen, video]
     buttons:
       type: buttons
       label: Boutons
@@ -53,14 +61,56 @@ hero:
     bg:
       type: color-token
       label: Fond
+      group: general
     text_align:
       type: select
-      label: Alignement
+      label: Alignement du texte
       options: '[left, center, right]'
+      group: general
     padding:
       type: select
-      label: Espacement
+      label: Espacement vertical
       options: '[sm, md, lg, xl]'
+      group: general
+    min_height:
+      type: select
+      label: Hauteur de section
+      options: '[auto, large, viewport]'
+      group: layout
+    content_width:
+      type: select
+      label: Largeur du contenu
+      options: '[narrow, default, wide]'
+      group: layout
+    title_size:
+      type: select
+      label: Taille du titre
+      options: '[sm, md, lg, xl, display]'
+      group: typography
+    subtitle_size:
+      type: select
+      label: Taille du sous-titre
+      options: '[sm, md, lg, hidden]'
+      group: typography
+      hide_for_variants: [minimal]
+    image_border:
+      type: select
+      label: Bordure du visuel
+      options: '[none, thin]'
+      group: visual
+      show_for_variants: [split, split-left, image-below, video]
+    image_radius:
+      type: select
+      label: Coins du visuel
+      options: '[none, md, lg]'
+      group: visual
+      show_for_variants: [split, split-left, image-below, video]
+    image_shadow:
+      type: select
+      label: Ombre du visuel
+      options: '[none, md]'
+      group: visual
+      show_for_variants: [split, split-left, image-below, video]
 features:
   label: Fonctionnalités
   group: feature
@@ -282,7 +332,7 @@ gallery:
       fields:
         url:
           type: text
-          label: 'URL de l''image'
+          label: 'URL de l''image (locale)'
         title:
           type: text
           label: Légende / texte alternatif
@@ -867,7 +917,7 @@ projects:
       fields:
         url:
           type: text
-          label: 'URL de l''image'
+          label: 'URL de l''image (locale)'
         title:
           type: text
           label: Titre du projet
@@ -1712,8 +1762,8 @@ demo:
       label: Sous-titre
       client_editable: true
     image_url:
-      type: text
-      label: Image (URL)
+      type: image
+      label: Image
       client_editable: true
     buttons:
       type: buttons
@@ -1876,8 +1926,8 @@ ui-embed:
       label: Titre accessible
       client_editable: true
     image_url:
-      type: text
-      label: URL image ou vidéo
+      type: image
+      label: Image ou aperçu
       client_editable: true
   style_fields:
     bg:

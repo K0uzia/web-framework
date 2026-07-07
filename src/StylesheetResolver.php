@@ -40,11 +40,14 @@ final class StylesheetResolver
         $this->push($candidates, 'partials/site-footer.css');
         $this->push($candidates, 'pages/' . $slug . '/' . $slug . '.css');
 
-        foreach ($sectionRefs as $ref) {
+            foreach ($sectionRefs as $ref) {
             $type = $this->safeName($ref['type'] ?? '');
             $variant = $this->safeName($ref['variant'] ?? 'default');
             if ($type === '') {
                 continue;
+            }
+            if ($type === 'hero') {
+                $this->push($candidates, 'sections/hero/customize.css');
             }
             foreach (SectionLayoutFamilies::cssFamilies($variant) as $family) {
                 $this->push($candidates, 'sections/' . $type . '/' . $family . '.css');

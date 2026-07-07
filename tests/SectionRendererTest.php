@@ -114,4 +114,22 @@ final class SectionRendererTest extends TestCase
             $this->assertStringContainsString('Titre', $html);
         }
     }
+
+    public function testRendersStockFallbackForHeroSplitWithoutImage(): void
+    {
+        $html = $this->renderer->renderOne([
+            'id' => 'hero-split',
+            'type' => 'hero',
+            'variant' => 'split',
+            'content' => [
+                'title' => 'Titre',
+                'subtitle' => 'Sous-titre',
+                'buttons' => [['label' => 'Go', 'href' => '#', 'style' => 'primary']],
+            ],
+            'style' => ['bg' => 'background', 'text_align' => 'center', 'padding' => 'xl'],
+        ]);
+
+        $this->assertStringContainsString('/assets/stock/', $html);
+        $this->assertStringContainsString('section-hero__img', $html);
+    }
 }

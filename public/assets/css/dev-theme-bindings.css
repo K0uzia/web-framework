@@ -1,0 +1,52 @@
+/**
+ * Liaison tokens thème site → UI du tableau de bord dev.
+ * Chargé après theme_css (:root) et dev.css (structure).
+ */
+
+:root {
+    --dev-success: var(--color-success, #22c55e);
+    --dev-success-soft: color-mix(in srgb, var(--color-success, #22c55e) 14%, transparent);
+    --dev-warning: var(--color-warning, #f59e0b);
+    --dev-warning-soft: color-mix(in srgb, var(--color-warning, #f59e0b) 14%, transparent);
+    --dev-danger: var(--color-error, #f04749);
+    --dev-danger-hover: color-mix(in srgb, var(--color-error, #f04749) 88%, #ffffff);
+    --dev-danger-soft: color-mix(in srgb, var(--color-error, #f04749) 14%, transparent);
+    --dev-info: var(--color-info, #38bdf8);
+    --dev-info-soft: color-mix(in srgb, var(--color-info, #38bdf8) 14%, transparent);
+    --dev-focus-ring: var(--color-focus-ring, var(--dev-accent));
+    --dev-disabled: var(--color-disabled, var(--dev-text-muted));
+}
+
+.dev-shell :focus-visible {
+    outline-color: var(--dev-focus-ring);
+}
+
+.dev-input:focus,
+.dev-select:focus,
+.dev-textarea:focus {
+    border-color: var(--dev-focus-ring);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--dev-focus-ring) 22%, transparent);
+}
+
+.dev-switch input:focus-visible + .dev-switch__track {
+    outline-color: var(--dev-focus-ring);
+}
+
+.dev-input:disabled,
+.dev-select:disabled,
+.dev-textarea:disabled,
+.dev-button:disabled {
+    color: var(--dev-disabled);
+}
+
+.dev-badge--success {
+    border-color: color-mix(in srgb, var(--dev-success) 30%, transparent);
+}
+
+.dev-badge--info {
+    border-color: color-mix(in srgb, var(--dev-info) 30%, transparent);
+}
+
+.dev-badge--danger {
+    border-color: color-mix(in srgb, var(--dev-danger) 30%, transparent);
+}

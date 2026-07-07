@@ -1,0 +1,5 @@
+@media (min-width: 768px) {
+    .section-timeline--grid-3 .section-timeline__grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}

@@ -23,6 +23,7 @@ use Capsule\Middleware\DevAuth;
 use Capsule\Middleware\ErrorBoundary;
 use Capsule\Middleware\SecurityHeaders;
 use Capsule\LayoutRegistry;
+use Capsule\MediaLibrary;
 use Capsule\PageRegistry;
 use Capsule\PageRenderer;
 use Capsule\PageRepository;
@@ -32,6 +33,7 @@ use Capsule\SectionRenderer;
 use Capsule\SiteChrome;
 use Capsule\SiteRepository;
 use Capsule\StylesheetResolver;
+use Capsule\ThemePreviewRenderer;
 use Capsule\View;
 
 return (function (): Container {
@@ -94,15 +96,24 @@ return (function (): Container {
     $c->set(DevDashboard::class, static fn (Container $c) => new DevDashboard(
         $resources . '/dev',
         $c->get(ResponseFactory::class),
+        $c->get(SiteRepository::class),
     ));
     $c->set(AuthController::class, static fn (Container $c) => new AuthController(
         $c->get(DevDashboard::class),
         $c->get(ResponseFactory::class),
         $appConfig['dev_password'],
     ));
+    $c->set(MediaLibrary::class, static fn (Container $c) => new MediaLibrary(
+        $root . '/public/uploads/site',
+        '/uploads/site',
+        $c->get(PageRepository::class),
+        $c->get(SiteRepository::class),
+    ));
     $c->set(SectionFormRenderer::class, static fn (Container $c) => new SectionFormRenderer(
         $c->get(SectionRegistry::class),
         $c->get(PageRepository::class),
+        $c->get(MediaLibrary::class),
+        $c->get(MediaUploader::class),
     ));
     $c->set(PagesController::class, static fn (Container $c) => new PagesController(
         $c->get(DevDashboard::class),
@@ -117,6 +128,8 @@ return (function (): Container {
         $c->get(PageRepository::class),
         $c->get(SectionRegistry::class),
         $c->get(SectionFormRenderer::class),
+        $c->get(MediaUploader::class),
+        $c->get(MediaLibrary::class),
     ));
     $c->set(MediaUploader::class, static fn () => new MediaUploader(
         $root . '/public/uploads/site',
@@ -146,8 +159,17 @@ return (function (): Container {
         $c->get(SiteRepository::class),
         $c->get(FontUploader::class),
     ));
+    $c->set(ThemePreviewRenderer::class, static fn (Container $c) => new ThemePreviewRenderer(
+        $c->get(ResponseFactory::class),
+        $c->get(View::class),
+        $c->get(SiteRepository::class),
+        $c->get(SiteChrome::class),
+        $c->get(StylesheetResolver::class),
+        $appConfig['base_url'],
+    ));
     $c->set(PreviewController::class, static fn (Container $c) => new PreviewController(
         $c->get(PageRenderer::class),
+        $c->get(ThemePreviewRenderer::class),
     ));
     $c->set(OverviewController::class, static fn (Container $c) => new OverviewController(
         $c->get(DevDashboard::class),

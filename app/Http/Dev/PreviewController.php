@@ -7,15 +7,22 @@ namespace App\Http\Dev;
 use Capsule\Http\Message\Request;
 use Capsule\Http\Message\Response;
 use Capsule\PageRenderer;
+use Capsule\ThemePreviewRenderer;
 
 final class PreviewController
 {
-    public function __construct(private readonly PageRenderer $pages)
-    {
+    public function __construct(
+        private readonly PageRenderer $pages,
+        private readonly ThemePreviewRenderer $themePreview,
+    ) {
     }
 
     public function show(Request $request, string $slug): Response
     {
+        if ($slug === 'theme') {
+            return $this->themePreview->render();
+        }
+
         $decoded = SlugCodec::decode($slug);
         $path = $decoded === '' ? '/' : '/' . $decoded;
 

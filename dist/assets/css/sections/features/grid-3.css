@@ -1,0 +1,5 @@
+@media (min-width: 768px) {
+    .section-features--grid-3 .section-features__grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}

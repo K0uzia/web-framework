@@ -1,0 +1,297 @@
+/**
+ * Liaison tokens thème → composants site public.
+ * Chargé après theme_css (:root variables).
+ */
+
+/* ==========================================================================
+   Fonds : page vs surfaces
+   ========================================================================== */
+
+.site-body,
+.site-main {
+    background: var(--color-background);
+}
+
+.site-header {
+    background: color-mix(in srgb, var(--color-background) 92%, transparent);
+}
+
+.site-footer {
+    background: var(--color-surface);
+}
+
+.site-header__toggle,
+.site-header__nav {
+    background: var(--color-surface);
+}
+
+/* ==========================================================================
+   Texte atténué
+   ========================================================================== */
+
+.section-head__subtitle,
+.section-hero__subtitle,
+.site-header__tagline,
+.site-footer__tagline,
+.site-footer__legal,
+.section-ui-counter__label,
+.section-ui-card__text,
+.section-ui-alert__text {
+    color: var(--color-text-muted);
+}
+
+[class*="__caption"]:not([class*="dev-"]),
+[class*="__meta"]:not([class*="dev-"]),
+[class*="__excerpt"]:not([class*="dev-"]),
+[class*="__date"]:not([class*="dev-"]),
+[class*="__role"]:not([class*="dev-"]),
+[class*="__eyebrow"]:not([class*="dev-"]),
+[class*="__text"]:not([class*="dev-"]):not(.section-ui-alert__text) {
+    color: var(--color-text-muted);
+}
+
+[class*="__placeholder"]:not([class*="dev-"]) {
+    background: var(--color-surface);
+    color: var(--color-secondary);
+}
+
+/* ==========================================================================
+   Liens
+   ========================================================================== */
+
+.site-main a:not(.section-button):not(.btn):not(.site-chrome-btn):not(.site-nav__link):not(.site-header__cta):not(.site-header__login):not(.site-header__brand):not(.site-footer__name),
+.section-banner__link,
+.section-ui-announcement__link {
+    color: var(--color-link);
+}
+
+.site-main a:not(.section-button):not(.btn):not(.site-chrome-btn):not(.site-nav__link):not(.site-header__cta):not(.site-header__login):not(.site-header__brand):not(.site-footer__name):hover,
+.section-banner__link:hover,
+.section-ui-announcement__link:hover {
+    color: var(--color-link-hover);
+}
+
+.site-footer__name {
+    color: var(--color-text);
+}
+
+.site-footer__name:hover {
+    color: var(--color-link-hover);
+}
+
+/* Navigation */
+.site-nav__link {
+    color: var(--color-text-muted);
+}
+
+.site-nav__link:hover {
+    color: var(--color-link-hover);
+    background: color-mix(in srgb, var(--color-link) 8%, transparent);
+}
+
+.site-nav__link.is-active {
+    color: var(--color-link);
+    background: color-mix(in srgb, var(--color-link) 12%, transparent);
+}
+
+.site-nav__trigger {
+    color: var(--color-text-muted);
+}
+
+.site-nav__item--active > .site-nav__details > .site-nav__trigger,
+.site-nav__trigger:hover {
+    color: var(--color-link-hover);
+}
+
+.site-nav__sublink {
+    color: var(--color-text);
+}
+
+.site-nav__sublink:hover {
+    color: var(--color-link-hover);
+    background: color-mix(in srgb, var(--color-link) 8%, transparent);
+}
+
+.site-nav__sublink.is-active {
+    color: var(--color-link);
+    background: color-mix(in srgb, var(--color-link) 12%, transparent);
+}
+
+/* ==========================================================================
+   Boutons : blocs, chrome, en-tête
+   ========================================================================== */
+
+.section-button--primary,
+.btn--primary,
+.site-header__cta,
+.site-chrome-btn--primary {
+    background: var(--color-button-primary-bg);
+    color: var(--color-button-primary-text);
+    border: 1px solid transparent;
+}
+
+.section-button--primary:hover,
+.btn--primary:hover,
+.site-header__cta:hover,
+.site-chrome-btn--primary:hover {
+    background: var(--color-button-primary-hover);
+    opacity: 1;
+}
+
+.section-button--secondary,
+.btn--ghost,
+.site-nav__link--button {
+    background: var(--color-button-secondary-bg);
+    color: var(--color-button-secondary-text);
+    border: 1px solid var(--color-border);
+}
+
+.site-chrome-btn--outline {
+    background: transparent;
+    color: var(--color-button-secondary-text);
+    border: 1px solid color-mix(in srgb, var(--color-border) 85%, var(--color-text));
+    font-weight: 500;
+}
+
+.site-chrome-btn--outline:hover {
+    background: color-mix(in srgb, var(--color-button-secondary-hover) 55%, transparent);
+    color: var(--color-button-secondary-text);
+    border-color: color-mix(in srgb, var(--color-border) 70%, var(--color-text));
+}
+
+.section-button--secondary:hover,
+.btn--ghost:hover,
+.site-nav__link--button:hover,
+.site-header__login:hover,
+.site-nav__link--button.is-active {
+    background: var(--color-button-secondary-hover);
+    color: var(--color-button-secondary-text);
+    border-color: var(--color-border);
+}
+
+.site-chrome-btn--ghost {
+    background: var(--color-button-secondary-bg);
+    color: var(--color-button-secondary-text);
+    border: 1px solid transparent;
+}
+
+.site-chrome-btn--ghost:hover {
+    background: var(--color-button-secondary-hover);
+}
+
+.site-chrome-btn--link {
+    color: var(--color-link);
+    background: transparent;
+    border: none;
+}
+
+.site-chrome-btn--link:hover {
+    color: var(--color-link-hover);
+    background: color-mix(in srgb, var(--color-link) 8%, transparent);
+}
+
+/* Boutons sur section fond primaire */
+.section--bg-primary .section-button--primary,
+.section--bg-primary .btn--primary {
+    background: var(--color-button-primary-text);
+    color: var(--color-button-primary-bg);
+}
+
+.section--bg-primary .section-button--primary:hover,
+.section--bg-primary .btn--primary:hover {
+    background: color-mix(in srgb, var(--color-button-primary-text) 92%, transparent);
+}
+
+.section--bg-primary .section-button--secondary,
+.section--bg-primary .btn--ghost {
+    background: transparent;
+    color: var(--color-button-primary-text);
+    border-color: color-mix(in srgb, var(--color-button-primary-text) 35%, transparent);
+}
+
+.section--bg-primary .section-button--secondary:hover,
+.section--bg-primary .btn--ghost:hover {
+    background: color-mix(in srgb, var(--color-button-primary-text) 12%, transparent);
+}
+
+/* ==========================================================================
+   États UI
+   ========================================================================== */
+
+.section-ui-alert--success .section-ui-alert__box {
+    border-color: color-mix(in srgb, var(--color-success) 50%, var(--color-border));
+    background: color-mix(in srgb, var(--color-success) 14%, var(--color-background));
+}
+
+.section-ui-alert--warning .section-ui-alert__box {
+    border-color: color-mix(in srgb, var(--color-warning) 50%, var(--color-border));
+    background: color-mix(in srgb, var(--color-warning) 14%, var(--color-background));
+}
+
+.section-ui-alert--info .section-ui-alert__box {
+    border-color: color-mix(in srgb, var(--color-info) 50%, var(--color-border));
+    background: color-mix(in srgb, var(--color-info) 14%, var(--color-background));
+}
+
+.section-ui-alert--error .section-ui-alert__box {
+    border-color: color-mix(in srgb, var(--color-error) 50%, var(--color-border));
+    background: color-mix(in srgb, var(--color-error) 14%, var(--color-background));
+}
+
+.section-ui-alert--success .section-ui-alert__title {
+    color: var(--color-success);
+}
+
+.section-ui-alert--warning .section-ui-alert__title {
+    color: var(--color-warning);
+}
+
+.section-ui-alert--info .section-ui-alert__title {
+    color: var(--color-info);
+}
+
+.section-ui-alert--error .section-ui-alert__title {
+    color: var(--color-error);
+}
+
+.section-ui-tabs__tab.is-active {
+    background: var(--color-button-primary-bg);
+    color: var(--color-button-primary-text);
+    border-color: transparent;
+}
+
+.section-ui-progress__bar {
+    background: color-mix(in srgb, var(--color-border) 65%, var(--color-surface));
+}
+
+.section-ui-progress__bar > span {
+    background: var(--color-primary);
+}
+
+/* ==========================================================================
+   Accessibilité
+   ========================================================================== */
+
+a:focus-visible,
+button:focus-visible,
+.section-button:focus-visible,
+.site-chrome-btn:focus-visible,
+.site-header__login:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 2px;
+}
+
+button:disabled,
+.btn:disabled,
+.section-button:disabled,
+.site-chrome-btn:disabled,
+input:disabled,
+select:disabled,
+textarea:disabled {
+    color: var(--color-disabled);
+    cursor: not-allowed;
+    opacity: 0.65;
+}

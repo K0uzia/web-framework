@@ -54,7 +54,7 @@
     }
 
     var PREVIEW_DEVICES = {
-        mobile: { width: 390, height: 844 },
+        mobile: { width: 402, height: 874 },
         tablet: { width: 768, height: 1024 },
     };
 
@@ -64,8 +64,8 @@
             return;
         }
         var host = frame.closest('.dev-preview-frame');
-        var screen = frame.closest('.dev-mobile-mockup__screen');
-        if (!host || !screen) {
+        var deviceEl = frame.closest('.dev-preview-device');
+        if (!host || !deviceEl) {
             frame.style.transform = '';
             return;
         }
@@ -76,17 +76,15 @@
             return;
         }
 
-        var screenWidth = screen.clientWidth;
-        var screenHeight = screen.clientHeight;
-        if (screenWidth <= 0 || screenHeight <= 0) {
+        var deviceWidth = deviceEl.clientWidth;
+        var deviceHeight = deviceEl.clientHeight;
+        if (deviceWidth <= 0 || deviceHeight <= 0) {
             return;
         }
 
-        var scaleX = screenWidth / profile.width;
-        var scaleY = screenHeight / profile.height;
-        var scale = Math.max(scaleX, scaleY);
-        var offsetX = (screenWidth - profile.width * scale) / 2;
-        var offsetY = (screenHeight - profile.height * scale) / 2;
+        var scale = Math.min(deviceWidth / profile.width, deviceHeight / profile.height);
+        var offsetX = (deviceWidth - profile.width * scale) / 2;
+        var offsetY = (deviceHeight - profile.height * scale) / 2;
 
         frame.style.width = profile.width + 'px';
         frame.style.height = profile.height + 'px';
@@ -114,24 +112,13 @@
         if (!frame.dataset.devPreviewScaleInit) {
             frame.dataset.devPreviewScaleInit = '1';
 
-            var mockup = frame.closest('.dev-mobile-mockup');
-            var canvas = mockup ? mockup.querySelector('.dev-mobile-mockup__canvas') : null;
+            var deviceEl = frame.closest('.dev-preview-device');
             var host = frame.closest('.dev-preview-frame');
-            var screen = frame.closest('.dev-mobile-mockup__screen');
-            var overlayImg = mockup ? mockup.querySelector('.dev-mobile-mockup__overlay image') : null;
-            if (overlayImg && !overlayImg.complete) {
-                overlayImg.addEventListener('load', syncPreviewScale);
-            }
             if (typeof ResizeObserver !== 'undefined') {
-                if (canvas) {
+                if (deviceEl) {
                     new ResizeObserver(function () {
                         syncPreviewScale();
-                    }).observe(canvas);
-                }
-                if (screen) {
-                    new ResizeObserver(function () {
-                        syncPreviewScale();
-                    }).observe(screen);
+                    }).observe(deviceEl);
                 }
             }
             if (host && typeof ResizeObserver !== 'undefined') {
@@ -318,8 +305,15 @@
 
         if (title) {
             var label = card.querySelector('.dev-section-card__title span');
-            title.textContent = label ? label.textContent.trim() : 'Modifier le bloc';
+            var variant = card.querySelector('.dev-section-card__variant');
+            var titleText = label ? label.textContent.trim() : 'Modifier le bloc';
+            if (variant && variant.textContent.trim() !== '') {
+                titleText += ' : ' + variant.textContent.trim();
+            }
+            title.textContent = titleText;
         }
+
+        initTabs(slot);
 
         modal.hidden = false;
     }
@@ -529,6 +523,19 @@
                     }
                     refreshPreview();
                 }
+                if (mode === 'section-image') {
+                    var imageField = form.closest('[data-dev-section-image]');
+                    html = safeSwapHtml(html, '');
+                    if (imageField && html.trim() !== '' && !isFullLayoutHtml(html)) {
+                        imageField.outerHTML = html;
+                    }
+                    if (result.ok) {
+                        showToast(toastMessage || 'Image mise à jour');
+                    } else if (html.indexOf('dev-uploader__error') !== -1) {
+                        showToast('Échec de la mise à jour de l\u2019image.', true);
+                    }
+                    refreshPreview();
+                }
                 if (mode === 'theme-reset') {
                     window.location.reload();
                     return;
@@ -560,7 +567,7 @@
                     }
                     return;
                 }
-                if (toastMessage && mode !== 'sections' && mode !== 'nav' && mode.indexOf('media-') !== 0) {
+                if (toastMessage && mode !== 'sections' && mode !== 'nav' && mode.indexOf('media-') !== 0 && mode !== 'section-image') {
                     showToast(result.ok ? toastMessage : 'Échec de l\u2019opération.', !result.ok);
                 }
                 refreshPreview();
@@ -1044,11 +1051,42 @@
                         var active = t === tab;
                         t.classList.toggle('is-active', active);
                         t.setAttribute('aria-selected', active ? 'true' : 'false');
+                        t.setAttribute('tabindex', active ? '0' : '-1');
                     });
                     panels.forEach(function (panel) {
-                        panel.classList.toggle('is-active', panel.getAttribute('data-tab-panel') === target);
+                        var isActive = panel.getAttribute('data-tab-panel') === target;
+                        panel.classList.toggle('is-active', isActive);
+                        panel.hidden = !isActive;
                     });
                 });
+
+                tab.addEventListener('keydown', function (event) {
+                    if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') {
+                        return;
+                    }
+                    event.preventDefault();
+                    var list = Array.prototype.slice.call(tabs);
+                    var index = list.indexOf(tab);
+                    if (index < 0) {
+                        return;
+                    }
+                    var next = event.key === 'ArrowRight' ? index + 1 : index - 1;
+                    if (next < 0) {
+                        next = list.length - 1;
+                    }
+                    if (next >= list.length) {
+                        next = 0;
+                    }
+                    list[next].click();
+                    list[next].focus();
+                });
+            });
+
+            panels.forEach(function (panel, i) {
+                panel.hidden = !panel.classList.contains('is-active');
+                if (i > 0 && !panel.classList.contains('is-active')) {
+                    panel.hidden = true;
+                }
             });
         });
     }
@@ -1077,6 +1115,74 @@
                     return;
                 }
                 openSectionEditor(card);
+            });
+        });
+        initSectionImageFields(scope);
+    }
+
+    function handleSectionImageResponse(wrap, result, okMessage) {
+        var html = safeSwapHtml(result.html, '');
+        var parent = wrap ? wrap.parentElement : null;
+        if (wrap && html.trim() !== '' && !isFullLayoutHtml(html)) {
+            wrap.outerHTML = html;
+            if (parent) {
+                initSectionImageFields(parent);
+            }
+        }
+        if (result.ok) {
+            showToast(okMessage);
+        } else if (html.indexOf('dev-uploader__error') !== -1) {
+            showToast('Échec de la mise à jour de l\u2019image.', true);
+        }
+        refreshPreview();
+    }
+
+    function initSectionImageFields(scope) {
+        (scope || document).querySelectorAll('[data-dev-section-image]').forEach(function (wrap) {
+            if (wrap.dataset.sectionImageInit === '1') {
+                return;
+            }
+            wrap.dataset.sectionImageInit = '1';
+            var base = wrap.getAttribute('data-section-image-base');
+            if (!base) {
+                return;
+            }
+
+            var fileInput = wrap.querySelector('[data-dev-section-image-file]');
+            if (fileInput) {
+                fileInput.addEventListener('change', function () {
+                    if (!fileInput.files || !fileInput.files[0]) {
+                        return;
+                    }
+                    var fd = new FormData();
+                    fd.append('file', fileInput.files[0]);
+                    postForm(base + '/upload', fd, true).then(function (result) {
+                        handleSectionImageResponse(wrap, result, 'Image importée');
+                    });
+                    fileInput.value = '';
+                });
+            }
+
+            var removeBtn = wrap.querySelector('[data-dev-section-image-remove]');
+            if (removeBtn) {
+                removeBtn.addEventListener('click', function () {
+                    postForm(base + '/remove', '', false).then(function (result) {
+                        handleSectionImageResponse(wrap, result, 'Image retirée');
+                    });
+                });
+            }
+
+            wrap.querySelectorAll('[data-dev-section-image-select]').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var url = btn.getAttribute('data-url') || '';
+                    if (!url) {
+                        return;
+                    }
+                    var body = new URLSearchParams({ url: url }).toString();
+                    postForm(base + '/select', body, false).then(function (result) {
+                        handleSectionImageResponse(wrap, result, 'Image sélectionnée');
+                    });
+                });
             });
         });
     }
@@ -1951,6 +2057,57 @@
         startDocumentColorPick(colorInput, textInput);
     }
 
+    function themeInputToCssVar(fieldName) {
+        if (!fieldName || fieldName.indexOf('color_') !== 0) {
+            return null;
+        }
+        return '--color-' + fieldName.slice(6).replace(/_/g, '-');
+    }
+
+    function setThemeCssVar(doc, cssVar, value) {
+        if (!doc || !doc.documentElement || !cssVar || !value) {
+            return;
+        }
+        doc.documentElement.style.setProperty(cssVar, value);
+    }
+
+    function initThemeLivePreview(scope) {
+        var form = (scope || document).getElementById('theme-form');
+        if (!form || form.dataset.themeLiveInit === '1') {
+            return;
+        }
+        form.dataset.themeLiveInit = '1';
+
+        function syncFromInput(input) {
+            var cssVar = themeInputToCssVar(input.name);
+            if (!cssVar) {
+                return;
+            }
+            var hex = normalizeHexColor(input.value) || cssColorToHex(input.value);
+            if (!hex) {
+                return;
+            }
+            setThemeCssVar(document, cssVar, hex);
+            var frame = document.getElementById('preview-frame');
+            if (frame && frame.contentDocument) {
+                setThemeCssVar(frame.contentDocument, cssVar, hex);
+            }
+        }
+
+        form.querySelectorAll('input[type="color"][name^="color_"]').forEach(function (input) {
+            input.addEventListener('input', function () {
+                syncFromInput(input);
+            });
+        });
+
+        var frame = document.getElementById('preview-frame');
+        if (frame) {
+            frame.addEventListener('load', function () {
+                form.querySelectorAll('input[type="color"][name^="color_"]').forEach(syncFromInput);
+            });
+        }
+    }
+
     function initColorFields(scope) {
         (scope || document).querySelectorAll('[data-color-sync]').forEach(function (wrap) {
             if (wrap.dataset.colorSyncInit === '1') {
@@ -2079,6 +2236,11 @@
         }
         var type = typeSelect.value;
         target.setAttribute('data-nav-type', type);
+        if (type === 'group') {
+            target.hidden = true;
+            return;
+        }
+        target.hidden = false;
         if (!input) {
             return;
         }
@@ -2103,6 +2265,11 @@
         var input = picker.querySelector('[data-link-picker-input]');
         var type = typeSelect.value;
         picker.setAttribute('data-nav-type', type);
+        if (type === 'group') {
+            picker.hidden = true;
+            return;
+        }
+        picker.hidden = false;
         if (input) {
             if (type === 'link') {
                 input.placeholder = 'https://exemple.fr';
@@ -2170,6 +2337,25 @@
         }
     }, true);
 
+    document.addEventListener('toggle', function (event) {
+        var el = event.target;
+        if (!(el instanceof HTMLElement) || !el.matches('details.dev-color-group')) {
+            return;
+        }
+        if (!el.open) {
+            return;
+        }
+        var root = el.closest('[data-dev-color-accordion]');
+        if (!root) {
+            return;
+        }
+        root.querySelectorAll('details.dev-color-group[open]').forEach(function (other) {
+            if (other !== el) {
+                other.open = false;
+            }
+        });
+    }, true);
+
     document.addEventListener('click', function (event) {
         document.querySelectorAll('details.dev-menu[open]').forEach(function (el) {
             if (!el.contains(event.target)) {
@@ -2195,6 +2381,7 @@
         initAccordions(document);
         initSortable(document);
         initColorFields(document);
+        initThemeLivePreview(document);
         initNavRows(document);
         initPreviewEmbed();
         showFlashToast();
@@ -2205,5 +2392,6 @@
     });
 
     initColorFields(document);
+    initThemeLivePreview(document);
     initPreviewEmbed();
 })();

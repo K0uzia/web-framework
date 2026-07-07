@@ -23,7 +23,7 @@ final class ThemeControllerTest extends TestCase
         $pdo->exec(file_get_contents(dirname(__DIR__, 3) . '/migrations/sqlite_init.sql') ?: '');
 
         $this->site = new SiteRepository($pdo);
-        $ui = new DevDashboard(dirname(__DIR__, 3) . '/resources/dev', new ResponseFactory());
+        $ui = new DevDashboard(dirname(__DIR__, 3) . '/resources/dev', new ResponseFactory(), $this->site);
         $fonts = new FontUploader(sys_get_temp_dir() . '/capsule-test-fonts-' . bin2hex(random_bytes(4)));
         $this->controller = new ThemeController($ui, $this->site, $fonts);
     }
@@ -74,7 +74,7 @@ final class ThemeControllerTest extends TestCase
         $response = $this->controller->edit(new Request('GET', '/dev/theme', [], [], [], []));
         $body = (string) $response->getBody();
 
-        $this->assertStringContainsString('/dev/preview/_', $body);
+        $this->assertStringContainsString('/dev/preview/theme', $body);
     }
 
     public function testEditNormalizesInvalidColorValuesForColorInputs(): void
@@ -86,6 +86,9 @@ final class ThemeControllerTest extends TestCase
         $body = (string) $this->controller->edit(new Request('GET', '/dev/theme', [], [], [], []))->getBody();
 
         $this->assertStringContainsString('id="color_background" name="color_background" value="#ffffff"', $body);
+        $this->assertStringContainsString('Palette de base', $body);
+        $this->assertStringContainsString('dev-color-accordion', $body);
+        $this->assertStringContainsString('name="color_text_muted"', $body);
     }
 
     public function testUpdatePersistsThemeAndReturnsHxPartial(): void
@@ -97,7 +100,7 @@ final class ThemeControllerTest extends TestCase
             ['HX-Request' => 'true', 'Content-Type' => 'application/x-www-form-urlencoded'],
             [],
             [],
-            rawBody: 'color_primary=%23ff00aa&color_secondary=%2364748b&color_background=%23ffffff&color_text=%231a1a1a&color_muted=%23f1f5f9&font_heading=Inter&font_body=system-ui&spacing_section=3rem',
+            rawBody: 'color_primary=%23ff00aa&color_secondary=%2364748b&color_background=%23ffffff&color_text=%231a1a1a&color_surface=%23f8fafc&font_heading=Inter&font_body=system-ui&spacing_section=3rem',
         ));
 
         $theme = $this->site->getTheme();

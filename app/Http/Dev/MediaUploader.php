@@ -24,6 +24,7 @@ final class MediaUploader
         'logo' => ['image/png', 'image/jpeg', 'image/webp', 'image/svg+xml'],
         'og_image' => ['image/png', 'image/jpeg', 'image/webp'],
         'favicon' => ['image/x-icon', 'image/vnd.microsoft.icon', 'image/png', 'image/svg+xml'],
+        'section_image' => ['image/png', 'image/jpeg', 'image/webp', 'image/svg+xml'],
     ];
 
     /** @var array<string, string> */
@@ -90,7 +91,10 @@ final class MediaUploader
             throw new MediaUploadException('Impossible de créer le dossier de stockage.');
         }
 
-        $filename = $field . '-' . bin2hex(random_bytes(8)) . '.' . ($shouldConvertToWebp ? 'webp' : $extension);
+        $filename = match ($field) {
+            'section_image' => 'section-' . bin2hex(random_bytes(8)) . '.' . ($shouldConvertToWebp ? 'webp' : $extension),
+            default => $field . '-' . bin2hex(random_bytes(8)) . '.' . ($shouldConvertToWebp ? 'webp' : $extension),
+        };
         $destination = $this->uploadsDir . '/' . $filename;
 
         if ($shouldConvertToWebp) {
@@ -100,6 +104,13 @@ final class MediaUploader
         }
 
         return rtrim($this->publicBasePath, '/') . '/' . $filename;
+    }
+
+    public function isManagedUrl(string $url): bool
+    {
+        $prefix = rtrim($this->publicBasePath, '/') . '/';
+
+        return str_starts_with($url, $prefix);
     }
 
     /**
@@ -133,6 +144,7 @@ final class MediaUploader
         return match ($field) {
             'logo' => '.png,.jpg,.jpeg,.webp,.svg,image/png,image/jpeg,image/webp,image/svg+xml',
             'og_image' => '.png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp',
+            'section_image' => '.png,.jpg,.jpeg,.webp,.svg,image/png,image/jpeg,image/webp,image/svg+xml',
             'favicon' => '.ico,.png,.svg,image/x-icon,image/png,image/svg+xml',
             default => implode(',', self::ALLOWED_MIME[$field] ?? []),
         };

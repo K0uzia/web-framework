@@ -1,0 +1,33 @@
+.section-awards__row {
+    display: grid;
+    gap: var(--space-lg, 2rem);
+    margin: 0;
+    text-align: center;
+}
+
+@media (min-width: 640px) {
+    .section-awards__row {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.section-awards__item {
+    margin: 0;
+}
+
+.section-awards__value {
+    margin: 0 0 0.35rem;
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.section-awards__label {
+    margin: 0;
+    font-size: 0.9375rem;
+    opacity: 0.88;
+}
+
+.section--bg-primary .section-awards__label {
+    color: rgb(255 255 255 / 0.85);
+}

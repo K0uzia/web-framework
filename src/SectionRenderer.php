@@ -159,17 +159,41 @@ final class SectionRenderer
             : '';
 
         $badgeText = trim((string) ($content['badge'] ?? ''));
+        if ($badgeText === '' && $data['variant'] === 'badge') {
+            $badgeText = 'Nouveau';
+        }
         $data['badge_html'] = $badgeText !== ''
             ? '<span class="section-hero__badge">' . htmlspecialchars($badgeText, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</span>'
             : '';
 
-        $imageUrl = trim((string) ($content['image_url'] ?? ''));
-        $imageTitle = trim((string) ($content['title'] ?? ''));
-        $safeAlt = htmlspecialchars($imageTitle !== '' ? $imageTitle : 'Illustration', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-        $data['hero_visual_html'] = $imageUrl !== ''
-            ? '<img class="section-hero__img" src="' . htmlspecialchars($imageUrl, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')
-                . '" alt="' . $safeAlt . '" loading="lazy" decoding="async" />'
-            : '<div class="section-hero__visual-placeholder" aria-hidden="true"></div>';
+        $data['hero_modifiers'] = '';
+        $data['hero_backdrop_html'] = '';
+        $data['hero_backdrop_class'] = '';
+
+        if ($data['type'] === 'hero') {
+            $resolvedStyle = HeroStyle::resolve($style, $data['variant']);
+            foreach ($resolvedStyle as $key => $value) {
+                $data['style_' . $key] = $value;
+            }
+            $data['hero_modifiers'] = HeroStyle::modifierClasses($style, $data['variant']);
+            $data['hero_backdrop_html'] = HeroStyle::renderBackdrop($content, $data['variant']);
+            if ($data['hero_backdrop_html'] !== '') {
+                $data['hero_backdrop_class'] = 'section-hero--has-backdrop';
+            }
+            $data['hero_visual_html'] = HeroStyle::renderVisual($content, $style, $data['variant']);
+        } else {
+            $needsHeroImage = StockImages::sectionUsesHeroImage($data['type'], $data['variant']);
+            $imageUrl = StockImages::resolve(
+                (string) ($content['image_url'] ?? ''),
+                static fn (): string => $needsHeroImage ? StockImages::sectionHeroFallback($data['type']) : '',
+            );
+            $imageTitle = trim((string) ($content['title'] ?? ''));
+            $safeAlt = htmlspecialchars($imageTitle !== '' ? $imageTitle : 'Illustration', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+            $data['hero_visual_html'] = $imageUrl !== ''
+                ? '<img class="section-hero__img" src="' . htmlspecialchars($imageUrl, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')
+                    . '" alt="' . $safeAlt . '" loading="lazy" decoding="async" />'
+                : '<div class="section-hero__visual-placeholder" aria-hidden="true"></div>';
+        }
 
         $codeText = trim((string) ($content['code'] ?? $content['text'] ?? ''));
         $data['code_html'] = $codeText !== ''
@@ -274,7 +298,7 @@ final class SectionRenderer
                 continue;
             }
 
-            $parts[] = $this->view->renderString($template, $this->itemData($item, $index));
+            $parts[] = $this->view->renderString($template, $this->itemData($item, $index, $type));
         }
 
         return implode("\n", $parts);
@@ -288,7 +312,7 @@ final class SectionRenderer
      *
      * @return array<string, mixed>
      */
-    private function itemData(array $item, int $index): array
+    private function itemData(array $item, int $index, string $type): array
     {
         $data = ['index' => (string) $index];
 
@@ -320,12 +344,44 @@ final class SectionRenderer
         }
         $data['initials'] = $initials;
 
-        $imageUrl = trim((string) ($item['url'] ?? ''));
-        $safeAlt = htmlspecialchars($title !== '' ? $title : 'Image', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-        $data['image_html'] = $imageUrl !== ''
-            ? '<img class="section-gallery__img" src="' . htmlspecialchars($imageUrl, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')
-                . '" alt="' . $safeAlt . '" loading="lazy" decoding="async" />'
-            : '<div class="section-gallery__placeholder" aria-hidden="true"><i class="fa-solid fa-image"></i></div>';
+        $featureIcons = ['fa-bolt', 'fa-shield-halved', 'fa-rocket', 'fa-chart-line', 'fa-wand-magic-sparkles', 'fa-layer-group'];
+        $data['icon'] = $featureIcons[max(0, $index - 1) % count($featureIcons)];
+        $data['featured_class'] = ($type === 'pricing' && $index === 2) ? 'section-pricing__card--featured' : '';
+
+        $imageUrl = StockImages::resolve(
+            (string) ($item['url'] ?? ''),
+            static fn (): string => in_array($type, ['gallery', 'projects', 'blog'], true)
+                ? StockImages::itemFallback($type, $index - 1)
+                : '',
+        );
+        $data['image_html'] = $this->itemImageHtml($type, $imageUrl, $title);
+
+        $role = trim((string) ($item['role'] ?? ''));
+        $date = trim((string) ($item['date'] ?? ''));
+        $metaParts = [];
+        if ($role !== '') {
+            $metaParts[] = '<span class="section-item__meta-part">' . htmlspecialchars($role, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</span>';
+        }
+        if ($date !== '') {
+            $metaParts[] = '<span class="section-item__meta-part">' . htmlspecialchars($date, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</span>';
+        }
+        $data['meta_html'] = $metaParts !== []
+            ? '<p class="section-' . $this->safeName($type) . '__meta">' . implode('<span class="section-item__meta-sep" aria-hidden="true">·</span>', $metaParts) . '</p>'
+            : '';
+
+        $data['read_more_html'] = ($type === 'blog' && $itemHref !== '')
+            ? '<a class="section-blog__link" href="' . htmlspecialchars($itemHref, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '">'
+                . 'Lire l\'article <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>'
+            : '';
+
+        $mediaHref = $itemHref;
+        if ($mediaHref === '' && $type === 'projects') {
+            $mediaHref = '';
+        }
+        $data['media_link_open'] = ($mediaHref !== '' && in_array($type, ['blog', 'projects'], true))
+            ? '<a class="section-' . $this->safeName($type) . '__media" href="' . htmlspecialchars($mediaHref, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '">'
+            : '<div class="section-' . $this->safeName($type) . '__media">';
+        $data['media_link_close'] = ($mediaHref !== '' && in_array($type, ['blog', 'projects'], true)) ? '</a>' : '</div>';
 
         $ctaLabel = trim((string) ($item['cta_label'] ?? ''));
         $ctaHref = trim((string) ($item['cta_href'] ?? ''));
@@ -343,6 +399,18 @@ final class SectionRenderer
             : $safeText;
 
         return $data;
+    }
+
+    private function itemImageHtml(string $type, string $imageUrl, string $title): string
+    {
+        $prefix = 'section-' . $this->safeName($type);
+        $safeAlt = htmlspecialchars($title !== '' ? $title : 'Image', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+        if ($imageUrl === '') {
+            return '<div class="' . $prefix . '__placeholder" aria-hidden="true"><i class="fa-solid fa-image"></i></div>';
+        }
+
+        return '<img class="' . $prefix . '__img" src="' . htmlspecialchars($imageUrl, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')
+            . '" alt="' . $safeAlt . '" width="640" height="480" loading="lazy" decoding="async" />';
     }
 
     private function resolveItemTemplate(string $type, string $variant): ?string

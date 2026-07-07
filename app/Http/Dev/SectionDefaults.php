@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Dev;
 
+use Capsule\StockImages;
+
 /**
  * Contenus et styles par défaut des blocs, utilisés à l'ajout d'un bloc
  * et par les modèles de pages.
@@ -23,17 +25,19 @@ final class SectionDefaults
             'hero' => self::heroContent('centered'),
             'features' => [
                 'title' => 'Fonctionnalités',
-                'subtitle' => '',
+                'subtitle' => 'Tout ce qu\'il faut pour lancer, publier et faire évoluer votre site.',
                 'items' => [
-                    ['title' => 'Point 1', 'text' => 'Description courte.'],
-                    ['title' => 'Point 2', 'text' => 'Description courte.'],
-                    ['title' => 'Point 3', 'text' => 'Description courte.'],
+                    ['title' => 'Mise en page modulaire', 'text' => 'Composez vos pages avec des blocs prêts à l\'emploi, sans code.'],
+                    ['title' => 'Performance intégrée', 'text' => 'CSS léger, polices locales et structure pensée pour le web.'],
+                    ['title' => 'Édition intuitive', 'text' => 'Modifiez textes, images et navigation depuis un tableau de bord clair.'],
                 ],
             ],
             'cta' => [
-                'title' => 'Prêt à vous lancer ?',
+                'title' => 'Prêt à publier votre prochain site ?',
+                'subtitle' => 'Créez une page, choisissez un modèle et personnalisez le thème en quelques minutes.',
                 'buttons' => [
                     ['label' => 'Commencer', 'href' => '#', 'style' => 'primary'],
+                    ['label' => 'Voir les modèles', 'href' => '#', 'style' => 'secondary'],
                 ],
             ],
             'pricing' => [
@@ -71,11 +75,11 @@ final class SectionDefaults
             ],
             'testimonials' => [
                 'title' => 'Ils nous font confiance',
-                'subtitle' => '',
+                'subtitle' => 'Des retours concrets de clients et d\'équipes qui utilisent le produit au quotidien.',
                 'items' => [
-                    ['text' => 'Un outil qui a changé notre façon de travailler.', 'title' => 'Prénom Nom', 'role' => 'Rôle, Entreprise'],
-                    ['text' => 'Simple, rapide et efficace. Je recommande.', 'title' => 'Prénom Nom', 'role' => 'Rôle, Entreprise'],
-                    ['text' => 'Le support est réactif et le produit évolue vite.', 'title' => 'Prénom Nom', 'role' => 'Rôle, Entreprise'],
+                    ['text' => 'Nous avons lancé notre site en une journée, avec une identité visuelle cohérente dès le départ.', 'title' => 'Camille Martin', 'role' => 'Fondatrice, Atelier Nova'],
+                    ['text' => 'L\'éditeur est clair, les blocs sont beaux par défaut, et les mises à jour sont rapides.', 'title' => 'Thomas Leroy', 'role' => 'Responsable marketing, Boreal'],
+                    ['text' => 'Enfin un outil simple pour notre équipe, sans compromis sur l\'accessibilité.', 'title' => 'Inès Dupont', 'role' => 'Lead design, Collectif Ouest'],
                 ],
             ],
             'faq' => [
@@ -106,11 +110,11 @@ final class SectionDefaults
             ],
             'team' => [
                 'title' => 'Notre équipe',
-                'subtitle' => '',
+                'subtitle' => 'Des profils complémentaires au service de votre projet.',
                 'items' => [
-                    ['title' => 'Prénom Nom', 'role' => 'Fondateur', 'text' => ''],
-                    ['title' => 'Prénom Nom', 'role' => 'Design', 'text' => ''],
-                    ['title' => 'Prénom Nom', 'role' => 'Développement', 'text' => ''],
+                    ['title' => 'Camille Martin', 'role' => 'Fondatrice', 'text' => 'Stratégie produit et direction artistique.'],
+                    ['title' => 'Thomas Leroy', 'role' => 'Développement', 'text' => 'Architecture technique et performance web.'],
+                    ['title' => 'Inès Dupont', 'role' => 'Design', 'text' => 'Interfaces accessibles et systèmes visuels cohérents.'],
                 ],
             ],
             'contact' => [
@@ -165,9 +169,12 @@ final class SectionDefaults
                 'title' => 'Galerie',
                 'subtitle' => 'Quelques visuels de nos réalisations.',
                 'items' => [
-                    ['url' => '', 'title' => 'Projet A'],
-                    ['url' => '', 'title' => 'Projet B'],
-                    ['url' => '', 'title' => 'Projet C'],
+                    ['url' => StockImages::gallery(0), 'title' => 'Espace de travail'],
+                    ['url' => StockImages::gallery(1), 'title' => 'Architecture'],
+                    ['url' => StockImages::gallery(2), 'title' => 'Équipe en action'],
+                    ['url' => StockImages::gallery(3), 'title' => 'Collaboration'],
+                    ['url' => StockImages::gallery(4), 'title' => 'Bureau moderne'],
+                    ['url' => StockImages::gallery(5), 'title' => 'Réunion projet'],
                 ],
             ],
             'newsletter' => [
@@ -183,18 +190,18 @@ final class SectionDefaults
                 ['title' => 'Notion', 'text' => 'Synchronisation des pages.'],
                 ['title' => 'Zapier', 'text' => 'Automatisations sans code.'],
             ]),
-            'blog' => self::itemsSection('Articles', 'Dernières publications.', [
-                ['title' => 'Comment démarrer', 'text' => 'Guide pas à pas pour lancer votre site.', 'href' => '#'],
-                ['title' => 'Bonnes pratiques SEO', 'text' => 'Optimiser titres, descriptions et structure.', 'href' => '#'],
-                ['title' => 'Mise à jour produit', 'text' => 'Nouveautés du mois.', 'href' => '#'],
+            'blog' => self::itemsSection('Articles', 'Dernières publications et retours d\'expérience.', [
+                ['title' => 'Comment démarrer en 30 minutes', 'text' => 'Guide pas à pas pour lancer votre site, choisir un modèle et publier.', 'href' => '#', 'role' => 'Guide', 'url' => StockImages::blog(0)],
+                ['title' => 'Bonnes pratiques SEO en 2026', 'text' => 'Titres, descriptions, structure et performance : l\'essentiel pour être visible.', 'href' => '#', 'role' => 'SEO', 'url' => StockImages::blog(1)],
+                ['title' => 'Nouveautés produit du mois', 'text' => 'Blocs, thème et navigation : ce qui change pour vos prochaines pages.', 'href' => '#', 'role' => 'Produit', 'url' => StockImages::blog(2)],
             ]),
             'projects' => [
                 'title' => 'Nos projets',
-                'subtitle' => 'Quelques réalisations récentes.',
+                'subtitle' => 'Des réalisations récentes, du concept à la mise en ligne.',
                 'items' => [
-                    ['url' => '', 'title' => 'Projet Alpha', 'href' => '#'],
-                    ['url' => '', 'title' => 'Projet Beta', 'href' => '#'],
-                    ['url' => '', 'title' => 'Projet Gamma', 'href' => '#'],
+                    ['url' => StockImages::project(0), 'title' => 'Plateforme Nova', 'text' => 'Site vitrine et blog pour une startup B2B.', 'href' => '#', 'role' => 'Site vitrine'],
+                    ['url' => StockImages::project(1), 'title' => 'Refonte Atelier Ouest', 'text' => 'Identité visuelle et pages marketing pour un collectif design.', 'href' => '#', 'role' => 'Refonte'],
+                    ['url' => StockImages::project(2), 'title' => 'Portail Boreal', 'text' => 'Landing produit, tarifs et documentation intégrée.', 'href' => '#', 'role' => 'Landing'],
                 ],
             ],
             'timeline' => self::itemsSection('Chronologie', '', [
@@ -284,6 +291,7 @@ final class SectionDefaults
             'demo' => [
                 'title' => 'Réserver une démo',
                 'subtitle' => '30 minutes pour découvrir le produit.',
+                'image_url' => StockImages::product(0),
                 'buttons' => [['label' => 'Choisir un créneau', 'href' => '#', 'style' => 'primary']],
             ],
             'ui-announcement' => [
@@ -302,7 +310,7 @@ final class SectionDefaults
             ],
             'ui-embed' => [
                 'title' => 'Aperçu vidéo',
-                'image_url' => '',
+                'image_url' => StockImages::product(1),
             ],
             'ui-card' => [
                 'title' => 'Titre de la carte',
@@ -400,6 +408,13 @@ final class SectionDefaults
             'split', 'split-left', 'image-below' => array_merge($base, [
                 'title' => 'Un produit pensé pour vous',
                 'subtitle' => 'Texte d\'accroche avec visuel pour illustrer votre proposition.',
+                'image_url' => StockImages::hero(0),
+            ]),
+            'video' => array_merge($base, [
+                'title' => 'Découvrez le produit en action',
+                'subtitle' => 'Une démonstration claire pour convaincre dès les premières secondes.',
+                'image_url' => StockImages::hero(1),
+                'video_url' => '',
             ]),
             default => $base,
         };

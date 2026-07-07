@@ -110,14 +110,7 @@ final class SiteRepository
     public function defaultTheme(): array
     {
         return [
-            'colors' => [
-                'primary' => '#3b82f6',
-                'secondary' => '#64748b',
-                'background' => '#ffffff',
-                'text' => '#0f172a',
-                'muted' => '#f1f5f9',
-                'border' => '#e2e8f0',
-            ],
+            'colors' => ThemePalette::defaults(),
             'fonts' => [
                 'heading' => 'Inter, system-ui, sans-serif',
                 'body' => 'system-ui, sans-serif',
@@ -147,12 +140,14 @@ final class SiteRepository
             $lines = array_merge($lines, $this->fontFaceRule($font));
         }
 
+        $colors = ThemePalette::normalize($colors);
+
         $lines[] = ':root {';
         foreach ($colors as $key => $value) {
-            if (is_string($value) && $value !== '') {
-                $lines[] = '    --color-' . $this->cssVarName((string) $key) . ': ' . $value . ';';
-            }
+            $lines[] = '    --color-' . $this->cssVarName((string) $key) . ': ' . $value . ';';
         }
+        $lines[] = '    --color-muted: var(--color-surface);';
+        $lines[] = '    --color-elevated: var(--color-surface);';
         foreach ($fonts as $key => $value) {
             if (is_string($value) && $value !== '') {
                 $lines[] = '    --font-' . $this->cssVarName((string) $key) . ': ' . $value . ';';
@@ -239,6 +234,8 @@ final class SiteRepository
 
     private function cssVarName(string $name): string
     {
-        return preg_replace('/[^a-zA-Z0-9_-]/', '', $name) ?? $name;
+        $sanitized = preg_replace('/[^a-zA-Z0-9_-]/', '', $name) ?? $name;
+
+        return str_replace('_', '-', $sanitized);
     }
 }

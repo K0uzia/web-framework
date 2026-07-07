@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Http\Dev;
 
+use App\Http\Dev\MediaUploader;
 use App\Http\Dev\PagesController;
 use App\Http\Dev\SectionFormRenderer;
 use App\Http\Dev\SlugCodec;
@@ -11,6 +12,7 @@ use Capsule\DevDashboard;
 use Capsule\Http\Factory\ResponseFactory;
 use Capsule\Http\Message\Request;
 use Capsule\LayoutRegistry;
+use Capsule\MediaLibrary;
 use Capsule\Page;
 use Capsule\PageRepository;
 use Capsule\SectionRegistry;
@@ -33,7 +35,9 @@ final class PagesControllerTest extends TestCase
         $root = dirname(__DIR__, 3);
         $ui = new DevDashboard($root . '/resources/dev', new ResponseFactory());
         $registry = new SectionRegistry($root . '/resources/sections/registry.yaml');
-        $forms = new SectionFormRenderer($registry, $this->pages);
+        $library = new MediaLibrary(sys_get_temp_dir(), '/uploads/site', $this->pages, $this->site);
+        $uploader = new MediaUploader(sys_get_temp_dir());
+        $forms = new SectionFormRenderer($registry, $this->pages, $library, $uploader);
         $layouts = new LayoutRegistry($root . '/resources/layouts');
 
         $this->controller = new PagesController($ui, $this->pages, $this->site, $registry, $forms, $layouts);

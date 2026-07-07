@@ -54,11 +54,11 @@ final class ThemeCascadeTest extends TestCase
         );
 
         $body = (string) $renderer->renderBySlug('demo', [], '/demo')->getBody();
-        $lastLink = strrpos($body, '<link');
         $themePos = strpos($body, '--color-primary: #aabbcc');
+        $bindingsPos = strpos($body, 'href="/assets/css/theme-bindings.css"');
 
-        $this->assertNotFalse($lastLink);
         $this->assertNotFalse($themePos);
-        $this->assertGreaterThan($lastLink, $themePos);
+        $this->assertNotFalse($bindingsPos);
+        $this->assertLessThan($bindingsPos, $themePos);
     }
 }

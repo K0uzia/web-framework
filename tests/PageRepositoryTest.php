@@ -83,6 +83,7 @@ final class SiteRepositoryTest extends TestCase
 
         $this->assertSame('#111111', $theme['colors']['primary']);
         $this->assertStringContainsString('--color-primary: #111111', $site->themeCss());
+        $this->assertStringContainsString('--color-elevated: var(--color-surface)', $site->themeCss());
     }
 
     public function testThemeCssOmitsFontFaceByDefault(): void

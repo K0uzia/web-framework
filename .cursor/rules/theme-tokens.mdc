@@ -12,8 +12,9 @@ Dans `resources/layouts/default.html` :
 
 1. `{{{stylesheets}}}` (fichiers statiques)
 2. `{{{theme_css}}}` (`<style>` depuis `SiteRepository::themeCss()`)
+3. `/assets/css/theme-bindings.css` (liaison tokens → composants)
 
-Le thème DB doit **gagner** sur les fallbacks CSS.
+Le thème DB doit **gagner** sur les fallbacks CSS. Les bindings appliquent les tokens aux bons sélecteurs après injection des variables.
 
 ## `base.css`
 
@@ -22,7 +23,28 @@ Le thème DB doit **gagner** sur les fallbacks CSS.
 
 ## Variables injectées
 
-- Couleurs : `--color-primary`, `--color-secondary`, `--color-background`, `--color-text`, `--color-muted`
+### Palette de base
+
+- `--color-primary`, `--color-primary-hover`
+- `--color-secondary`, `--color-secondary-hover`
+- `--color-background`, `--color-surface`, `--color-border`
+- `--color-text`, `--color-text-muted`
+- Alias rétrocompatibilité : `--color-muted` → `var(--color-surface)`
+
+### Couleurs d'action
+
+- `--color-button-primary-bg`, `--color-button-primary-hover`, `--color-button-primary-text`
+- `--color-button-secondary-bg`, `--color-button-secondary-hover`, `--color-button-secondary-text`
+- `--color-link`, `--color-link-hover`
+
+### États UI
+
+- `--color-success`, `--color-warning`, `--color-error`, `--color-info`
+- `--color-focus-ring`, `--color-disabled`
+
+### Typographie et espacement
+
+- `--color-elevated` : cartes et panneaux (surface sur fond de page, fond de page sur bande surface)
 - Polices : `--font-heading`, `--font-body`
 - Espacement : `--spacing-section` (utilisé dans `sections/shared.css`)
 

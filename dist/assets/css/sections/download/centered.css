@@ -1,0 +1,6 @@
+.section-download--centered .section-inner,
+.section-download--centered .section-download__inner {
+    text-align: center;
+    margin-inline: auto;
+}
+

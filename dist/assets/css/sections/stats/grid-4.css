@@ -1,0 +1,5 @@
+@media (min-width: 768px) {
+    .section-stats--grid-4 .section-stats__grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}

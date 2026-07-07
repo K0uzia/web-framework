@@ -1,0 +1,5 @@
+@media (min-width: 768px) {
+    .section-community--grid-3 .section-community__grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}

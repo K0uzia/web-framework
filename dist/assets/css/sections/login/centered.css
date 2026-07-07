@@ -1,0 +1,6 @@
+.section-login--centered .section-inner,
+.section-login--centered .section-login__inner {
+    text-align: center;
+    margin-inline: auto;
+}
+

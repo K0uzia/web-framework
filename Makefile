@@ -8,7 +8,7 @@ PORT ?= 8080
 
 .PHONY: \
   help \
-  version info deps init reset dev db-shell bin open open-pma doc health styles \
+  version info deps init reset dev db-shell bin open open-pma doc health styles export-static \
   up down restart build pull logs \
   d-init d-setup setup-docker setup-dev vendor-clean dump \
   phpstan test \
@@ -39,6 +39,12 @@ init:         ## Crée data/, applique migration SQLite si absente, génère bin
 
 styles:       ## Copie resources/styles/ vers public/assets/css/ (optionnel)
 	bash bin/sync-styles
+
+export-static: ## Exporte le site public en HTML statique (dossier dist/)
+	@$(MAKE) styles
+	APP_URL=$(or $(APP_URL),https://k0uzia.github.io/web-framework) \
+	APP_BASE_PATH=$(or $(APP_BASE_PATH),/web-framework) \
+	php scripts/export-static.php dist
 
 reset:        ## Réinitialise la DB SQLite (ATTENTION: destructive)
 	$(LOCAL) reset

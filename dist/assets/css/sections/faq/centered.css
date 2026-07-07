@@ -1,0 +1,6 @@
+.section-faq--centered .section-inner,
+.section-faq--centered .section-faq__inner {
+    text-align: center;
+    margin-inline: auto;
+}
+

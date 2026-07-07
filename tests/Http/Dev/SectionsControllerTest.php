@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Http\Dev;
 
+use App\Http\Dev\MediaUploader;
 use App\Http\Dev\SectionFormRenderer;
 use App\Http\Dev\SectionsController;
 use Capsule\DevDashboard;
@@ -11,13 +12,16 @@ use Capsule\Http\Factory\ResponseFactory;
 use Capsule\Http\Message\Request;
 use Capsule\Page;
 use Capsule\PageRepository;
+use Capsule\MediaLibrary;
 use Capsule\SectionRegistry;
+use Capsule\SiteRepository;
 use PHPUnit\Framework\TestCase;
 
 final class SectionsControllerTest extends TestCase
 {
     private PageRepository $pages;
     private SectionsController $controller;
+    private string $uploadsDir;
 
     protected function setUp(): void
     {
@@ -28,9 +32,14 @@ final class SectionsControllerTest extends TestCase
         $root = dirname(__DIR__, 3);
         $ui = new DevDashboard($root . '/resources/dev', new ResponseFactory());
         $registry = new SectionRegistry($root . '/resources/sections/registry.yaml');
-        $forms = new SectionFormRenderer($registry, $this->pages);
+        $site = new SiteRepository($pdo);
+        $uploadsDir = sys_get_temp_dir() . '/capsule-section-media-' . bin2hex(random_bytes(4));
+        $uploader = new MediaUploader($uploadsDir);
+        $library = new MediaLibrary($uploadsDir, '/uploads/site', $this->pages, $site);
+        $forms = new SectionFormRenderer($registry, $this->pages, $library, $uploader);
 
-        $this->controller = new SectionsController($ui, $this->pages, $registry, $forms);
+        $this->controller = new SectionsController($ui, $this->pages, $registry, $forms, $uploader, $library);
+        $this->uploadsDir = $uploadsDir;
 
         $this->pages->save(new Page(
             slug: 'about',
@@ -49,6 +58,31 @@ final class SectionsControllerTest extends TestCase
             published: true,
             updatedAt: '',
         ));
+    }
+
+    protected function tearDown(): void
+    {
+        if (isset($this->uploadsDir) && is_dir($this->uploadsDir)) {
+            foreach (glob($this->uploadsDir . '/*') ?: [] as $file) {
+                @unlink($file);
+            }
+            @rmdir($this->uploadsDir);
+        }
+    }
+
+    public function testSelectSectionImageFromLibrary(): void
+    {
+        $response = $this->controller->selectImage(
+            $this->hxPost('/dev/pages/about/sections/hero-1/image/select', 'url=' . rawurlencode('/assets/stock/01-bureau.jpg')),
+            'about',
+            'hero-1',
+        );
+
+        $this->assertSame(200, $response->getStatus());
+        $this->assertStringContainsString('dev-section-image', (string) $response->getBody());
+
+        $page = $this->pages->findBySlug('about', false);
+        $this->assertSame('/assets/stock/01-bureau.jpg', $page->sections[0]['content']['image_url'] ?? '');
     }
 
     public function testAddSectionUsesFirstVariant(): void

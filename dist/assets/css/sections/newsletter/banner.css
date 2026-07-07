@@ -1,0 +1,15 @@
+.section-newsletter__inner {
+    max-width: var(--container-narrow);
+    margin: 0 auto;
+    text-align: center;
+}
+
+.section-newsletter__inner h2 {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 600;
+    margin-bottom: var(--space);
+}
+
+.section-newsletter__inner .section-buttons {
+    justify-content: center;
+}

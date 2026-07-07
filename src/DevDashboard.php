@@ -14,6 +14,7 @@ final class DevDashboard
     public function __construct(
         private readonly string $devRoot,
         private readonly ResponseFactory $responses,
+        private readonly ?SiteRepository $site = null,
     ) {
     }
 
@@ -42,6 +43,7 @@ final class DevDashboard
         }
         $data = self::withNav($data, $section);
         $data['crumb_html'] ??= '';
+        $data['theme_css'] = $this->themeCssMarkup();
 
         $html = $this->view()->page($template, $data, 'dev.html');
 
@@ -90,6 +92,11 @@ final class DevDashboard
         return $this->view()->render($template, $data);
     }
 
+    public function fragment(string $html, int $status = 200): Response
+    {
+        return $this->responses->html($html, $status);
+    }
+
     public function redirect(string $location): Response
     {
         return $this->responses->redirect($location);
@@ -109,5 +116,14 @@ final class DevDashboard
         $flash = $request->cookies['capsule_flash'] ?? '';
 
         return is_string($flash) ? $flash : '';
+    }
+
+    private function themeCssMarkup(): string
+    {
+        if ($this->site === null) {
+            return '';
+        }
+
+        return '<style>' . $this->site->themeCss() . '</style>';
     }
 }

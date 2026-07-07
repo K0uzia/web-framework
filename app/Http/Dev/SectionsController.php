@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace App\Http\Dev;
 
 use Capsule\DevDashboard;
+use Capsule\HeroStyle;
 use Capsule\Http\Message\Request;
 use Capsule\Http\Message\Response;
 use Capsule\Http\Support\FormData;
+use Capsule\MediaLibrary;
 use Capsule\Page;
 use Capsule\PageRepository;
 use Capsule\SectionRegistry;
@@ -21,6 +23,8 @@ final class SectionsController
         private readonly PageRepository $pages,
         private readonly SectionRegistry $registry,
         private readonly SectionFormRenderer $sectionForms,
+        private readonly MediaUploader $uploader,
+        private readonly MediaLibrary $mediaLibrary,
     ) {
     }
 
@@ -46,7 +50,7 @@ final class SectionsController
             'variant' => $variant,
             'visible' => true,
             'content' => $this->defaultContent($type, $variant),
-            'style' => $this->defaultStyle($type),
+            'style' => $this->defaultStyle($type, $variant),
         ];
 
         $this->saveSections($page, $sections);
@@ -250,6 +254,62 @@ final class SectionsController
         return $this->respond($request, $page, '');
     }
 
+    public function uploadImage(Request $request, string $slug, string $id): Response
+    {
+        $page = $this->requirePage($slug);
+        if ($page === null) {
+            return $this->ui->redirect('/dev/pages');
+        }
+
+        $error = '';
+        try {
+            $file = $request->files['file'] ?? null;
+            if (!is_array($file)) {
+                throw new MediaUploadException('Aucun fichier reçu.');
+            }
+            $url = $this->uploader->store('section_image', $file);
+            $this->setSectionImageUrl($page, $id, $url);
+            $page = $this->requirePage($slug);
+        } catch (MediaUploadException $e) {
+            $error = $e->getMessage();
+        }
+
+        return $this->respondImageField($request, $page, $id, $error);
+    }
+
+    public function removeImage(Request $request, string $slug, string $id): Response
+    {
+        $page = $this->requirePage($slug);
+        if ($page === null) {
+            return $this->ui->redirect('/dev/pages');
+        }
+
+        $this->clearSectionImageUrl($page, $id);
+        $page = $this->requirePage($slug);
+
+        return $this->respondImageField($request, $page, $id, '');
+    }
+
+    public function selectImage(Request $request, string $slug, string $id): Response
+    {
+        $page = $this->requirePage($slug);
+        if ($page === null) {
+            return $this->ui->redirect('/dev/pages');
+        }
+
+        $data = FormData::fromRequest($request);
+        $url = trim($data['url'] ?? '');
+        $error = '';
+        if ($url === '' || !$this->mediaLibrary->isAllowedUrl($url)) {
+            $error = 'URL d\'image non autorisée.';
+        } else {
+            $this->setSectionImageUrl($page, $id, $url, false);
+            $page = $this->requirePage($slug);
+        }
+
+        return $this->respondImageField($request, $page, $id, $error);
+    }
+
     /**
      * @param array<string, string> $data
      *
@@ -280,6 +340,82 @@ final class SectionsController
         }
 
         return $decoded;
+    }
+
+    private function respondImageField(Request $request, ?Page $page, string $sectionId, string $error): Response
+    {
+        if ($page === null) {
+            return $this->ui->redirect('/dev/pages');
+        }
+
+        $section = null;
+        foreach ($page->sections as $candidate) {
+            if (is_array($candidate) && ($candidate['id'] ?? '') === $sectionId) {
+                $section = $candidate;
+                break;
+            }
+        }
+
+        if ($section === null) {
+            return $this->ui->redirect('/dev/pages/' . SlugCodec::encode($page->slug));
+        }
+
+        $html = $this->sectionForms->renderImageField(
+            SlugCodec::encode($page->slug),
+            $section,
+            $error,
+        );
+
+        if ($this->isHx($request)) {
+            return $this->ui->fragment($html);
+        }
+
+        return $this->ui->withFlash(
+            $this->ui->redirect('/dev/pages/' . SlugCodec::encode($page->slug)),
+            $error !== '' ? $error : 'Image mise à jour.',
+        );
+    }
+
+    private function setSectionImageUrl(Page $page, string $sectionId, string $url, bool $deletePrevious = true): void
+    {
+        $sections = $page->sections;
+        foreach ($sections as $i => $section) {
+            if (!is_array($section) || ($section['id'] ?? '') !== $sectionId) {
+                continue;
+            }
+            if (!isset($sections[$i]['content']) || !is_array($sections[$i]['content'])) {
+                $sections[$i]['content'] = [];
+            }
+            $previous = trim((string) ($sections[$i]['content']['image_url'] ?? ''));
+            if ($deletePrevious && $previous !== '' && $previous !== $url && $this->uploader->isManagedUrl($previous)) {
+                $this->uploader->delete($previous);
+            }
+            $sections[$i]['content']['image_url'] = $url;
+            $this->saveSections($page, $sections);
+
+            return;
+        }
+    }
+
+    private function clearSectionImageUrl(Page $page, string $sectionId): void
+    {
+        $sections = $page->sections;
+        foreach ($sections as $i => $section) {
+            if (!is_array($section) || ($section['id'] ?? '') !== $sectionId) {
+                continue;
+            }
+            if (!isset($sections[$i]['content']) || !is_array($sections[$i]['content'])) {
+                $sections[$i]['content'] = [];
+            }
+            $previous = trim((string) ($sections[$i]['content']['image_url'] ?? ''));
+            $sections[$i]['content']['image_url'] = '';
+            $this->saveSections($page, $sections);
+            if ($previous !== '' && $this->uploader->isManagedUrl($previous)) {
+                $this->uploader->delete($previous);
+            }
+
+            return;
+        }
     }
 
     private function respond(Request $request, ?Page $page, string $flash): Response
@@ -435,8 +571,12 @@ final class SectionsController
     /**
      * @return array<string, string>
      */
-    private function defaultStyle(string $type): array
+    private function defaultStyle(string $type, string $variant = ''): array
     {
+        if ($type === 'hero' && $variant !== '') {
+            return HeroStyle::defaults($variant);
+        }
+
         return SectionDefaults::style($type);
     }
 }

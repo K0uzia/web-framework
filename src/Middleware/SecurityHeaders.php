@@ -9,6 +9,8 @@ use Capsule\Http\Message\Response;
 
 final class SecurityHeaders implements MiddlewareInterface
 {
+    private const FRAME_EMBED_SRC = 'https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com';
+
     public function __construct(
         private readonly bool $dev = true,
         private readonly bool $https = false,
@@ -29,9 +31,10 @@ final class SecurityHeaders implements MiddlewareInterface
             . "font-src 'self'; "
             . "media-src 'self' blob:; "
             . "connect-src 'self'; "
+            . "frame-src 'self' " . self::FRAME_EMBED_SRC . '; '
             . "form-action 'self'; "
             . "base-uri 'self'; "
-            . ($isDev ? "frame-src 'self'; frame-ancestors 'self';" : "frame-ancestors 'none';");
+            . ($isDev ? "frame-ancestors 'self';" : "frame-ancestors 'none';");
 
         if (!$res->hasHeader('Content-Security-Policy')) {
             $res = $res->withHeader('Content-Security-Policy', $csp);
@@ -40,7 +43,7 @@ final class SecurityHeaders implements MiddlewareInterface
             $res = $res->withHeader('X-Content-Type-Options', 'nosniff');
         }
         if (!$res->hasHeader('Referrer-Policy')) {
-            $res = $res->withHeader('Referrer-Policy', 'no-referrer');
+            $res = $res->withHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
         }
         if (!$res->hasHeader('X-Frame-Options') && !$isDev) {
             $res = $res->withHeader('X-Frame-Options', 'DENY');
