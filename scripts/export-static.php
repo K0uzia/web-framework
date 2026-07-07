@@ -84,17 +84,24 @@ foreach ($pages->allPublished() as $page) {
 }
 
 copyPublicAssets($root . '/public', $outputDir);
-writeNetlifyFiles($outputDir, $isNetlify);
+
+$phpAppUrl = getenv('PHP_APP_URL') ?: getenv('RENDER_APP_URL');
+$phpAppUrl = is_string($phpAppUrl) && $phpAppUrl !== '' ? rtrim($phpAppUrl, '/') : null;
+
+writeNetlifyFiles($outputDir, $isNetlify, $phpAppUrl);
 
 require __DIR__ . '/export-dev-static.php';
 
-$phpDevUrl = getenv('DEV_PANEL_URL');
-$phpDevUrl = is_string($phpDevUrl) && $phpDevUrl !== '' ? $phpDevUrl : null;
+$devPanelUrl = getenv('DEV_PANEL_URL');
+$devPanelUrl = is_string($devPanelUrl) && $devPanelUrl !== '' ? $devPanelUrl : $phpAppUrl;
 
-fwrite(STDOUT, "Export dashboard /dev :\n");
-$staticHostLabel = $isNetlify ? 'Netlify' : (getenv('STATIC_HOST_LABEL') ?: 'hébergement statique');
-$devExported = exportDevStatic($container, $outputDir, $basePath, $phpDevUrl, $staticHostLabel);
-$exported += $devExported;
+if ($phpAppUrl !== null) {
+    fwrite(STDOUT, "Backend PHP configuré ({$phpAppUrl}) : /dev et /api seront proxifiés, pas d'export statique du dashboard.\n");
+} else {
+    fwrite(STDOUT, "Export dashboard /dev (mode démo statique, pas de PHP à l'exécution sur Netlify) :\n");
+    $staticHostLabel = $isNetlify ? 'Netlify' : (getenv('STATIC_HOST_LABEL') ?: 'hébergement statique');
+    $exported += exportDevStatic($container, $outputDir, $basePath, $devPanelUrl, $staticHostLabel);
+}
 
 fwrite(STDOUT, "Export terminé : {$exported} fichier(s) dans {$outputDir}\n");
 
@@ -194,7 +201,7 @@ function copyTree(string $src, string $dest): void
     }
 }
 
-function writeNetlifyFiles(string $outputDir, bool $isNetlify): void
+function writeNetlifyFiles(string $outputDir, bool $isNetlify, ?string $phpAppUrl = null): void
 {
     if (!$isNetlify) {
         file_put_contents($outputDir . '/.nojekyll', '');
@@ -202,9 +209,15 @@ function writeNetlifyFiles(string $outputDir, bool $isNetlify): void
         return;
     }
 
-    $redirects = <<<'TXT'
-# Généré par scripts/export-static.php
-/dev    /dev/index.html    200
-TXT;
-    file_put_contents($outputDir . '/_redirects', $redirects);
+    $lines = ['# Généré par scripts/export-static.php'];
+
+    if ($phpAppUrl !== null && $phpAppUrl !== '') {
+        $origin = rtrim($phpAppUrl, '/');
+        $lines[] = '/dev/*  ' . $origin . '/dev/:splat  200!';
+        $lines[] = '/api/*  ' . $origin . '/api/:splat  200!';
+    } else {
+        $lines[] = '/dev    /dev/index.html    200';
+    }
+
+    file_put_contents($outputDir . '/_redirects', implode("\n", $lines) . "\n");
 }

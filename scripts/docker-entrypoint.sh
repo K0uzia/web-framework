@@ -17,4 +17,10 @@ if [[ -d /app/data/uploads && ! -L public/uploads ]]; then
   mkdir -p /app/data/uploads/site /app/data/uploads/media /app/data/uploads/fonts
 fi
 
+if [[ "${1:-}" == "php-server" ]]; then
+  PORT="${PORT:-8080}"
+  echo "→ CapsulePHP sur 0.0.0.0:${PORT}"
+  exec php -S "0.0.0.0:${PORT}" -t public public/index.php
+fi
+
 exec "$@"

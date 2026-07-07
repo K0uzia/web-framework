@@ -42,8 +42,10 @@ export APP_ENV="${APP_ENV:-prod}"
 export APP_HTTPS="${APP_HTTPS:-1}"
 export APP_URL="${APP_URL:-${DEPLOY_PRIME_URL:-${URL:-https://example.netlify.app}}}"
 export APP_BASE_PATH="${APP_BASE_PATH:-}"
+# URL du backend PHP (Render, etc.) : proxifie /dev et /api, désactive le dashboard statique.
+export PHP_APP_URL="${PHP_APP_URL:-${RENDER_APP_URL:-}}"
 
-echo "→ Export statique (APP_URL=${APP_URL}, APP_BASE_PATH=${APP_BASE_PATH:-/})"
+echo "→ Export statique (APP_URL=${APP_URL}, PHP_APP_URL=${PHP_APP_URL:-non configuré})"
 php scripts/export-static.php dist
 
 echo "✅ Build Netlify terminé : dist/"

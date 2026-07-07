@@ -1,3 +1,7 @@
+# Backend PHP complet (panel /dev, API, pages dynamiques).
+# Créez un Web Service sur Render en important ce dépôt (runtime: Docker).
+# Puis reliez Netlify via PHP_APP_URL = URL Render.
+
 services:
   - type: web
     name: web-framework

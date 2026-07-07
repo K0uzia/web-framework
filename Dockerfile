@@ -20,10 +20,9 @@ RUN bash bin/sync-styles 2>/dev/null || true \
     && chmod +x scripts/docker-entrypoint.sh
 
 ENV APP_ENV=prod \
-    APP_HTTPS=1 \
-    PORT=8080
+    APP_HTTPS=1
 
 EXPOSE 8080
 
 ENTRYPOINT ["scripts/docker-entrypoint.sh"]
-CMD ["php", "-S", "0.0.0.0:8080", "-t", "public", "public/index.php"]
+CMD ["php-server"]

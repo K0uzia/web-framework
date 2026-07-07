@@ -1,5 +1,8 @@
-# Déploiement CapsulePHP sur Netlify (export HTML statique).
-# Connectez le dépôt GitHub dans Netlify : Site configuration → Build & deploy.
+# Netlify sert des fichiers statiques à l'exécution (pas de PHP runtime).
+# Le build PHP ci-dessous génère le HTML ; pour le panel /dev fonctionnel,
+# déployez aussi l'app PHP sur Render (render.yaml) puis définissez :
+#   PHP_APP_URL = https://votre-app.onrender.com
+# dans Site configuration → Environment variables.
 
 [build]
   command = "bash scripts/netlify-build.sh"
@@ -10,7 +13,6 @@
   APP_ENV = "prod"
   APP_HTTPS = "1"
 
-# Aperçus de PR : URL de preview injectée automatiquement par Netlify (DEPLOY_PRIME_URL).
 [context.deploy-preview]
   command = "bash scripts/netlify-build.sh"
 
