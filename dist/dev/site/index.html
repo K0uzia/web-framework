@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="dark light" />
     <title>Site - Capsule Dev</title>
-    <link rel="icon" href="/web-framework/assets/favicon-dev.svg" type="image/svg+xml" />
-    <script src="/web-framework/assets/js/dev-theme-init.js"></script>
-    <link rel="stylesheet" href="/web-framework/assets/vendor/fontawesome/css/all.min.css" />
-    <link rel="stylesheet" href="/web-framework/assets/css/dev.css" />
+    <link rel="icon" href="/assets/favicon-dev.svg" type="image/svg+xml" />
+    <script src="/assets/js/dev-theme-init.js"></script>
+    <link rel="stylesheet" href="/assets/vendor/fontawesome/css/all.min.css" />
+    <link rel="stylesheet" href="/assets/css/dev.css" />
     <style>:root {
     --color-primary: #121317;
     --color-primary-hover: #121317;
@@ -41,50 +41,50 @@
     --radius-md: 10px;
     --container: 72rem;
 }</style>
-    <link rel="stylesheet" href="/web-framework/assets/css/dev-theme-bindings.css" />
-    <script src="/web-framework/assets/js/dev.js" defer></script>
-    <link rel="stylesheet" href="/web-framework/assets/css/dev-static.css" />
+    <link rel="stylesheet" href="/assets/css/dev-theme-bindings.css" />
+    <script src="/assets/js/dev.js" defer></script>
+    <link rel="stylesheet" href="/assets/css/dev-static.css" />
     <script>window.__CAPSULE_DEV_STATIC=true;</script>
-    <script src="/web-framework/assets/js/dev-static.js" defer></script>
+    <script src="/assets/js/dev-static.js" defer></script>
 </head>
-<div class="dev-static-banner" role="status">Mode démo statique (GitHub Pages). Navigation OK, enregistrement désactivé.</div>
+<div class="dev-static-banner" role="status">Mode démo statique (Netlify). Navigation OK, enregistrement désactivé.</div>
 <body class="dev-shell ">
     <div class="dev-app" data-dev-app>
         <button type="button" class="dev-sidebar-overlay" data-dev-sidebar-close tabindex="-1" aria-hidden="true"></button>
         <aside class="dev-sidebar" id="dev-sidebar">
             <nav class="dev-nav" aria-label="Navigation du tableau de bord">
-    <a class="dev-nav__brand" href="/web-framework/dev/overview">
+    <a class="dev-nav__brand" href="/dev/overview">
         <span class="dev-nav__brand-mark" aria-hidden="true"><i class="fa-solid fa-layer-group"></i></span>
         <span class="dev-nav__brand-text">Capsule</span>
     </a>
     <div class="dev-nav__links">
-        <a href="/web-framework/dev/overview" class="dev-nav__link ">
+        <a href="/dev/overview" class="dev-nav__link ">
             <i class="fa-solid fa-gauge-high" aria-hidden="true"></i><span>Tableau de bord</span>
         </a>
-        <a href="/web-framework/dev/pages" class="dev-nav__link ">
+        <a href="/dev/pages" class="dev-nav__link ">
             <i class="fa-solid fa-file-lines" aria-hidden="true"></i><span>Pages</span>
         </a>
-        <a href="/web-framework/dev/medias" class="dev-nav__link ">
+        <a href="/dev/medias" class="dev-nav__link ">
             <i class="fa-solid fa-photo-film" aria-hidden="true"></i><span>Médias</span>
         </a>
-        <a href="/web-framework/dev/site" class="dev-nav__link is-active" aria-current="page">
+        <a href="/dev/site" class="dev-nav__link is-active" aria-current="page">
             <i class="fa-solid fa-globe" aria-hidden="true"></i><span>Site</span>
         </a>
-        <a href="/web-framework/dev/chrome" class="dev-nav__link ">
+        <a href="/dev/chrome" class="dev-nav__link ">
             <i class="fa-solid fa-table-columns" aria-hidden="true"></i><span>En-tête &amp; pied</span>
         </a>
-        <a href="/web-framework/dev/theme" class="dev-nav__link ">
+        <a href="/dev/theme" class="dev-nav__link ">
             <i class="fa-solid fa-palette" aria-hidden="true"></i><span>Thème</span>
         </a>
     </div>
     <div class="dev-nav__footer">
-        <a href="/web-framework/" target="_blank" rel="noopener noreferrer" class="dev-nav__ghost-btn">
+        <a href="/" target="_blank" rel="noopener noreferrer" class="dev-nav__ghost-btn">
             <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i><span>Voir le site</span>
         </a>
         <button type="button" class="dev-nav__ghost-btn" data-dev-theme-toggle aria-pressed="false">
             <i class="fa-solid fa-moon" aria-hidden="true" data-theme-icon></i><span data-theme-label>Thème sombre</span>
         </button>
-        <form method="post" action="/web-framework/dev/logout">
+        <form method="post" action="/dev/logout">
             <button type="submit" class="dev-nav__ghost-btn dev-nav__ghost-btn--full">
                 <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i><span>Déconnexion</span>
             </button>
@@ -112,10 +112,10 @@
     <div class="dev-page-head">
         <div>
             <h1><i class="fa-solid fa-globe" aria-hidden="true"></i> Site</h1>
-            <p class="dev-lead">Identité et navigation du site. L'en-tête et le pied de page se composent dans <a href="/web-framework/dev/chrome">En-tête &amp; pied de page</a>.</p>
+            <p class="dev-lead">Identité et navigation du site. L'en-tête et le pied de page se composent dans <a href="/dev/chrome">En-tête &amp; pied de page</a>.</p>
         </div>
         <div class="dev-page-head__actions">
-            <a class="dev-button dev-button--ghost" href="/web-framework/" target="_blank" rel="noopener noreferrer">
+            <a class="dev-button dev-button--ghost" href="/" target="_blank" rel="noopener noreferrer">
                 <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i> Voir le site
             </a>
         </div>
@@ -129,7 +129,7 @@
 
         <div class="dev-tabs__panel is-active" data-tab-panel="identity">
             <div class="dev-stack dev-stack--lg">
-                <form method="post" action="/web-framework/dev/site" class="dev-form" id="identity-form" hx-post="/dev/site" hx-trigger="change, input delay:400ms" hx-target="#identity-saved-status" hx-swap="innerHTML" data-dev-toast-form="Identité enregistrée">
+                <form method="post" action="/dev/site" class="dev-form" id="identity-form" hx-post="/dev/site" hx-trigger="change, input delay:400ms" hx-target="#identity-saved-status" hx-swap="innerHTML" data-dev-toast-form="Identité enregistrée">
                     <div class="dev-panel">
                         <div class="dev-panel__head">
                             <div>
@@ -155,19 +155,19 @@
                 <div class="dev-panel">
                     <h2 class="dev-panel__title">Logo</h2>
                     <p class="dev-panel__desc">Affiché dans l'en-tête et le pied de page à la place du nom du site. Formats acceptés : PNG, JPG, SVG, WebP.</p>
-                    <div class="dev-uploader" id="uploader-logo"><div class="dev-uploader__preview"><div class="dev-uploader__thumb"><img src="/web-framework/uploads/site/logo-e20a64acd2cba15f.png" alt="" /></div><span class="dev-uploader__name">logo-e20a64acd2cba15f.png</span><form class="dev-inline-form" method="post" action="/web-framework/dev/media/logo/remove" data-dev-ajax="media-logo" data-dev-toast-form="Fichier supprimé"><button type="submit" class="dev-icon-btn dev-icon-btn--danger" aria-label="Supprimer ce fichier" title="Supprimer"><i class="fa-solid fa-trash" aria-hidden="true"></i></button></form></div><form class="dev-inline-form" method="post" action="/web-framework/dev/media/logo/upload" enctype="multipart/form-data" data-dev-ajax="media-logo" data-dev-toast-form="Fichier importé"><label class="dev-button dev-button--ghost dev-button--sm dev-uploader__browse"><i class="fa-solid fa-upload" aria-hidden="true"></i> Remplacer<input type="file" name="file" accept=".png,.jpg,.jpeg,.webp,.svg,image/png,image/jpeg,image/webp,image/svg+xml" class="visually-hidden" data-dev-autosubmit aria-label="Importer un fichier" /></label></form></div>
+                    <div class="dev-uploader" id="uploader-logo"><div class="dev-uploader__preview"><div class="dev-uploader__thumb"><img src="/uploads/site/logo-e20a64acd2cba15f.png" alt="" /></div><span class="dev-uploader__name">logo-e20a64acd2cba15f.png</span><form class="dev-inline-form" method="post" action="/dev/media/logo/remove" data-dev-ajax="media-logo" data-dev-toast-form="Fichier supprimé"><button type="submit" class="dev-icon-btn dev-icon-btn--danger" aria-label="Supprimer ce fichier" title="Supprimer"><i class="fa-solid fa-trash" aria-hidden="true"></i></button></form></div><form class="dev-inline-form" method="post" action="/dev/media/logo/upload" enctype="multipart/form-data" data-dev-ajax="media-logo" data-dev-toast-form="Fichier importé"><label class="dev-button dev-button--ghost dev-button--sm dev-uploader__browse"><i class="fa-solid fa-upload" aria-hidden="true"></i> Remplacer<input type="file" name="file" accept=".png,.jpg,.jpeg,.webp,.svg,image/png,image/jpeg,image/webp,image/svg+xml" class="visually-hidden" data-dev-autosubmit aria-label="Importer un fichier" /></label></form></div>
                 </div>
 
                 <div class="dev-form--grid dev-form--grid-2">
                     <div class="dev-panel">
                         <h2 class="dev-panel__title">Favicon</h2>
                         <p class="dev-panel__desc">Icône affichée dans l'onglet du navigateur.</p>
-                        <div class="dev-uploader" id="uploader-favicon"><div class="dev-uploader__preview"><div class="dev-uploader__thumb"><img src="/web-framework/uploads/site/favicon-6cfd7cea18530bef.png" alt="" /></div><span class="dev-uploader__name">favicon-6cfd7cea18530bef.png</span><form class="dev-inline-form" method="post" action="/web-framework/dev/media/favicon/remove" data-dev-ajax="media-favicon" data-dev-toast-form="Fichier supprimé"><button type="submit" class="dev-icon-btn dev-icon-btn--danger" aria-label="Supprimer ce fichier" title="Supprimer"><i class="fa-solid fa-trash" aria-hidden="true"></i></button></form></div><form class="dev-inline-form" method="post" action="/web-framework/dev/media/favicon/upload" enctype="multipart/form-data" data-dev-ajax="media-favicon" data-dev-toast-form="Fichier importé"><label class="dev-button dev-button--ghost dev-button--sm dev-uploader__browse"><i class="fa-solid fa-upload" aria-hidden="true"></i> Remplacer<input type="file" name="file" accept=".ico,.png,.svg,image/x-icon,image/png,image/svg+xml" class="visually-hidden" data-dev-autosubmit aria-label="Importer un fichier" /></label></form></div>
+                        <div class="dev-uploader" id="uploader-favicon"><div class="dev-uploader__preview"><div class="dev-uploader__thumb"><img src="/uploads/site/favicon-6cfd7cea18530bef.png" alt="" /></div><span class="dev-uploader__name">favicon-6cfd7cea18530bef.png</span><form class="dev-inline-form" method="post" action="/dev/media/favicon/remove" data-dev-ajax="media-favicon" data-dev-toast-form="Fichier supprimé"><button type="submit" class="dev-icon-btn dev-icon-btn--danger" aria-label="Supprimer ce fichier" title="Supprimer"><i class="fa-solid fa-trash" aria-hidden="true"></i></button></form></div><form class="dev-inline-form" method="post" action="/dev/media/favicon/upload" enctype="multipart/form-data" data-dev-ajax="media-favicon" data-dev-toast-form="Fichier importé"><label class="dev-button dev-button--ghost dev-button--sm dev-uploader__browse"><i class="fa-solid fa-upload" aria-hidden="true"></i> Remplacer<input type="file" name="file" accept=".ico,.png,.svg,image/x-icon,image/png,image/svg+xml" class="visually-hidden" data-dev-autosubmit aria-label="Importer un fichier" /></label></form></div>
                     </div>
                     <div class="dev-panel">
                         <h2 class="dev-panel__title">Image de partage</h2>
                         <p class="dev-panel__desc">Utilisée sur les réseaux sociaux quand une page est partagée.</p>
-                        <div class="dev-uploader" id="uploader-og_image"><div class="dev-uploader__empty"><i class="fa-solid fa-image" aria-hidden="true"></i> Aucun fichier</div><form class="dev-inline-form" method="post" action="/web-framework/dev/media/og_image/upload" enctype="multipart/form-data" data-dev-ajax="media-og_image" data-dev-toast-form="Fichier importé"><label class="dev-button dev-button--ghost dev-button--sm dev-uploader__browse"><i class="fa-solid fa-upload" aria-hidden="true"></i> Importer un fichier<input type="file" name="file" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp" class="visually-hidden" data-dev-autosubmit aria-label="Importer un fichier" /></label></form></div>
+                        <div class="dev-uploader" id="uploader-og_image"><div class="dev-uploader__empty"><i class="fa-solid fa-image" aria-hidden="true"></i> Aucun fichier</div><form class="dev-inline-form" method="post" action="/dev/media/og_image/upload" enctype="multipart/form-data" data-dev-ajax="media-og_image" data-dev-toast-form="Fichier importé"><label class="dev-button dev-button--ghost dev-button--sm dev-uploader__browse"><i class="fa-solid fa-upload" aria-hidden="true"></i> Importer un fichier<input type="file" name="file" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp" class="visually-hidden" data-dev-autosubmit aria-label="Importer un fichier" /></label></form></div>
                     </div>
                 </div>
             </div>
@@ -182,30 +182,30 @@
                             <p class="dev-panel__desc">Mode actuel : <strong>Personnalisée</strong>. Glissez-déposez pour réordonner les liens.</p>
                         </div>
                         <div class="dev-page-head__actions">
-                            <form method="post" action="/web-framework/dev/site/nav/sync" data-dev-ajax="nav" data-dev-toast-form="Navigation synchronisée">
+                            <form method="post" action="/dev/site/nav/sync" data-dev-ajax="nav" data-dev-toast-form="Navigation synchronisée">
                                 <button type="submit" class="dev-button dev-button--ghost dev-button--sm">
                                     <i class="fa-solid fa-arrows-rotate" aria-hidden="true"></i> Synchroniser les pages
                                 </button>
                             </form>
-                            <form method="post" action="/web-framework/dev/site/nav/reset" data-dev-ajax="nav-reload" data-dev-confirm="Revenir à la navigation automatique ? Les liens personnalisés seront remplacés.">
+                            <form method="post" action="/dev/site/nav/reset" data-dev-ajax="nav-reload" data-dev-confirm="Revenir à la navigation automatique ? Les liens personnalisés seront remplacés.">
                                 <button type="submit" class="dev-button dev-button--ghost dev-button--sm">Mode auto</button>
                             </form>
                         </div>
                     </div>
 
-                    <form method="post" action="/web-framework/dev/site" class="dev-field dev-field--narrow" id="home-label-form" hx-post="/dev/site" hx-trigger="change, input delay:400ms" hx-target="#home-label-status" hx-swap="innerHTML" data-dev-toast-form="Libellé enregistré">
+                    <form method="post" action="/dev/site" class="dev-field dev-field--narrow" id="home-label-form" hx-post="/dev/site" hx-trigger="change, input delay:400ms" hx-target="#home-label-status" hx-swap="innerHTML" data-dev-toast-form="Libellé enregistré">
                         <label class="dev-label" for="home_label">Libellé de l'accueil (mode auto)</label>
                         <input class="dev-input" id="home_label" name="home_label" type="text" value="Accueil" />
                         <p class="dev-section-form__status" id="home-label-status" aria-live="polite"></p>
                     </form>
 
                     <div id="dev-nav-list" aria-live="polite">
-                        <form id="nav-form" method="post" action="/web-framework/dev/site/nav" hx-post="/dev/site/nav" hx-trigger="change" hx-target="#nav-saved-status" hx-swap="innerHTML" data-dev-ajax="nav" data-dev-toast-form="Navigation enregistrée">
+                        <form id="nav-form" method="post" action="/dev/site/nav" hx-post="/dev/site/nav" hx-trigger="change" hx-target="#nav-saved-status" hx-swap="innerHTML" data-dev-ajax="nav" data-dev-toast-form="Navigation enregistrée">
     <input type="hidden" name="update_nav" value="1" />
     <p class="dev-section-form__status" id="nav-saved-status" aria-live="polite"></p>
     <div class="dev-nav-editor" data-dev-sortable data-dev-sortable-url="/dev/site/nav/reorder"><div class="dev-nav-row" data-dev-sortable-item data-id="nav-page-home" draggable="true" data-nav-row><button type="button" class="dev-icon-btn dev-icon-btn--drag" aria-label="Réorganiser"><i class="fa-solid fa-grip-vertical" aria-hidden="true"></i></button><div class="dev-nav-row__fields"><input class="dev-input dev-input--sm" type="text" name="nav_item_nav-page-home_label" form="nav-form" value="Accueil" aria-label="Libellé" placeholder="Libellé" /><select class="dev-input dev-select dev-select--sm" name="nav_item_nav-page-home_type" form="nav-form" aria-label="Type de lien" data-nav-row-type><option value="page" selected>Page du site</option><option value="link">URL externe</option><option value="button">Bouton mis en avant</option><option value="group">Menu déroulant</option></select><div class="dev-nav-row__target" data-nav-row-target data-nav-type="page"><div class="dev-link-picker" data-link-picker><select class="dev-input dev-select dev-input--sm" aria-label="Choisir une page ou une section du site" data-link-picker-select form="nav-form"><option value="">URL personnalisée…</option><option value="/">Accueil</option><optgroup label="Sections : Accueil"><option value="#hero-69a05b">Construisez quelque chose d&#039;exceptionnel</option><option value="#hero-5df24d">Votre titre principal</option><option value="#hero-3710e7">Un produit pensé pour vous</option><option value="#hero-eba7a6">Un produit pensé pour vous</option><option value="#hero-c0f779">Un produit pensé pour vous</option><option value="#hero-04bad5">Lancez votre projet plus vite</option><option value="#hero-c1f02f">Votre titre principal</option><option value="#hero-84b916">Un produit pensé pour vous</option></optgroup><option value="/about-3">/about-3 : À propos 3</option><optgroup label="Sections : /about-3 : À propos 3"><option value="/about-3#hero-3665fd">Un produit pensé pour vous</option><option value="/about-3#about-7e42b8">Notre histoire</option><option value="/about-3#awards-eea139">Récompenses</option><option value="/about-3#cta-7a4bb7">Prêt à vous lancer ?</option></optgroup><option value="/blog-3">/blog-3 : Blog 3</option><optgroup label="Sections : /blog-3 : Blog 3"><option value="/blog-3#hero-a25b58">Un produit pensé pour vous</option><option value="/blog-3#blog-a8c568">Articles</option><option value="/blog-3#blog-1e9924">Articles</option><option value="/blog-3#newsletter-91f8c3">Restez informé</option></optgroup><option value="/landing-2">/landing-2 : Landing 2</option><optgroup label="Sections : /landing-2 : Landing 2"><option value="/landing-2#hero-d212bc">Un produit pensé pour vous</option><option value="/landing-2#features-ef70c6">Fonctionnalités</option><option value="/landing-2#stats-00e2a8">Stats</option><option value="/landing-2#cta-fc40ba">Prêt à vous lancer ?</option></optgroup></select><input class="dev-input dev-input--sm" type="text" id="nav-target-nav-page-home" name="nav_item_nav-page-home_target" value="/" placeholder="https://exemple.fr ou /page" form="nav-form" data-link-picker-input /></div></div></div><label class="dev-switch dev-switch--sm" title="Visible dans le menu"><input type="hidden" name="nav_item_nav-page-home_visible" form="nav-form" value="0" /><input type="checkbox" name="nav_item_nav-page-home_visible" form="nav-form" value="1" checked /><span class="dev-switch__track" aria-hidden="true"></span><span class="visually-hidden">Visible</span></label><div class="dev-nav-row__danger"><button type="submit" class="dev-icon-btn dev-icon-btn--danger" form="nav-delete-nav-page-home" title="Supprimer" aria-label="Supprimer ce lien"><i class="fa-solid fa-trash" aria-hidden="true"></i></button></div></div><div class="dev-nav-row" data-dev-sortable-item data-id="nav-page-blog-3" draggable="true" data-nav-row><button type="button" class="dev-icon-btn dev-icon-btn--drag" aria-label="Réorganiser"><i class="fa-solid fa-grip-vertical" aria-hidden="true"></i></button><div class="dev-nav-row__fields"><input class="dev-input dev-input--sm" type="text" name="nav_item_nav-page-blog-3_label" form="nav-form" value="Blog test" aria-label="Libellé" placeholder="Libellé" /><select class="dev-input dev-select dev-select--sm" name="nav_item_nav-page-blog-3_type" form="nav-form" aria-label="Type de lien" data-nav-row-type><option value="page" selected>Page du site</option><option value="link">URL externe</option><option value="button">Bouton mis en avant</option><option value="group">Menu déroulant</option></select><div class="dev-nav-row__target" data-nav-row-target data-nav-type="page"><div class="dev-link-picker" data-link-picker><select class="dev-input dev-select dev-input--sm" aria-label="Choisir une page ou une section du site" data-link-picker-select form="nav-form"><option value="">URL personnalisée…</option><option value="/">Accueil</option><optgroup label="Sections : Accueil"><option value="#hero-69a05b">Construisez quelque chose d&#039;exceptionnel</option><option value="#hero-5df24d">Votre titre principal</option><option value="#hero-3710e7">Un produit pensé pour vous</option><option value="#hero-eba7a6">Un produit pensé pour vous</option><option value="#hero-c0f779">Un produit pensé pour vous</option><option value="#hero-04bad5">Lancez votre projet plus vite</option><option value="#hero-c1f02f">Votre titre principal</option><option value="#hero-84b916">Un produit pensé pour vous</option></optgroup><option value="/about-3">/about-3 : À propos 3</option><optgroup label="Sections : /about-3 : À propos 3"><option value="/about-3#hero-3665fd">Un produit pensé pour vous</option><option value="/about-3#about-7e42b8">Notre histoire</option><option value="/about-3#awards-eea139">Récompenses</option><option value="/about-3#cta-7a4bb7">Prêt à vous lancer ?</option></optgroup><option value="/blog-3">/blog-3 : Blog 3</option><optgroup label="Sections : /blog-3 : Blog 3"><option value="/blog-3#hero-a25b58">Un produit pensé pour vous</option><option value="/blog-3#blog-a8c568">Articles</option><option value="/blog-3#blog-1e9924">Articles</option><option value="/blog-3#newsletter-91f8c3">Restez informé</option></optgroup><option value="/landing-2">/landing-2 : Landing 2</option><optgroup label="Sections : /landing-2 : Landing 2"><option value="/landing-2#hero-d212bc">Un produit pensé pour vous</option><option value="/landing-2#features-ef70c6">Fonctionnalités</option><option value="/landing-2#stats-00e2a8">Stats</option><option value="/landing-2#cta-fc40ba">Prêt à vous lancer ?</option></optgroup></select><input class="dev-input dev-input--sm" type="text" id="nav-target-nav-page-blog-3" name="nav_item_nav-page-blog-3_target" value="/blog-3" placeholder="https://exemple.fr ou /page" form="nav-form" data-link-picker-input /></div></div></div><label class="dev-switch dev-switch--sm" title="Visible dans le menu"><input type="hidden" name="nav_item_nav-page-blog-3_visible" form="nav-form" value="0" /><input type="checkbox" name="nav_item_nav-page-blog-3_visible" form="nav-form" value="1" checked /><span class="dev-switch__track" aria-hidden="true"></span><span class="visually-hidden">Visible</span></label><div class="dev-nav-row__danger"><button type="submit" class="dev-icon-btn dev-icon-btn--danger" form="nav-delete-nav-page-blog-3" title="Supprimer" aria-label="Supprimer ce lien"><i class="fa-solid fa-trash" aria-hidden="true"></i></button></div></div><div class="dev-nav-row" data-dev-sortable-item data-id="nav-page-landing-2" draggable="true" data-nav-row><button type="button" class="dev-icon-btn dev-icon-btn--drag" aria-label="Réorganiser"><i class="fa-solid fa-grip-vertical" aria-hidden="true"></i></button><div class="dev-nav-row__fields"><input class="dev-input dev-input--sm" type="text" name="nav_item_nav-page-landing-2_label" form="nav-form" value="Landing de test" aria-label="Libellé" placeholder="Libellé" /><select class="dev-input dev-select dev-select--sm" name="nav_item_nav-page-landing-2_type" form="nav-form" aria-label="Type de lien" data-nav-row-type><option value="page" selected>Page du site</option><option value="link">URL externe</option><option value="button">Bouton mis en avant</option><option value="group">Menu déroulant</option></select><div class="dev-nav-row__target" data-nav-row-target data-nav-type="page"><div class="dev-link-picker" data-link-picker><select class="dev-input dev-select dev-input--sm" aria-label="Choisir une page ou une section du site" data-link-picker-select form="nav-form"><option value="">URL personnalisée…</option><option value="/">Accueil</option><optgroup label="Sections : Accueil"><option value="#hero-69a05b">Construisez quelque chose d&#039;exceptionnel</option><option value="#hero-5df24d">Votre titre principal</option><option value="#hero-3710e7">Un produit pensé pour vous</option><option value="#hero-eba7a6">Un produit pensé pour vous</option><option value="#hero-c0f779">Un produit pensé pour vous</option><option value="#hero-04bad5">Lancez votre projet plus vite</option><option value="#hero-c1f02f">Votre titre principal</option><option value="#hero-84b916">Un produit pensé pour vous</option></optgroup><option value="/about-3">/about-3 : À propos 3</option><optgroup label="Sections : /about-3 : À propos 3"><option value="/about-3#hero-3665fd">Un produit pensé pour vous</option><option value="/about-3#about-7e42b8">Notre histoire</option><option value="/about-3#awards-eea139">Récompenses</option><option value="/about-3#cta-7a4bb7">Prêt à vous lancer ?</option></optgroup><option value="/blog-3">/blog-3 : Blog 3</option><optgroup label="Sections : /blog-3 : Blog 3"><option value="/blog-3#hero-a25b58">Un produit pensé pour vous</option><option value="/blog-3#blog-a8c568">Articles</option><option value="/blog-3#blog-1e9924">Articles</option><option value="/blog-3#newsletter-91f8c3">Restez informé</option></optgroup><option value="/landing-2">/landing-2 : Landing 2</option><optgroup label="Sections : /landing-2 : Landing 2"><option value="/landing-2#hero-d212bc">Un produit pensé pour vous</option><option value="/landing-2#features-ef70c6">Fonctionnalités</option><option value="/landing-2#stats-00e2a8">Stats</option><option value="/landing-2#cta-fc40ba">Prêt à vous lancer ?</option></optgroup></select><input class="dev-input dev-input--sm" type="text" id="nav-target-nav-page-landing-2" name="nav_item_nav-page-landing-2_target" value="/landing-2" placeholder="https://exemple.fr ou /page" form="nav-form" data-link-picker-input /></div></div></div><label class="dev-switch dev-switch--sm" title="Visible dans le menu"><input type="hidden" name="nav_item_nav-page-landing-2_visible" form="nav-form" value="0" /><input type="checkbox" name="nav_item_nav-page-landing-2_visible" form="nav-form" value="1" checked /><span class="dev-switch__track" aria-hidden="true"></span><span class="visually-hidden">Visible</span></label><div class="dev-nav-row__danger"><button type="submit" class="dev-icon-btn dev-icon-btn--danger" form="nav-delete-nav-page-landing-2" title="Supprimer" aria-label="Supprimer ce lien"><i class="fa-solid fa-trash" aria-hidden="true"></i></button></div></div><div class="dev-nav-row" data-dev-sortable-item data-id="nav-page-about-3" draggable="true" data-nav-row><button type="button" class="dev-icon-btn dev-icon-btn--drag" aria-label="Réorganiser"><i class="fa-solid fa-grip-vertical" aria-hidden="true"></i></button><div class="dev-nav-row__fields"><input class="dev-input dev-input--sm" type="text" name="nav_item_nav-page-about-3_label" form="nav-form" value="À propos 3" aria-label="Libellé" placeholder="Libellé" /><select class="dev-input dev-select dev-select--sm" name="nav_item_nav-page-about-3_type" form="nav-form" aria-label="Type de lien" data-nav-row-type><option value="page" selected>Page du site</option><option value="link">URL externe</option><option value="button">Bouton mis en avant</option><option value="group">Menu déroulant</option></select><div class="dev-nav-row__target" data-nav-row-target data-nav-type="page"><div class="dev-link-picker" data-link-picker><select class="dev-input dev-select dev-input--sm" aria-label="Choisir une page ou une section du site" data-link-picker-select form="nav-form"><option value="">URL personnalisée…</option><option value="/">Accueil</option><optgroup label="Sections : Accueil"><option value="#hero-69a05b">Construisez quelque chose d&#039;exceptionnel</option><option value="#hero-5df24d">Votre titre principal</option><option value="#hero-3710e7">Un produit pensé pour vous</option><option value="#hero-eba7a6">Un produit pensé pour vous</option><option value="#hero-c0f779">Un produit pensé pour vous</option><option value="#hero-04bad5">Lancez votre projet plus vite</option><option value="#hero-c1f02f">Votre titre principal</option><option value="#hero-84b916">Un produit pensé pour vous</option></optgroup><option value="/about-3">/about-3 : À propos 3</option><optgroup label="Sections : /about-3 : À propos 3"><option value="/about-3#hero-3665fd">Un produit pensé pour vous</option><option value="/about-3#about-7e42b8">Notre histoire</option><option value="/about-3#awards-eea139">Récompenses</option><option value="/about-3#cta-7a4bb7">Prêt à vous lancer ?</option></optgroup><option value="/blog-3">/blog-3 : Blog 3</option><optgroup label="Sections : /blog-3 : Blog 3"><option value="/blog-3#hero-a25b58">Un produit pensé pour vous</option><option value="/blog-3#blog-a8c568">Articles</option><option value="/blog-3#blog-1e9924">Articles</option><option value="/blog-3#newsletter-91f8c3">Restez informé</option></optgroup><option value="/landing-2">/landing-2 : Landing 2</option><optgroup label="Sections : /landing-2 : Landing 2"><option value="/landing-2#hero-d212bc">Un produit pensé pour vous</option><option value="/landing-2#features-ef70c6">Fonctionnalités</option><option value="/landing-2#stats-00e2a8">Stats</option><option value="/landing-2#cta-fc40ba">Prêt à vous lancer ?</option></optgroup></select><input class="dev-input dev-input--sm" type="text" id="nav-target-nav-page-about-3" name="nav_item_nav-page-about-3_target" value="/about-3" placeholder="https://exemple.fr ou /page" form="nav-form" data-link-picker-input /></div></div></div><label class="dev-switch dev-switch--sm" title="Visible dans le menu"><input type="hidden" name="nav_item_nav-page-about-3_visible" form="nav-form" value="0" /><input type="checkbox" name="nav_item_nav-page-about-3_visible" form="nav-form" value="1" checked /><span class="dev-switch__track" aria-hidden="true"></span><span class="visually-hidden">Visible</span></label><div class="dev-nav-row__danger"><button type="submit" class="dev-icon-btn dev-icon-btn--danger" form="nav-delete-nav-page-about-3" title="Supprimer" aria-label="Supprimer ce lien"><i class="fa-solid fa-trash" aria-hidden="true"></i></button></div></div></div>
 </form>
-<form id="nav-delete-nav-page-home" class="dev-inline-form visually-hidden" method="post" action="/web-framework/dev/site/nav/nav-page-home/delete" data-dev-ajax="nav" data-dev-toast-form="Lien supprimé"></form><form id="nav-delete-nav-page-blog-3" class="dev-inline-form visually-hidden" method="post" action="/web-framework/dev/site/nav/nav-page-blog-3/delete" data-dev-ajax="nav" data-dev-toast-form="Lien supprimé"></form><form id="nav-delete-nav-page-landing-2" class="dev-inline-form visually-hidden" method="post" action="/web-framework/dev/site/nav/nav-page-landing-2/delete" data-dev-ajax="nav" data-dev-toast-form="Lien supprimé"></form><form id="nav-delete-nav-page-about-3" class="dev-inline-form visually-hidden" method="post" action="/web-framework/dev/site/nav/nav-page-about-3/delete" data-dev-ajax="nav" data-dev-toast-form="Lien supprimé"></form>
+<form id="nav-delete-nav-page-home" class="dev-inline-form visually-hidden" method="post" action="/dev/site/nav/nav-page-home/delete" data-dev-ajax="nav" data-dev-toast-form="Lien supprimé"></form><form id="nav-delete-nav-page-blog-3" class="dev-inline-form visually-hidden" method="post" action="/dev/site/nav/nav-page-blog-3/delete" data-dev-ajax="nav" data-dev-toast-form="Lien supprimé"></form><form id="nav-delete-nav-page-landing-2" class="dev-inline-form visually-hidden" method="post" action="/dev/site/nav/nav-page-landing-2/delete" data-dev-ajax="nav" data-dev-toast-form="Lien supprimé"></form><form id="nav-delete-nav-page-about-3" class="dev-inline-form visually-hidden" method="post" action="/dev/site/nav/nav-page-about-3/delete" data-dev-ajax="nav" data-dev-toast-form="Lien supprimé"></form>
 
                     </div>
                 </div>
@@ -213,7 +213,7 @@
                 <div class="dev-panel dev-nav-add">
                     <h2 class="dev-panel__title">Ajouter un lien</h2>
                     <p class="dev-panel__desc">Choisissez un libellé, une destination et le style d'affichage dans le menu.</p>
-                    <form method="post" action="/web-framework/dev/site/nav/add" data-dev-ajax="nav" class="dev-form dev-stack" data-dev-toast-form="Lien ajouté à la navigation">
+                    <form method="post" action="/dev/site/nav/add" data-dev-ajax="nav" class="dev-form dev-stack" data-dev-toast-form="Lien ajouté à la navigation">
                         <div class="dev-form--grid dev-form--grid-2">
                             <div class="dev-field">
                                 <label class="dev-label" for="nav_label">Libellé affiché</label>
@@ -243,7 +243,7 @@
         </div>
     </div>
 </div>
-<script src="/web-framework/assets/js/dev-site-edit.js" defer></script>
+<script src="/assets/js/dev-site-edit.js" defer></script>
 
             </main>
         </div>
@@ -257,13 +257,13 @@
                 <input type="text" id="dev-cmdk-input" placeholder="Aller à..." autocomplete="off" aria-label="Rechercher une section" />
             </div>
             <ul class="dev-cmdk__list" id="dev-cmdk-list">
-                <li><a href="/web-framework/dev/overview" data-cmdk-item data-cmdk-label="tableau de bord overview accueil"><i class="fa-solid fa-gauge-high" aria-hidden="true"></i> Tableau de bord</a></li>
-                <li><a href="/web-framework/dev/pages" data-cmdk-item data-cmdk-label="pages liste"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Pages</a></li>
-                <li><a href="/web-framework/dev/pages#new" data-cmdk-item data-cmdk-label="nouvelle page creer ajouter"><i class="fa-solid fa-plus" aria-hidden="true"></i> Nouvelle page</a></li>
-                <li><a href="/web-framework/dev/site" data-cmdk-item data-cmdk-label="site navigation identite cta"><i class="fa-solid fa-globe" aria-hidden="true"></i> Site</a></li>
-                <li><a href="/web-framework/dev/chrome" data-cmdk-item data-cmdk-label="en-tete pied de page header footer variantes partials"><i class="fa-solid fa-table-columns" aria-hidden="true"></i> En-tête &amp; pied de page</a></li>
-                <li><a href="/web-framework/dev/theme" data-cmdk-item data-cmdk-label="theme couleurs polices apparence"><i class="fa-solid fa-palette" aria-hidden="true"></i> Thème</a></li>
-                <li><a href="/web-framework/" target="_blank" rel="noopener noreferrer" data-cmdk-item data-cmdk-label="voir le site public"><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i> Voir le site</a></li>
+                <li><a href="/dev/overview" data-cmdk-item data-cmdk-label="tableau de bord overview accueil"><i class="fa-solid fa-gauge-high" aria-hidden="true"></i> Tableau de bord</a></li>
+                <li><a href="/dev/pages" data-cmdk-item data-cmdk-label="pages liste"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Pages</a></li>
+                <li><a href="/dev/pages#new" data-cmdk-item data-cmdk-label="nouvelle page creer ajouter"><i class="fa-solid fa-plus" aria-hidden="true"></i> Nouvelle page</a></li>
+                <li><a href="/dev/site" data-cmdk-item data-cmdk-label="site navigation identite cta"><i class="fa-solid fa-globe" aria-hidden="true"></i> Site</a></li>
+                <li><a href="/dev/chrome" data-cmdk-item data-cmdk-label="en-tete pied de page header footer variantes partials"><i class="fa-solid fa-table-columns" aria-hidden="true"></i> En-tête &amp; pied de page</a></li>
+                <li><a href="/dev/theme" data-cmdk-item data-cmdk-label="theme couleurs polices apparence"><i class="fa-solid fa-palette" aria-hidden="true"></i> Thème</a></li>
+                <li><a href="/" target="_blank" rel="noopener noreferrer" data-cmdk-item data-cmdk-label="voir le site public"><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i> Voir le site</a></li>
             </ul>
         </div>
     </div>

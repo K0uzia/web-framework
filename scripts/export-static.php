@@ -3,10 +3,10 @@
 declare(strict_types=1);
 
 /**
- * Exporte le site public en fichiers HTML statiques (GitHub Pages, hébergement statique).
+ * Exporte le site public en fichiers HTML statiques (Netlify, GitHub Pages, etc.).
  *
  * Usage :
- *   APP_URL=https://user.github.io/repo APP_BASE_PATH=/repo php scripts/export-static.php [dist]
+ *   APP_URL=https://example.netlify.app php scripts/export-static.php [dist]
  */
 
 use Capsule\Page;
@@ -15,11 +15,28 @@ use Capsule\PageRepository;
 
 $root = dirname(__DIR__);
 
-foreach (['APP_ENV', 'APP_HTTPS', 'APP_URL', 'APP_BASE_PATH'] as $envKey) {
+foreach (['APP_ENV', 'APP_HTTPS', 'APP_URL', 'APP_BASE_PATH', 'DEV_PANEL_URL', 'NETLIFY'] as $envKey) {
     $value = getenv($envKey);
     if (is_string($value) && $value !== '') {
         $_ENV[$envKey] = $value;
     }
+}
+
+if (empty($_ENV['APP_URL'] ?? null)) {
+    foreach (['DEPLOY_PRIME_URL', 'URL'] as $netlifyKey) {
+        $value = getenv($netlifyKey);
+        if (is_string($value) && $value !== '') {
+            $_ENV['APP_URL'] = $value;
+            break;
+        }
+    }
+}
+
+$isNetlify = ($_ENV['NETLIFY'] ?? getenv('NETLIFY')) === 'true'
+    || ($_ENV['NETLIFY'] ?? getenv('NETLIFY')) === '1';
+
+if ($isNetlify && !isset($_ENV['APP_BASE_PATH'])) {
+    $_ENV['APP_BASE_PATH'] = '';
 }
 
 $_ENV['APP_ENV'] ??= 'prod';
@@ -67,7 +84,7 @@ foreach ($pages->allPublished() as $page) {
 }
 
 copyPublicAssets($root . '/public', $outputDir);
-file_put_contents($outputDir . '/.nojekyll', '');
+writeNetlifyFiles($outputDir, $isNetlify);
 
 require __DIR__ . '/export-dev-static.php';
 
@@ -75,7 +92,8 @@ $phpDevUrl = getenv('DEV_PANEL_URL');
 $phpDevUrl = is_string($phpDevUrl) && $phpDevUrl !== '' ? $phpDevUrl : null;
 
 fwrite(STDOUT, "Export dashboard /dev :\n");
-$devExported = exportDevStatic($container, $outputDir, $basePath, $phpDevUrl);
+$staticHostLabel = $isNetlify ? 'Netlify' : (getenv('STATIC_HOST_LABEL') ?: 'hébergement statique');
+$devExported = exportDevStatic($container, $outputDir, $basePath, $phpDevUrl, $staticHostLabel);
 $exported += $devExported;
 
 fwrite(STDOUT, "Export terminé : {$exported} fichier(s) dans {$outputDir}\n");
@@ -174,4 +192,19 @@ function copyTree(string $src, string $dest): void
             copy($from, $to);
         }
     }
+}
+
+function writeNetlifyFiles(string $outputDir, bool $isNetlify): void
+{
+    if (!$isNetlify) {
+        file_put_contents($outputDir . '/.nojekyll', '');
+
+        return;
+    }
+
+    $redirects = <<<'TXT'
+# Généré par scripts/export-static.php
+/dev    /dev/index.html    200
+TXT;
+    file_put_contents($outputDir . '/_redirects', $redirects);
 }

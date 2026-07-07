@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="dark light" />
     <title>Thème - Capsule Dev</title>
-    <link rel="icon" href="/web-framework/assets/favicon-dev.svg" type="image/svg+xml" />
-    <script src="/web-framework/assets/js/dev-theme-init.js"></script>
-    <link rel="stylesheet" href="/web-framework/assets/vendor/fontawesome/css/all.min.css" />
-    <link rel="stylesheet" href="/web-framework/assets/css/dev.css" />
+    <link rel="icon" href="/assets/favicon-dev.svg" type="image/svg+xml" />
+    <script src="/assets/js/dev-theme-init.js"></script>
+    <link rel="stylesheet" href="/assets/vendor/fontawesome/css/all.min.css" />
+    <link rel="stylesheet" href="/assets/css/dev.css" />
     <style>:root {
     --color-primary: #121317;
     --color-primary-hover: #121317;
@@ -41,50 +41,50 @@
     --radius-md: 10px;
     --container: 72rem;
 }</style>
-    <link rel="stylesheet" href="/web-framework/assets/css/dev-theme-bindings.css" />
-    <script src="/web-framework/assets/js/dev.js" defer></script>
-    <link rel="stylesheet" href="/web-framework/assets/css/dev-static.css" />
+    <link rel="stylesheet" href="/assets/css/dev-theme-bindings.css" />
+    <script src="/assets/js/dev.js" defer></script>
+    <link rel="stylesheet" href="/assets/css/dev-static.css" />
     <script>window.__CAPSULE_DEV_STATIC=true;</script>
-    <script src="/web-framework/assets/js/dev-static.js" defer></script>
+    <script src="/assets/js/dev-static.js" defer></script>
 </head>
-<div class="dev-static-banner" role="status">Mode démo statique (GitHub Pages). Navigation OK, enregistrement désactivé.</div>
+<div class="dev-static-banner" role="status">Mode démo statique (Netlify). Navigation OK, enregistrement désactivé.</div>
 <body class="dev-shell ">
     <div class="dev-app" data-dev-app>
         <button type="button" class="dev-sidebar-overlay" data-dev-sidebar-close tabindex="-1" aria-hidden="true"></button>
         <aside class="dev-sidebar" id="dev-sidebar">
             <nav class="dev-nav" aria-label="Navigation du tableau de bord">
-    <a class="dev-nav__brand" href="/web-framework/dev/overview">
+    <a class="dev-nav__brand" href="/dev/overview">
         <span class="dev-nav__brand-mark" aria-hidden="true"><i class="fa-solid fa-layer-group"></i></span>
         <span class="dev-nav__brand-text">Capsule</span>
     </a>
     <div class="dev-nav__links">
-        <a href="/web-framework/dev/overview" class="dev-nav__link ">
+        <a href="/dev/overview" class="dev-nav__link ">
             <i class="fa-solid fa-gauge-high" aria-hidden="true"></i><span>Tableau de bord</span>
         </a>
-        <a href="/web-framework/dev/pages" class="dev-nav__link ">
+        <a href="/dev/pages" class="dev-nav__link ">
             <i class="fa-solid fa-file-lines" aria-hidden="true"></i><span>Pages</span>
         </a>
-        <a href="/web-framework/dev/medias" class="dev-nav__link ">
+        <a href="/dev/medias" class="dev-nav__link ">
             <i class="fa-solid fa-photo-film" aria-hidden="true"></i><span>Médias</span>
         </a>
-        <a href="/web-framework/dev/site" class="dev-nav__link ">
+        <a href="/dev/site" class="dev-nav__link ">
             <i class="fa-solid fa-globe" aria-hidden="true"></i><span>Site</span>
         </a>
-        <a href="/web-framework/dev/chrome" class="dev-nav__link ">
+        <a href="/dev/chrome" class="dev-nav__link ">
             <i class="fa-solid fa-table-columns" aria-hidden="true"></i><span>En-tête &amp; pied</span>
         </a>
-        <a href="/web-framework/dev/theme" class="dev-nav__link is-active" aria-current="page">
+        <a href="/dev/theme" class="dev-nav__link is-active" aria-current="page">
             <i class="fa-solid fa-palette" aria-hidden="true"></i><span>Thème</span>
         </a>
     </div>
     <div class="dev-nav__footer">
-        <a href="/web-framework/" target="_blank" rel="noopener noreferrer" class="dev-nav__ghost-btn">
+        <a href="/" target="_blank" rel="noopener noreferrer" class="dev-nav__ghost-btn">
             <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i><span>Voir le site</span>
         </a>
         <button type="button" class="dev-nav__ghost-btn" data-dev-theme-toggle aria-pressed="false">
             <i class="fa-solid fa-moon" aria-hidden="true" data-theme-icon></i><span data-theme-label>Thème sombre</span>
         </button>
-        <form method="post" action="/web-framework/dev/logout">
+        <form method="post" action="/dev/logout">
             <button type="submit" class="dev-nav__ghost-btn dev-nav__ghost-btn--full">
                 <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i><span>Déconnexion</span>
             </button>
@@ -116,7 +116,7 @@
         </div>
         <div class="dev-page-head__actions">
             <p class="dev-section-form__status" id="theme-saved-status" aria-live="polite"></p>
-            <form method="post" action="/web-framework/dev/theme/reset" data-dev-ajax="theme-reset" data-dev-confirm="Réinitialiser le thème aux valeurs par défaut ?">
+            <form method="post" action="/dev/theme/reset" data-dev-ajax="theme-reset" data-dev-confirm="Réinitialiser le thème aux valeurs par défaut ?">
                 <button type="submit" class="dev-button dev-button--ghost">
                     <i class="fa-solid fa-arrow-rotate-left" aria-hidden="true"></i> Réinitialiser
                 </button>
@@ -133,7 +133,7 @@
                     <button type="button" class="dev-tabs__tab" role="tab" aria-selected="false" data-tab="layout">Mise en page</button>
                 </div>
 
-                <form method="post" action="/web-framework/dev/theme" id="theme-form" hx-post="/dev/theme" hx-trigger="change, input delay:400ms" hx-target="#theme-saved-status" hx-swap="innerHTML" data-dev-toast-form="Thème enregistré">
+                <form method="post" action="/dev/theme" id="theme-form" hx-post="/dev/theme" hx-trigger="change, input delay:400ms" hx-target="#theme-saved-status" hx-swap="innerHTML" data-dev-toast-form="Thème enregistré">
                     <div class="dev-tabs__panel is-active" data-tab-panel="colors">
                         <div class="dev-panel dev-panel--colors">
                             <p class="dev-hint dev-panel__intro">La pipette prélève la couleur d'un élément dans l'aperçu ou sur la page.</p>
@@ -192,7 +192,7 @@
                             <div id="dev-font-list">
                                 <p class="dev-hint">Aucune police importée. Ajoutez un fichier .woff2, .woff, .ttf ou .otf ci-dessous.</p>
                             </div>
-                            <form method="post" action="/web-framework/dev/theme/fonts" enctype="multipart/form-data" class="dev-form--grid dev-form--grid-2 dev-font-upload" data-dev-ajax="font-upload" data-dev-toast-form="Police importée">
+                            <form method="post" action="/dev/theme/fonts" enctype="multipart/form-data" class="dev-form--grid dev-form--grid-2 dev-font-upload" data-dev-ajax="font-upload" data-dev-toast-form="Police importée">
                                 <div class="dev-field">
                                     <label class="dev-label" for="font_file">Fichier de police</label>
                                     <input class="dev-input" id="font_file" type="file" name="file" accept=".woff2,.woff,.ttf,.otf" required data-dev-autosubmit />
@@ -215,11 +215,11 @@
                     <button type="button" class="dev-device-btn" data-device="tablet" aria-label="Tablette" title="Tablette"><i class="fa-solid fa-tablet-screen-button" aria-hidden="true"></i></button>
                     <button type="button" class="dev-device-btn is-active" data-device="mobile" aria-label="Mobile" title="Mobile"><i class="fa-solid fa-mobile-screen-button" aria-hidden="true"></i></button>
                 </div>
-                <a class="dev-preview-desktop" href="/web-framework/dev/preview/theme" target="_blank" rel="noopener noreferrer">Ouvrir <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+                <a class="dev-preview-desktop" href="/dev/preview/theme" target="_blank" rel="noopener noreferrer">Ouvrir <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
             </div>
             <div class="dev-preview-frame" id="theme-preview-frame" data-device="mobile">
                 <div class="dev-preview-device">
-                    <iframe id="preview-frame" src="/web-framework/dev/preview/theme" title="Aperçu du thème"></iframe>
+                    <iframe id="preview-frame" src="/dev/preview/theme" title="Aperçu du thème"></iframe>
                 </div>
             </div>
         </div>
@@ -238,13 +238,13 @@
                 <input type="text" id="dev-cmdk-input" placeholder="Aller à..." autocomplete="off" aria-label="Rechercher une section" />
             </div>
             <ul class="dev-cmdk__list" id="dev-cmdk-list">
-                <li><a href="/web-framework/dev/overview" data-cmdk-item data-cmdk-label="tableau de bord overview accueil"><i class="fa-solid fa-gauge-high" aria-hidden="true"></i> Tableau de bord</a></li>
-                <li><a href="/web-framework/dev/pages" data-cmdk-item data-cmdk-label="pages liste"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Pages</a></li>
-                <li><a href="/web-framework/dev/pages#new" data-cmdk-item data-cmdk-label="nouvelle page creer ajouter"><i class="fa-solid fa-plus" aria-hidden="true"></i> Nouvelle page</a></li>
-                <li><a href="/web-framework/dev/site" data-cmdk-item data-cmdk-label="site navigation identite cta"><i class="fa-solid fa-globe" aria-hidden="true"></i> Site</a></li>
-                <li><a href="/web-framework/dev/chrome" data-cmdk-item data-cmdk-label="en-tete pied de page header footer variantes partials"><i class="fa-solid fa-table-columns" aria-hidden="true"></i> En-tête &amp; pied de page</a></li>
-                <li><a href="/web-framework/dev/theme" data-cmdk-item data-cmdk-label="theme couleurs polices apparence"><i class="fa-solid fa-palette" aria-hidden="true"></i> Thème</a></li>
-                <li><a href="/web-framework/" target="_blank" rel="noopener noreferrer" data-cmdk-item data-cmdk-label="voir le site public"><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i> Voir le site</a></li>
+                <li><a href="/dev/overview" data-cmdk-item data-cmdk-label="tableau de bord overview accueil"><i class="fa-solid fa-gauge-high" aria-hidden="true"></i> Tableau de bord</a></li>
+                <li><a href="/dev/pages" data-cmdk-item data-cmdk-label="pages liste"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Pages</a></li>
+                <li><a href="/dev/pages#new" data-cmdk-item data-cmdk-label="nouvelle page creer ajouter"><i class="fa-solid fa-plus" aria-hidden="true"></i> Nouvelle page</a></li>
+                <li><a href="/dev/site" data-cmdk-item data-cmdk-label="site navigation identite cta"><i class="fa-solid fa-globe" aria-hidden="true"></i> Site</a></li>
+                <li><a href="/dev/chrome" data-cmdk-item data-cmdk-label="en-tete pied de page header footer variantes partials"><i class="fa-solid fa-table-columns" aria-hidden="true"></i> En-tête &amp; pied de page</a></li>
+                <li><a href="/dev/theme" data-cmdk-item data-cmdk-label="theme couleurs polices apparence"><i class="fa-solid fa-palette" aria-hidden="true"></i> Thème</a></li>
+                <li><a href="/" target="_blank" rel="noopener noreferrer" data-cmdk-item data-cmdk-label="voir le site public"><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i> Voir le site</a></li>
             </ul>
         </div>
     </div>

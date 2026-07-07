@@ -24,6 +24,7 @@ function exportDevStatic(
     string $outputDir,
     string $basePath,
     ?string $phpDevUrl = null,
+    string $staticHostLabel = 'hébergement statique',
 ): int {
     $kernel = new Kernel(
         [
@@ -40,7 +41,7 @@ function exportDevStatic(
     foreach ($paths as $path) {
         $relative = devPathToRelativeFile($path);
         $target = $outputDir . '/' . $relative;
-        if (exportDevRoute($kernel, $path, $target, $basePath, $phpDevUrl)) {
+        if (exportDevRoute($kernel, $path, $target, $basePath, $phpDevUrl, $staticHostLabel)) {
             ++$exported;
             fwrite(STDOUT, "  {$path} → {$target}\n");
         }
@@ -111,6 +112,7 @@ function exportDevRoute(
     string $targetFile,
     string $basePath,
     ?string $phpDevUrl,
+    string $staticHostLabel,
 ): bool {
     $response = $kernel->handle(buildDevExportRequest($path));
     $status = $response->getStatus();
@@ -128,7 +130,7 @@ function exportDevRoute(
     }
 
     $html = rewriteBasePath($body, $basePath);
-    $html = injectDevStaticMode($html, $basePath, $phpDevUrl);
+    $html = injectDevStaticMode($html, $basePath, $phpDevUrl, $staticHostLabel);
 
     $dir = dirname($targetFile);
     if (!is_dir($dir) && !mkdir($dir, 0755, true) && !is_dir($dir)) {
@@ -167,7 +169,7 @@ function buildDevExportRequest(string $path): Request
     );
 }
 
-function injectDevStaticMode(string $html, string $basePath, ?string $phpDevUrl): string
+function injectDevStaticMode(string $html, string $basePath, ?string $phpDevUrl, string $staticHostLabel = 'hébergement statique'): string
 {
     $prefix = $basePath !== '' ? rtrim($basePath, '/') : '';
     $cssHref = $prefix . '/assets/css/dev-static.css';
@@ -179,8 +181,9 @@ function injectDevStaticMode(string $html, string $basePath, ?string $phpDevUrl)
         $editLink = ' <a class="dev-static-banner__link" href="' . $safeUrl . '" target="_blank" rel="noopener noreferrer">Ouvrir le panel complet (PHP)</a>';
     }
 
+    $safeLabel = htmlspecialchars($staticHostLabel, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     $banner = '<div class="dev-static-banner" role="status">'
-        . 'Mode démo statique (GitHub Pages). Navigation OK, enregistrement désactivé.'
+        . 'Mode démo statique (' . $safeLabel . '). Navigation OK, enregistrement désactivé.'
         . $editLink
         . '</div>';
 

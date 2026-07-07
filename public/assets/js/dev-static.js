@@ -5,7 +5,7 @@
         return;
     }
 
-    var NOTICE = 'Mode démo statique : les modifications ne sont pas enregistrées sur GitHub Pages.';
+    var NOTICE = 'Mode démo statique : les modifications ne sont pas enregistrées en ligne.';
 
     function showNotice() {
         if (typeof window.__devToast === 'function') {
