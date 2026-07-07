@@ -1117,6 +1117,74 @@
                 openSectionEditor(card);
             });
         });
+        initSectionImageFields(scope);
+    }
+
+    function handleSectionImageResponse(wrap, result, okMessage) {
+        var html = safeSwapHtml(result.html, '');
+        var parent = wrap ? wrap.parentElement : null;
+        if (wrap && html.trim() !== '' && !isFullLayoutHtml(html)) {
+            wrap.outerHTML = html;
+            if (parent) {
+                initSectionImageFields(parent);
+            }
+        }
+        if (result.ok) {
+            showToast(okMessage);
+        } else if (html.indexOf('dev-uploader__error') !== -1) {
+            showToast('Échec de la mise à jour de l\u2019image.', true);
+        }
+        refreshPreview();
+    }
+
+    function initSectionImageFields(scope) {
+        (scope || document).querySelectorAll('[data-dev-section-image]').forEach(function (wrap) {
+            if (wrap.dataset.sectionImageInit === '1') {
+                return;
+            }
+            wrap.dataset.sectionImageInit = '1';
+            var base = wrap.getAttribute('data-section-image-base');
+            if (!base) {
+                return;
+            }
+
+            var fileInput = wrap.querySelector('[data-dev-section-image-file]');
+            if (fileInput) {
+                fileInput.addEventListener('change', function () {
+                    if (!fileInput.files || !fileInput.files[0]) {
+                        return;
+                    }
+                    var fd = new FormData();
+                    fd.append('file', fileInput.files[0]);
+                    postForm(base + '/upload', fd, true).then(function (result) {
+                        handleSectionImageResponse(wrap, result, 'Image importée');
+                    });
+                    fileInput.value = '';
+                });
+            }
+
+            var removeBtn = wrap.querySelector('[data-dev-section-image-remove]');
+            if (removeBtn) {
+                removeBtn.addEventListener('click', function () {
+                    postForm(base + '/remove', '', false).then(function (result) {
+                        handleSectionImageResponse(wrap, result, 'Image retirée');
+                    });
+                });
+            }
+
+            wrap.querySelectorAll('[data-dev-section-image-select]').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var url = btn.getAttribute('data-url') || '';
+                    if (!url) {
+                        return;
+                    }
+                    var body = new URLSearchParams({ url: url }).toString();
+                    postForm(base + '/select', body, false).then(function (result) {
+                        handleSectionImageResponse(wrap, result, 'Image sélectionnée');
+                    });
+                });
+            });
+        });
     }
 
     /* ---------------------------------------------------------------------
