@@ -1,0 +1,107 @@
+/* Pricing 4 : onglets et cartes avec badge */
+
+.section-pricing--pricing4 .section-pricing__header--split {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+    margin-bottom: 1.5rem;
+}
+
+@media (min-width: 768px) {
+    .section-pricing--pricing4 .section-pricing__header--split {
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: space-between;
+    }
+}
+
+.section-pricing--pricing4 .section-pricing__title--left,
+.section-pricing--pricing4 .section-pricing__subtitle--left {
+    text-align: left;
+}
+
+.section-pricing--pricing4 .section-pricing__subtitle--left {
+    max-width: 48rem;
+    font-size: 1rem;
+}
+
+@media (min-width: 1024px) {
+    .section-pricing--pricing4 .section-pricing__title--left {
+        font-size: 3rem;
+    }
+
+    .section-pricing--pricing4 .section-pricing__subtitle--left {
+        font-size: 1.25rem;
+    }
+}
+
+.section-pricing--pricing4 .section-pricing__grid--plan4 {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+    .section-pricing--pricing4 .section-pricing__grid--plan4 {
+        flex-direction: row;
+        align-items: stretch;
+    }
+}
+
+.section-pricing--pricing4 .section-pricing__card--plan4 {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 1.5rem;
+    text-align: left;
+    background: var(--color-background, #fff);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 0.5rem;
+}
+
+@media (min-width: 768px) {
+    .section-pricing--pricing4 .section-pricing__card--plan4 {
+        flex: 1 1 0;
+    }
+}
+
+.section-pricing--pricing4 .section-pricing__card--muted {
+    background: var(--color-muted, #f1f5f9);
+}
+
+.section-pricing--pricing4 .section-pricing__card-price--lg {
+    margin: 0;
+    font-size: 2.25rem;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.025em;
+    color: var(--color-text, #0f172a);
+}
+
+@media (min-width: 1024px) {
+    .section-pricing--pricing4 .section-pricing__card-price--lg {
+        font-size: 3rem;
+    }
+}
+
+.section-pricing--pricing4 .section-pricing__card-period {
+    margin: 0;
+    color: var(--color-text-muted, #64748b);
+}
+
+.section-pricing--pricing4 .section-pricing__card-period--hidden {
+    visibility: hidden;
+}
+
+.section-pricing--pricing4 .section-pricing__card-body--grow {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 5rem;
+    margin-top: 0;
+}
+
+.section-pricing--pricing4 .section-pricing__card--plan4 .section-pricing__separator {
+    margin: 1.5rem 0;
+}

@@ -1,0 +1,9 @@
+/* Variante testimonial9 : styles spécifiques hérités de base.css */
+
+.section-testimonials--testimonial9 .section-testimonials__masonry {
+    margin-top: 3.5rem;
+}
+
+.section-testimonials--testimonial9 .section-testimonials__masonry-card {
+    margin-bottom: 0;
+}

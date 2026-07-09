@@ -52,7 +52,24 @@ final class StylesheetResolver
                 continue;
             }
             if ($type === 'hero') {
+                $this->push($candidates, 'sections/hero/base.css');
+                $this->push($candidates, 'sections/hero/variants.css');
                 $this->push($candidates, 'sections/hero/customize.css');
+            }
+            if ($type === 'features') {
+                $this->push($candidates, 'sections/features/base.css');
+            }
+            if ($type === 'integrations') {
+                $this->push($candidates, 'sections/integrations/base.css');
+            }
+            if ($type === 'pricing') {
+                $this->push($candidates, 'sections/pricing/base.css');
+            }
+            if ($type === 'contact') {
+                $this->push($candidates, 'sections/contact/base.css');
+            }
+            if ($type === 'testimonials') {
+                $this->push($candidates, 'sections/testimonials/base.css');
             }
             foreach (SectionLayoutFamilies::cssFamilies($variant) as $family) {
                 $this->push($candidates, 'sections/' . $type . '/' . $family . '.css');

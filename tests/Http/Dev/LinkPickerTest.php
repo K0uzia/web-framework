@@ -37,15 +37,15 @@ final class LinkPickerTest extends TestCase
             [
                 'id' => 'hero-1',
                 'type' => 'hero',
-                'variant' => 'centered',
+                'variant' => 'hero3',
                 'visible' => true,
                 'content' => ['title' => 'Bienvenue'],
                 'style' => [],
             ],
             [
                 'id' => 'hidden-1',
-                'type' => 'cta',
-                'variant' => 'banner',
+                'type' => 'hero',
+                'variant' => 'hero3',
                 'visible' => false,
                 'content' => [],
                 'style' => [],
@@ -64,9 +64,9 @@ final class LinkPickerTest extends TestCase
     {
         $this->pages->save(new Page('', 'Home', 'default', '', [
             [
-                'id' => 'features-1',
-                'type' => 'features',
-                'variant' => 'grid-3',
+                'id' => 'hero-2',
+                'type' => 'hero',
+                'variant' => 'hero3',
                 'visible' => true,
                 'content' => [],
                 'style' => [],
@@ -75,8 +75,8 @@ final class LinkPickerTest extends TestCase
 
         $html = LinkPicker::render('field-id', 'field_name', '', $this->pages);
 
-        $this->assertStringContainsString('value="#features-1"', $html);
-        $this->assertStringContainsString('Fonctionnalités', $html);
+        $this->assertStringContainsString('value="#hero-2"', $html);
+        $this->assertStringContainsString('Hero', $html);
     }
 
     public function testPreservesCurrentValueInTextInput(): void

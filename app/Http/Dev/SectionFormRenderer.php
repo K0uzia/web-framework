@@ -11,7 +11,6 @@ use Capsule\MediaLibrary;
 use Capsule\Page;
 use Capsule\PageRepository;
 use Capsule\SectionRegistry;
-use Capsule\StockImages;
 
 final class SectionFormRenderer
 {
@@ -361,6 +360,8 @@ final class SectionFormRenderer
             ? $field['fields']
             : ['title' => ['type' => 'text', 'label' => 'Titre'], 'text' => ['type' => 'textarea', 'label' => 'Texte']];
 
+        $rowCount = max(count($items), 1);
+
         $html = '<details class="dev-form-group dev-form-group--repeater" open>';
         $html .= '<summary class="dev-form-group__summary">';
         $html .= '<i class="fa-solid fa-list" aria-hidden="true"></i>';
@@ -369,43 +370,77 @@ final class SectionFormRenderer
         $html .= '</summary>';
         $html .= '<div class="dev-form-group__body">';
         $html .= '<p class="dev-hint">Les éléments entièrement vides sont retirés à l\'enregistrement. Images et vidéos : bibliothèque dans <a href="/dev/medias">Médias</a>.</p>';
-        $html .= '<div class="dev-repeater">';
+        $html .= '<div class="dev-repeater dev-repeater--items" data-items-repeater>';
+        $html .= '<div class="dev-repeater__list" data-items-repeater-list>';
 
-        // Toujours une ligne vide en plus pour ajouter un élément sans JS.
-        $count = max(count($items) + 1, 3);
-        for ($i = 0; $i < $count; $i++) {
+        for ($i = 0; $i < $rowCount; $i++) {
             $item = is_array($items[$i] ?? null) ? $items[$i] : [];
-            $html .= '<div class="dev-repeater__item">';
-            $html .= '<span class="dev-repeater__index" aria-hidden="true">' . ($i + 1) . '</span>';
-            foreach ($itemFields as $fKey => $fDef) {
-                if (!is_array($fDef) || !$this->fieldAppliesToVariant($fDef, $variant)) {
-                    continue;
-                }
-                $subLabel = (string) ($fDef['label'] ?? $fKey);
-                $value = (string) ($item[$fKey] ?? '');
-                $name = 'content_items_' . $i . '_' . $fKey;
-                if (in_array($fDef['type'] ?? '', ['image', 'video'], true)) {
-                    $html .= $this->renderRepeaterMediaField($slug, $rawSectionId, $name, $fKey, $fDef, $item, $sectionId . '-item' . $i);
-                    continue;
-                }
-                if (($fDef['type'] ?? '') === 'icon') {
-                    $html .= $this->renderIconField($name, $subLabel, $value, $sectionId . '-item' . $i);
-                    continue;
-                }
-                $subType = ($fDef['type'] ?? 'text') === 'textarea' ? 'textarea' : 'text';
-                $html .= $this->fieldInput($name, $subLabel, $value, $subType, $sectionId . '-item' . $i);
-            }
-            $html .= '</div>';
+            $html .= $this->renderRepeaterItemRow($i, $item, $itemFields, $variant, $sectionId, $slug, $rawSectionId);
         }
 
+        $html .= '</div>';
+        $html .= '<button type="button" class="dev-button dev-button--ghost dev-button--sm" data-items-repeater-add>'
+            . '<i class="fa-solid fa-plus" aria-hidden="true"></i> Ajouter un élément</button>';
+        $html .= '<template data-items-repeater-template>'
+            . $this->renderRepeaterItemRow('__INDEX__', [], $itemFields, $variant, $sectionId, $slug, $rawSectionId)
+            . '</template>';
         $html .= '</div></div></details>';
 
         return $html;
     }
 
-    private function renderIconField(string $name, string $label, string $value, string $idPrefix): string
+    /**
+     * @param array<string, mixed> $item
+     * @param array<string, mixed> $itemFields
+     */
+    private function renderRepeaterItemRow(
+        int|string $index,
+        array $item,
+        array $itemFields,
+        string $variant,
+        string $sectionId,
+        string $slug,
+        string $rawSectionId,
+    ): string {
+        $indexKey = is_int($index) ? (string) $index : (string) $index;
+        $displayIndex = is_int($index) ? (string) ($index + 1) : '';
+        $idSuffix = is_int($index) ? $sectionId . '-item' . $index : $sectionId . '-item__INDEX__';
+
+        $html = '<div class="dev-repeater__item" data-items-repeater-row>';
+        $html .= '<span class="dev-repeater__index" aria-hidden="true">' . htmlspecialchars($displayIndex, ENT_QUOTES) . '</span>';
+        $html .= '<div class="dev-repeater__item-fields">';
+
+        foreach ($itemFields as $fKey => $fDef) {
+            if (!is_array($fDef) || !$this->fieldAppliesToVariant($fDef, $variant)) {
+                continue;
+            }
+            $subLabel = (string) ($fDef['label'] ?? $fKey);
+            $value = (string) ($item[$fKey] ?? '');
+            $name = 'content_items_' . $indexKey . '_' . $fKey;
+            if (in_array($fDef['type'] ?? '', ['image', 'video'], true)) {
+                $html .= $this->renderRepeaterMediaField($slug, $rawSectionId, $name, $fKey, $fDef, $item, $idSuffix);
+                continue;
+            }
+            if (($fDef['type'] ?? '') === 'icon') {
+                $defaultIndex = is_int($index) ? $index + 1 : 1;
+                $html .= $this->renderIconField($name, $subLabel, $value, $idSuffix, $defaultIndex);
+                continue;
+            }
+            $subType = ($fDef['type'] ?? 'text') === 'textarea' ? 'textarea' : 'text';
+            $html .= $this->fieldInput($name, $subLabel, $value, $subType, $idSuffix);
+        }
+
+        $html .= '</div>';
+        $html .= '<button type="button" class="dev-icon-btn dev-icon-btn--danger" data-items-repeater-remove aria-label="Supprimer cet élément" title="Supprimer">'
+            . '<i class="fa-solid fa-trash" aria-hidden="true"></i></button>';
+        $html .= '</div>';
+
+        return $html;
+    }
+
+    private function renderIconField(string $name, string $label, string $value, string $idPrefix, int $defaultIndex = 1): string
     {
-        $glyph = FontAwesomeIcon::glyph($value, FontAwesomeIcon::defaultForIndex(1));
+        $glyph = FontAwesomeIcon::glyph($value, FontAwesomeIcon::defaultForIndex($defaultIndex));
         $fieldId = $idPrefix . '-' . $name;
         $safeId = htmlspecialchars($fieldId, ENT_QUOTES);
         $safeName = htmlspecialchars($name, ENT_QUOTES);
@@ -468,10 +503,22 @@ final class SectionFormRenderer
             $libraryHtml .= '<button type="button" class="dev-media-library__pick dev-media-library__pick--sm' . $selected . '" data-dev-repeater-media-pick data-target="' . $safeInputId . '" data-url="' . $safeUrl . '" aria-label="Utiliser ce média">' . $thumb . '</button>';
         }
 
+        $libraryBlock = '';
+        if ($libraryHtml !== '') {
+            $urlsAttr = htmlspecialchars(json_encode(array_values($library), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), ENT_QUOTES);
+            $more = count($library) > $limit
+                ? '<button type="button" class="dev-media-library__more dev-button dev-button--ghost dev-button--sm" data-dev-media-library-open>Voir toute la bibliothèque (' . count($library) . ')</button>'
+                : '';
+            $libraryBlock = '<div class="dev-media-library" data-media-library-urls="' . $urlsAttr . '" data-media-library-kind="' . htmlspecialchars($kind, ENT_QUOTES) . '" data-media-library-current="' . htmlspecialchars($value, ENT_QUOTES) . '">'
+                . '<div class="dev-media-library__grid dev-media-library__grid--inline">' . $libraryHtml . '</div>'
+                . $more
+                . '</div>';
+        }
+
         return '<div class="dev-field dev-field--repeater-media">'
             . '<label class="dev-label" for="' . $safeInputId . '">' . htmlspecialchars($label, ENT_QUOTES) . '</label>'
             . '<input class="dev-input" type="text" id="' . $safeInputId . '" name="' . htmlspecialchars($inputName, ENT_QUOTES) . '" value="' . htmlspecialchars($value, ENT_QUOTES) . '" />'
-            . ($libraryHtml !== '' ? '<div class="dev-media-library__grid dev-media-library__grid--inline">' . $libraryHtml . '</div>' : '')
+            . $libraryBlock
             . ($kind === 'image' ? $this->renderRepeaterImageFitSelect($item, $inputName, $idPrefix, $value !== '') : '')
             . '</div>';
     }
@@ -714,10 +761,5 @@ final class SectionFormRenderer
         return '<form class="dev-inline-form" method="post" action="/dev/pages/' . $slug . '/sections/' . rawurlencode($id) . '/move" data-dev-ajax="sections">'
             . '<input type="hidden" name="direction" value="' . $direction . '" />'
             . '<button type="submit" class="dev-icon-btn" title="' . $title . '" aria-label="' . $title . '"><i class="fa-solid ' . $icon . '" aria-hidden="true"></i></button></form>';
-    }
-
-    private static function stockImageHint(): string
-    {
-        return '<p class="dev-hint">Visuels d\'exemple dans <code>/assets/stock/</code>. Importez un fichier ou collez une URL locale du site.</p>';
     }
 }

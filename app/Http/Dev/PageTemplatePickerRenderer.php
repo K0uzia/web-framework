@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Dev;
 
 /**
- * Grille visuelle des modèles de page (taxonomie shadcnblocks Pages).
+ * Grille visuelle des modèles de page.
  */
 final class PageTemplatePickerRenderer
 {

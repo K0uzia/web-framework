@@ -1,7 +1,0 @@
-.section-steps--vertical .section-steps__grid,
-.section-steps--vertical .section-steps__row {
-    flex-direction: column;
-    display: flex;
-    gap: var(--space-md);
-}
-

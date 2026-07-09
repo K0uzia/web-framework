@@ -1,0 +1,93 @@
+/* Integration 3 : liste centrée avec logos */
+
+.section-integrations--integration3 {
+    padding-block: 8rem;
+}
+
+.section-integrations--integration3 .section-integrations__stack--center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-inline: auto;
+    text-align: center;
+}
+
+.section-integrations--integration3 .section-integrations__intro--center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 64rem;
+    text-align: center;
+}
+
+.section-integrations--integration3 .section-integrations__title--hero {
+    margin: 1.5rem 0;
+    font-size: 2.25rem;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    color: var(--color-text, #0f172a);
+    text-wrap: pretty;
+}
+
+@media (min-width: 1024px) {
+    .section-integrations--integration3 .section-integrations__title--hero {
+        font-size: 3.75rem;
+    }
+}
+
+.section-integrations--integration3 .section-integrations__subtitle--hero {
+    max-width: 48rem;
+    margin: 0 0 2rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--color-text-muted, #64748b);
+    text-wrap: pretty;
+}
+
+@media (min-width: 1024px) {
+    .section-integrations--integration3 .section-integrations__subtitle--hero {
+        font-size: 1.5rem;
+    }
+}
+
+.section-integrations--integration3 .section-integrations__list {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1rem;
+    width: fit-content;
+    max-width: 100%;
+}
+
+.section-integrations--integration3 .section-integrations__row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding-block: 1rem;
+}
+
+.section-integrations--integration3 .section-integrations__row-icon {
+    flex-shrink: 0;
+    width: 3rem;
+    height: 3rem;
+}
+
+.section-integrations--integration3 .section-integrations__row-copy {
+    text-align: left;
+}
+
+.section-integrations--integration3 .section-integrations__row-title {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--color-text, #0f172a);
+}
+
+.section-integrations--integration3 .section-integrations__row-text {
+    margin: 0;
+    font-size: 0.875rem;
+    line-height: 1.4;
+    color: var(--color-text-muted, #64748b);
+}

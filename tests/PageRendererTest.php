@@ -40,7 +40,7 @@ final class PageRendererTest extends TestCase
             sections: [[
                 'id' => 'hero-1',
                 'type' => 'hero',
-                'variant' => 'centered',
+                'variant' => 'hero3',
                 'content' => [
                     'title' => 'Safe title',
                     'subtitle' => 'Sub',

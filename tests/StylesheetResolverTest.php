@@ -23,7 +23,7 @@ final class StylesheetResolverTest extends TestCase
         file_put_contents($this->cssDir . '/pages/index/index.css', '/* page */');
         mkdir($this->cssDir . '/sections/hero', 0775, true);
         file_put_contents($this->cssDir . '/sections/shared.css', '/* shared */');
-        file_put_contents($this->cssDir . '/sections/hero/centered.css', '/* section */');
+        file_put_contents($this->cssDir . '/sections/hero/hero3.css', '/* section */');
         file_put_contents($this->cssDir . '/partials/site-header.css', '/* partial */');
     }
 
@@ -40,11 +40,11 @@ final class StylesheetResolverTest extends TestCase
         $hrefs = $resolver->resolve('default', 'index', $body, [
             'styles_sections' => 'hero',
         ], [
-            ['type' => 'hero', 'variant' => 'centered'],
+            ['type' => 'hero', 'variant' => 'hero3'],
         ]);
 
         $this->assertContains('/assets/css/sections/shared.css', $hrefs);
-        $this->assertContains('/assets/css/sections/hero/centered.css', $hrefs);
+        $this->assertContains('/assets/css/sections/hero/hero3.css', $hrefs);
         $this->assertContains('/assets/css/partials/site-header.css', $hrefs);
     }
 

@@ -48,7 +48,7 @@ final class PagesControllerTest extends TestCase
         $this->pages->save(new Page('about', 'About', 'default', '', [[
             'id' => 'hero-1',
             'type' => 'hero',
-            'variant' => 'centered',
+            'variant' => 'hero3',
             'visible' => true,
             'content' => ['title' => 'Hello'],
             'style' => [],
@@ -69,27 +69,28 @@ final class PagesControllerTest extends TestCase
     public function testStoreAppliesLandingTemplate(): void
     {
         $this->controller->store($this->post(
-            'title=Landing&slug=landing-test&layout=default&page_template=landing-02',
+            'title=Landing&slug=landing-test&layout=default&page_template=landing-hero3',
         ));
 
         $page = $this->pages->findBySlug('landing-test', false);
         $this->assertNotNull($page);
-        $this->assertGreaterThanOrEqual(4, count($page->sections));
+        $this->assertCount(1, $page->sections);
         $this->assertSame('hero', $page->sections[0]['type'] ?? null);
+        $this->assertSame('hero3', $page->sections[0]['variant'] ?? null);
         $this->assertTrue($page->published);
     }
 
-    public function testStorePublishesAboutTemplateWithSuggestedSlug(): void
+    public function testStorePublishesLandingHero3WithSuggestedSlug(): void
     {
         $this->controller->store($this->post(
-            'title=&slug=&layout=default&page_template=about-1',
+            'title=&slug=&layout=default&page_template=landing-hero3',
         ));
 
-        $page = $this->pages->findBySlug('about-2', false);
+        $page = $this->pages->findBySlug('accueil-alt', false);
         $this->assertNotNull($page);
         $this->assertTrue($page->published);
-        $this->assertSame('À propos', $page->title);
-        $this->assertGreaterThanOrEqual(3, count($page->sections));
+        $this->assertSame('Accueil', $page->title);
+        $this->assertCount(1, $page->sections);
     }
 
     public function testStoreRejectsEmptyTitleForAjax(): void

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1200px" height="2473px" viewBox="0 0 1200 2473" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>placeholder-dark-7</title>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="placeholder-dark-7">
+            <rect id="Rectangle" fill="#E8E8E8" fill-rule="nonzero" x="0" y="0" width="1200" height="2473"></rect>
+            <g id="Group" transform="translate(314, 950)" stroke="#000000" stroke-linecap="square" stroke-width="1.889275">
+                <line x1="38.207438" y1="143.074796" x2="533.222678" y2="428.997675" id="Path"></line>
+                <line x1="285.834712" y1="572.07247" x2="285.834712" y2="5.68434189e-14" id="Path"></line>
+                <line x1="571.430117" y1="285.916581" x2="0" y2="285.916581" id="Path"></line>
+                <line x1="428.632415" y1="38.339688" x2="142.797702" y2="533.732783" id="Path"></line>
+                <line x1="533.336035" y1="143.074796" x2="38.327092" y2="428.997675" id="Path"></line>
+                <line x1="142.797702" y1="38.339688" x2="428.632415" y2="533.732783" id="Path"></line>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -1,0 +1,22 @@
+/* Tokens et styles communs aux variantes integrations */
+
+.section-integrations {
+    background: var(--color-background, #fff);
+}
+
+.section-integrations[class*="section--pad-"] {
+    padding-inline: var(--space-md, 1rem);
+}
+
+.section-integrations .section-integrations__container {
+    width: 100%;
+    max-width: var(--container, 72rem);
+    margin-inline: auto;
+}
+
+.section-integrations .section-integrations__logo {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}

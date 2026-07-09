@@ -1,5 +1,0 @@
-@media (min-width: 768px) {
-    .section-steps--grid-3 .section-steps__grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}

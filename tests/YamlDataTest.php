@@ -42,16 +42,16 @@ YAML);
     public function testParsesHyphenatedKeys(): void
     {
         $data = YamlData::parse(<<<'YAML'
-features:
+hero:
   variants:
-    grid-3:
-      label: Grille 3 colonnes
+    hero3:
+      label: Hero 3
 YAML);
 
-        $this->assertIsArray($data['features']);
-        $this->assertIsArray($data['features']['variants']);
-        $this->assertArrayHasKey('feature-1', $data['features']['variants']);
-        $this->assertSame('Feature 1', $data['features']['variants']['feature-1']['label']);
+        $this->assertIsArray($data['hero']);
+        $this->assertIsArray($data['hero']['variants']);
+        $this->assertArrayHasKey('hero3', $data['hero']['variants']);
+        $this->assertSame('Hero 3', $data['hero']['variants']['hero3']['label']);
     }
 
     public function testSiblingDataFile(): void

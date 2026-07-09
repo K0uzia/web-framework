@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Dev;
 
+use Capsule\Support\Utf8;
+
 /**
  * Normalisation et validation des adresses de pages publiques.
  */
@@ -16,7 +18,7 @@ final class PageSlug
 
     public static function fromTitle(string $title): string
     {
-        $slug = mb_strtolower(trim($title));
+        $slug = Utf8::strtolower(trim($title));
         $transliterated = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $slug);
         if (is_string($transliterated) && $transliterated !== '') {
             $slug = $transliterated;

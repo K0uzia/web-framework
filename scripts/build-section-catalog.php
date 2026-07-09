@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * Génère le catalogue marketing (registry, HTML, CSS) aligné sur la taxonomie shadcnblocks.
+ * Génère le catalogue marketing (registry, HTML, CSS).
  *
  * Usage: php scripts/build-section-catalog.php
  */

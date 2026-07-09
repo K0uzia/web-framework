@@ -1,5 +1,0 @@
-@media (min-width: 768px) {
-    .section-gallery--grid-2 .section-gallery__grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}

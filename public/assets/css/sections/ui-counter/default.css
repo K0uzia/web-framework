@@ -1,3 +1,0 @@
-.section-ui-counter__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr)); gap: var(--space-lg); text-align: center; }
-.section-ui-counter__value { font-size: 2rem; font-weight: 700; margin: 0; }
-.section-ui-counter__label { margin: 0.25rem 0 0; color: var(--color-text-muted, #64748b); }

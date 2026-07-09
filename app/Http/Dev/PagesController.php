@@ -13,6 +13,7 @@ use Capsule\Page;
 use Capsule\PageRepository;
 use Capsule\SectionRegistry;
 use Capsule\SiteRepository;
+use Capsule\Support\Utf8;
 
 final class PagesController
 {
@@ -76,8 +77,8 @@ final class PagesController
         }
         $menuActions .= '<form method="post" action="/dev/pages/' . $slug . '/delete" role="none" data-dev-ajax="post-redirect" data-dev-redirect="/dev/pages" data-dev-toast-form="Page supprimée" data-dev-confirm="Supprimer définitivement la page « ' . htmlspecialchars($page->title, ENT_QUOTES) . ' » ? Cette action est irréversible."><button type="submit" role="menuitem" class="dev-menu__danger"><i class="fa-solid fa-trash" aria-hidden="true"></i> Supprimer</button></form>';
 
-        return '<tr data-page-row data-title="' . htmlspecialchars(mb_strtolower($page->title), ENT_QUOTES)
-            . '" data-path="' . htmlspecialchars(mb_strtolower($page->routePath()), ENT_QUOTES) . '">'
+        return '<tr data-page-row data-title="' . htmlspecialchars(Utf8::strtolower($page->title), ENT_QUOTES)
+            . '" data-path="' . htmlspecialchars(Utf8::strtolower($page->routePath()), ENT_QUOTES) . '">'
             . '<td><a class="dev-table__link" href="/dev/pages/' . $slug . '">'
             . '<span class="dev-table__title">' . htmlspecialchars($page->title, ENT_QUOTES) . '</span>'
             . '<span class="dev-table__path">' . htmlspecialchars($page->routePath(), ENT_QUOTES) . '</span>'

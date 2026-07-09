@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Capsule;
 
 /**
- * Liste les médias disponibles pour les blocs (bibliothèque DB, uploads, stock).
+ * Liste les médias disponibles pour les blocs (bibliothèque DB, uploads).
  */
 final class MediaLibrary
 {
@@ -15,6 +15,8 @@ final class MediaLibrary
         private readonly string $publicBasePath = '/uploads/site',
         private readonly ?PageRepository $pages = null,
         private readonly ?SiteRepository $site = null,
+        private readonly string $libraryUploadsDir = '',
+        private readonly string $publicRoot = '',
     ) {
     }
 
@@ -25,7 +27,7 @@ final class MediaLibrary
     {
         return $this->mergeUrls(
             $this->media->urlsByKind('image'),
-            StockImages::all(),
+            [],
         );
     }
 
@@ -53,28 +55,45 @@ final class MediaLibrary
         return $this->media->all($kind);
     }
 
-    /**
-     * @return list<array{id: string, kind: string, url: string, filename: string, mime: string, size: int, label: string, created_at: string, readonly: bool}>
-     */
-    public function stockImageRecords(): array
+    public function syncDiscoveredRecords(?string $kind = null): void
     {
-        $records = [];
-        foreach (StockImages::all() as $url) {
-            $filename = basename($url);
-            $records[] = [
-                'id' => 'stock-' . (preg_replace('/[^a-zA-Z0-9_-]/', '', $filename) ?? $filename),
-                'kind' => 'image',
-                'url' => $url,
-                'filename' => $filename,
-                'mime' => 'image/jpeg',
-                'size' => 0,
-                'label' => 'Image d\'exemple',
-                'created_at' => '',
-                'readonly' => true,
-            ];
+        if ($kind === null || $kind === 'image') {
+            foreach ($this->availableImageUrls() as $url) {
+                $this->registerUrlIfMissing('image', $url);
+            }
         }
 
-        return $records;
+        if ($kind === null || $kind === 'video') {
+            foreach ($this->availableVideoUrls() as $url) {
+                $this->registerUrlIfMissing('video', $url);
+            }
+        }
+    }
+
+    public function publicUrlToPath(string $url): ?string
+    {
+        $url = trim($url);
+        if ($url === '' || str_contains($url, '..') || preg_match('~^https?://~i', $url) === 1 || !str_starts_with($url, '/')) {
+            return null;
+        }
+
+        if ($this->publicRoot === '') {
+            return null;
+        }
+
+        $path = $this->publicRoot . $url;
+        $resolved = realpath($path);
+
+        if ($resolved === false || !is_file($resolved)) {
+            return null;
+        }
+
+        $publicRoot = realpath($this->publicRoot);
+        if ($publicRoot === false || !str_starts_with($resolved, $publicRoot . DIRECTORY_SEPARATOR)) {
+            return null;
+        }
+
+        return $resolved;
     }
 
     public function isAllowedUrl(string $url, string $kind = 'image'): bool
@@ -97,7 +116,14 @@ final class MediaLibrary
 
         return str_starts_with($url, $uploadPrefix)
             || str_starts_with($url, '/uploads/media/')
-            || str_starts_with($url, StockImages::BASE . '/');
+            || str_starts_with($url, '/assets/sections/');
+    }
+
+    public function isBundledAsset(string $url): bool
+    {
+        $url = trim($url);
+
+        return str_starts_with($url, '/assets/sections/');
     }
 
     /**
@@ -128,6 +154,14 @@ final class MediaLibrary
             }
         }
 
+        if ($this->libraryUploadsDir !== '' && is_dir($this->libraryUploadsDir)) {
+            foreach (glob($this->libraryUploadsDir . '/*') ?: [] as $file) {
+                if (is_file($file)) {
+                    $urls[] = '/uploads/media/' . basename($file);
+                }
+            }
+        }
+
         if ($this->pages !== null) {
             foreach ($this->pages->all() as $page) {
                 foreach ($page->sections as $section) {
@@ -154,24 +188,92 @@ final class MediaLibrary
     private function collectFromSection(array $section, array &$urls): void
     {
         $content = is_array($section['content'] ?? null) ? $section['content'] : [];
-        foreach (['image_url', 'url', 'video_url'] as $key) {
-            $url = trim((string) ($content[$key] ?? ''));
-            if ($url !== '' && ($this->isAllowedUrl($url) || $this->isAllowedUrl($url, 'video'))) {
+        $this->collectUrlsFromValue($content, $urls);
+    }
+
+    /**
+     * @param list<string> $urls
+     */
+    private function collectUrlsFromValue(mixed $value, array &$urls): void
+    {
+        if (is_string($value)) {
+            $url = trim($value);
+            if ($url !== '' && $this->isAllowedUrl($url) && !$this->isVideoPath($url)) {
                 $urls[] = $url;
             }
+
+            return;
         }
 
-        $items = is_array($content['items'] ?? null) ? $content['items'] : [];
-        foreach ($items as $item) {
-            if (!is_array($item)) {
-                continue;
-            }
-            foreach (['image_url', 'url', 'video_url'] as $key) {
-                $url = trim((string) ($item[$key] ?? ''));
-                if ($url !== '' && ($this->isAllowedUrl($url) || $this->isAllowedUrl($url, 'video'))) {
-                    $urls[] = $url;
+        if (!is_array($value)) {
+            return;
+        }
+
+        foreach ($value as $item) {
+            $this->collectUrlsFromValue($item, $urls);
+        }
+    }
+
+    private function registerUrlIfMissing(string $kind, string $url): void
+    {
+        if ($this->media->findByUrl($url) !== null) {
+            return;
+        }
+
+        if (!$this->isAllowedUrl($url, $kind) || preg_match('~^https?://~i', $url) === 1) {
+            return;
+        }
+
+        if ($kind === 'image' && $this->isVideoPath($url)) {
+            return;
+        }
+
+        if ($kind === 'video' && !$this->isAllowedUrl($url, 'video')) {
+            return;
+        }
+
+        $path = $this->publicUrlToPath($url);
+        if ($path === null) {
+            return;
+        }
+
+        $size = (int) filesize($path);
+        if ($size <= 0) {
+            return;
+        }
+
+        $label = $this->isBundledAsset($url) ? 'Modèle : ' . basename($url) : '';
+
+        $this->media->create(
+            $kind,
+            $url,
+            basename($url),
+            $this->detectMime($path),
+            $size,
+            $label,
+        );
+    }
+
+    private function detectMime(string $path): string
+    {
+        if (function_exists('finfo_open')) {
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            if ($finfo !== false) {
+                $mime = finfo_file($finfo, $path);
+                finfo_close($finfo);
+                if (is_string($mime) && $mime !== '') {
+                    return $mime;
                 }
             }
         }
+
+        return 'application/octet-stream';
+    }
+
+    private function isVideoPath(string $url): bool
+    {
+        $ext = strtolower((string) pathinfo($url, PATHINFO_EXTENSION));
+
+        return in_array($ext, ['mp4', 'webm', 'ogg', 'mov', 'mkv'], true);
     }
 }

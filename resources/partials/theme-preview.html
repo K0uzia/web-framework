@@ -1,13 +1,17 @@
 <div class="theme-preview" aria-label="Aperçu du thème">
     <p class="theme-preview__intro">Échantillons pour tester rapidement couleurs, typographie et composants.</p>
 
-    <section class="section-hero section-hero--centered section--align-center section--pad-md section--bg-primary theme-preview__block" aria-label="Hero">
-        <div class="section-hero__inner">
-            <h1>Titre principal</h1>
-            <p class="section-hero__subtitle">Accroche sur fond de marque, polices de titres et boutons d'action.</p>
-            <div class="section-buttons">
-                <a class="section-button section-button--primary" href="#">Commencer</a>
-                <a class="section-button section-button--secondary" href="#">En savoir plus</a>
+    <section class="section-hero section-hero--hero3 section--pad-md section--bg-background theme-preview__block" aria-label="Hero">
+        <div class="section-hero__container">
+            <div class="section-hero__grid">
+                <div class="section-hero__copy">
+                    <h1 class="section-hero__title">Titre principal</h1>
+                    <p class="section-hero__subtitle">Accroche, polices de titres et boutons d'action du hero.</p>
+                    <div class="section-hero__buttons">
+                        <a class="section-hero__button section-hero__button--primary" href="#">Commencer <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+                        <a class="section-hero__button section-hero__button--secondary" href="#">En savoir plus</a>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -47,51 +51,34 @@
     <section class="theme-preview__panel section--bg-background section--pad-md" aria-label="États UI">
         <h2 class="theme-preview__label">États UI</h2>
         <div class="theme-preview__alerts">
-            <section class="section-ui-alert section-ui-alert--success section--pad-sm section--bg-background">
-                <div class="section-inner section-inner--narrow">
-                    <div class="section-ui-alert__box" role="status">
-                        <p class="section-ui-alert__title">Succès</p>
-                        <p class="section-ui-alert__text">Message de validation ou confirmation.</p>
-                    </div>
-                </div>
-            </section>
-            <section class="section-ui-alert section-ui-alert--warning section--pad-sm section--bg-background">
-                <div class="section-inner section-inner--narrow">
-                    <div class="section-ui-alert__box" role="status">
-                        <p class="section-ui-alert__title">Avertissement</p>
-                        <p class="section-ui-alert__text">Alerte modérée nécessitant attention.</p>
-                    </div>
-                </div>
-            </section>
-            <section class="section-ui-alert section-ui-alert--error section--pad-sm section--bg-background">
-                <div class="section-inner section-inner--narrow">
-                    <div class="section-ui-alert__box" role="alert">
-                        <p class="section-ui-alert__title">Erreur</p>
-                        <p class="section-ui-alert__text">Problème bloquant ou validation négative.</p>
-                    </div>
-                </div>
-            </section>
-            <section class="section-ui-alert section-ui-alert--info section--pad-sm section--bg-background">
-                <div class="section-inner section-inner--narrow">
-                    <div class="section-ui-alert__box" role="status">
-                        <p class="section-ui-alert__title">Information</p>
-                        <p class="section-ui-alert__text">Message informatif ou pédagogique.</p>
-                    </div>
-                </div>
-            </section>
+            <div class="theme-preview__alert theme-preview__alert--success" role="status">
+                <p class="theme-preview__alert-title">Succès</p>
+                <p class="theme-preview__alert-text">Message de validation ou confirmation.</p>
+            </div>
+            <div class="theme-preview__alert theme-preview__alert--warning" role="status">
+                <p class="theme-preview__alert-title">Avertissement</p>
+                <p class="theme-preview__alert-text">Alerte modérée nécessitant attention.</p>
+            </div>
+            <div class="theme-preview__alert theme-preview__alert--error" role="alert">
+                <p class="theme-preview__alert-title">Erreur</p>
+                <p class="theme-preview__alert-text">Problème bloquant ou validation négative.</p>
+            </div>
+            <div class="theme-preview__alert theme-preview__alert--info" role="status">
+                <p class="theme-preview__alert-title">Information</p>
+                <p class="theme-preview__alert-text">Message informatif ou pédagogique.</p>
+            </div>
         </div>
     </section>
 
-    <section class="section-ui-card section-ui-card--simple section--pad-md section--bg-muted" aria-label="Carte">
-        <div class="section-inner section-inner--narrow">
-            <article class="section-ui-card__box">
-                <h3>Carte sur bande atténuée</h3>
-                <p class="section-ui-card__text">Texte secondaire, bordures et ombre légère sur surface élevée.</p>
-                <div class="section-buttons">
-                    <a class="section-button section-button--primary" href="#">Action</a>
-                </div>
-            </article>
-        </div>
+    <section class="theme-preview__panel section--bg-muted section--pad-md" aria-label="Carte">
+        <h2 class="theme-preview__label">Carte</h2>
+        <article class="theme-preview__card">
+            <h3>Carte sur bande atténuée</h3>
+            <p>Texte secondaire, bordures et ombre légère sur surface élevée.</p>
+            <div class="section-buttons">
+                <a class="section-button section-button--primary" href="#">Action</a>
+            </div>
+        </article>
     </section>
 
     <section class="theme-preview__panel section--bg-background section--pad-md theme-preview__a11y" aria-label="Focus et désactivé">

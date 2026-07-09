@@ -9,6 +9,8 @@ use App\Http\Dev\MediaUploader;
 use Capsule\DevDashboard;
 use Capsule\Http\Factory\ResponseFactory;
 use Capsule\Http\Message\Request;
+use Capsule\MediaLibrary;
+use Capsule\MediaRepository;
 use Capsule\SiteRepository;
 use PHPUnit\Framework\TestCase;
 
@@ -26,7 +28,9 @@ final class MediaControllerTest extends TestCase
         $this->site = new SiteRepository($pdo);
         $ui = new DevDashboard(dirname(__DIR__, 3) . '/resources/dev', new ResponseFactory());
         $this->uploadsDir = sys_get_temp_dir() . '/capsule-media-controller-' . bin2hex(random_bytes(4));
-        $this->controller = new MediaController($ui, $this->site, new MediaUploader($this->uploadsDir), new ResponseFactory());
+        $mediaRepo = new MediaRepository($pdo);
+        $library = new MediaLibrary($mediaRepo, $this->uploadsDir, '/uploads/site', null, $this->site, '', dirname(__DIR__, 3) . '/public');
+        $this->controller = new MediaController($ui, $this->site, new MediaUploader($this->uploadsDir), $library, new ResponseFactory());
     }
 
     public function testUploadWithUnknownFieldRedirects(): void

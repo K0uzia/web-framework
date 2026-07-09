@@ -23,8 +23,31 @@ final class Database
             $config['password'] ?? null,
             $config['options'],
         );
+        self::ensureSchema($pdo);
 
         return new self($pdo);
+    }
+
+    private static function ensureSchema(PDO $pdo): void
+    {
+        $stmt = $pdo->query("SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'pages' LIMIT 1");
+        if ($stmt !== false && $stmt->fetch() !== false) {
+            return;
+        }
+
+        $root = dirname(__DIR__);
+        $migration = file_get_contents($root . '/migrations/sqlite_init.sql');
+        if ($migration !== false && $migration !== '') {
+            $pdo->exec($migration);
+        }
+
+        $seedPath = $root . '/migrations/seed_default_site.sql';
+        if (is_file($seedPath)) {
+            $seed = file_get_contents($seedPath);
+            if ($seed !== false && $seed !== '') {
+                $pdo->exec($seed);
+            }
+        }
     }
 
     public function pdo(): PDO

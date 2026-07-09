@@ -110,44 +110,7 @@ detect_pkg() {
 }
 
 install_deps() {
-    local pm pkgs
-    pm="$(detect_pkg)"
-    case "$pm" in
-        dnf)
-            pkgs=(php-cli php-pdo sqlite3 php-mysqlnd php-intl php-sqlite3)
-            log "Installer via dnf: ${pkgs[*]}"
-            if command -v sudo >/dev/null 2>&1; then
-                sudo dnf install -y "${pkgs[@]}"
-            else
-                dnf install -y "${pkgs[@]}"
-            fi
-            ;;
-        apt)
-            pkgs=(php-cli sqlite3 php-mysql php-intl php-sqlite3)
-            log "Installer via apt: ${pkgs[*]}"
-            if command -v sudo >/dev/null 2>&1; then
-                sudo apt-get update
-                sudo apt-get install -y "${pkgs[@]}"
-            else
-                apt-get update
-                apt-get install -y "${pkgs[@]}"
-            fi
-            ;;
-        *)
-            die "Gestionnaire de paquets non supporté. Installe manuellement :
-  - Fedora/RHEL : php-cli php-pdo php-sqlite3 php-mysqlnd php-intl
-  - Debian/Ubuntu : php-cli php-sqlite3 php-mysql php-intl"
-            ;;
-    esac
-
-    ok "Dépendances PHP installées (pdo, sqlite3, mysql, intl)."
-
-    if command -v rg >/dev/null 2>&1; then
-        php -m | rg -i 'pdo|sqlite|mysql|intl' || true
-    else
-        php -m | grep -Ei 'pdo|sqlite|mysql|intl' || true
-    fi
-    php -v
+    bash "$ROOT/scripts/install-deps.sh"
 }
 
 # --- SQLite actions -----------------------------------------------------------
@@ -164,15 +127,21 @@ sqlite_apply_migration_fresh() {
     ok "SQLite initialisée (fresh): $DB_SQLITE"
 }
 
+sqlite_db_has_schema() {
+    [[ -f "$DB_SQLITE" ]] || return 1
+    sqlite3 "$DB_SQLITE" "SELECT 1 FROM sqlite_master WHERE type='table' AND name='pages' LIMIT 1;" 2>/dev/null | grep -q 1
+}
+
 sqlite_apply_migration_if_absent() {
     need sqlite3
     local mig seed
     mig="$(resolve_migration)"
     seed="$ROOT/migrations/seed_default_site.sql"
-    if [[ -f "$DB_SQLITE" ]]; then
-        log "DB déjà présente: $DB_SQLITE (skip init). Utilise 'reset' pour repartir de zéro."
+    if sqlite_db_has_schema; then
+        log "DB déjà initialisée: $DB_SQLITE (skip init). Utilise 'reset' pour repartir de zéro."
     else
         mkdir -p "$(dirname "$DB_SQLITE")"
+        rm -f "$DB_SQLITE" "$DB_SQLITE-shm" "$DB_SQLITE-wal"
         sqlite3 "$DB_SQLITE" <"$mig"
         if [[ -f "$seed" ]]; then
             sqlite3 "$DB_SQLITE" <"$seed"

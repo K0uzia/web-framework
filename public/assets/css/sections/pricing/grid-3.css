@@ -1,5 +1,0 @@
-@media (min-width: 768px) {
-    .section-pricing--grid-3 .section-pricing__grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}

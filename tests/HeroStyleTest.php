@@ -9,19 +9,44 @@ use PHPUnit\Framework\TestCase;
 
 final class HeroStyleTest extends TestCase
 {
-    public function testFullscreenDefaultsToViewportHeight(): void
+    public function testHero3Defaults(): void
     {
-        $defaults = HeroStyle::defaults('fullscreen');
+        $defaults = HeroStyle::defaults('hero3');
 
-        $this->assertSame('viewport', $defaults['min_height']);
-        $this->assertSame('display', $defaults['title_size']);
+        $this->assertSame('background', $defaults['bg']);
+        $this->assertSame('xl', $defaults['padding']);
     }
 
-    public function testModifierClassesIncludeImageBorder(): void
+    public function testModifierClassesEmptyForHero3(): void
     {
-        $classes = HeroStyle::modifierClasses(['image_border' => 'thin'], 'split');
+        $this->assertSame('', HeroStyle::modifierClasses(['padding' => 'xl'], 'hero3'));
+    }
 
-        $this->assertStringContainsString('section-hero--img-border', $classes);
+    public function testRenderHero3Reviews(): void
+    {
+        $html = HeroStyle::renderHero3Reviews([
+            'reviews_rating' => '5.0',
+            'reviews_count' => '200',
+            'review_avatars' => [
+                ['url' => '/uploads/media/avatar.webp', 'title' => 'Test'],
+            ],
+        ]);
+
+        $this->assertStringContainsString('section-hero__reviews', $html);
+        $this->assertStringContainsString('fa-star', $html);
+        $this->assertStringContainsString('200', $html);
+    }
+
+    public function testRenderHero3VisualWithDarkImage(): void
+    {
+        $html = HeroStyle::renderHero3Visual([
+            'title' => 'Demo',
+            'image_url' => '/uploads/media/hero-light.webp',
+            'image_url_dark' => '/uploads/media/hero-dark.webp',
+        ]);
+
+        $this->assertStringContainsString('section-hero__img--light', $html);
+        $this->assertStringContainsString('section-hero__img--dark', $html);
     }
 
     public function testVideoEmbedFromYoutubeUrl(): void

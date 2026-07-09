@@ -1,5 +1,0 @@
-@media (min-width: 768px) {
-    .section-awards--grid-4 .section-awards__grid {
-        grid-template-columns: repeat(4, 1fr);
-    }
-}

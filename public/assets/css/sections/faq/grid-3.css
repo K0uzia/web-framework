@@ -1,5 +1,0 @@
-@media (min-width: 768px) {
-    .section-faq--grid-3 .section-faq__grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}

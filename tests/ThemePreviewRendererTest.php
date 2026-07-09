@@ -35,8 +35,8 @@ final class ThemePreviewRendererTest extends TestCase
         $this->assertStringContainsString('theme-preview', $body);
         $this->assertStringContainsString('theme-preview.css', $body);
         $this->assertStringContainsString('theme-bindings.css', $body);
-        $this->assertStringContainsString('section-ui-alert--success', $body);
-        $this->assertStringContainsString('section-hero--centered', $body);
+        $this->assertStringContainsString('section-hero--hero3', $body);
+        $this->assertStringContainsString('theme-preview__alert--success', $body);
         $this->assertStringContainsString('noindex, nofollow', $body);
         $this->assertStringNotContainsString('theme-states-preview', $body);
     }

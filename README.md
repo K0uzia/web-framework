@@ -13,6 +13,7 @@ Framework PHP minimal, sans dépendance runtime. Architecture inspirée d'Astro 
 ## Démarrage rapide
 
 ```bash
+make deps    # extensions PHP, SQLite, Composer (première fois)
 make init    # data/, SQLite seed, bin/
 make dev
 ```

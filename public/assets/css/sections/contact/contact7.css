@@ -1,0 +1,14 @@
+.section-contact--contact7 .section-contact__header {
+    margin-bottom: 3.5rem;
+}
+
+.section-contact--contact7 .section-contact__grid {
+    display: grid;
+    gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+    .section-contact--contact7 .section-contact__grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

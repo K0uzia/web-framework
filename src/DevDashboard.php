@@ -60,7 +60,7 @@ final class DevDashboard
      */
     public static function withNav(array $data, string $section): array
     {
-        foreach (['overview', 'pages', 'medias', 'video_imports', 'site', 'chrome', 'theme', 'export'] as $key) {
+        foreach (['overview', 'pages', 'medias', 'site', 'chrome', 'theme', 'export'] as $key) {
             $active = $section === $key;
             $data['nav_active_' . $key] = $active ? 'is-active' : '';
             $data['nav_aria_' . $key] = $active ? ' aria-current="page"' : '';

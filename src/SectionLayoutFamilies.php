@@ -6,7 +6,7 @@ namespace Capsule;
 
 /**
  * Familles de mise en page partagées entre variantes d'un même type de bloc.
- * Évite de dupliquer des centaines de fichiers HTML/CSS (catalogue shadcnblocks).
+ * Évite de dupliquer des centaines de fichiers HTML/CSS (catalogue de sections).
  */
 final class SectionLayoutFamilies
 {

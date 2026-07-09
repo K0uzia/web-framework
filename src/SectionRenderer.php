@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Capsule;
 
+use Capsule\MediaDisplaySettings;
+use Capsule\Support\Utf8;
+
 final class SectionRenderer
 {
     public function __construct(
@@ -40,12 +43,33 @@ final class SectionRenderer
 
         $type = is_string($section['type'] ?? null) ? $section['type'] : '';
         $variant = is_string($section['variant'] ?? null) ? $section['variant'] : 'default';
+        if ($type === 'hero') {
+            $variant = HeroStyle::normalizeVariant($variant);
+            $section['variant'] = $variant;
+        }
+        if ($type === 'features') {
+            $variant = FeatureStyle::normalizeVariant($variant);
+            $section['variant'] = $variant;
+        }
+        if ($type === 'integrations') {
+            $variant = IntegrationStyle::normalizeVariant($variant);
+            $section['variant'] = $variant;
+        }
+        if ($type === 'pricing') {
+            $variant = PricingStyle::normalizeVariant($variant);
+            $section['variant'] = $variant;
+        }
+        if ($type === 'contact') {
+            $variant = ContactStyle::normalizeVariant($variant);
+            $section['variant'] = $variant;
+        }
+        if ($type === 'testimonials') {
+            $variant = TestimonialStyle::normalizeVariant($variant);
+            $section['variant'] = $variant;
+        }
         if ($type === '') {
             return '';
         }
-
-        $variant = $this->normalizeVariant($type, $variant);
-        $section['variant'] = $variant;
 
         $template = $this->resolveTemplate($type, $variant);
         if ($template === null) {
@@ -73,8 +97,26 @@ final class SectionRenderer
             }
             $type = is_string($section['type'] ?? null) ? $section['type'] : '';
             $variant = is_string($section['variant'] ?? null) ? $section['variant'] : 'default';
+            if ($type === 'hero') {
+                $variant = HeroStyle::normalizeVariant($variant);
+            }
+            if ($type === 'features') {
+                $variant = FeatureStyle::normalizeVariant($variant);
+            }
+            if ($type === 'integrations') {
+                $variant = IntegrationStyle::normalizeVariant($variant);
+            }
+            if ($type === 'pricing') {
+                $variant = PricingStyle::normalizeVariant($variant);
+            }
+            if ($type === 'contact') {
+                $variant = ContactStyle::normalizeVariant($variant);
+            }
+            if ($type === 'testimonials') {
+                $variant = TestimonialStyle::normalizeVariant($variant);
+            }
             if ($type !== '') {
-                $refs[] = ['type' => $type, 'variant' => $this->normalizeVariant($type, $variant)];
+                $refs[] = ['type' => $type, 'variant' => $variant];
             }
         }
 
@@ -179,17 +221,47 @@ final class SectionRenderer
                 $data['style_' . $key] = $value;
             }
             $data['hero_modifiers'] = HeroStyle::modifierClasses($style, $data['variant']);
-            $data['hero_backdrop_html'] = HeroStyle::renderBackdrop($content, $data['variant']);
-            if ($data['hero_backdrop_html'] !== '') {
-                $data['hero_backdrop_class'] = 'section-hero--has-backdrop';
+            $badgeText = trim((string) ($content['badge'] ?? ''));
+            $data['hero_badge_html'] = $badgeText !== ''
+                ? '<span class="section-hero__badge">' . htmlspecialchars($badgeText, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</span>'
+                : '';
+            $subheading = trim((string) ($content['subheading'] ?? ''));
+            $data['hero_subheading_html'] = $subheading !== ''
+                ? ' <span class="section-hero__subheading">' . htmlspecialchars($subheading, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</span>'
+                : '';
+            $data = HeroVariantRenderer::enrich($data, $content, $data['variant'], $this->renderHeroButtons($content));
+        } elseif ($data['type'] === 'features') {
+            $resolvedStyle = FeatureStyle::resolve($style, $data['variant']);
+            foreach ($resolvedStyle as $key => $value) {
+                $data['style_' . $key] = $value;
             }
-            $data['hero_visual_html'] = HeroStyle::renderVisual($content, $style, $data['variant']);
+            $data = FeatureVariantRenderer::enrich($data, $content, $data['variant']);
+        } elseif ($data['type'] === 'integrations') {
+            $resolvedStyle = IntegrationStyle::resolve($style, $data['variant']);
+            foreach ($resolvedStyle as $key => $value) {
+                $data['style_' . $key] = $value;
+            }
+            $data = IntegrationVariantRenderer::enrich($data, $content, $data['variant']);
+        } elseif ($data['type'] === 'pricing') {
+            $resolvedStyle = PricingStyle::resolve($style, $data['variant']);
+            foreach ($resolvedStyle as $key => $value) {
+                $data['style_' . $key] = $value;
+            }
+            $data = PricingVariantRenderer::enrich($data, $content, $data['variant']);
+        } elseif ($data['type'] === 'contact') {
+            $resolvedStyle = ContactStyle::resolve($style, $data['variant']);
+            foreach ($resolvedStyle as $key => $value) {
+                $data['style_' . $key] = $value;
+            }
+            $data = ContactVariantRenderer::enrich($data, $content, $data['variant']);
+        } elseif ($data['type'] === 'testimonials') {
+            $resolvedStyle = TestimonialStyle::resolve($style, $data['variant']);
+            foreach ($resolvedStyle as $key => $value) {
+                $data['style_' . $key] = $value;
+            }
+            $data = TestimonialVariantRenderer::enrich($data, $content, $data['variant']);
         } else {
-            $needsHeroImage = StockImages::sectionUsesHeroImage($data['type'], $data['variant']);
-            $imageUrl = StockImages::resolve(
-                (string) ($content['image_url'] ?? ''),
-                static fn (): string => $needsHeroImage ? StockImages::sectionHeroFallback($data['type']) : '',
-            );
+            $imageUrl = MediaDisplaySettings::normalizeUrl((string) ($content['image_url'] ?? ''));
             $imageTitle = trim((string) ($content['title'] ?? ''));
             $safeAlt = htmlspecialchars($imageTitle !== '' ? $imageTitle : 'Illustration', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
             $data['hero_visual_html'] = $imageUrl !== ''
@@ -283,6 +355,48 @@ final class SectionRenderer
     }
 
     /**
+     * @param array<string, mixed> $content
+     */
+    private function renderHeroButtons(array $content): string
+    {
+        $buttons = $content['buttons'] ?? null;
+        if (!is_array($buttons) || $buttons === []) {
+            $legacyLabel = trim((string) ($content['cta_label'] ?? $content['button_label'] ?? ''));
+            $legacyHref = trim((string) ($content['cta_href'] ?? $content['button_href'] ?? ''));
+            if ($legacyLabel === '' || $legacyHref === '') {
+                return '';
+            }
+
+            $buttons = [['label' => $legacyLabel, 'href' => $legacyHref, 'style' => 'primary']];
+        }
+
+        $parts = [];
+        $isFirstPrimary = true;
+        foreach ($buttons as $button) {
+            if (!is_array($button)) {
+                continue;
+            }
+            $label = trim((string) ($button['label'] ?? ''));
+            $href = trim((string) ($button['href'] ?? ''));
+            if ($label === '' || $href === '') {
+                continue;
+            }
+            $style = ($button['style'] ?? 'primary') === 'secondary' ? 'secondary' : 'primary';
+            $icon = ($style === 'primary' && $isFirstPrimary)
+                ? ' <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>'
+                : '';
+            if ($style === 'primary') {
+                $isFirstPrimary = false;
+            }
+            $parts[] = '<a class="section-hero__button section-hero__button--' . $style . '" href="'
+                . htmlspecialchars($href, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '">'
+                . htmlspecialchars($label, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . $icon . '</a>';
+        }
+
+        return implode("\n", $parts);
+    }
+
+    /**
      * @param list<mixed> $items
      */
     private function renderItems(array $items, string $type, string $variant): string
@@ -346,7 +460,7 @@ final class SectionRenderer
         $words = preg_split('/\s+/', $title) ?: [];
         $initials = '';
         foreach (array_slice(array_filter($words), 0, 2) as $word) {
-            $initials .= mb_strtoupper(mb_substr($word, 0, 1));
+            $initials .= Utf8::strtoupper(Utf8::substr($word, 0, 1));
         }
         $data['initials'] = $initials;
 
@@ -364,12 +478,7 @@ final class SectionRenderer
             default => '',
         };
 
-        $imageUrl = StockImages::resolve(
-            (string) ($item['url'] ?? ''),
-            static fn (): string => in_array($type, ['gallery', 'projects', 'blog', 'features'], true)
-                ? StockImages::itemFallback($type, $index - 1)
-                : '',
-        );
+        $imageUrl = MediaDisplaySettings::normalizeUrl((string) ($item['url'] ?? ''));
         $data['image_html'] = $this->itemImageHtml($type, $imageUrl, $title, $item);
 
         $role = trim((string) ($item['role'] ?? ''));
@@ -462,22 +571,6 @@ final class SectionRenderer
         return $sanitized !== '' ? $sanitized : 'default';
     }
 
-    private function normalizeVariant(string $type, string $variant): string
-    {
-        if ($type !== 'features') {
-            return $variant;
-        }
-
-        return match ($variant) {
-            'grid-3' => 'feature-3',
-            'grid-2' => 'feature-8',
-            'grid-4' => 'feature-10',
-            'bento' => 'feature-5',
-            'list' => 'feature-6',
-            default => $variant,
-        };
-    }
-
     /**
      * @param array<string, mixed> $content
      */
@@ -487,10 +580,7 @@ final class SectionRenderer
             return '';
         }
 
-        $imageUrl = StockImages::resolve(
-            (string) ($content['image_url'] ?? ''),
-            static fn (): string => StockImages::sectionHeroFallback('features'),
-        );
+        $imageUrl = MediaDisplaySettings::normalizeUrl((string) ($content['image_url'] ?? ''));
         $title = trim((string) ($content['title'] ?? ''));
         $safeAlt = htmlspecialchars($title !== '' ? $title : 'Illustration', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
         $frameClass = $variant === 'feature-7' ? ' section-features__figure--bordered' : '';

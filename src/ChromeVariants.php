@@ -182,10 +182,16 @@ final class ChromeVariants
         $nav = is_array($variant['nav'] ?? null) ? $variant['nav'] : [];
         $login = is_array($variant['login'] ?? null) ? $variant['login'] : [];
         $layout = is_array($variant['layout'] ?? null) ? $variant['layout'] : [];
+        $template = FooterStyle::normalizeTemplate((string) ($variant['template'] ?? FooterStyle::TEMPLATE_DEFAULT));
 
         return [
             'id' => (string) ($variant['id'] ?? 'default'),
             'name' => trim((string) ($variant['name'] ?? '')) !== '' ? trim((string) $variant['name']) : 'Sans titre',
+            'template' => $template,
+            'description' => trim((string) ($variant['description'] ?? '')),
+            'sections' => self::normalizeSections($variant['sections'] ?? []),
+            'legal_links' => self::normalizeLinks($variant['legal_links'] ?? []),
+            'social_links' => self::normalizeSocialLinks($variant['social_links'] ?? []),
             'brand' => [
                 'visible' => ($brand['visible'] ?? true) !== false,
                 'show_logo' => ($brand['show_logo'] ?? true) !== false,
@@ -238,6 +244,7 @@ final class ChromeVariants
         return self::normalizeFooter([
             'id' => 'default',
             'name' => 'Par défaut',
+            'template' => FooterStyle::TEMPLATE_DEFAULT,
             'brand' => [
                 'visible' => ($site['show_brand_in_footer'] ?? true) !== false,
                 'show_logo' => true,
@@ -306,5 +313,80 @@ final class ChromeVariants
         $value = (string) ($layout[$element] ?? '');
 
         return in_array($value, $zones, true) ? $value : $default;
+    }
+
+    /**
+     * @param mixed $raw
+     *
+     * @return list<array{title: string, links: list<array{label: string, href: string}>}>
+     */
+    private static function normalizeSections(mixed $raw): array
+    {
+        if (!is_array($raw)) {
+            return [];
+        }
+        $sections = [];
+        foreach ($raw as $section) {
+            if (!is_array($section)) {
+                continue;
+            }
+            $title = trim((string) ($section['title'] ?? ''));
+            $links = self::normalizeLinks($section['links'] ?? []);
+            if ($title !== '' || $links !== []) {
+                $sections[] = ['title' => $title, 'links' => $links];
+            }
+        }
+
+        return $sections;
+    }
+
+    /**
+     * @param mixed $raw
+     *
+     * @return list<array{label: string, href: string}>
+     */
+    private static function normalizeLinks(mixed $raw): array
+    {
+        if (!is_array($raw)) {
+            return [];
+        }
+        $links = [];
+        foreach ($raw as $link) {
+            if (!is_array($link)) {
+                continue;
+            }
+            $label = trim((string) ($link['label'] ?? $link['name'] ?? ''));
+            $href = trim((string) ($link['href'] ?? ''));
+            if ($label !== '') {
+                $links[] = ['label' => $label, 'href' => $href !== '' ? $href : '#'];
+            }
+        }
+
+        return $links;
+    }
+
+    /**
+     * @param mixed $raw
+     *
+     * @return list<array{network: string, href: string}>
+     */
+    private static function normalizeSocialLinks(mixed $raw): array
+    {
+        if (!is_array($raw)) {
+            return [];
+        }
+        $links = [];
+        foreach ($raw as $link) {
+            if (!is_array($link)) {
+                continue;
+            }
+            $network = strtolower(trim((string) ($link['network'] ?? $link['icon'] ?? '')));
+            $href = trim((string) ($link['href'] ?? ''));
+            if ($network !== '' && $href !== '') {
+                $links[] = ['network' => $network, 'href' => $href];
+            }
+        }
+
+        return $links;
     }
 }

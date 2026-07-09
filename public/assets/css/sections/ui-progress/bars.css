@@ -1,4 +1,0 @@
-.section-ui-progress__list { display: flex; flex-direction: column; gap: var(--space-md); max-width: 32rem; margin-inline: auto; }
-.section-ui-progress__meta { display: flex; justify-content: space-between; font-size: 0.875rem; margin-bottom: 0.35rem; }
-.section-ui-progress__bar { height: 0.5rem; background: var(--color-surface, #e2e8f0); border-radius: 999px; overflow: hidden; }
-.section-ui-progress__bar > span { display: block; height: 100%; background: var(--color-primary, #0f172a); border-radius: inherit; }

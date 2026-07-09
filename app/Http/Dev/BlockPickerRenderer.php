@@ -7,7 +7,7 @@ namespace App\Http\Dev;
 use Capsule\SectionRegistry;
 
 /**
- * Catalogue de blocs pour l'éditeur (taxonomie alignée sur shadcnblocks Marketing).
+ * Catalogue de blocs pour l'éditeur (taxonomie Marketing).
  */
 final class BlockPickerRenderer
 {

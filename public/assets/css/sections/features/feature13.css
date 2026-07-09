@@ -1,0 +1,166 @@
+/* Feature 13 : cartes horizontales avec vignette */
+
+.section-features--feature13 {
+    background: var(--color-background, #fff);
+}
+
+.section-features--feature13 .section-features__title-wrap {
+    max-width: 64rem;
+    margin: 0 auto 2.25rem;
+    text-align: center;
+}
+
+@media (min-width: 1024px) {
+    .section-features--feature13 .section-features__title-wrap {
+        margin-bottom: 3.5rem;
+    }
+}
+
+.section-features--feature13 .section-features__title--center {
+    margin: 0;
+    max-width: none;
+    font-size: 2.25rem;
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    text-align: center;
+    color: var(--color-text, #0f172a);
+    text-wrap: balance;
+}
+
+@media (min-width: 1024px) {
+    .section-features--feature13 .section-features__title--center {
+        font-size: 3rem;
+    }
+}
+
+.section-features--feature13 .section-features__grid--horizontal {
+    display: grid;
+    gap: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+    .section-features--feature13 .section-features__grid--horizontal {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.section-features--feature13 .section-features__card--horizontal {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: var(--color-muted, #f1f5f9);
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.section-features--feature13 .section-features__card-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 2.5rem;
+    border-bottom: 1px solid var(--color-border, #e2e8f0);
+}
+
+.section-features--feature13 .section-features__card-copy {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 2rem;
+    padding: 1.5rem 0 1.5rem 1rem;
+}
+
+@media (min-width: 768px) {
+    .section-features--feature13 .section-features__card-copy {
+        gap: 3.5rem;
+        padding: 2.5rem 0 2.5rem 2rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .section-features--feature13 .section-features__card-copy {
+        justify-content: normal;
+    }
+}
+
+.section-features--feature13 .section-features__card-label {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.75rem;
+    color: var(--color-text-muted, #64748b);
+}
+
+.section-features--feature13 .section-features__card-title-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.section-features--feature13 .section-features__card-title-link h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+    transition: color 0.15s ease, opacity 0.15s ease;
+}
+
+@media (min-width: 640px) {
+    .section-features--feature13 .section-features__card-title-link h3 {
+        font-size: 1.875rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .section-features--feature13 .section-features__card-title-link h3 {
+        font-size: 2.25rem;
+    }
+}
+
+.section-features--feature13 .section-features__card-title-link:hover h3 {
+    opacity: 0.8;
+}
+
+.section-features--feature13 .section-features__card-thumb {
+    flex-shrink: 0;
+    width: 40%;
+    border-left: 1px solid var(--color-border, #e2e8f0);
+    border-top-right-radius: 0.5rem;
+}
+
+@media (min-width: 768px) {
+    .section-features--feature13 .section-features__card-thumb {
+        width: 33.333%;
+    }
+}
+
+.section-features--feature13 .section-features__card-thumb a {
+    display: block;
+    height: 100%;
+}
+
+.section-features--feature13 .section-features__card-thumb .section-features__item-img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 4 / 3;
+    border-top-right-radius: 0.5rem;
+    object-fit: cover;
+    object-position: top;
+    transition: opacity 0.15s ease;
+}
+
+.section-features--feature13 .section-features__card-thumb a:hover .section-features__item-img {
+    opacity: 0.8;
+}
+
+.section-features--feature13 .section-features__card-desc {
+    margin: 0;
+    padding: 1rem;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--color-text-muted, #64748b);
+}
+
+@media (min-width: 768px) {
+    .section-features--feature13 .section-features__card-desc {
+        padding: 2rem;
+    }
+}

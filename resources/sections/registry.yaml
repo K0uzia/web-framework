@@ -2,1092 +2,540 @@ hero:
   label: Hero
   group: hero
   icon: fa-solid fa-panorama
-  description: 'Grand titre d''introduction avec accroche et boutons d''action.'
+  description: 'Bibliothèque de 13 blocs hero pour pages d''accueil et landing.'
   variants:
-    centered:
-      label: Centré
-      description: 'Titre et boutons centrés, mise en page compacte.'
-    split:
-      label: Deux colonnes
-      description: 'Texte à gauche, visuel à droite.'
-    split-left:
-      label: Colonnes inversées
-      description: 'Visuel à gauche, texte à droite.'
-    fullscreen:
-      label: Plein écran
-      description: Hauteur maximale pour un impact visuel fort.
-    image-below:
-      label: Image en dessous
-      description: Accroche centrée avec visuel sous le texte.
-    badge:
-      label: Avec badge
-      description: 'Badge d''annonce au-dessus du titre principal.'
-    minimal:
-      label: Minimal
-      description: Hero épuré sans éléments superflus.
-    video:
-      label: Vidéo
-      description: Zone média large pour une vidéo ou un visuel hero.
+    hero1:
+      label: Hero 1
+      description: 'Split avec badge et image clair/sombre.'
+    hero3:
+      label: Hero 3
+      description: 'Split avec avis, note et visuel clair/sombre.'
+    hero7:
+      label: Hero 7
+      description: 'Preuve sociale centrée avec avatars.'
+    hero12:
+      label: Hero 12
+      description: 'Logo, fond quadrillé et stack technique.'
+    hero34:
+      label: Hero 34
+      description: 'Split sur carte à fond atténué.'
+    hero45:
+      label: Hero 45
+      description: 'Slider d''images et fonctionnalités.'
+    hero47:
+      label: Hero 47
+      description: 'Titre large et mockup téléphone.'
+    hero67:
+      label: Hero 67
+      description: 'Logo, CTA, avatars et bandeau image.'
+    hero78:
+      label: Hero 78
+      description: 'Plein écran avec photo de fond.'
+    hero115:
+      label: Hero 115
+      description: 'Cercles décoratifs, icône et image.'
+    hero195:
+      label: Hero 195
+      description: 'Onglets produit avec visuels.'
+    hero206:
+      label: Hero 206
+      description: 'Marquee de logos et mockup navigateur.'
+    hero243:
+      label: Hero 243
+      description: 'Titre animé et grille de fonctionnalités.'
   content_fields:
-    badge:
-      type: text
-      label: Badge / annonce
-      client_editable: true
-      show_for_variants: [badge]
     title:
       type: text
       label: Titre
       client_editable: true
     subtitle:
       type: textarea
-      label: Sous-titre
+      label: Description
       client_editable: true
-      hide_for_variants: [minimal]
+    subheading:
+      type: text
+      label: Sous-titre (partie secondaire)
+      client_editable: true
+    badge:
+      type: text
+      label: Badge
+      client_editable: true
+    byline:
+      type: text
+      label: Ligne de confiance
+      client_editable: true
     image_url:
       type: image
-      label: Image
+      label: Image (mode clair)
       client_editable: true
-      show_for_variants: [split, split-left, image-below, video, fullscreen]
-    video_url:
-      type: video
-      label: Vidéo (YouTube, Vimeo ou fichier local)
+    image_url_dark:
+      type: image
+      label: Image (mode sombre)
       client_editable: true
-      show_for_variants: [fullscreen, video]
+    image_alt:
+      type: text
+      label: Texte alternatif image
+      client_editable: true
+    background_image_url:
+      type: image
+      label: Image de fond
+      client_editable: true
+    reviews_rating:
+      type: text
+      label: Note affichée
+      client_editable: true
+    reviews_count:
+      type: text
+      label: Nombre d''avis
+      client_editable: true
+    review_avatars:
+      type: repeater
+      label: Avatars des avis
+      fields:
+        url:
+          type: image
+          label: Photo
+        title:
+          type: text
+          label: Nom (accessibilité)
     buttons:
       type: buttons
       label: Boutons
       client_editable: true
+    items:
+      type: repeater
+      label: Éléments (onglets, features, logos)
+      fields:
+        title:
+          type: text
+          label: Titre
+        text:
+          type: textarea
+          label: Description
+        url:
+          type: image
+          label: Image
+        href:
+          type: text
+          label: Lien
   style_fields:
     bg:
       type: color-token
       label: Fond
-      group: general
-    text_align:
-      type: select
-      label: Alignement du texte
-      options: '[left, center, right]'
       group: general
     padding:
       type: select
       label: Espacement vertical
       options: '[sm, md, lg, xl]'
       group: general
-    min_height:
-      type: select
-      label: Hauteur de section
-      options: '[auto, large, viewport]'
-      group: layout
-    content_width:
-      type: select
-      label: Largeur du contenu
-      options: '[narrow, default, wide]'
-      group: layout
-    title_size:
-      type: select
-      label: Taille du titre
-      options: '[sm, md, lg, xl, display]'
-      group: typography
-    subtitle_size:
-      type: select
-      label: Taille du sous-titre
-      options: '[sm, md, lg, hidden]'
-      group: typography
-      hide_for_variants: [minimal]
-    image_border:
-      type: select
-      label: Bordure du visuel
-      options: '[none, thin]'
-      group: visual
-      show_for_variants: [split, split-left, image-below, video]
-    image_radius:
-      type: select
-      label: Coins du visuel
-      options: '[none, md, lg]'
-      group: visual
-      show_for_variants: [split, split-left, image-below, video]
-    image_shadow:
-      type: select
-      label: Ombre du visuel
-      options: '[none, md]'
-      group: visual
-      show_for_variants: [split, split-left, image-below, video]
 features:
   label: Fonctionnalités
   group: feature
-  icon: fa-solid fa-table-cells-large
-  description: Blocs fonctionnalités inspirés des Feature 1 à 10 de shadcnblocks.
+  icon: fa-solid fa-grid-2
+  description: 'Bibliothèque de 16 blocs fonctionnalités shadcnblocks.'
   variants:
-    feature-1:
+    feature1:
       label: Feature 1
-      description: Deux colonnes, image carrée bordée et bouton contour.
-    feature-2:
+      description: 'Split texte et image.'
+    feature2:
       label: Feature 2
-      description: Split image et texte avec boutons principal et secondaire.
-    feature-3:
+      description: 'Split image et texte.'
+    feature3:
       label: Feature 3
-      description: Cartes avec icône, texte et image en pied de carte.
-    feature-4:
-      label: Feature 4
-      description: Cartes collaboratives avec citation mise en avant.
-    feature-5:
-      label: Feature 5
-      description: Grille bento à deux cartes asymétriques.
-    feature-6:
-      label: Feature 6
-      description: Liste à puces et image carrée côte à côte.
-    feature-7:
-      label: Feature 7
-      description: Checklist face à une image encadrée.
-    feature-8:
-      label: Feature 8
-      description: Titre centré et deux cartes cadre.
-    feature-9:
-      label: Feature 9
-      description: Image à gauche et texte empilé à droite.
-    feature-10:
-      label: Feature 10
-      description: Colonnes à icônes avec séparateurs pointillés.
+      description: 'Grille de cartes avec visuels.'
+    feature13:
+      label: Feature 13
+      description: 'Cartes horizontales sur fond atténué.'
+    feature15:
+      label: Feature 15
+      description: 'En-tête centré et grille icônes 2x2.'
+    feature16:
+      label: Feature 16
+      description: 'Label, titre et grille icônes 3 colonnes.'
+    feature17:
+      label: Feature 17
+      description: 'Badge, liste icônes et CTA.'
+    feature42:
+      label: Feature 42
+      description: 'Titre ancré et grille texte asymétrique.'
+    feature43:
+      label: Feature 43
+      description: 'Grille icônes 3 colonnes et CTA.'
+    feature51:
+      label: Feature 51
+      description: 'Onglets avec visuels.'
+    feature72:
+      label: Feature 72
+      description: 'En-tête latéral et cartes image 2x2.'
+    feature73:
+      label: Feature 73
+      description: 'En-tête et cartes image 3 colonnes.'
+    feature74:
+      label: Feature 74
+      description: 'Rangées alternées image et texte.'
+    feature166:
+      label: Feature 166
+      description: 'Grille bento asymétrique.'
+    feature197:
+      label: Feature 197
+      description: 'Accordéon et visuel crossfade.'
+    feature239:
+      label: Feature 239
+      description: 'Split décoratif avec cadre pointillé.'
   content_fields:
     title:
       type: text
-      label: Titre de section
+      label: Titre
       client_editable: true
     subtitle:
       type: textarea
-      label: Sous-titre de section
+      label: Description
       client_editable: true
-    text:
-      type: textarea
-      label: Texte (un paragraphe par ligne)
+    label:
+      type: text
+      label: Label
       client_editable: true
-      hide_for_variants: [feature-1, feature-3, feature-4, feature-5, feature-8, feature-10]
+    badge:
+      type: text
+      label: Badge
+      client_editable: true
     image_url:
       type: image
-      label: Image principale
+      label: Image (mode clair)
       client_editable: true
-      show_for_variants: [feature-1, feature-2, feature-6, feature-7, feature-9]
+    image_url_dark:
+      type: image
+      label: Image (mode sombre)
+      client_editable: true
+    image_alt:
+      type: text
+      label: Texte alternatif image
+      client_editable: true
+    overlay_date:
+      type: text
+      label: Date overlay (feature239)
+      client_editable: true
+    overlay_title:
+      type: text
+      label: Titre overlay (feature239)
+      client_editable: true
+    overlay_text:
+      type: textarea
+      label: Texte overlay (feature239)
+      client_editable: true
+    overlay_link:
+      type: text
+      label: Lien overlay (feature239)
+      client_editable: true
+    overlay_link_label:
+      type: text
+      label: Libellé lien overlay (feature239)
+      client_editable: true
     buttons:
       type: buttons
       label: Boutons
-      show_for_variants: [feature-1, feature-2]
-    quote_text:
-      type: textarea
-      label: Citation
-      show_for_variants: [feature-4]
-    quote_author:
-      type: text
-      label: Auteur de la citation
-      show_for_variants: [feature-4]
+      client_editable: true
     items:
       type: repeater
       label: Éléments
-      client_editable: true
-      hide_for_variants: [feature-1, feature-2, feature-9]
       fields:
-        icon:
-          type: icon
-          label: Icône
-          hide_for_variants: [feature-6, feature-7]
-        url:
-          type: image
-          label: Image
-          hide_for_variants: [feature-6, feature-7, feature-8, feature-10]
         title:
           type: text
           label: Titre
         text:
           type: textarea
-          label: Texte
+          label: Description
+        label:
+          type: text
+          label: Label
+        url:
+          type: image
+          label: Image
+        href:
+          type: text
+          label: Lien
   style_fields:
     bg:
       type: color-token
       label: Fond
+      group: general
     padding:
       type: select
-      label: Espacement
+      label: Espacement vertical
       options: '[sm, md, lg, xl]'
+      group: general
 integrations:
   label: Intégrations
   group: integration
   icon: fa-solid fa-plug
-  description: Connecteurs et outils compatibles avec votre produit.
+  description: 'Bibliothèque de blocs intégrations shadcnblocks.'
+  variants:
+    integration3:
+      label: Integration 3
+      description: 'Liste centrée avec logos et descriptions.'
+    integration9:
+      label: Integration 9
+      description: 'Grille de cartes avec logos.'
   content_fields:
     title:
       type: text
-      label: Titre de section
+      label: Titre
       client_editable: true
     subtitle:
       type: textarea
-      label: Sous-titre de section
+      label: Description
       client_editable: true
     items:
       type: repeater
       label: Intégrations
-      client_editable: true
       fields:
         title:
           type: text
-          label: Titre
+          label: Nom
         text:
           type: textarea
-          label: Texte
-  style_fields:
-    bg:
-      type: color-token
-      label: Fond
-    padding:
-      type: select
-      label: Espacement
-      options: [sm, md, lg, xl]
-  variants:
-    grid-2:
-      label: Grille 2 colonnes
-      description: 'Cartes d''intégrations sur deux colonnes responsives.'
-    grid-3:
-      label: Grille 3 colonnes
-      description: Disposition équilibrée en trois colonnes.
-    grid-4:
-      label: Grille 4 colonnes
-      description: Vue dense en quatre colonnes sur grand écran.
-    bento:
-      label: Bento
-      description: Grille asymétrique type bento pour mettre un élément en avant.
-    list:
-      label: Liste
-      description: Liste verticale avec titres et textes alignés.
-about:
-  label: À propos
-  group: about
-  icon: fa-solid fa-circle-info
-  description: Présentation en deux colonnes avec points clés.
-  variants:
-    split:
-      label: Texte et points
-      description: Texte principal avec liste de points clés.
-    centered:
-      label: Centré
-      description: Présentation centrée avec points en dessous.
-    cards:
-      label: Cartes
-      description: Points clés en cartes.
-    grid-3:
-      label: Grille 3 colonnes
-      description: Valeurs ou piliers en trois colonnes.
-  content_fields:
-    title:
-      type: text
-      label: Titre
-      client_editable: true
-    subtitle:
-      type: textarea
-      label: Sous-titre
-      client_editable: true
-    text:
-      type: textarea
-      label: Texte (un paragraphe par ligne)
-      client_editable: true
-    items:
-      type: repeater
-      label: Points clés
-      client_editable: true
-      fields:
-        title:
-          type: text
-          label: Titre
-        text:
-          type: textarea
-          label: Texte
-  style_fields:
-    bg:
-      type: color-token
-      label: Fond
-    padding:
-      type: select
-      label: Espacement
-      options: '[sm, md, lg, xl]'
-content:
-  label: Texte
-  group: content
-  icon: fa-solid fa-align-left
-  description: Bloc de texte libre avec titre optionnel.
-  variants:
-    prose:
-      label: Colonne de texte
-      description: Texte long en colonne lisible.
-    columns-2:
-      label: Deux colonnes
-      description: Texte réparti sur deux colonnes.
-    centered:
-      label: Centré
-      description: Bloc de texte centré.
-    quote:
-      label: Citation
-      description: Mise en forme type citation ou pull quote.
-  content_fields:
-    title:
-      type: text
-      label: Titre
-      client_editable: true
-    text:
-      type: textarea
-      label: Texte (un paragraphe par ligne)
-      client_editable: true
-  style_fields:
-    bg:
-      type: color-token
-      label: Fond
-    text_align:
-      type: select
-      label: Alignement
-      options: '[left, center, right]'
-    padding:
-      type: select
-      label: Espacement
-      options: '[sm, md, lg, xl]'
-gallery:
-  label: Galerie
-  group: gallery
-  icon: fa-solid fa-images
-  description: 'Grille d''images avec légende.'
-  variants:
-    grid:
-      label: Grille
-      description: Images en grille responsive.
-    grid-2:
-      label: Grille 2 colonnes
-      description: Galerie en deux colonnes.
-    masonry:
-      label: Mosaïque
-      description: 'Disposition mosaïque d''images.'
-    featured:
-      label: Mis en avant
-      description: Une image principale avec vignettes.
-  content_fields:
-    title:
-      type: text
-      label: Titre de section
-      client_editable: true
-    subtitle:
-      type: textarea
-      label: Sous-titre de section
-      client_editable: true
-    items:
-      type: repeater
-      label: Images
-      client_editable: true
-      fields:
+          label: Description
         url:
           type: image
-          label: Image
-        title:
-          type: text
-          label: Légende / texte alternatif
+          label: Logo
   style_fields:
     bg:
       type: color-token
       label: Fond
+      group: general
     padding:
       type: select
-      label: Espacement
+      label: Espacement vertical
       options: '[sm, md, lg, xl]'
-compare:
-  label: Comparaison
-  group: pricing
-  icon: fa-solid fa-scale-balanced
-  description: Tableau comparatif sur deux colonnes.
-  variants:
-    table:
-      label: Tableau
-      description: Comparaison en lignes et colonnes.
-    cards:
-      label: Cartes
-      description: Deux cartes comparées côte à côte.
-    simple:
-      label: Simple
-      description: Tableau épuré sans fioritures.
-    compact:
-      label: Compact
-      description: Comparaison dense pour mobile.
-  content_fields:
-    title:
-      type: text
-      label: Titre de section
-      client_editable: true
-    subtitle:
-      type: textarea
-      label: Sous-titre de section
-      client_editable: true
-    col_a_label:
-      type: text
-      label: Libellé colonne A
-      client_editable: true
-    col_b_label:
-      type: text
-      label: Libellé colonne B
-      client_editable: true
-    items:
-      type: repeater
-      label: Lignes
-      client_editable: true
-      fields:
-        title:
-          type: text
-          label: Critère
-        text:
-          type: text
-          label: Colonne A
-        role:
-          type: text
-          label: Colonne B
-  style_fields:
-    bg:
-      type: color-token
-      label: Fond
-    padding:
-      type: select
-      label: Espacement
-      options: '[sm, md, lg, xl]'
+      group: general
 pricing:
   label: Tarifs
   group: pricing
   icon: fa-solid fa-tags
-  description: 'Cartes de tarification avec liste d''avantages et bouton.'
+  description: 'Bibliothèque de blocs tarifs shadcnblocks.'
   variants:
-    cards:
-      label: Cartes
-      description: Offres présentées en cartes comparables.
-    compact:
-      label: Compact
-      description: Cartes resserrées pour comparer rapidement.
-    simple:
-      label: Simple
-      description: 'Mise en page épurée avec peu d''ornements.'
-    grid-3:
-      label: Grille 3 colonnes
-      description: Trois offres alignées en grille.
+    pricing2:
+      label: Pricing 2
+      description: 'Cartes avec bascule mensuel/annuel.'
+    pricing4:
+      label: Pricing 4
+      description: 'Onglets et cartes avec badge.'
+    pricing6:
+      label: Pricing 6
+      description: 'Offre unique centrée avec listes groupées.'
+    pricing11:
+      label: Pricing 11
+      description: 'Matrice comparative avec en-tête sticky.'
   content_fields:
     title:
       type: text
-      label: Titre de section
+      label: Titre
       client_editable: true
     subtitle:
       type: textarea
-      label: Sous-titre de section
+      label: Description
+      client_editable: true
+    billing_monthly_label:
+      type: text
+      label: Libellé facturation mensuelle
+      client_editable: true
+    billing_yearly_label:
+      type: text
+      label: Libellé facturation annuelle
+      client_editable: true
+    price_monthly:
+      type: text
+      label: Prix mensuel (pricing6)
+      client_editable: true
+    period_monthly:
+      type: text
+      label: Période affichée (pricing6)
+      client_editable: true
+    button_label:
+      type: text
+      label: Libellé bouton (pricing6)
+      client_editable: true
+    button_href:
+      type: text
+      label: Lien bouton (pricing6)
       client_editable: true
     items:
       type: repeater
       label: Offres
-      client_editable: true
       fields:
         title:
           type: text
-          label: 'Nom de l''offre'
-        price:
-          type: text
-          label: Prix
-        period:
-          type: text
-          label: Période (ex. /mois)
+          label: Nom de l'offre
         text:
           type: textarea
           label: Description
-        list:
+        price_monthly:
+          type: text
+          label: Prix mensuel
+        price_yearly:
+          type: text
+          label: Prix annuel
+        period_monthly:
+          type: text
+          label: Période mensuelle
+        period_yearly:
+          type: text
+          label: Période annuelle
+        features:
           type: textarea
-          label: Inclus (un élément par ligne)
-        cta_label:
+          label: Avantages (un par ligne)
+        label:
           type: text
-          label: 'Bouton, libellé'
-        cta_href:
+          label: Libellé bouton
+        href:
           type: text
-          label: 'Bouton, lien'
+          label: Lien
+        highlighted:
+          type: text
+          label: Mis en avant (1 ou oui)
   style_fields:
     bg:
       type: color-token
       label: Fond
+      group: general
     padding:
       type: select
-      label: Espacement
+      label: Espacement vertical
       options: '[sm, md, lg, xl]'
-banner:
-  label: Bannière
-  group: cta
-  icon: fa-solid fa-bell
-  description: 'Bandeau d''annonce en haut de section.'
-  variants:
-    strip:
-      label: Bandeau
-      description: Bandeau fin sur toute la largeur.
-    dismissible:
-      label: Fermable
-      description: Annonce avec possibilité de fermeture.
-    centered:
-      label: Centré
-      description: Message centré dans le bandeau.
-  content_fields:
-    text:
-      type: text
-      label: Message
-      client_editable: true
-    href:
-      type: text
-      label: Lien (optionnel)
-      client_editable: true
-    link_label:
-      type: text
-      label: Libellé du lien
-      client_editable: true
-  style_fields:
-    bg:
-      type: color-token
-      label: Fond
-    padding:
-      type: select
-      label: Espacement
-      options: '[sm, md]'
-cta:
-  label: 'Appel à l''action'
-  group: cta
-  icon: fa-solid fa-bullhorn
-  description: 'Bandeau d''appel à l''action avec boutons.'
-  variants:
-    banner:
-      label: Bandeau
-      description: Bandeau pleine largeur avec boutons.
-    centered:
-      label: Centré
-      description: Texte et boutons centrés dans la section.
-    split:
-      label: Deux colonnes
-      description: Message et boutons côte à côte.
-    cards:
-      label: Cartes
-      description: 'Plusieurs cartes d''action côte à côte.'
-  content_fields:
-    title:
-      type: text
-      label: Titre
-      client_editable: true
-    buttons:
-      type: buttons
-      label: Boutons
-      client_editable: true
-  style_fields:
-    bg:
-      type: color-token
-      label: Fond
-    padding:
-      type: select
-      label: Espacement
-      options: '[sm, md, lg, xl]'
-newsletter:
-  label: Inscription
-  group: newsletter
-  icon: fa-solid fa-paper-plane
-  description: 'Bloc d''inscription avec bouton vers un formulaire externe.'
-  variants:
-    centered:
-      label: Centré
-      description: Formulaire centré avec titre.
-    split:
-      label: Deux colonnes
-      description: Texte et champ email côte à côte.
-    inline:
-      label: En ligne
-      description: Champ et bouton sur une seule ligne.
-    banner:
-      label: Bandeau
-      description: Inscription en bandeau pleine largeur.
-  content_fields:
-    title:
-      type: text
-      label: Titre
-      client_editable: true
-    subtitle:
-      type: textarea
-      label: Sous-titre
-      client_editable: true
-    input_hint:
-      type: text
-      label: Indication du champ email
-      client_editable: true
-    buttons:
-      type: buttons
-      label: 'Bouton d''action'
-      client_editable: true
-  style_fields:
-    bg:
-      type: color-token
-      label: Fond
-    padding:
-      type: select
-      label: Espacement
-      options: '[sm, md, lg, xl]'
-testimonials:
-  label: Témoignages
-  group: testimonial
-  icon: fa-solid fa-quote-left
-  description: Citations de clients avec nom et rôle.
-  variants:
-    grid:
-      label: Grille
-      description: Témoignages en grille responsive.
-    grid-2:
-      label: Grille 2 colonnes
-      description: Deux citations par ligne sur desktop.
-    masonry:
-      label: Mosaïque
-      description: Disposition en mosaïque de hauteurs variables.
-    featured:
-      label: Mis en avant
-      description: Un témoignage principal avec citations secondaires.
-  content_fields:
-    title:
-      type: text
-      label: Titre de section
-      client_editable: true
-    subtitle:
-      type: textarea
-      label: Sous-titre de section
-      client_editable: true
-    items:
-      type: repeater
-      label: Témoignages
-      client_editable: true
-      fields:
-        text:
-          type: textarea
-          label: Citation
-        title:
-          type: text
-          label: Nom
-        role:
-          type: text
-          label: Rôle / entreprise
-  style_fields:
-    bg:
-      type: color-token
-      label: Fond
-    padding:
-      type: select
-      label: Espacement
-      options: '[sm, md, lg, xl]'
-stats:
-  label: Chiffres clés
-  group: stats
-  icon: fa-solid fa-chart-simple
-  description: Rangée de statistiques avec valeur et libellé.
-  variants:
-    row:
-      label: Rangée
-      description: Chiffres alignés horizontalement.
-    grid-4:
-      label: Grille 4 colonnes
-      description: Quatre indicateurs en grille.
-    cards:
-      label: Cartes
-      description: Statistiques dans des cartes distinctes.
-    centered:
-      label: Centré
-      description: Bloc de chiffres centré sur la page.
-  content_fields:
-    title:
-      type: text
-      label: Titre de section
-      client_editable: true
-    items:
-      type: repeater
-      label: Chiffres
-      client_editable: true
-      fields:
-        value:
-          type: text
-          label: 'Valeur (ex. 99 %)'
-        title:
-          type: text
-          label: Libellé
-  style_fields:
-    bg:
-      type: color-token
-      label: Fond
-    padding:
-      type: select
-      label: Espacement
-      options: '[sm, md, lg, xl]'
-logos:
-  label: Logos / références
-  group: logos
-  icon: fa-solid fa-building
-  description: Rangée de noms de clients ou partenaires.
-  variants:
-    row:
-      label: Rangée
-      description: Logos alignés sur une ligne.
-    grid:
-      label: Grille
-      description: Logos en grille multi-colonnes.
-    marquee:
-      label: Défilement
-      description: Bandeau de logos en défilement horizontal.
-    centered:
-      label: Centré
-      description: Bloc de logos centré avec titre.
-  content_fields:
-    title:
-      type: text
-      label: Titre de section
-      client_editable: true
-    items:
-      type: repeater
-      label: Références
-      client_editable: true
-      fields:
-        title:
-          type: text
-          label: Nom
-  style_fields:
-    bg:
-      type: color-token
-      label: Fond
-    padding:
-      type: select
-      label: Espacement
-      options: '[sm, md, lg, xl]'
-team:
-  label: Équipe
-  group: team
-  icon: fa-solid fa-user-group
-  description: 'Membres de l''équipe avec rôle et bio courte.'
-  variants:
-    grid:
-      label: Grille
-      description: Membres en grille responsive.
-    grid-2:
-      label: Grille 2 colonnes
-      description: Deux profils par ligne.
-    cards:
-      label: Cartes
-      description: Cartes profil avec photo et bio.
-    list:
-      label: Liste
-      description: Liste verticale de membres.
-  content_fields:
-    title:
-      type: text
-      label: Titre de section
-      client_editable: true
-    subtitle:
-      type: textarea
-      label: Sous-titre de section
-      client_editable: true
-    items:
-      type: repeater
-      label: Membres
-      client_editable: true
-      fields:
-        title:
-          type: text
-          label: Nom
-        role:
-          type: text
-          label: Rôle
-        text:
-          type: textarea
-          label: Bio courte
-  style_fields:
-    bg:
-      type: color-token
-      label: Fond
-    padding:
-      type: select
-      label: Espacement
-      options: '[sm, md, lg, xl]'
-faq:
-  label: FAQ
-  group: faq
-  icon: fa-solid fa-circle-question
-  description: Questions fréquentes en accordéon dépliable.
-  variants:
-    list:
-      label: Liste
-      description: Questions empilées en liste dépliable.
-    two-col:
-      label: Deux colonnes
-      description: Questions réparties sur deux colonnes.
-    centered:
-      label: Centré
-      description: Bloc FAQ centré avec largeur limitée.
-    compact:
-      label: Compact
-      description: Espacement réduit pour une FAQ dense.
-  content_fields:
-    title:
-      type: text
-      label: Titre de section
-      client_editable: true
-    subtitle:
-      type: textarea
-      label: Sous-titre de section
-      client_editable: true
-    items:
-      type: repeater
-      label: Questions
-      client_editable: true
-      fields:
-        title:
-          type: text
-          label: Question
-        text:
-          type: textarea
-          label: Réponse
-  style_fields:
-    bg:
-      type: color-token
-      label: Fond
-    padding:
-      type: select
-      label: Espacement
-      options: '[sm, md, lg, xl]'
+      group: general
 contact:
   label: Contact
   group: contact
   icon: fa-solid fa-envelope
-  description: 'Coordonnées de contact (email, téléphone, adresse).'
+  description: 'Bibliothèque de blocs contact shadcnblocks.'
   variants:
-    cards:
-      label: Cartes
-      description: Coordonnées en cartes distinctes.
-    split:
-      label: Deux colonnes
-      description: 'Texte d''intro et coordonnées côte à côte.'
-    centered:
-      label: Centré
-      description: Bloc de contact centré.
-    list:
-      label: Liste
-      description: Liste simple de moyens de contact.
+    contact2:
+      label: Contact 2
+      description: 'Coordonnées et formulaire côte à côte.'
+    contact7:
+      label: Contact 7
+      description: 'Grille de cartes avec canaux de contact.'
   content_fields:
     title:
       type: text
-      label: Titre de section
+      label: Titre
       client_editable: true
     subtitle:
       type: textarea
-      label: Sous-titre de section
+      label: Description
       client_editable: true
-    items:
-      type: repeater
-      label: Coordonnées
+    phone:
+      type: text
+      label: Téléphone
       client_editable: true
-      fields:
-        title:
-          type: text
-          label: Libellé (ex. Email)
-        text:
-          type: text
-          label: Valeur affichée
-        href:
-          type: text
-          label: 'Lien (mailto:, tel:, URL), optionnel'
+    email:
+      type: text
+      label: Email
+      client_editable: true
+    web_label:
+      type: text
+      label: Libellé site web (contact2)
+      client_editable: true
+    web_url:
+      type: text
+      label: URL site web (contact2)
+      client_editable: true
+    form_heading:
+      type: text
+      label: Titre du formulaire (contact2)
+      client_editable: true
+    form_subheading:
+      type: text
+      label: Sous-titre du formulaire (contact2)
+      client_editable: true
+    submit_label:
+      type: text
+      label: Libellé bouton envoi (contact2)
+      client_editable: true
+    submitting_label:
+      type: text
+      label: Libellé envoi en cours (contact2)
+      client_editable: true
+    success_message:
+      type: text
+      label: Message de succès (contact2)
+      client_editable: true
+    email_label:
+      type: text
+      label: Libellé carte email (contact7)
+      client_editable: true
+    email_description:
+      type: textarea
+      label: Description carte email (contact7)
+      client_editable: true
+    office_label:
+      type: text
+      label: Libellé carte bureau (contact7)
+      client_editable: true
+    office_description:
+      type: textarea
+      label: Description carte bureau (contact7)
+      client_editable: true
+    office_address:
+      type: text
+      label: Adresse bureau (contact7)
+      client_editable: true
+    office_href:
+      type: text
+      label: Lien adresse bureau (contact7)
+      client_editable: true
+    phone_label:
+      type: text
+      label: Libellé carte téléphone (contact7)
+      client_editable: true
+    phone_description:
+      type: textarea
+      label: Description carte téléphone (contact7)
+      client_editable: true
+    chat_label:
+      type: text
+      label: Libellé carte chat (contact7)
+      client_editable: true
+    chat_description:
+      type: textarea
+      label: Description carte chat (contact7)
+      client_editable: true
+    chat_link:
+      type: text
+      label: Texte lien chat (contact7)
+      client_editable: true
+    chat_href:
+      type: text
+      label: Lien chat (contact7)
+      client_editable: true
   style_fields:
     bg:
       type: color-token
       label: Fond
+      group: general
     padding:
       type: select
-      label: Espacement
+      label: Espacement vertical
       options: '[sm, md, lg, xl]'
-blog:
-  label: Articles
-  group: blog
-  icon: fa-solid fa-newspaper
-  description: 'Liste d''articles ou de billets de blog.'
-  content_fields:
-    title:
-      type: text
-      label: Titre de section
-      client_editable: true
-    subtitle:
-      type: textarea
-      label: Sous-titre de section
-      client_editable: true
-    items:
-      type: repeater
-      label: Articles
-      client_editable: true
-      fields:
-        title:
-          type: text
-          label: Titre
-        text:
-          type: textarea
-          label: Texte
-        url:
-          type: image
-          label: Image
-  style_fields:
-    bg:
-      type: color-token
-      label: Fond
-    padding:
-      type: select
-      label: Espacement
-      options: [sm, md, lg, xl]
+      group: general
+testimonials:
+  label: Témoignages
+  group: testimonial
+  icon: fa-solid fa-quote-left
+  description: 'Bibliothèque de blocs témoignages shadcnblocks.'
   variants:
-    grid-3:
-      label: Grille 3 colonnes
-      description: 'Aperçus d''articles en trois colonnes.'
-    grid-2:
-      label: Grille 2 colonnes
-      description: Articles en deux colonnes.
-    list:
-      label: Liste
-      description: 'Liste verticale d''articles.'
-    featured:
-      label: Mis en avant
-      description: Un article principal avec liste secondaire.
-projects:
-  label: Projets
-  group: project
-  icon: fa-solid fa-folder-open
-  description: Portfolio de projets ou réalisations.
-  content_fields:
-    title:
-      type: text
-      label: Titre de section
-      client_editable: true
-    subtitle:
-      type: textarea
-      label: Sous-titre de section
-      client_editable: true
-    items:
-      type: repeater
-      label: Projets
-      client_editable: true
-      fields:
-        url:
-          type: image
-          label: Image
-        title:
-          type: text
-          label: Titre du projet
-  style_fields:
-    bg:
-      type: color-token
-      label: Fond
-    padding:
-      type: select
-      label: Espacement
-      options: [sm, md, lg, xl]
-  variants:
-    grid:
-      label: Grille
-      description: 'Projets en grille d''images.'
-    grid-2:
-      label: Grille 2 colonnes
-      description: Deux projets par ligne.
-    featured:
-      label: Mis en avant
-      description: Projet principal et vignettes.
-    masonry:
-      label: Mosaïque
-      description: Grille mosaïque de projets.
-timeline:
-  label: Chronologie
-  group: timeline
-  icon: fa-solid fa-timeline
-  description: Événements ou jalons sur une ligne de temps.
-  content_fields:
-    title:
-      type: text
-      label: Titre de section
-      client_editable: true
-    subtitle:
-      type: textarea
-      label: Sous-titre de section
-      client_editable: true
-    items:
-      type: repeater
-      label: Jalons
-      client_editable: true
-      fields:
-        title:
-          type: text
-          label: Titre
-        text:
-          type: textarea
-          label: Texte
-  style_fields:
-    bg:
-      type: color-token
-      label: Fond
-    padding:
-      type: select
-      label: Espacement
-      options: [sm, md, lg, xl]
-  variants:
-    timeline:
-      label: Chronologie
-      description: Ligne de temps verticale.
-    vertical:
-      label: Vertical
-      description: Jalons empilés verticalement.
-    row:
-      label: Rangée
-      description: Jalons alignés horizontalement.
-services:
-  label: Services
-  group: service
-  icon: fa-solid fa-briefcase
-  description: Offres de services avec description courte.
-  content_fields:
-    title:
-      type: text
-      label: Titre de section
-      client_editable: true
-    subtitle:
-      type: textarea
-      label: Sous-titre de section
-      client_editable: true
-    items:
-      type: repeater
-      label: Services
-      client_editable: true
-      fields:
-        title:
-          type: text
-          label: Titre
-        text:
-          type: textarea
-          label: Texte
-  style_fields:
-    bg:
-      type: color-token
-      label: Fond
-    padding:
-      type: select
-      label: Espacement
-      options: [sm, md, lg, xl]
-  variants:
-    grid-2:
-      label: Grille 2 colonnes
-      description: Cartes de services sur deux colonnes responsives.
-    grid-3:
-      label: Grille 3 colonnes
-      description: Disposition équilibrée en trois colonnes.
-    grid-4:
-      label: Grille 4 colonnes
-      description: Vue dense en quatre colonnes sur grand écran.
-    bento:
-      label: Bento
-      description: Grille asymétrique type bento pour mettre un élément en avant.
-    list:
-      label: Liste
-      description: Liste verticale avec titres et textes alignés.
-login:
-  label: Connexion
-  group: auth
-  icon: fa-solid fa-right-to-bracket
-  description: Bloc de connexion à un espace client.
+    testimonial4:
+      label: Testimonial 4
+      description: 'Témoignage mis en avant avec image et grille de cartes.'
+    testimonial8:
+      label: Testimonial 8
+      description: 'Masonry en colonnes avec dégradé de fin.'
+    testimonial9:
+      label: Testimonial 9
+      description: 'Grille masonry avec liens réseaux sociaux.'
+    testimonial10:
+      label: Testimonial 10
+      description: 'Citation unique centrée avec auteur.'
   content_fields:
     title:
       type: text
@@ -1095,928 +543,53 @@ login:
       client_editable: true
     subtitle:
       type: textarea
-      label: Sous-titre
+      label: Description
       client_editable: true
-    input_hint:
-      type: text
-      label: Indication identifiant
-      client_editable: true
-    buttons:
-      type: buttons
-      label: Boutons
-      client_editable: true
-  style_fields:
-    bg:
-      type: color-token
-      label: Fond
-    padding:
-      type: select
-      label: Espacement
-      options: [sm, md, lg, xl]
-  variants:
-    centered:
-      label: Centré
-      description: Formulaire de connexion centré.
-    split:
-      label: Deux colonnes
-      description: Visuel et formulaire côte à côte.
-    minimal:
-      label: Minimal
-      description: Connexion compacte sans décor.
-signup:
-  label: Inscription compte
-  group: auth
-  icon: fa-solid fa-user-plus
-  description: 'Bloc d''inscription ou création de compte.'
-  content_fields:
-    title:
-      type: text
-      label: Titre
-      client_editable: true
-    subtitle:
+    quote:
       type: textarea
-      label: Sous-titre
+      label: Citation (testimonial10)
       client_editable: true
-    input_hint:
+    author_name:
       type: text
-      label: Indication email
+      label: Nom auteur (testimonial10)
       client_editable: true
-    buttons:
-      type: buttons
-      label: Boutons
-      client_editable: true
-  style_fields:
-    bg:
-      type: color-token
-      label: Fond
-    padding:
-      type: select
-      label: Espacement
-      options: [sm, md, lg, xl]
-  variants:
-    centered:
-      label: Centré
-      description: 'Formulaire d''inscription centré.'
-    split:
-      label: Deux colonnes
-      description: Accroche et formulaire côte à côte.
-    cards:
-      label: Carte
-      description: Formulaire dans une carte.
-careers:
-  label: Carrières
-  group: career
-  icon: fa-solid fa-briefcase
-  description: 'Offres d''emploi et culture d''entreprise.'
-  content_fields:
-    title:
+    author_role:
       type: text
-      label: Titre de section
+      label: Rôle auteur (testimonial10)
       client_editable: true
-    subtitle:
-      type: textarea
-      label: Sous-titre de section
+    author_avatar:
+      type: image
+      label: Avatar auteur (testimonial10)
       client_editable: true
     items:
       type: repeater
-      label: Postes
-      client_editable: true
+      label: Témoignages
       fields:
-        title:
-          type: text
-          label: Titre
-        text:
-          type: textarea
-          label: Texte
-  style_fields:
-    bg:
-      type: color-token
-      label: Fond
-    padding:
-      type: select
-      label: Espacement
-      options: [sm, md, lg, xl]
-  variants:
-    grid:
-      label: Grille
-      description: Postes en grille.
-    list:
-      label: Liste
-      description: Liste de postes ouverts.
-    cards:
-      label: Cartes
-      description: Offres en cartes.
-compliance:
-  label: Conformité
-  group: compliance
-  icon: fa-solid fa-shield-halved
-  description: 'Informations légales, RGPD ou certifications.'
-  content_fields:
-    title:
-      type: text
-      label: Titre
-      client_editable: true
-    text:
-      type: textarea
-      label: Texte (un paragraphe par ligne)
-      client_editable: true
-  style_fields:
-    bg:
-      type: color-token
-      label: Fond
-    padding:
-      type: select
-      label: Espacement
-      options: [sm, md, lg, xl]
-    text_align:
-      type: select
-      label: Alignement
-      options: [left, center, right]
-  variants:
-    prose:
-      label: Colonne de texte
-      description: Texte légal en colonne lisible.
-    columns-2:
-      label: Deux colonnes
-      description: Texte réparti sur deux colonnes.
-    centered:
-      label: Centré
-      description: Bloc centré pour un message de confiance.
-case-studies:
-  label: Études de cas
-  group: case-study
-  icon: fa-solid fa-file-lines
-  description: Retours clients et études de cas détaillées.
-  content_fields:
-    title:
-      type: text
-      label: Titre de section
-      client_editable: true
-    subtitle:
-      type: textarea
-      label: Sous-titre de section
-      client_editable: true
-    items:
-      type: repeater
-      label: Études
-      client_editable: true
-      fields:
-        title:
-          type: text
-          label: Titre
-        text:
-          type: textarea
-          label: Texte
-  style_fields:
-    bg:
-      type: color-token
-      label: Fond
-    padding:
-      type: select
-      label: Espacement
-      options: [sm, md, lg, xl]
-  variants:
-    split:
-      label: Deux colonnes
-      description: Résumé et résultats côte à côte.
-    cards:
-      label: Cartes
-      description: Études présentées en cartes.
-    grid-3:
-      label: Grille 3 colonnes
-      description: Plusieurs études en grille.
-changelog:
-  label: Journal des versions
-  group: changelog
-  icon: fa-solid fa-code-branch
-  description: Historique des versions et nouveautés produit.
-  content_fields:
-    title:
-      type: text
-      label: Titre de section
-      client_editable: true
-    subtitle:
-      type: textarea
-      label: Sous-titre de section
-      client_editable: true
-    items:
-      type: repeater
-      label: Versions
-      client_editable: true
-      fields:
-        title:
-          type: text
-          label: Titre
-        text:
-          type: textarea
-          label: Texte
-  style_fields:
-    bg:
-      type: color-token
-      label: Fond
-    padding:
-      type: select
-      label: Espacement
-      options: [sm, md, lg, xl]
-  variants:
-    list:
-      label: Liste
-      description: Entrées de changelog en liste.
-    timeline:
-      label: Chronologie
-      description: Versions sur une ligne de temps.
-    compact:
-      label: Compact
-      description: Liste dense de versions.
-community:
-  label: Communauté
-  group: community
-  icon: fa-solid fa-users
-  description: Témoignages et preuve sociale de la communauté.
-  content_fields:
-    title:
-      type: text
-      label: Titre de section
-      client_editable: true
-    subtitle:
-      type: textarea
-      label: Sous-titre de section
-      client_editable: true
-    items:
-      type: repeater
-      label: Messages
-      client_editable: true
-      fields:
-        text:
-          type: textarea
-          label: Citation
         title:
           type: text
           label: Nom
-        role:
+        label:
           type: text
-          label: Rôle / communauté
-  style_fields:
-    bg:
-      type: color-token
-      label: Fond
-    padding:
-      type: select
-      label: Espacement
-      options: [sm, md, lg, xl]
-  variants:
-    grid:
-      label: Grille
-      description: Messages communauté en grille.
-    grid-2:
-      label: Grille 2 colonnes
-      description: Deux colonnes de citations.
-    featured:
-      label: Mis en avant
-      description: Citation principale et secondaires.
-download:
-  label: Téléchargement
-  group: download
-  icon: fa-solid fa-download
-  description: Invitation à télécharger une ressource ou une application.
-  content_fields:
-    title:
-      type: text
-      label: Titre
-      client_editable: true
-    subtitle:
-      type: textarea
-      label: Sous-titre
-      client_editable: true
-    buttons:
-      type: buttons
-      label: Boutons
-      client_editable: true
-  style_fields:
-    bg:
-      type: color-token
-      label: Fond
-    padding:
-      type: select
-      label: Espacement
-      options: [sm, md, lg, xl]
-  variants:
-    banner:
-      label: Bandeau
-      description: Bandeau avec bouton de téléchargement.
-    centered:
-      label: Centré
-      description: Bloc centré avec boutons stores.
-    split:
-      label: Deux colonnes
-      description: Texte et boutons de téléchargement.
-industries:
-  label: Secteurs
-  group: industry
-  icon: fa-solid fa-industry
-  description: 'Secteurs d''activité ou marchés ciblés.'
-  content_fields:
-    title:
-      type: text
-      label: Titre de section
-      client_editable: true
-    subtitle:
-      type: textarea
-      label: Sous-titre de section
-      client_editable: true
-    items:
-      type: repeater
-      label: Secteurs
-      client_editable: true
-      fields:
-        title:
-          type: text
-          label: Titre
+          label: Rôle
         text:
           type: textarea
-          label: Texte
-  style_fields:
-    bg:
-      type: color-token
-      label: Fond
-    padding:
-      type: select
-      label: Espacement
-      options: [sm, md, lg, xl]
-  variants:
-    row:
-      label: Rangée
-      description: Secteurs en rangée horizontale.
-    grid:
-      label: Grille
-      description: Secteurs en grille.
-    cards:
-      label: Cartes
-      description: Secteurs en cartes descriptives.
-highlights:
-  label: Liste à puces
-  group: list
-  icon: fa-solid fa-list
-  description: Liste de points ou avantages en colonne.
-  content_fields:
-    title:
-      type: text
-      label: Titre de section
-      client_editable: true
-    subtitle:
-      type: textarea
-      label: Sous-titre de section
-      client_editable: true
-    items:
-      type: repeater
-      label: Points
-      client_editable: true
-      fields:
-        title:
+          label: Citation
+        url:
+          type: image
+          label: Avatar ou image
+        href:
           type: text
-          label: Titre
-        text:
-          type: textarea
-          label: Texte
-  style_fields:
-    bg:
-      type: color-token
-      label: Fond
-    padding:
-      type: select
-      label: Espacement
-      options: [sm, md, lg, xl]
-  variants:
-    list:
-      label: Liste
-      description: Liste verticale simple.
-    two-col:
-      label: Deux colonnes
-      description: Points sur deux colonnes.
-    bullets:
-      label: Puces
-      description: Liste à puces mise en avant.
-experience:
-  label: Expérience
-  group: experience
-  icon: fa-solid fa-star
-  description: 'Parcours, récompenses ou preuves d''expérience.'
-  content_fields:
-    title:
-      type: text
-      label: Titre de section
-      client_editable: true
-    subtitle:
-      type: textarea
-      label: Sous-titre de section
-      client_editable: true
-    items:
-      type: repeater
-      label: Expériences
-      client_editable: true
-      fields:
-        title:
+          label: Lien
+        icon:
           type: text
-          label: Titre
-        text:
-          type: textarea
-          label: Texte
+          label: Réseau (x, linkedin, instagram, facebook)
   style_fields:
     bg:
       type: color-token
       label: Fond
+      group: general
     padding:
       type: select
-      label: Espacement
-      options: [sm, md, lg, xl]
-  variants:
-    grid:
-      label: Grille
-      description: 'Blocs d''expérience en grille.'
-    row:
-      label: Rangée
-      description: Indicateurs en rangée.
-    cards:
-      label: Cartes
-      description: Expériences en cartes.
-process:
-  label: Processus
-  group: process
-  icon: fa-solid fa-diagram-project
-  description: Étapes de méthode ou de livraison.
-  content_fields:
-    title:
-      type: text
-      label: Titre de section
-      client_editable: true
-    subtitle:
-      type: textarea
-      label: Sous-titre de section
-      client_editable: true
-    items:
-      type: repeater
-      label: Étapes
-      client_editable: true
-      fields:
-        title:
-          type: text
-          label: Titre
-        text:
-          type: textarea
-          label: Texte
-  style_fields:
-    bg:
-      type: color-token
-      label: Fond
-    padding:
-      type: select
-      label: Espacement
-      options: [sm, md, lg, xl]
-  variants:
-    row:
-      label: Rangée
-      description: Étapes horizontales.
-    vertical:
-      label: Vertical
-      description: Étapes verticales.
-    timeline:
-      label: Chronologie
-      description: Processus en chronologie.
-steps:
-  label: Étapes
-  group: process
-  icon: fa-solid fa-list-ol
-  description: Processus en plusieurs étapes numérotées.
-  variants:
-    row:
-      label: Rangée horizontale
-      description: Étapes alignées horizontalement.
-    vertical:
-      label: Vertical
-      description: Étapes empilées verticalement.
-    timeline:
-      label: Chronologie
-      description: Ligne de temps avec étapes datées.
-    numbered:
-      label: Numéroté
-      description: Liste numérotée mise en avant.
-  content_fields:
-    title:
-      type: text
-      label: Titre de section
-      client_editable: true
-    subtitle:
-      type: textarea
-      label: Sous-titre de section
-      client_editable: true
-    items:
-      type: repeater
-      label: Étapes
-      client_editable: true
-      fields:
-        title:
-          type: text
-          label: 'Titre de l''étape'
-        text:
-          type: textarea
-          label: Description
-  style_fields:
-    bg:
-      type: color-token
-      label: Fond
-    padding:
-      type: select
-      label: Espacement
+      label: Espacement vertical
       options: '[sm, md, lg, xl]'
-waitlist:
-  label: 'Liste d''attente'
-  group: waitlist
-  icon: fa-solid fa-hourglass-half
-  description: 'Inscription à une liste d''attente produit.'
-  content_fields:
-    title:
-      type: text
-      label: Titre
-      client_editable: true
-    subtitle:
-      type: textarea
-      label: Sous-titre
-      client_editable: true
-    input_hint:
-      type: text
-      label: Indication email
-      client_editable: true
-    buttons:
-      type: buttons
-      label: Boutons
-      client_editable: true
-  style_fields:
-    bg:
-      type: color-token
-      label: Fond
-    padding:
-      type: select
-      label: Espacement
-      options: [sm, md, lg, xl]
-  variants:
-    centered:
-      label: Centré
-      description: Formulaire centré.
-    inline:
-      label: En ligne
-      description: Champ email en ligne.
-    banner:
-      label: Bandeau
-      description: 'Bandeau d''inscription.'
-awards:
-  label: Récompenses
-  group: award
-  icon: fa-solid fa-award
-  description: 'Prix, labels et distinctions obtenus.'
-  content_fields:
-    title:
-      type: text
-      label: Titre de section
-      client_editable: true
-    items:
-      type: repeater
-      label: Récompenses
-      client_editable: true
-      fields:
-        value:
-          type: text
-          label: Année ou note
-        title:
-          type: text
-          label: Libellé
-  style_fields:
-    bg:
-      type: color-token
-      label: Fond
-    padding:
-      type: select
-      label: Espacement
-      options: [sm, md, lg, xl]
-  variants:
-    row:
-      label: Rangée
-      description: Récompenses en rangée.
-    grid-4:
-      label: Grille 4 colonnes
-      description: Quatre distinctions en grille.
-    cards:
-      label: Cartes
-      description: Cartes de récompenses.
-resources:
-  label: Ressources
-  group: resource
-  icon: fa-solid fa-book
-  description: 'Guides, ebooks ou liens utiles.'
-  content_fields:
-    title:
-      type: text
-      label: Titre de section
-      client_editable: true
-    subtitle:
-      type: textarea
-      label: Sous-titre de section
-      client_editable: true
-    items:
-      type: repeater
-      label: Ressources
-      client_editable: true
-      fields:
-        title:
-          type: text
-          label: Titre
-        text:
-          type: textarea
-          label: Texte
-  style_fields:
-    bg:
-      type: color-token
-      label: Fond
-    padding:
-      type: select
-      label: Espacement
-      options: [sm, md, lg, xl]
-  variants:
-    grid-2:
-      label: Grille 2 colonnes
-      description: Cartes de ressources sur deux colonnes responsives.
-    grid-3:
-      label: Grille 3 colonnes
-      description: Disposition équilibrée en trois colonnes.
-    grid-4:
-      label: Grille 4 colonnes
-      description: Vue dense en quatre colonnes sur grand écran.
-    bento:
-      label: Bento
-      description: Grille asymétrique type bento pour mettre un élément en avant.
-    list:
-      label: Liste
-      description: Liste verticale avec titres et textes alignés.
-code:
-  label: Exemple de code
-  group: code
-  icon: fa-solid fa-code
-  description: Bloc de code ou snippet pour la documentation.
-  content_fields:
-    title:
-      type: text
-      label: Titre
-      client_editable: true
-    text:
-      type: textarea
-      label: Code ou texte (une ligne par ligne)
-      client_editable: true
-  style_fields:
-    bg:
-      type: color-token
-      label: Fond
-    padding:
-      type: select
-      label: Espacement
-      options: [sm, md, lg, xl]
-    text_align:
-      type: select
-      label: Alignement
-      options: [left, center, right]
-  variants:
-    prose:
-      label: Colonne de texte
-      description: Code présenté sous un titre.
-    centered:
-      label: Centré
-      description: Snippet centré.
-    split:
-      label: Deux colonnes
-      description: Explication et code côte à côte.
-demo:
-  label: Démo
-  group: demo
-  icon: fa-solid fa-play
-  description: Section hero orientée démo produit ou vidéo.
-  content_fields:
-    badge:
-      type: text
-      label: Badge / annonce
-      client_editable: true
-    title:
-      type: text
-      label: Titre
-      client_editable: true
-    subtitle:
-      type: textarea
-      label: Sous-titre
-      client_editable: true
-    image_url:
-      type: image
-      label: Image
-      client_editable: true
-    buttons:
-      type: buttons
-      label: Boutons
-      client_editable: true
-  style_fields:
-    bg:
-      type: color-token
-      label: Fond
-    padding:
-      type: select
-      label: Espacement
-      options: [sm, md, lg, xl]
-    text_align:
-      type: select
-      label: Alignement
-      options: [left, center, right]
-  variants:
-    centered:
-      label: Centré
-      description: Accroche démo centrée.
-    split:
-      label: Deux colonnes
-      description: Texte et aperçu produit.
-    fullscreen:
-      label: Plein écran
-      description: Démo immersive plein écran.
-
-ui-announcement:
-  label: Annonce
-  group: ui
-  icon: fa-solid fa-bullhorn
-  description: Bandeau d'annonce compact (composant shadcn Announcement).
-  variants:
-    strip:
-      label: Bandeau
-      description: Message sur une ligne avec lien optionnel.
-    centered:
-      label: Centré
-      description: Annonce centrée avec bouton.
-  content_fields:
-    text:
-      type: text
-      label: Message
-      client_editable: true
-    href:
-      type: text
-      label: Lien (optionnel)
-      client_editable: true
-    link_label:
-      type: text
-      label: Libellé du lien
-      client_editable: true
-  style_fields:
-    bg:
-      type: color-token
-      label: Fond
-    padding:
-      type: select
-      label: Espacement
-      options: [sm, md]
-
-ui-divider:
-  label: Séparateur
-  group: ui
-  icon: fa-solid fa-minus
-  description: Ligne de séparation visuelle entre sections.
-  variants:
-    line:
-      label: Ligne
-      description: Trait horizontal discret.
-    space:
-      label: Espacement
-      description: Espace vertical sans trait.
-  content_fields: {}
-  style_fields:
-    bg:
-      type: color-token
-      label: Fond
-    padding:
-      type: select
-      label: Espacement
-      options: [sm, md]
-
-ui-quote:
-  label: Citation
-  group: ui
-  icon: fa-solid fa-quote-left
-  description: Bloc citation (composant pull quote).
-  variants:
-    centered:
-      label: Centré
-      description: Citation centrée avec guillemets.
-    left:
-      label: Aligné à gauche
-      description: Citation en marge gauche.
-  content_fields:
-    title:
-      type: text
-      label: Citation
-      client_editable: true
-    subtitle:
-      type: text
-      label: Auteur
-      client_editable: true
-  style_fields:
-    bg:
-      type: color-token
-      label: Fond
-    padding:
-      type: select
-      label: Espacement
-      options: [sm, md, lg]
-
-ui-rating:
-  label: Note
-  group: ui
-  icon: fa-solid fa-star
-  description: Affichage de note ou évaluation.
-  variants:
-    inline:
-      label: En ligne
-      description: Étoiles et libellé sur une ligne.
-    card:
-      label: Carte
-      description: Note dans une carte mise en avant.
-  content_fields:
-    title:
-      type: text
-      label: Note (ex. 4.9/5)
-      client_editable: true
-    subtitle:
-      type: text
-      label: Libellé
-      client_editable: true
-  style_fields:
-    bg:
-      type: color-token
-      label: Fond
-    padding:
-      type: select
-      label: Espacement
-      options: [sm, md]
-
-ui-embed:
-  label: Média intégré
-  group: ui
-  icon: fa-solid fa-photo-film
-  description: Zone vidéo ou image intégrée (composant embed).
-  variants:
-    centered:
-      label: Centré
-      description: Média centré avec ratio 16:9.
-    wide:
-      label: Large
-      description: Média pleine largeur du conteneur.
-  content_fields:
-    title:
-      type: text
-      label: Titre accessible
-      client_editable: true
-    image_url:
-      type: image
-      label: Image ou aperçu
-      client_editable: true
-  style_fields:
-    bg:
-      type: color-token
-      label: Fond
-    padding:
-      type: select
-      label: Espacement
-      options: [sm, md, lg]
-
-ui-card:
-  label: Carte
-  group: ui
-  icon: fa-solid fa-id-card
-  description: Carte de contenu isolée (composant Card shadcn).
-  variants:
-    simple:
-      label: Simple
-      description: Titre, texte et bouton dans une carte.
-    horizontal:
-      label: Horizontale
-      description: Carte en deux colonnes.
-  content_fields:
-    title:
-      type: text
-      label: Titre
-      client_editable: true
-    subtitle:
-      type: textarea
-      label: Texte
-      client_editable: true
-    buttons:
-      type: buttons
-      label: Boutons
-      client_editable: true
-  style_fields:
-    bg:
-      type: color-token
-      label: Fond
-    padding:
-      type: select
-      label: Espacement
-      options: [sm, md, lg]
+      group: general

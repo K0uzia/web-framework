@@ -12,10 +12,10 @@ INSERT OR REPLACE INTO site_settings (key, value, updated_at) VALUES (
 
 INSERT OR REPLACE INTO pages (slug, title, layout, description, sections, meta, published, updated_at) VALUES (
     '',
-    'Framework PHP',
+    'Accueil',
     'default',
-    'Squelette PHP minimal, pages SQL et API déclarative.',
-    '[{"id":"hero-1","type":"hero","variant":"centered","content":{"title":"Framework PHP","subtitle":"Bienvenue sur le squelette minimal CapsulePHP.","cta_label":"En savoir plus","cta_href":"#intro"},"style":{"bg":"primary","text_align":"center","padding":"xl"}},{"id":"features-1","type":"features","variant":"grid-3","content":{"items":[{"title":"Rapide","text":"Pages servies depuis SQLite, rendu léger."},{"title":"Simple","text":"Sections composables via le dashboard développeur."},{"title":"Fiable","text":"Framework PHP minimal sans dépendance runtime."}]},"style":{"bg":"muted","padding":"lg"}},{"id":"cta-1","type":"cta","variant":"banner","content":{"title":"Prêt à construire votre site ?","button_label":"Ouvrir le dashboard","button_href":"/dev"},"style":{"bg":"primary","padding":"lg"}}]',
+    'Sections hero composables via le dashboard développeur.',
+    '[{"id":"hero-1","type":"hero","variant":"hero3","content":{"title":"Des blocs prêts à l''emploi","subtitle":"Composants soignés pour vos pages marketing. Copiez, adaptez et publiez en quelques minutes.","image_url":"/assets/sections/hero/_shared/saas-hero-1-16x9.png","image_url_dark":"/assets/sections/hero/_shared/saas-hero-1-16x9-dark.png","image_alt":"Aperçu produit","reviews_rating":"5.0","reviews_count":"200","review_avatars":[{"url":"/assets/sections/hero/_shared/avatars/avatar1.jpg","title":"Mia Chen"},{"url":"/assets/sections/hero/_shared/avatars/avatar2.jpg","title":"Marcus Rivera"},{"url":"/assets/sections/hero/_shared/avatars/avatar3.jpg","title":"Priya Sharma"},{"url":"/assets/sections/hero/_shared/avatars/avatar4.jpg","title":"James Okafor"},{"url":"/assets/sections/hero/_shared/avatars/avatar5.jpg","title":"Sofia Chen"}],"buttons":[{"label":"Parcourir","href":"#","style":"primary"},{"label":"Voir le code","href":"#","style":"secondary"}]},"style":{"bg":"background","padding":"xl"}}]',
     '{"schema_type":"WebPage","schema_name":"Capsule Micro"}',
     1,
     datetime('now')
@@ -26,7 +26,7 @@ INSERT OR REPLACE INTO pages (slug, title, layout, description, sections, meta, 
     'À propos',
     'default',
     'Découvrez CapsulePHP et son approche minimaliste.',
-    '[{"id":"hero-about","type":"hero","variant":"centered","content":{"title":"À propos","subtitle":"CapsulePHP est un squelette léger pour construire des sites section par section.","cta_label":"Retour à l''accueil","cta_href":"/"},"style":{"bg":"background","text_align":"center","padding":"xl"}}]',
+    '[{"id":"hero-about","type":"hero","variant":"hero3","content":{"title":"À propos","subtitle":"CapsulePHP est un squelette léger pour construire des sites section par section.","buttons":[{"label":"Retour à l''accueil","href":"/","style":"primary"}]},"style":{"bg":"background","padding":"xl"}}]',
     '{"schema_type":"WebPage"}',
     1,
     datetime('now')

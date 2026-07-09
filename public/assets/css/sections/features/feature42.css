@@ -1,0 +1,48 @@
+/* Feature 42 : grille asymetrique avec titre ancre */
+
+.section-features--feature42 {
+    background: var(--color-background, #fff);
+}
+
+.section-features--feature42 .section-features__grid--asymmetric {
+    display: grid;
+    gap: 2rem;
+}
+
+@media (min-width: 1024px) {
+    .section-features--feature42 .section-features__grid--asymmetric {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2rem 4rem;
+    }
+}
+
+.section-features--feature42 .section-features__title--anchor {
+    margin: 0;
+    max-width: 42rem;
+    font-size: 1.875rem;
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+    color: var(--color-text, #0f172a);
+}
+
+@media (min-width: 1024px) {
+    .section-features--feature42 .section-features__title--anchor {
+        grid-row: span 2;
+        font-size: 1.875rem;
+    }
+}
+
+.section-features--feature42 .section-features__text-cell h3 {
+    margin: 0 0 0.5rem;
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: var(--color-text, #0f172a);
+}
+
+.section-features--feature42 .section-features__text-cell p {
+    margin: 0;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--color-text-muted, #64748b);
+}

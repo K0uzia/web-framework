@@ -8,6 +8,8 @@ use Capsule\DevDashboard;
 use Capsule\Http\Factory\ResponseFactory;
 use Capsule\Http\Message\Request;
 use Capsule\Http\Message\Response;
+use Capsule\Http\Support\FormData;
+use Capsule\MediaLibrary;
 use Capsule\SiteRepository;
 
 final class MediaController
@@ -20,6 +22,7 @@ final class MediaController
         private readonly DevDashboard $ui,
         private readonly SiteRepository $site,
         private readonly MediaUploader $uploader,
+        private readonly MediaLibrary $library,
         private readonly ResponseFactory $responses,
     ) {
     }
@@ -41,13 +44,30 @@ final class MediaController
 
             $site = $this->site->getSite();
             $previousUrl = (string) ($site[$field . '_url'] ?? '');
-            if ($previousUrl !== '' && $previousUrl !== $url) {
-                $this->uploader->delete($previousUrl);
-            }
-            $site[$field . '_url'] = $url;
-            $this->site->setSite($site);
+            $this->replaceSiteMediaUrl($field, $url, $previousUrl);
         } catch (MediaUploadException $e) {
             $error = $e->getMessage();
+        }
+
+        return $this->respond($request, $field, $error);
+    }
+
+    public function select(Request $request, string $field): Response
+    {
+        if (!in_array($field, self::FIELDS, true)) {
+            return $this->ui->redirect('/dev/site');
+        }
+
+        $data = FormData::fromRequest($request);
+        $url = trim((string) ($data['url'] ?? ''));
+        $error = '';
+
+        if ($url === '' || !$this->library->isAllowedUrl($url)) {
+            $error = 'URL de média non autorisée.';
+        } else {
+            $site = $this->site->getSite();
+            $previousUrl = (string) ($site[$field . '_url'] ?? '');
+            $this->replaceSiteMediaUrl($field, $url, $previousUrl);
         }
 
         return $this->respond($request, $field, $error);
@@ -61,7 +81,7 @@ final class MediaController
 
         $site = $this->site->getSite();
         $url = (string) ($site[$field . '_url'] ?? '');
-        if ($url !== '') {
+        if ($url !== '' && $this->uploader->isManagedUrl($url) && !$this->library->isBundledAsset($url)) {
             $this->uploader->delete($url);
         }
         $site[$field . '_url'] = '';
@@ -70,11 +90,28 @@ final class MediaController
         return $this->respond($request, $field, '');
     }
 
-    private function respond(Request $request, string $field, string $error): Response
+    private function replaceSiteMediaUrl(string $field, string $url, string $previousUrl): void
     {
         $site = $this->site->getSite();
+        if ($previousUrl !== '' && $previousUrl !== $url && $this->uploader->isManagedUrl($previousUrl) && !$this->library->isBundledAsset($previousUrl)) {
+            $this->uploader->delete($previousUrl);
+        }
+        $site[$field . '_url'] = $url;
+        $this->site->setSite($site);
+    }
+
+    private function respond(Request $request, string $field, string $error): Response
+    {
+        $this->library->syncDiscoveredRecords('image');
+        $site = $this->site->getSite();
         $url = (string) ($site[$field . '_url'] ?? '');
-        $html = MediaFieldView::render($field, $url, $this->uploader->acceptAttribute($field), $error);
+        $html = MediaFieldView::render(
+            $field,
+            $url,
+            $this->uploader->acceptAttribute($field),
+            $this->library->availableImageUrls(),
+            $error,
+        );
 
         if ($this->isHx($request)) {
             return $this->responses->html($html);

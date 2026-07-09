@@ -8,6 +8,7 @@ use Capsule\DevDashboard;
 use Capsule\Http\Message\Request;
 use Capsule\Http\Message\Response;
 use Capsule\Http\Support\FormData;
+use Capsule\MediaLibrary;
 use Capsule\PageRepository;
 use Capsule\SiteNavHelper;
 use Capsule\SiteRepository;
@@ -21,12 +22,15 @@ final class SiteController
         private readonly SiteRepository $site,
         private readonly PageRepository $pages,
         private readonly MediaUploader $media,
+        private readonly MediaLibrary $library,
     ) {
     }
 
     public function edit(Request $request): Response
     {
         $site = $this->site->getSite();
+        $this->library->syncDiscoveredRecords('image');
+        $imageLibrary = $this->library->availableImageUrls();
 
         return $this->ui->render('site-edit.html', [
             'title' => 'Site',
@@ -34,9 +38,9 @@ final class SiteController
             'site_name' => (string) ($site['name'] ?? ''),
             'site_tagline' => (string) ($site['tagline'] ?? ''),
             'home_label' => (string) ($site['home_label'] ?? 'Accueil'),
-            'logo_uploader_html' => MediaFieldView::render('logo', (string) ($site['logo_url'] ?? ''), $this->media->acceptAttribute('logo')),
-            'favicon_uploader_html' => MediaFieldView::render('favicon', (string) ($site['favicon_url'] ?? ''), $this->media->acceptAttribute('favicon')),
-            'og_image_uploader_html' => MediaFieldView::render('og_image', (string) ($site['og_image_url'] ?? ''), $this->media->acceptAttribute('og_image')),
+            'logo_uploader_html' => MediaFieldView::render('logo', (string) ($site['logo_url'] ?? ''), $this->media->acceptAttribute('logo'), $imageLibrary),
+            'favicon_uploader_html' => MediaFieldView::render('favicon', (string) ($site['favicon_url'] ?? ''), $this->media->acceptAttribute('favicon'), $imageLibrary),
+            'og_image_uploader_html' => MediaFieldView::render('og_image', (string) ($site['og_image_url'] ?? ''), $this->media->acceptAttribute('og_image'), $imageLibrary),
             'nav_mode_label' => ($site['nav_mode'] ?? 'auto') === 'custom' ? 'Personnalisée' : 'Automatique (pages publiées)',
             'nav_panel_html' => $this->ui->partialHtml('nav-panel.html', [
                 'nav_rows_html' => $this->buildNavRowsHtml($site),

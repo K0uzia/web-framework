@@ -19,7 +19,8 @@ final class MediasController
         private readonly DevDashboard $ui,
         private readonly MediaRepository $media,
         private readonly MediaLibrary $library,
-        private readonly LibraryMediaUploader $uploader,
+        private readonly LibraryMediaUploader $libraryUploader,
+        private readonly MediaUploader $siteUploader,
         private readonly MediaUsageScanner $usage,
     ) {
     }
@@ -27,7 +28,8 @@ final class MediasController
     public function index(Request $request): Response
     {
         $tab = ($request->query['tab'] ?? 'images') === 'videos' ? 'videos' : 'images';
-        $stockImages = $this->library->stockImageRecords();
+        $this->library->syncDiscoveredRecords('image');
+        $this->library->syncDiscoveredRecords('video');
         $importedImages = $this->media->all('image');
         $videos = $this->media->all('video');
 
@@ -39,9 +41,9 @@ final class MediasController
             'tab_videos_class' => $tab === 'videos' ? 'is-active' : '',
             'tab_images_selected' => $tab === 'images' ? 'true' : 'false',
             'tab_videos_selected' => $tab === 'videos' ? 'true' : 'false',
-            'images_count' => (string) (count($stockImages) + count($importedImages)),
+            'images_count' => (string) count($importedImages),
             'videos_count' => (string) count($videos),
-            'images_grid_html' => $this->renderImagesPanel($stockImages, $importedImages),
+            'images_grid_html' => $this->renderImagesPanel($importedImages),
             'videos_grid_html' => $this->renderGrid($videos),
             'flash' => $this->ui->flashFromRequest($request),
         ], section: 'medias');
@@ -59,15 +61,17 @@ final class MediasController
                 throw new MediaUploadException('Aucun fichier reçu.');
             }
             $url = $kind === 'video'
-                ? $this->uploader->storeVideo($file)
-                : $this->uploader->storeImage($file);
-            $this->media->create(
-                $kind,
-                $url,
-                basename($url),
-                (string) ($file['type'] ?? ''),
-                (int) ($file['size'] ?? 0),
-            );
+                ? $this->libraryUploader->storeVideo($file)
+                : $this->libraryUploader->storeImage($file);
+            if ($this->media->findByUrl($url) === null) {
+                $this->media->create(
+                    $kind,
+                    $url,
+                    basename($url),
+                    (string) ($file['type'] ?? ''),
+                    (int) ($file['size'] ?? 0),
+                );
+            }
         } catch (MediaUploadException $e) {
             $error = $e->getMessage();
         }
@@ -82,12 +86,16 @@ final class MediasController
             return $this->respondGrid($request, 'images', 'Média introuvable.');
         }
 
+        if ($this->library->isBundledAsset($record['url'])) {
+            return $this->respondGrid($request, $record['kind'] === 'video' ? 'videos' : 'images', 'Les visuels modèles intégrés ne peuvent pas être supprimés.');
+        }
+
         $usages = $this->usage->usages($record['url']);
         if ($usages !== []) {
             return $this->respondGrid($request, $record['kind'] === 'video' ? 'videos' : 'images', 'Ce média est encore utilisé sur le site.');
         }
 
-        $this->uploader->delete($record['url']);
+        $this->deleteStoredFile($record['url']);
         $this->media->delete($id);
 
         return $this->respondGrid($request, $record['kind'] === 'video' ? 'videos' : 'images', 'Média supprimé.');
@@ -110,9 +118,10 @@ final class MediasController
 
     private function respondGrid(Request $request, string $tab, string $message): Response
     {
+        $this->library->syncDiscoveredRecords($tab === 'videos' ? 'video' : 'image');
         $html = $tab === 'videos'
             ? $this->renderGrid($this->media->all('video'))
-            : $this->renderImagesPanel($this->library->stockImageRecords(), $this->media->all('image'));
+            : $this->renderImagesPanel($this->media->all('image'));
 
         if ($this->isHx($request)) {
             $kind = $tab === 'videos' ? 'video' : 'image';
@@ -128,20 +137,11 @@ final class MediasController
     }
 
     /**
-     * @param list<array{id: string, kind: string, url: string, filename: string, mime: string, size: int, label: string, created_at: string, readonly?: bool}> $stock
      * @param list<array{id: string, kind: string, url: string, filename: string, mime: string, size: int, label: string, created_at: string}> $imported
      */
-    private function renderImagesPanel(array $stock, array $imported): string
+    private function renderImagesPanel(array $imported): string
     {
-        $html = '';
-        if ($stock !== []) {
-            $html .= '<div class="dev-medias-section"><h3 class="dev-medias-section__title">Images d\'exemple</h3>'
-                . '<p class="dev-hint">Visuels fournis avec le thème. Utilisables dans les blocs, non supprimables.</p>'
-                . $this->renderGrid($stock, readonly: true)
-                . '</div>';
-        }
-
-        $html .= '<div class="dev-medias-section"><h3 class="dev-medias-section__title">Vos images</h3>';
+        $html = '<div class="dev-medias-section"><h3 class="dev-medias-section__title">Vos images</h3>';
         if ($imported === []) {
             $html .= '<p class="dev-empty"><i class="fa-solid fa-photo-film" aria-hidden="true"></i>Aucun fichier importé.</p>';
         } else {
@@ -163,14 +163,12 @@ final class MediasController
 
         $cards = [];
         foreach ($records as $record) {
-            $isReadonly = $readonly || (bool) ($record['readonly'] ?? false);
+            $isBundled = $this->library->isBundledAsset($record['url']);
+            $isReadonly = $readonly || (bool) ($record['readonly'] ?? false) || $isBundled;
             $safeId = htmlspecialchars($record['id'], ENT_QUOTES);
             $safeUrl = htmlspecialchars($record['url'], ENT_QUOTES);
-            $usages = $this->usage->usages($record['url']);
-            $inUse = $usages !== [];
-            $usageHtml = $inUse
-                ? '<p class="dev-media-card__usage">Utilisé : ' . htmlspecialchars(implode(', ', array_slice($usages, 0, 2)), ENT_QUOTES) . '</p>'
-                : '';
+            $usage = $this->usage->report($record['url']);
+            $inUse = $usage['total_places'] > 0;
 
             if ($record['kind'] === 'video') {
                 $visual = '<video class="dev-media-card__video" src="' . $safeUrl . '" muted playsinline preload="metadata"></video>';
@@ -178,28 +176,125 @@ final class MediasController
                 $visual = '<img class="dev-media-card__img" src="' . $safeUrl . '" alt="" loading="lazy" decoding="async" />';
             }
 
-            if ($isReadonly) {
-                $deleteBtn = '<span class="dev-media-card__badge"><i class="fa-solid fa-lock" aria-hidden="true"></i> Exemple</span>';
-            } elseif ($inUse) {
-                $deleteBtn = '<button type="button" class="dev-icon-btn" disabled title="Média encore utilisé"><i class="fa-solid fa-trash" aria-hidden="true"></i></button>';
-            } else {
-                $deleteBtn = '<form class="dev-inline-form" method="post" action="/dev/medias/' . $safeId . '/delete" data-dev-ajax="medias-grid" data-dev-toast-form="Média supprimé">'
-                    . '<button type="submit" class="dev-icon-btn dev-icon-btn--danger" aria-label="Supprimer" title="Supprimer"><i class="fa-solid fa-trash" aria-hidden="true"></i></button></form>';
+            if ($isBundled) {
+                $visual .= '<span class="dev-media-card__overlay-badge"><i class="fa-solid fa-layer-group" aria-hidden="true"></i> Modèle</span>';
             }
 
-            $label = $isReadonly ? ($record['label'] ?? 'Image d\'exemple') : $record['filename'];
+            $deleteBtn = $this->renderDeleteAction($safeId, $isReadonly, $inUse, $usage);
 
-            $cards[] = '<article class="dev-media-card' . ($isReadonly ? ' dev-media-card--readonly' : '') . '">'
+            $label = trim((string) ($record['label'] ?? ''));
+            if ($label === '' || str_starts_with($label, 'Modèle :')) {
+                $label = basename((string) $record['filename']);
+            }
+
+            $cards[] = '<article class="dev-media-card' . ($isReadonly ? ' dev-media-card--readonly' : '') . ($inUse ? ' dev-media-card--in-use' : '') . '">'
                 . '<div class="dev-media-card__visual">' . $visual . '</div>'
                 . '<div class="dev-media-card__meta">'
-                . '<p class="dev-media-card__name">' . htmlspecialchars((string) $label, ENT_QUOTES) . '</p>'
-                . '<p class="dev-media-card__url"><code>' . $safeUrl . '</code></p>'
-                . $usageHtml
+                . '<p class="dev-media-card__name">' . htmlspecialchars($label, ENT_QUOTES) . '</p>'
+                . $this->renderUsageHtml($usage)
                 . '</div>'
                 . '<div class="dev-media-card__actions">' . $deleteBtn . '</div>'
                 . '</article>';
         }
 
         return '<div class="dev-media-grid">' . implode('', $cards) . '</div>';
+    }
+
+    /**
+     * @param array{total_places: int, page_count: int, block_count: int, site_labels: list<string>, entries: list<array{kind: string, page: string, page_path: string, section_type: string, section_id: string, detail: string}>} $usage
+     */
+    private function renderUsageHtml(array $usage): string
+    {
+        if ($usage['total_places'] === 0) {
+            return '<p class="dev-media-card__usage dev-media-card__usage--none"><i class="fa-solid fa-circle" aria-hidden="true"></i> Non utilisé</p>';
+        }
+
+        $parts = [];
+        if ($usage['site_labels'] !== []) {
+            $parts[] = 'identité du site';
+        }
+        if ($usage['page_count'] > 0) {
+            $parts[] = $usage['page_count'] . ' page' . ($usage['page_count'] > 1 ? 's' : '');
+        }
+        if ($usage['block_count'] > 0) {
+            $parts[] = $usage['block_count'] . ' bloc' . ($usage['block_count'] > 1 ? 's' : '');
+        }
+
+        $html = '<p class="dev-media-card__usage dev-media-card__usage--active"><i class="fa-solid fa-link" aria-hidden="true"></i> '
+            . htmlspecialchars(implode(' · ', $parts), ENT_QUOTES) . '</p>';
+
+        $details = $usage['site_labels'];
+        foreach ($usage['entries'] as $entry) {
+            $details[] = $entry['detail'];
+        }
+        $details = array_values(array_unique($details));
+        if ($details !== []) {
+            $html .= '<ul class="dev-media-card__usage-list">';
+            foreach (array_slice($details, 0, 4) as $detail) {
+                $html .= '<li>' . htmlspecialchars($detail, ENT_QUOTES) . '</li>';
+            }
+            if (count($details) > 4) {
+                $html .= '<li class="dev-media-card__usage-more">+' . (count($details) - 4) . ' autre(s)</li>';
+            }
+            $html .= '</ul>';
+        }
+
+        return $html;
+    }
+
+    /**
+     * @param array{total_places: int, page_count: int, block_count: int, site_labels: list<string>, entries: list<array{kind: string, page: string, page_path: string, section_type: string, section_id: string, detail: string}>} $usage
+     */
+    private function renderDeleteAction(string $safeId, bool $isReadonly, bool $inUse, array $usage): string
+    {
+        if ($isReadonly) {
+            return '<span class="dev-media-card__action-hint" title="Visuel modèle intégré au framework"><i class="fa-solid fa-lock" aria-hidden="true"></i> Non supprimable</span>';
+        }
+
+        if ($inUse) {
+            $title = 'Utilisé sur le site. Retirez-le des blocs avant suppression.';
+            if ($usage['entries'] !== []) {
+                $title = 'Utilisé : ' . implode(', ', array_slice(array_column($usage['entries'], 'detail'), 0, 2));
+            }
+
+            return '<button type="button" class="dev-button dev-button--ghost dev-button--sm dev-media-card__delete" disabled title="' . htmlspecialchars($title, ENT_QUOTES) . '" aria-label="Suppression impossible, média encore utilisé">'
+                . '<i class="fa-solid fa-trash" aria-hidden="true"></i> Supprimer</button>';
+        }
+
+        return '<form class="dev-inline-form dev-media-card__delete-form" method="post" action="/dev/medias/' . $safeId . '/delete" data-dev-ajax="medias-grid" data-dev-toast-form="Média supprimé">'
+            . '<button type="submit" class="dev-button dev-button--ghost dev-button--sm dev-media-card__delete dev-media-card__delete--danger" aria-label="Supprimer ce média" title="Supprimer">'
+            . '<i class="fa-solid fa-trash" aria-hidden="true"></i> Supprimer</button></form>';
+    }
+
+    private function deleteStoredFile(string $url): void
+    {
+        if ($this->libraryUploader->isManagedUrl($url)) {
+            $this->deleteManagedUpload($this->libraryUploader, $url);
+
+            return;
+        }
+
+        if ($this->siteUploader->isManagedUrl($url)) {
+            $this->siteUploader->delete($url);
+
+            return;
+        }
+
+        $path = $this->library->publicUrlToPath($url);
+        if ($path !== null && is_file($path)) {
+            @unlink($path);
+        }
+    }
+
+    private function deleteManagedUpload(MediaUploader $uploader, string $url): void
+    {
+        $path = $this->library->publicUrlToPath($url);
+        if ($path !== null && is_file($path)) {
+            @unlink($path);
+
+            return;
+        }
+
+        $uploader->delete($url);
     }
 }

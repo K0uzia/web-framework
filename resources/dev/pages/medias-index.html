@@ -36,15 +36,20 @@
             <div class="dev-panel__head">
                 <div>
                     <h2 class="dev-panel__title">Vidéos</h2>
-                    <p class="dev-panel__desc">Fichiers MP4 locaux ou imports YouTube convertis. <a href="/dev/video-imports">Importer depuis YouTube</a>.</p>
+                    <p class="dev-panel__desc">Fichiers MP4 locaux ou imports YouTube convertis en MP4 pour la bibliothèque.</p>
                 </div>
             </div>
-            <form class="dev-inline-form dev-medias-upload" method="post" action="/dev/medias/upload?kind=video" enctype="multipart/form-data" data-dev-ajax="medias-grid" data-dev-toast-form="Vidéo importée">
-                <label class="dev-button dev-button--primary dev-uploader__browse">
-                    <i class="fa-solid fa-upload" aria-hidden="true"></i> Importer une vidéo
-                    <input type="file" name="file" accept=".mp4,.webm,.ogg,video/mp4,video/webm,video/ogg" class="visually-hidden" data-dev-autosubmit aria-label="Importer une vidéo" />
-                </label>
-            </form>
+            <div class="dev-medias-upload dev-medias-upload--video">
+                <form class="dev-inline-form" method="post" action="/dev/medias/upload?kind=video" enctype="multipart/form-data" data-dev-ajax="medias-grid" data-dev-toast-form="Vidéo importée">
+                    <label class="dev-button dev-button--primary dev-uploader__browse">
+                        <i class="fa-solid fa-upload" aria-hidden="true"></i> Importer un fichier vidéo
+                        <input type="file" name="file" accept=".mp4,.webm,.ogg,video/mp4,video/webm,video/ogg" class="visually-hidden" data-dev-autosubmit aria-label="Importer un fichier vidéo" />
+                    </label>
+                </form>
+                <button type="button" class="dev-button dev-button--secondary" data-dev-video-youtube-open-medias>
+                    <i class="fa-brands fa-youtube" aria-hidden="true"></i> Importer via un lien
+                </button>
+            </div>
             <div id="dev-medias-grid-video" data-dev-medias-grid>
                 {{{videos_grid_html}}}
             </div>

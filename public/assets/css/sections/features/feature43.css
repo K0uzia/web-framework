@@ -1,0 +1,106 @@
+/* Feature 43 : grille icones centree avec CTA */
+
+.section-features--feature43 {
+    background: var(--color-background, #fff);
+}
+
+.section-features--feature43 .section-features__title--center {
+    margin: 0 auto 4rem;
+    max-width: 48rem;
+    font-size: 2.25rem;
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    text-align: center;
+    color: var(--color-text, #0f172a);
+    text-wrap: balance;
+}
+
+@media (min-width: 1024px) {
+    .section-features--feature43 .section-features__title--center {
+        font-size: 3rem;
+    }
+}
+
+.section-features--feature43 .section-features__grid--icons-3 {
+    display: grid;
+    gap: 2.5rem;
+}
+
+@media (min-width: 768px) {
+    .section-features--feature43 .section-features__grid--icons-3 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .section-features--feature43 .section-features__grid--icons-3 {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.section-features--feature43 .section-features__item--icon {
+    text-align: left;
+}
+
+.section-features--feature43 .section-features__icon-circle--lg {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 4rem;
+    height: 4rem;
+    margin-bottom: 1.25rem;
+    border-radius: 999px;
+    background: var(--color-muted, #f1f5f9);
+    color: var(--color-text, #0f172a);
+}
+
+.section-features--feature43 .section-features__icon-circle--lg i {
+    font-size: 1.5rem;
+    line-height: 1;
+}
+
+.section-features--feature43 .section-features__item--icon h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-text, #0f172a);
+}
+
+.section-features--feature43 .section-features__item--icon p {
+    margin: 0.5rem 0 0;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--color-text-muted, #64748b);
+}
+
+.section-features--feature43 .section-features__cta {
+    display: flex;
+    justify-content: center;
+    margin-top: 4rem;
+}
+
+.section-features--feature43 .section-features__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.5rem;
+    padding: 0.625rem 1.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    border-radius: 0.5rem;
+    background: var(--color-text, #0f172a);
+    color: var(--color-background, #fff);
+    transition: opacity 0.15s ease;
+}
+
+.section-features--feature43 .section-features__button--lg {
+    min-height: 2.75rem;
+    padding: 0.75rem 1.75rem;
+    font-size: 1rem;
+}
+
+.section-features--feature43 .section-features__button--primary:hover {
+    opacity: 0.9;
+}

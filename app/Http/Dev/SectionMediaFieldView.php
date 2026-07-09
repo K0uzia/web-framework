@@ -69,7 +69,7 @@ final class SectionMediaFieldView
         $baseAction = '/dev/pages/' . rawurlencode($slug) . '/sections/' . rawurlencode($sectionId) . '/media/' . rawurlencode($fieldName);
         $label = $kind === 'video' ? 'Vidéo' : 'Image';
         $placeholder = $kind === 'video'
-            ? 'https://www.youtube.com/watch?v=... ou /uploads/media/video-abc.mp4'
+            ? '/uploads/media/imports/…/video.mp4'
             : '/uploads/media/image-abc.webp';
 
         $preview = self::renderPreview($url, $kind);
@@ -79,17 +79,26 @@ final class SectionMediaFieldView
         $safeInputId = htmlspecialchars($fieldId . '-input', ENT_QUOTES);
         $compactClass = $compact ? ' dev-section-media--compact' : '';
 
-        $uploadHtml = $compact
-            ? '<a class="dev-button dev-button--ghost dev-button--sm" href="/dev/medias"><i class="fa-solid fa-photo-film" aria-hidden="true"></i> Gérer les médias</a>'
-            : '<label class="dev-button dev-button--ghost dev-button--sm dev-uploader__browse">'
+        if ($compact) {
+            $uploadHtml = '<a class="dev-button dev-button--ghost dev-button--sm" href="/dev/medias"><i class="fa-solid fa-photo-film" aria-hidden="true"></i> Gérer les médias</a>';
+        } else {
+            $uploadHtml = '<div class="dev-uploader__actions">'
+                . '<label class="dev-button dev-button--ghost dev-button--sm dev-uploader__browse">'
                 . '<i class="fa-solid fa-upload" aria-hidden="true"></i> ' . ($url !== '' ? 'Remplacer' : 'Importer')
                 . '<input type="file" accept="' . htmlspecialchars($accept, ENT_QUOTES) . '" class="visually-hidden" data-dev-section-media-file aria-label="Importer un fichier" />'
                 . '</label>';
+            if ($kind === 'video') {
+                $uploadHtml .= '<button type="button" class="dev-button dev-button--ghost dev-button--sm" data-dev-video-youtube-open>'
+                    . '<i class="fa-brands fa-youtube" aria-hidden="true"></i> Importer depuis YouTube'
+                    . '</button>';
+            }
+            $uploadHtml .= '</div>';
+        }
 
         return '<div class="dev-section-media' . $compactClass . '" id="section-media-' . htmlspecialchars($fieldId, ENT_QUOTES) . '" data-dev-section-media data-section-media-base="' . htmlspecialchars($baseAction, ENT_QUOTES) . '" data-section-media-kind="' . htmlspecialchars($kind, ENT_QUOTES) . '">'
             . '<div class="dev-field"><label class="dev-label" for="' . $safeInputId . '">' . htmlspecialchars($label, ENT_QUOTES) . '</label>'
             . '<input class="dev-input" type="text" id="' . $safeInputId . '" name="' . htmlspecialchars($inputName, ENT_QUOTES) . '" value="' . htmlspecialchars($url, ENT_QUOTES) . '" placeholder="' . htmlspecialchars($placeholder, ENT_QUOTES) . '" />'
-            . ($kind === 'video' && !$compact ? '<p class="dev-hint">YouTube, Vimeo ou fichier .mp4 de la bibliothèque.</p>' : '')
+            . ($kind === 'video' && !$compact ? '<p class="dev-hint">Fichier MP4 local ou sélection depuis la bibliothèque. YouTube via le bouton dédié.</p>' : '')
             . '</div>'
             . '<div class="dev-uploader dev-uploader--section">' . $preview . $uploadHtml . $errorHtml . '</div>'
             . $optionsHtml
@@ -215,9 +224,11 @@ final class SectionMediaFieldView
         }
 
         $more = count($libraryUrls) > $limit
-            ? '<a class="dev-hint dev-media-library__more" href="/dev/medias">Voir toute la bibliothèque (' . count($libraryUrls) . ')</a>'
+            ? '<button type="button" class="dev-media-library__more dev-button dev-button--ghost dev-button--sm" data-dev-media-library-open>Voir toute la bibliothèque (' . count($libraryUrls) . ')</button>'
             : '';
 
-        return '<div class="dev-media-library"><p class="dev-label dev-media-library__title">Bibliothèque</p><div class="dev-media-library__grid">' . implode('', $items) . '</div>' . $more . '</div>';
+        $urlsAttr = htmlspecialchars(json_encode(array_values($libraryUrls), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), ENT_QUOTES);
+
+        return '<div class="dev-media-library" data-media-library-urls="' . $urlsAttr . '" data-media-library-kind="' . htmlspecialchars($kind, ENT_QUOTES) . '" data-media-library-current="' . htmlspecialchars($currentUrl, ENT_QUOTES) . '"><p class="dev-label dev-media-library__title">Bibliothèque</p><div class="dev-media-library__grid">' . implode('', $items) . '</div>' . $more . '</div>';
     }
 }

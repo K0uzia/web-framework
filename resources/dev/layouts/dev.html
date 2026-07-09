@@ -60,6 +60,64 @@
 
     <div class="dev-toast-container" id="dev-toast-container" aria-live="polite" aria-atomic="true"></div>
 
+    <div class="dev-modal" id="dev-video-youtube-import" hidden>
+        <button type="button" class="dev-modal__backdrop" data-dev-modal-close="dev-video-youtube-import" tabindex="-1" aria-hidden="true"></button>
+        <div class="dev-block-picker__panel dev-modal__panel--form" role="dialog" aria-modal="true" aria-labelledby="dev-video-youtube-import-title">
+            <div class="dev-block-picker__head">
+                <h2 id="dev-video-youtube-import-title">Importer depuis YouTube</h2>
+                <button type="button" class="dev-icon-btn" data-dev-modal-close="dev-video-youtube-import" aria-label="Fermer"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+            </div>
+            <div class="dev-modal__body">
+                <p class="dev-hint dev-video-youtube-modal__legal">Le téléchargement nécessite l'autorisation du détenteur des droits. N'utilisez cet outil que pour du contenu dont vous disposez des droits.</p>
+                <form class="dev-video-youtube-modal__form" data-dev-video-youtube-form>
+                    <div class="dev-field">
+                        <label class="dev-label" for="dev-video-youtube-url">URL YouTube</label>
+                        <input class="dev-input" type="url" id="dev-video-youtube-url" name="url" placeholder="https://www.youtube.com/watch?v=..." inputmode="url" required />
+                    </div>
+                    <div class="dev-field">
+                        <label class="dev-label" for="dev-video-youtube-label">Libellé (optionnel)</label>
+                        <input class="dev-input" type="text" id="dev-video-youtube-label" name="label" maxlength="120" />
+                    </div>
+                    <div class="dev-field dev-field--checkbox">
+                        <label class="dev-checkbox">
+                            <input type="checkbox" name="rights_accepted" value="1" required data-dev-video-youtube-rights />
+                            <span>Je confirme disposer des droits nécessaires sur ce contenu.</span>
+                        </label>
+                    </div>
+                    <div class="dev-video-youtube-modal__progress" data-dev-video-youtube-progress hidden>
+                        <p class="dev-video-youtube-modal__status" data-dev-video-youtube-status role="status"></p>
+                        <div class="dev-video-import__progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-dev-video-youtube-progressbar>
+                            <span style="width:0%"></span>
+                        </div>
+                        <button type="button" class="dev-button dev-button--secondary dev-button--sm" data-dev-video-youtube-approve hidden>
+                            <i class="fa-solid fa-check" aria-hidden="true"></i> Approuver l'import
+                        </button>
+                    </div>
+                    <div class="dev-video-youtube-modal__actions">
+                        <button type="button" class="dev-button dev-button--ghost" data-dev-modal-close="dev-video-youtube-import">Annuler</button>
+                        <button type="submit" class="dev-button dev-button--primary" data-dev-video-youtube-submit>
+                            <i class="fa-solid fa-cloud-arrow-down" aria-hidden="true"></i> Lancer l'import
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="dev-modal" id="dev-media-library-modal" hidden>
+        <button type="button" class="dev-modal__backdrop" data-dev-modal-close="dev-media-library-modal" tabindex="-1" aria-hidden="true"></button>
+        <div class="dev-block-picker__panel dev-modal__panel--form dev-modal__panel--media-library" role="dialog" aria-modal="true" aria-labelledby="dev-media-library-modal-title">
+            <div class="dev-block-picker__head">
+                <h2 id="dev-media-library-modal-title">Bibliothèque</h2>
+                <button type="button" class="dev-icon-btn" data-dev-modal-close="dev-media-library-modal" aria-label="Fermer"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+            </div>
+            <div class="dev-modal__body">
+                <p class="dev-hint dev-media-library-modal__hint">Sélectionnez un média. La modale se fermera après votre choix.</p>
+                <div class="dev-media-library__grid dev-media-library-modal__grid" id="dev-media-library-modal-grid" role="listbox" aria-label="Médias disponibles"></div>
+            </div>
+        </div>
+    </div>
+
     <div class="dev-modal" id="dev-confirm-modal" hidden>
         <button type="button" class="dev-modal__backdrop" data-dev-confirm-cancel tabindex="-1" aria-hidden="true"></button>
         <div class="dev-block-picker__panel dev-modal__panel--form dev-confirm-modal__panel" role="alertdialog" aria-modal="true" aria-labelledby="dev-confirm-title" aria-describedby="dev-confirm-message">

@@ -1,0 +1,64 @@
+/* Pricing 6 : carte unique centrée */
+
+.section-pricing--pricing6 .section-pricing__subtitle--narrow {
+    max-width: 28rem;
+}
+
+.section-pricing--pricing6 .section-pricing__single-card {
+    width: 100%;
+    max-width: 28rem;
+    margin-top: 1rem;
+    margin-inline: auto;
+    padding: 1.5rem;
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 0.5rem;
+    background: var(--color-background, #fff);
+}
+
+@media (min-width: 640px) {
+    .section-pricing--pricing6 .section-pricing__single-card {
+        width: fit-content;
+        min-width: 25rem;
+    }
+}
+
+.section-pricing--pricing6 .section-pricing__single-price {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 0.125rem;
+}
+
+.section-pricing--pricing6 .section-pricing__single-currency {
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--color-text, #0f172a);
+}
+
+.section-pricing--pricing6 .section-pricing__single-amount {
+    font-size: 3.75rem;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -0.05em;
+    color: var(--color-text, #0f172a);
+}
+
+@media (min-width: 1024px) {
+    .section-pricing--pricing6 .section-pricing__single-amount {
+        font-size: 4.5rem;
+    }
+}
+
+.section-pricing--pricing6 .section-pricing__single-period {
+    align-self: flex-end;
+    color: var(--color-text-muted, #64748b);
+}
+
+.section-pricing--pricing6 .section-pricing__single-features {
+    margin: 1.5rem 0;
+}
+
+.section-pricing--pricing6 .section-pricing__feature-group .section-pricing__separator {
+    margin: 1.5rem 0;
+}

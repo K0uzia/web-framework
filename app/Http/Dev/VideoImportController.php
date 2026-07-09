@@ -58,7 +58,7 @@ final class VideoImportController
         $data = FormData::fromRequest($request);
         $rights = ($data['rights_accepted'] ?? '') === '1' || ($data['rights_accepted'] ?? '') === 'on';
         $label = trim((string) ($data['label'] ?? ''));
-        $mode = (string) ($data['mode'] ?? 'youtube');
+        $mode = (string) ($data['mode'] ?? 'upload');
 
         try {
             if ($mode === 'upload') {

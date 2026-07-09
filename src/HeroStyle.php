@@ -10,72 +10,42 @@ namespace Capsule;
 final class HeroStyle
 {
     /** @var list<string> */
-    public const VISUAL_VARIANTS = ['split', 'split-left', 'image-below', 'video'];
+    public const VISUAL_VARIANTS = [
+        'hero1', 'hero3', 'hero7', 'hero12', 'hero34', 'hero45', 'hero47',
+        'hero67', 'hero78', 'hero115', 'hero195', 'hero206', 'hero243',
+    ];
+
+    /** @var array<string, string> Anciens slugs séquentiels (sans ambiguïté) vers slugs extension. */
+    public const LEGACY_VARIANT_MAP = [
+        'hero2' => 'hero3',
+        'hero4' => 'hero12',
+        'hero5' => 'hero34',
+        'hero6' => 'hero45',
+        'hero8' => 'hero67',
+        'hero9' => 'hero78',
+        'hero10' => 'hero115',
+        'hero11' => 'hero195',
+        'hero13' => 'hero243',
+    ];
+
+    public static function normalizeVariant(string $variant): string
+    {
+        if (in_array($variant, SectionAssets::heroVariantIds(), true)) {
+            return $variant;
+        }
+
+        return self::LEGACY_VARIANT_MAP[$variant] ?? $variant;
+    }
 
     /**
      * @return array<string, string>
      */
     public static function defaults(string $variant): array
     {
-        $base = [
+        return [
             'bg' => 'background',
-            'text_align' => 'center',
-            'padding' => 'lg',
-            'min_height' => 'auto',
-            'content_width' => 'narrow',
-            'title_size' => 'lg',
-            'subtitle_size' => 'md',
-            'image_border' => 'none',
-            'image_radius' => 'lg',
-            'image_shadow' => 'md',
+            'padding' => 'xl',
         ];
-
-        return match ($variant) {
-            'fullscreen' => array_merge($base, [
-                'min_height' => 'viewport',
-                'title_size' => 'display',
-                'padding' => 'md',
-                'bg' => 'primary',
-            ]),
-            'minimal' => array_merge($base, [
-                'subtitle_size' => 'hidden',
-                'title_size' => 'xl',
-                'padding' => 'xl',
-                'content_width' => 'narrow',
-            ]),
-            'badge' => array_merge($base, [
-                'title_size' => 'xl',
-                'bg' => 'background',
-                'text_align' => 'center',
-            ]),
-            'split', 'split-left' => array_merge($base, [
-                'text_align' => 'left',
-                'content_width' => 'wide',
-                'image_border' => 'thin',
-                'image_radius' => 'lg',
-                'image_shadow' => 'md',
-            ]),
-            'image-below' => array_merge($base, [
-                'content_width' => 'default',
-                'image_border' => 'thin',
-                'image_radius' => 'lg',
-                'image_shadow' => 'md',
-            ]),
-            'video' => array_merge($base, [
-                'text_align' => 'left',
-                'content_width' => 'wide',
-                'image_border' => 'thin',
-                'image_radius' => 'md',
-            ]),
-            'centered' => array_merge($base, [
-                'bg' => 'background',
-                'padding' => 'lg',
-                'min_height' => 'auto',
-                'content_width' => 'narrow',
-                'title_size' => 'lg',
-            ]),
-            default => $base,
-        };
     }
 
     /**
@@ -105,27 +75,176 @@ final class HeroStyle
      */
     public static function modifierClasses(array $style, string $variant): string
     {
-        $s = self::resolve($style, $variant);
-        $classes = [];
+        return '';
+    }
 
-        $map = [
-            'min_height' => ['large' => 'section-hero--min-h-large', 'viewport' => 'section-hero--min-h-viewport'],
-            'content_width' => ['narrow' => 'section-hero--width-narrow', 'wide' => 'section-hero--width-wide', 'default' => 'section-hero--width-default'],
-            'title_size' => ['sm' => 'section-hero--title-sm', 'md' => 'section-hero--title-md', 'lg' => 'section-hero--title-lg', 'xl' => 'section-hero--title-xl', 'display' => 'section-hero--title-display'],
-            'subtitle_size' => ['sm' => 'section-hero--subtitle-sm', 'md' => 'section-hero--subtitle-md', 'lg' => 'section-hero--subtitle-lg', 'hidden' => 'section-hero--subtitle-hidden'],
-            'image_border' => ['thin' => 'section-hero--img-border'],
-            'image_radius' => ['none' => 'section-hero--img-radius-none', 'md' => 'section-hero--img-radius-md', 'lg' => 'section-hero--img-radius-lg'],
-            'image_shadow' => ['none' => 'section-hero--img-shadow-none', 'md' => 'section-hero--img-shadow-md'],
-        ];
+    /**
+     * @param array<string, mixed> $content
+     */
+    public static function renderHeroReviews(array $content): string
+    {
+        $rating = trim((string) ($content['reviews_rating'] ?? ''));
+        $count = trim((string) ($content['reviews_count'] ?? ''));
+        $avatars = $content['review_avatars'] ?? [];
+        if ($rating === '' && $count === '' && (!is_array($avatars) || $avatars === [])) {
+            return '';
+        }
 
-        foreach ($map as $key => $valueMap) {
-            $value = $s[$key] ?? '';
-            if (isset($valueMap[$value])) {
-                $classes[] = $valueMap[$value];
+        $avatarsHtml = '';
+        if (is_array($avatars)) {
+            $shown = 0;
+            foreach ($avatars as $avatar) {
+                if (!is_array($avatar) || $shown >= 5) {
+                    continue;
+                }
+                $url = SectionAssets::resolve(
+                    (string) ($avatar['url'] ?? ''),
+                    SectionAssets::shared('hero', 'avatars/avatar' . ($shown + 1) . '.jpg'),
+                );
+                if ($url === '') {
+                    continue;
+                }
+                $alt = htmlspecialchars(trim((string) ($avatar['title'] ?? 'Avatar')), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+                $avatarsHtml .= '<img class="section-hero__avatar" src="' . htmlspecialchars($url, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')
+                    . '" alt="' . $alt . '" width="40" height="40" loading="lazy" decoding="async" />';
+                $shown++;
             }
         }
 
-        return implode(' ', $classes);
+        $starsHtml = '';
+        for ($i = 0; $i < 5; $i++) {
+            $starsHtml .= '<i class="fa-regular fa-star" aria-hidden="true"></i>';
+        }
+
+        $ratingValue = $rating !== '' ? htmlspecialchars($rating, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') : '5.0';
+        $caption = $count !== ''
+            ? 'from ' . htmlspecialchars($count, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '+ reviews'
+            : '';
+
+        return '<div class="section-hero__reviews">'
+            . ($avatarsHtml !== '' ? '<span class="section-hero__avatars">' . $avatarsHtml . '</span>' : '')
+            . '<div>'
+            . '<div class="section-hero__rating-row" role="img" aria-label="Note ' . $ratingValue . ' sur 5">'
+            . $starsHtml
+            . '<span class="section-hero__rating-value">' . $ratingValue . '</span>'
+            . '</div>'
+            . ($caption !== '' ? '<p class="section-hero__reviews-caption">' . $caption . '</p>' : '')
+            . '</div>'
+            . '</div>';
+    }
+
+    /**
+     * @param array<string, mixed> $content
+     */
+    public static function renderHeroVisual(array $content): string
+    {
+        $imageUrl = SectionAssets::resolve(
+            (string) ($content['image_url'] ?? ''),
+            '',
+        );
+        $imageDarkRaw = trim((string) ($content['image_url_dark'] ?? ''));
+        $imageDarkUrl = $imageDarkRaw !== ''
+            ? SectionAssets::resolve($imageDarkRaw, '')
+            : '';
+        $altText = trim((string) ($content['image_alt'] ?? $content['title'] ?? 'Hero'));
+        $alt = htmlspecialchars($altText !== '' ? $altText : 'Hero', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+
+        if ($imageUrl === '') {
+            return '';
+        }
+
+        $light = '<img class="section-hero__img section-hero__img--light" src="' . htmlspecialchars($imageUrl, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')
+            . '" alt="' . $alt . '" width="1280" height="720" loading="eager" decoding="async" />';
+
+        if ($imageDarkUrl === '') {
+            return $light;
+        }
+
+        $dark = '<img class="section-hero__img section-hero__img--dark" src="' . htmlspecialchars($imageDarkUrl, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')
+            . '" alt="' . $alt . '" width="1280" height="720" loading="eager" decoding="async" />';
+
+        return $light . $dark;
+    }
+
+    /**
+     * @param array<string, mixed> $content
+     */
+    public static function renderHeroBackdrop(array $content): string
+    {
+        $imageUrl = SectionAssets::resolve(
+            (string) ($content['background_image_url'] ?? ''),
+            '',
+        );
+        if ($imageUrl === '') {
+            return '';
+        }
+
+        return '<div class="section-hero__backdrop" aria-hidden="true">'
+            . '<img class="section-hero__backdrop-img" src="' . htmlspecialchars($imageUrl, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')
+            . '" alt="" width="1920" height="1080" loading="eager" decoding="async" />'
+            . '<span class="section-hero__backdrop-overlay"></span>'
+            . '</div>';
+    }
+
+    /**
+     * @param array<string, mixed> $content
+     */
+    public static function renderHeroItems(array $content, string $variant): string
+    {
+        $items = $content['items'] ?? null;
+        if (!is_array($items) || $items === []) {
+            return '';
+        }
+
+        $parts = [];
+        foreach ($items as $item) {
+            if (!is_array($item)) {
+                continue;
+            }
+            $title = trim((string) ($item['title'] ?? ''));
+            $text = trim((string) ($item['text'] ?? ''));
+            $imageUrl = SectionAssets::resolve((string) ($item['url'] ?? ''), '');
+            $inner = '';
+            if ($imageUrl !== '') {
+                $alt = htmlspecialchars($title !== '' ? $title : 'Visuel', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+                $logoClass = str_contains($imageUrl, '/logos/') ? ' section-hero__item-logo' : ' section-hero__item-img';
+                $inner .= '<img class="' . trim($logoClass) . '" src="' . htmlspecialchars($imageUrl, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')
+                    . '" alt="' . $alt . '" loading="lazy" decoding="async" />';
+            }
+            if ($title !== '') {
+                $inner .= '<p class="section-hero__item-title">' . htmlspecialchars($title, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</p>';
+            }
+            if ($text !== '') {
+                $inner .= '<p class="section-hero__item-text">' . htmlspecialchars($text, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</p>';
+            }
+            if ($inner === '') {
+                continue;
+            }
+            $parts[] = '<li class="section-hero__item">' . $inner . '</li>';
+        }
+
+        if ($parts === []) {
+            return '';
+        }
+
+        $listClass = 'section-hero__items';
+        if (in_array($variant, ['hero195', 'hero206'], true)) {
+            $listClass .= ' section-hero__items--row';
+        }
+
+        return '<ul class="' . $listClass . '">' . implode('', $parts) . '</ul>';
+    }
+
+    /** @deprecated Utiliser renderHeroReviews() */
+    public static function renderHero3Reviews(array $content): string
+    {
+        return self::renderHeroReviews($content);
+    }
+
+    /** @deprecated Utiliser renderHeroVisual() */
+    public static function renderHero3Visual(array $content): string
+    {
+        return self::renderHeroVisual($content);
     }
 
     /**
@@ -151,10 +270,7 @@ final class HeroStyle
             }
         }
 
-        $imageUrl = StockImages::resolve(
-            (string) ($content['image_url'] ?? ''),
-            static fn (): string => StockImages::sectionHeroFallback('hero'),
-        );
+        $imageUrl = MediaDisplaySettings::normalizeUrl((string) ($content['image_url'] ?? ''));
         if ($imageUrl === '') {
             return '';
         }
@@ -190,10 +306,7 @@ final class HeroStyle
             return '';
         }
 
-        $imageUrl = StockImages::resolve(
-            (string) ($content['image_url'] ?? ''),
-            static fn (): string => StockImages::sectionHeroFallback('hero'),
-        );
+        $imageUrl = MediaDisplaySettings::normalizeUrl((string) ($content['image_url'] ?? ''));
         $imageTitle = trim((string) ($content['title'] ?? ''));
         $safeAlt = htmlspecialchars($imageTitle !== '' ? $imageTitle : 'Illustration', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 

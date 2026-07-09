@@ -30,7 +30,7 @@ version:      ## Infos PHP & SQLite (host)
 info:         ## Etat local (versions + chemins)
 	$(LOCAL) info
 
-deps:         ## Installe extensions PHP nécessaires (dnf/apt)
+deps:         ## Installe dépendances système (PHP, extensions, SQLite, Composer) puis vendor/
 	$(LOCAL) deps
 
 init:         ## Crée data/, applique migration SQLite si absente, génère bin/ si manquants

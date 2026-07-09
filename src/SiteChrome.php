@@ -84,10 +84,27 @@ final class SiteChrome
             ? $this->view->render('site-header.html', $data)
             : '';
         $data['footer_html'] = $showFooter
-            ? $this->view->render('site-footer.html', $data)
+            ? $this->renderFooterHtml($data, $footerVariant, $siteInfo, $name, $logoUrl)
             : '';
 
         return $data;
+    }
+
+    /**
+     * @param array<string, mixed> $data
+     * @param array<string, mixed> $variant
+     * @param array<string, mixed> $siteInfo
+     */
+    private function renderFooterHtml(array $data, array $variant, array $siteInfo, string $name, string $logoUrl): string
+    {
+        $template = FooterStyle::normalizeTemplate((string) ($variant['template'] ?? FooterStyle::TEMPLATE_DEFAULT));
+        if (!FooterStyle::isBlocksTemplate($template)) {
+            return $this->view->render('site-footer.html', $data);
+        }
+
+        $data = FooterVariantRenderer::enrich($data, $variant, $name, $logoUrl);
+
+        return $this->view->render('site-footer-' . $template . '.html', $data);
     }
 
     /**

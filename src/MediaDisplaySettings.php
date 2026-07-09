@@ -12,6 +12,16 @@ final class MediaDisplaySettings
     /** @var list<string> */
     public const IMAGE_FITS = ['cover', 'contain', 'fill', 'none', 'scale-down'];
 
+    public static function normalizeUrl(string $url): string
+    {
+        $url = trim($url);
+        if ($url === '' || str_contains($url, 'images.unsplash.com')) {
+            return '';
+        }
+
+        return $url;
+    }
+
     /**
      * @param array<string, mixed> $content
      */

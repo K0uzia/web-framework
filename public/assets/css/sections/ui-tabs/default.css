@@ -1,9 +1,0 @@
-.section-ui-tabs__inner { display: flex; flex-direction: column; gap: var(--space-md); }
-.section-ui-tabs__item { display: contents; }
-.section-ui-tabs__tab {
-    border: 1px solid var(--color-border, #e2e8f0); background: var(--color-surface, #f8fafc);
-    padding: 0.5rem 1rem; border-radius: var(--radius-sm, 0.25rem); cursor: pointer; margin-right: var(--space-xs);
-}
-.section-ui-tabs__tab.is-active { border-color: transparent; }
-.section-ui-tabs__panel { padding: var(--space-md); border: 1px solid var(--color-border, #e2e8f0); border-radius: var(--radius-md, 0.5rem); }
-.section-ui-tabs__panel[hidden] { display: none !important; }

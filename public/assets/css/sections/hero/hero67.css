@@ -1,0 +1,140 @@
+/* Hero 67 : logo, CTA et bandeau */
+
+.section-hero--hero67 .section-hero__container--banner {
+    gap: 0;
+}
+
+.section-hero--hero67 .section-hero__top--banner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3.5rem;
+    max-width: 56rem;
+    margin-inline: auto;
+    text-align: center;
+}
+
+.section-hero--hero67 .section-hero__logo--sm {
+    height: 3.5rem;
+    width: auto;
+}
+
+.section-hero--hero67 .section-hero__intro--banner {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.section-hero--hero67 .section-hero__title--banner {
+    margin: 0;
+    font-size: 1.875rem;
+    font-weight: 500;
+    line-height: 1.15;
+    text-wrap: pretty;
+}
+
+@media (min-width: 1024px) {
+    .section-hero--hero67 .section-hero__title--banner {
+        font-size: 3.75rem;
+    }
+}
+
+.section-hero--hero67 .section-hero__subtitle--banner {
+    margin: 0 auto;
+    max-width: 36rem;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--color-text-muted, #64748b);
+}
+
+.section-hero--hero67 .section-hero__cta-row--banner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    width: 100%;
+}
+
+@media (min-width: 1024px) {
+    .section-hero--hero67 .section-hero__cta-row--banner {
+        flex-direction: row;
+    }
+}
+
+.section-hero--hero67 .section-hero__buttons--banner {
+    width: 100%;
+    justify-content: center;
+}
+
+.section-hero--hero67 .section-hero__button--calendar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    min-height: 2.75rem;
+    padding: 0.625rem 1.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    border-radius: 0.5rem;
+    background: #171717;
+    color: #fafafa;
+}
+
+@media (min-width: 640px) {
+    .section-hero--hero67 .section-hero__button--calendar {
+        width: fit-content;
+    }
+}
+
+.section-hero--hero67 .section-hero__button--calendar:hover {
+    background: #262626;
+}
+
+.section-hero--hero67 .section-hero__trust {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+@media (min-width: 1024px) {
+    .section-hero--hero67 .section-hero__trust {
+        align-items: flex-start;
+    }
+}
+
+.section-hero--hero67 .section-hero__avatar--sm {
+    width: 1.75rem;
+    height: 1.75rem;
+    margin-left: -0.25rem;
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 999px;
+    object-fit: cover;
+    background: var(--color-background, #fff);
+}
+
+.section-hero--hero67 .section-hero__avatar--sm:first-child {
+    margin-left: 0;
+}
+
+.section-hero--hero67 .section-hero__trust-caption {
+    margin: 0;
+    font-size: 0.75rem;
+    color: var(--color-text-muted, #64748b);
+}
+
+.section-hero--hero67 .section-hero__banner {
+    display: block;
+    width: 100%;
+    max-width: 80rem;
+    margin: 6rem auto 0;
+    aspect-ratio: 16 / 9;
+    max-height: 700px;
+    object-fit: cover;
+    object-position: top;
+    border-radius: 0.5rem 0.5rem 0 0;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}

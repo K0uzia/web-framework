@@ -1,7 +1,0 @@
-.section-timeline--vertical .section-timeline__grid,
-.section-timeline--vertical .section-timeline__row {
-    flex-direction: column;
-    display: flex;
-    gap: var(--space-md);
-}
-

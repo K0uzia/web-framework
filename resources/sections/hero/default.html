@@ -1,7 +1,13 @@
-<section class="section-hero section-hero--{{variant}} section--align-{{style_text_align}} section--pad-{{style_padding}} section--bg-{{style_bg}}" id="{{section_id}}">
-    <div class="section-hero__inner">
-        <h1>{{content_title}}</h1>
+<section class="section-hero section-hero--{{variant}} section--pad-{{style_padding}} section--bg-{{style_bg}}" id="{{section_id}}">
+    {{{hero_backdrop_html}}}
+    <div class="section-hero__container">
+        {{{hero_badge_html}}}
+        <h1 class="section-hero__title">{{content_title}}{{{hero_subheading_html}}}</h1>
         <p class="section-hero__subtitle">{{content_subtitle}}</p>
-        <div class="section-buttons">{{{buttons_html}}}</div>
+        <p class="section-hero__byline">{{content_byline}}</p>
+        {{{hero_reviews_html}}}
+        <div class="section-hero__buttons">{{{hero_buttons_html}}}</div>
+        {{{hero_items_html}}}
+        <div class="section-hero__visual">{{{hero_visual_html}}}</div>
     </div>
 </section>

@@ -55,6 +55,7 @@ $devRoutes = [
     'POST /dev/site/nav/{id}/move' => [SiteController::class, 'moveNav'],
     'POST /dev/site/nav/{id}/delete' => [SiteController::class, 'deleteNav'],
     'POST /dev/media/{field}/upload' => [MediaController::class, 'upload'],
+    'POST /dev/media/{field}/select' => [MediaController::class, 'select'],
     'POST /dev/media/{field}/remove' => [MediaController::class, 'remove'],
     'POST /dev/pages/{slug}/sections/{id}/media/{field}/upload' => [SectionsController::class, 'uploadMedia'],
     'POST /dev/pages/{slug}/sections/{id}/media/{field}/remove' => [SectionsController::class, 'removeMedia'],

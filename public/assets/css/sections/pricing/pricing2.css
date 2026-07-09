@@ -1,0 +1,89 @@
+/* Pricing 2 : cartes avec interrupteur mensuel/annuel */
+
+.section-pricing--pricing2 .section-pricing__grid--plan2 {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-width: 64rem;
+    margin-inline: auto;
+}
+
+@media (min-width: 768px) {
+    .section-pricing--pricing2 .section-pricing__grid--plan2 {
+        flex-direction: row;
+        align-items: stretch;
+        justify-content: center;
+    }
+}
+
+.section-pricing--pricing2 .section-pricing__card--plan2 {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 2rem;
+    width: 100%;
+    min-width: 0;
+    padding: 1.5rem;
+    text-align: left;
+    background: var(--color-background, #fff);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 0.75rem;
+    box-shadow: none;
+}
+
+@media (min-width: 768px) {
+    .section-pricing--pricing2 .section-pricing__card--plan2 {
+        flex: 1 1 0;
+    }
+}
+
+.section-pricing--pricing2 .section-pricing__card--highlighted {
+    border-width: 2px;
+    border-color: var(--color-primary, #3b82f6);
+}
+
+.section-pricing--pricing2 .section-pricing__card-name {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--color-text, #0f172a);
+}
+
+.section-pricing--pricing2 .section-pricing__card-price {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 0.25rem;
+    margin: 0 0 1.25rem;
+}
+
+.section-pricing--pricing2 .section-pricing__price-value {
+    font-size: 2.25rem;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -0.025em;
+    color: var(--color-text, #0f172a);
+}
+
+.section-pricing--pricing2 .section-pricing__price-period {
+    font-size: 1.25rem;
+    font-weight: 400;
+    color: var(--color-text-muted, #64748b);
+}
+
+.section-pricing--pricing2 .section-pricing__card-desc {
+    margin: 0;
+    color: var(--color-text-muted, #64748b);
+}
+
+.section-pricing--pricing2 .section-pricing__card-body {
+    flex: 1;
+}
+
+.section-pricing--pricing2 .section-pricing__card-body .section-pricing__separator {
+    margin-bottom: 1.5rem;
+}
+
+.section-pricing--pricing2 .section-pricing__card-foot {
+    margin-top: auto;
+}

@@ -18,7 +18,6 @@ use Capsule\Page;
 use Capsule\PageRepository;
 use Capsule\SectionRegistry;
 use Capsule\SiteRepository;
-use Capsule\StockImages;
 use PHPUnit\Framework\TestCase;
 use App\Http\Dev\MediaUploader;
 
@@ -26,6 +25,7 @@ final class SectionsControllerTest extends TestCase
 {
     private PageRepository $pages;
     private SectionsController $controller;
+    private MediaRepository $mediaRepo;
     private string $uploadsDir;
     private string $libraryDir;
 
@@ -39,16 +39,16 @@ final class SectionsControllerTest extends TestCase
         $ui = new DevDashboard($root . '/resources/dev', new ResponseFactory());
         $registry = new SectionRegistry($root . '/resources/sections/registry.yaml');
         $site = new SiteRepository($pdo);
-        $mediaRepo = new MediaRepository($pdo);
+        $this->mediaRepo = new MediaRepository($pdo);
         $this->uploadsDir = sys_get_temp_dir() . '/capsule-section-media-' . bin2hex(random_bytes(4));
         $this->libraryDir = sys_get_temp_dir() . '/capsule-library-media-' . bin2hex(random_bytes(4));
         mkdir($this->libraryDir);
         $uploader = new MediaUploader($this->uploadsDir);
         $libraryUploader = new LibraryMediaUploader($this->libraryDir);
-        $library = new MediaLibrary($mediaRepo, $this->uploadsDir, '/uploads/site', $this->pages, $site);
+        $library = new MediaLibrary($this->mediaRepo, $this->uploadsDir, '/uploads/site', $this->pages, $site);
         $forms = new SectionFormRenderer($registry, $this->pages, $library, $libraryUploader);
 
-        $this->controller = new SectionsController($ui, $this->pages, $registry, $forms, $uploader, $libraryUploader, $library, $mediaRepo);
+        $this->controller = new SectionsController($ui, $this->pages, $registry, $forms, $uploader, $libraryUploader, $library, $this->mediaRepo);
 
         $this->pages->save(new Page(
             slug: 'about',
@@ -58,7 +58,7 @@ final class SectionsControllerTest extends TestCase
             sections: [[
                 'id' => 'hero-1',
                 'type' => 'hero',
-                'variant' => 'centered',
+                'variant' => 'hero3',
                 'visible' => true,
                 'content' => ['title' => 'Hello'],
                 'style' => [],
@@ -84,8 +84,10 @@ final class SectionsControllerTest extends TestCase
 
     public function testSelectSectionImageFromLibrary(): void
     {
+        $this->mediaRepo->create('image', '/uploads/media/hero.webp', 'hero.webp', 'image/webp', 100);
+
         $response = $this->controller->selectMedia(
-            $this->hxPost('/dev/pages/about/sections/hero-1/media/image_url/select', 'url=' . rawurlencode(StockImages::hero(0))),
+            $this->hxPost('/dev/pages/about/sections/hero-1/media/image_url/select', 'url=' . rawurlencode('/uploads/media/hero.webp')),
             'about',
             'hero-1',
             'image_url',
@@ -95,21 +97,21 @@ final class SectionsControllerTest extends TestCase
         $this->assertStringContainsString('dev-section-media', (string) $response->getBody());
 
         $page = $this->pages->findBySlug('about', false);
-        $this->assertSame(StockImages::hero(0), $page->sections[0]['content']['image_url'] ?? '');
+        $this->assertSame('/uploads/media/hero.webp', $page->sections[0]['content']['image_url'] ?? '');
     }
 
     public function testAddSectionUsesFirstVariant(): void
     {
         $response = $this->controller->add($this->hxPost(
             '/dev/pages/about/sections',
-            'type=features',
+            'type=hero',
         ), 'about');
 
         $page = $this->pages->findBySlug('about', false);
         $this->assertNotNull($page);
         $last = $page->sections[array_key_last($page->sections)];
-        $this->assertSame('features', $last['type']);
-        $this->assertSame('grid-3', $last['variant']);
+        $this->assertSame('hero', $last['type']);
+        $this->assertSame('hero3', $last['variant']);
         $this->assertStringContainsString('dev-section-card', (string) $response->getBody());
     }
 
@@ -117,13 +119,13 @@ final class SectionsControllerTest extends TestCase
     {
         $response = $this->controller->add($this->hxPost(
             '/dev/pages/about/sections',
-            'type=hero&variant=fullscreen',
+            'type=hero&variant=hero3',
         ), 'about');
 
         $page = $this->pages->findBySlug('about', false);
         $this->assertNotNull($page);
         $last = $page->sections[array_key_last($page->sections)];
-        $this->assertSame('fullscreen', $last['variant']);
+        $this->assertSame('hero3', $last['variant']);
         $this->assertStringContainsString('dev-section-card', (string) $response->getBody());
     }
 
@@ -141,16 +143,16 @@ final class SectionsControllerTest extends TestCase
 
     public function testMoveAndDestroySections(): void
     {
-        $this->controller->add($this->hxPost('/dev/pages/about/sections', 'type=cta'), 'about');
+        $this->controller->add($this->hxPost('/dev/pages/about/sections', 'type=hero'), 'about');
         $page = $this->pages->findBySlug('about', false);
         $this->assertCount(2, $page->sections);
 
-        $ctaId = $page->sections[1]['id'];
-        $this->controller->move($this->hxPost('/dev/pages/about/sections/' . $ctaId . '/move', 'direction=up'), 'about', (string) $ctaId);
+        $secondId = $page->sections[1]['id'];
+        $this->controller->move($this->hxPost('/dev/pages/about/sections/' . $secondId . '/move', 'direction=up'), 'about', (string) $secondId);
         $page = $this->pages->findBySlug('about', false);
-        $this->assertSame('cta', $page->sections[0]['type']);
+        $this->assertSame('hero', $page->sections[0]['type']);
 
-        $this->controller->destroy($this->hxPost('/dev/pages/about/sections/' . $ctaId . '/delete', ''), 'about', (string) $ctaId);
+        $this->controller->destroy($this->hxPost('/dev/pages/about/sections/' . $secondId . '/delete', ''), 'about', (string) $secondId);
         $page = $this->pages->findBySlug('about', false);
         $this->assertCount(1, $page->sections);
     }
@@ -170,8 +172,8 @@ final class SectionsControllerTest extends TestCase
 
     public function testReorderAppliesRequestedOrderAndKeepsUnknownIdsAtEnd(): void
     {
-        $this->controller->add($this->hxPost('/dev/pages/about/sections', 'type=cta'), 'about');
-        $this->controller->add($this->hxPost('/dev/pages/about/sections', 'type=features'), 'about');
+        $this->controller->add($this->hxPost('/dev/pages/about/sections', 'type=hero'), 'about');
+        $this->controller->add($this->hxPost('/dev/pages/about/sections', 'type=hero'), 'about');
         $page = $this->pages->findBySlug('about', false);
         $ids = array_map(static fn ($s) => $s['id'], $page->sections);
 

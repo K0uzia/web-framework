@@ -50,7 +50,12 @@ spl_autoload_register(function (string $class): void {
     $filepath = dirname(__DIR__) . '/' . implode('/', $namespaceParts) . '.php';
 
     if (!file_exists($filepath)) {
-        // Ne pas throw → évite de bloquer d'autres autoloaders/retours internes
+        if ($rootNamespace === 'Capsule') {
+            throw new \RuntimeException(
+                'Classe Capsule introuvable : « ' . $class . ' » (fichier attendu : « ' . $filepath . ' »).',
+            );
+        }
+
         return;
     }
 

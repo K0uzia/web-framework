@@ -29,7 +29,7 @@ final class PageRepositoryTest extends TestCase
             title: 'About',
             layout: 'default',
             description: 'Desc',
-            sections: [['id' => 'h1', 'type' => 'hero', 'variant' => 'centered', 'content' => [], 'style' => []]],
+            sections: [['id' => 'h1', 'type' => 'hero', 'variant' => 'hero3', 'content' => [], 'style' => []]],
             meta: ['schema_type' => 'WebPage'],
             published: true,
             updatedAt: '',

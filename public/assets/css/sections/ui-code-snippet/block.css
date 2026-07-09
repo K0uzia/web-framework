@@ -1,4 +1,0 @@
-.section-ui-code-snippet .section-code {
-    margin: 0; padding: var(--space-md); border-radius: var(--radius-md, 0.5rem);
-    background: #0f172a; color: #e2e8f0; overflow-x: auto; font-size: 0.875rem;
-}

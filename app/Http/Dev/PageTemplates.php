@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Dev;
 
 /**
- * Modèles de pages préassemblés (compositions de sections, inspirées des Pages shadcnblocks).
- *
- * @see https://www.shadcnblocks.com/pages
+ * Modèles de pages préassemblés (compositions de sections).
  */
 final class PageTemplates
 {

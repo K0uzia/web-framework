@@ -1,0 +1,78 @@
+/* Feature 16 : label, titre et grille trois colonnes */
+
+.section-features--feature16 {
+    background: var(--color-background, #fff);
+}
+
+.section-features--feature16 .section-features__label {
+    margin: 0 0 1rem;
+    font-size: 0.875rem;
+    color: var(--color-text-muted, #64748b);
+}
+
+.section-features--feature16 .section-features__title--left {
+    margin: 0;
+    max-width: 42rem;
+    font-size: 1.875rem;
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+    color: var(--color-text, #0f172a);
+    text-wrap: pretty;
+}
+
+@media (min-width: 1024px) {
+    .section-features--feature16 .section-features__title--left {
+        font-size: 2.25rem;
+    }
+}
+
+.section-features--feature16 .section-features__grid--icons-3 {
+    display: grid;
+    gap: 1.5rem;
+    margin-top: 3.5rem;
+}
+
+@media (min-width: 1024px) {
+    .section-features--feature16 .section-features__grid--icons-3 {
+        grid-template-columns: repeat(3, 1fr);
+        margin-top: 5rem;
+    }
+}
+
+.section-features--feature16 .section-features__card--icon.section-features__card--accent-compact {
+    padding: 1.25rem;
+    background: var(--color-muted, #f1f5f9);
+    border-radius: 0.5rem;
+}
+
+.section-features--feature16 .section-features__icon-circle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    margin-bottom: 2rem;
+    border-radius: 999px;
+    background: var(--color-background, #fff);
+    color: var(--color-text, #0f172a);
+}
+
+.section-features--feature16 .section-features__icon-circle i {
+    font-size: 1.25rem;
+    line-height: 1;
+}
+
+.section-features--feature16 .section-features__card--accent-compact h3 {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--color-text, #0f172a);
+}
+
+.section-features--feature16 .section-features__card--accent-compact p {
+    margin: 0.5rem 0 0;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--color-text-muted, #64748b);
+}

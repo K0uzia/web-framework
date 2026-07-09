@@ -1,7 +1,0 @@
-.section-logos--marquee .section-logos__grid {
-    display: flex;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    gap: var(--space-lg);
-}
-

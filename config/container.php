@@ -195,6 +195,8 @@ return (function (): Container {
         '/uploads/site',
         $c->get(PageRepository::class),
         $c->get(SiteRepository::class),
+        $root . '/public/uploads/media',
+        $root . '/public',
     ));
     $c->set(SectionFormRenderer::class, static fn (Container $c) => new SectionFormRenderer(
         $c->get(SectionRegistry::class),
@@ -225,6 +227,7 @@ return (function (): Container {
         $c->get(MediaRepository::class),
         $c->get(MediaLibrary::class),
         $c->get(LibraryMediaUploader::class),
+        $c->get(MediaUploader::class),
         $c->get(MediaUsageScanner::class),
     ));
     $c->set(MediaUploader::class, static fn () => new MediaUploader(
@@ -237,6 +240,7 @@ return (function (): Container {
         $c->get(DevDashboard::class),
         $c->get(SiteRepository::class),
         $c->get(MediaUploader::class),
+        $c->get(MediaLibrary::class),
         $c->get(ResponseFactory::class),
     ));
     $c->set(ChromeController::class, static fn (Container $c) => new ChromeController(
@@ -249,6 +253,7 @@ return (function (): Container {
         $c->get(SiteRepository::class),
         $c->get(PageRepository::class),
         $c->get(MediaUploader::class),
+        $c->get(MediaLibrary::class),
     ));
     $c->set(ThemeController::class, static fn (Container $c) => new ThemeController(
         $c->get(DevDashboard::class),

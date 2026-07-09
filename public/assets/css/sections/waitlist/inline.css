@@ -1,8 +1,0 @@
-.section-waitlist--inline .section-buttons,
-.section-waitlist--inline form {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-sm);
-    justify-content: center;
-}
-

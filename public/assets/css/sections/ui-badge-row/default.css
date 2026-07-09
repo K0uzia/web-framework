@@ -1,6 +1,0 @@
-.section-ui-badge-row__list { display: flex; flex-wrap: wrap; gap: var(--space-sm); }
-.section-ui-badge-row__badge {
-    display: inline-flex; align-items: center; padding: 0.25rem 0.65rem;
-    border-radius: var(--radius-sm, 0.25rem); font-size: 0.875rem;
-    background: var(--color-surface, #f1f5f9); border: 1px solid var(--color-border, #e2e8f0);
-}
