@@ -68,7 +68,14 @@ return (function (): Container {
     $appConfig = require __DIR__ . '/app.php';
 
     $c->set('config', static fn () => $appConfig);
-    $c->set(BasePath::class, static fn () => BasePath::fromEnv((string) ($appConfig['base_path'] ?? '')));
+    $c->set(BasePath::class, static function () use ($appConfig): BasePath {
+        $bp = trim((string) ($appConfig['base_path'] ?? ''));
+        if ($bp === '') {
+            $bp = trim((string) ($_SERVER['APP_BASE_PATH'] ?? $_ENV['APP_BASE_PATH'] ?? getenv('APP_BASE_PATH') ?: ''));
+        }
+
+        return BasePath::fromEnv($bp);
+    });
     $c->set(ResponseFactory::class, static fn () => new ResponseFactory());
     $c->set(Database::class, static fn () => Database::fromConfig());
     $c->set(PageRepository::class, static fn (Container $c) => new PageRepository(
@@ -117,6 +124,8 @@ return (function (): Container {
         $c->get(SiteChrome::class),
         $appConfig['base_url'],
         $c->get(StylesheetResolver::class),
+        true,
+        $c->get(BasePath::class),
     ));
     $c->set(PageRegistry::class, static fn (Container $c) => new PageRegistry(
         $c->get(PageRepository::class),

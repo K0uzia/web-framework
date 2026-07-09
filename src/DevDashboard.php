@@ -48,10 +48,15 @@ final class DevDashboard
         $data = self::withNav($data, $section);
         $data['crumb_html'] ??= '';
         $data['theme_css'] = $this->themeCssMarkup();
-        $data['base_path'] = $this->basePath?->value() ?? '';
-        $data['base_path_json'] = json_encode($data['base_path'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        $data['asset_root'] = $this->basePath?->value() ?? '';
+        $data['base_path'] = $data['asset_root'];
+        $data['base_path_json'] = json_encode($data['asset_root'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
         $html = $this->view()->page($template, $data, 'dev.html');
+
+        if ($this->basePath !== null && !$this->basePath->isEmpty()) {
+            $html = $this->basePath->rewriteHtml($html);
+        }
 
         return $this->responses->html($html, $status);
     }
@@ -77,9 +82,14 @@ final class DevDashboard
      */
     public function renderAuth(string $template, array $data = [], int $status = 200): Response
     {
-        $data['base_path'] = $this->basePath?->value() ?? '';
-        $data['base_path_json'] = json_encode($data['base_path'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        $data['asset_root'] = $this->basePath?->value() ?? '';
+        $data['base_path'] = $data['asset_root'];
+        $data['base_path_json'] = json_encode($data['asset_root'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         $html = $this->view()->page($template, $data, 'auth.html');
+
+        if ($this->basePath !== null && !$this->basePath->isEmpty()) {
+            $html = $this->basePath->rewriteHtml($html);
+        }
 
         return $this->responses->html($html, $status);
     }

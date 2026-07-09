@@ -20,6 +20,7 @@ final class PageRenderer
         private readonly string $baseUrl,
         private readonly StylesheetResolver $stylesheets,
         private readonly bool $publishedOnly = true,
+        private readonly ?BasePath $basePath = null,
     ) {
     }
 
@@ -50,6 +51,7 @@ final class PageRenderer
         $body = $this->sections->renderAll($page->sections);
         $data = Seo::apply($data, $path, $this->baseUrl);
         $data = $this->chrome->enrich($data, $path, $publishedOnly);
+        $data['asset_root'] = $this->basePath?->value() ?? '';
 
         $pageSlugForCss = $slug === '' ? 'index' : $slug;
         $hrefs = $this->stylesheets->resolve(
@@ -62,6 +64,10 @@ final class PageRenderer
         $data['stylesheets'] = $this->stylesheets->toHtml($hrefs);
 
         $html = $this->view->pageFromString($body, $data, $layout . '.html');
+
+        if ($this->basePath !== null && !$this->basePath->isEmpty()) {
+            $html = $this->basePath->rewriteHtml($html);
+        }
 
         return $this->responseFactory->html($html);
     }

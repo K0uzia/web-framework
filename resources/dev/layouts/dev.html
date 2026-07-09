@@ -6,14 +6,14 @@
     <meta name="color-scheme" content="dark light" />
     <title>{{title}} - Capsule Dev</title>
     <script>window.CapsuleBasePath={{{base_path_json}}};</script>
-    <script src="/assets/js/dev-base-path.js"></script>
-    <link rel="icon" href="/assets/favicon-dev.svg" type="image/svg+xml" />
-    <script src="/assets/js/dev-theme-init.js"></script>
-    <link rel="stylesheet" href="/assets/vendor/fontawesome/css/all.min.css" />
-    <link rel="stylesheet" href="/assets/css/dev.css" />
+    <script src="{{asset_root}}/assets/js/dev-base-path.js"></script>
+    <link rel="icon" href="{{asset_root}}/assets/favicon-dev.svg" type="image/svg+xml" />
+    <script src="{{asset_root}}/assets/js/dev-theme-init.js"></script>
+    <link rel="stylesheet" href="{{asset_root}}/assets/vendor/fontawesome/css/all.min.css" />
+    <link rel="stylesheet" href="{{asset_root}}/assets/css/dev.css" />
     {{{theme_css}}}
-    <link rel="stylesheet" href="/assets/css/dev-theme-bindings.css" />
-    <script src="/assets/js/dev.js" defer></script>
+    <link rel="stylesheet" href="{{asset_root}}/assets/css/dev-theme-bindings.css" />
+    <script src="{{asset_root}}/assets/js/dev.js" defer></script>
 </head>
 <body class="dev-shell {{body_class}}">
     <div class="dev-app" data-dev-app>
