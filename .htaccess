@@ -1,5 +1,6 @@
-# Production lacapsule.org : dépôt servi sous /wf/ (document root parent).
-# Si le document root pointe directement sur public/, ce fichier est ignoré.
+# dev.lacapsule.org/wf — document root = racine du dépôt (pas public/).
+
+DirectoryIndex index.php index.html
 
 <IfModule mod_env.c>
     SetEnv APP_BASE_PATH /wf
@@ -11,15 +12,20 @@
 
     RewriteRule .* - [E=APP_BASE_PATH:/wf]
 
-    # Bloque l'accès HTTP direct au code, aux données et aux outils CLI.
+    # Bloque l'accès HTTP direct au code source (chemins relatifs à /wf/).
     RewriteRule ^(?:app|bin|bootstrap|config|data|migrations|resources|scripts|src|tests|vendor)(?:/|$) - [F,L]
-
-    # Fichiers cachés (.env, .git, etc.)
     RewriteRule (^|/)\. - [F,L]
 
-    # Délègue au dossier public/ (site + /dev + assets statiques).
-    RewriteCond %{REQUEST_URI} !^/wf/public/
-    RewriteRule ^(.*)$ public/$1 [L]
+    # Assets statiques : fichiers réels dans public/ uniquement.
+    RewriteCond %{DOCUMENT_ROOT}/public/$1 -f
+    RewriteRule ^(.+)$ public/$1 [L]
+
+    # Front controller (y compris /wf/ et /wf/dev — ne pas traiter les dossiers comme fin de chaîne).
+    RewriteRule ^ public/index.php [L,QSA]
+</IfModule>
+
+<IfModule !mod_rewrite.c>
+    FallbackResource /wf/public/index.php
 </IfModule>
 
 Options -Indexes

@@ -47,8 +47,15 @@ final class BasePathTest extends TestCase
         $base = new BasePath('');
 
         $this->assertSame('/dev', $base->strip('/dev'));
+        $this->assertSame('/', $base->strip('/wf/'));
         $this->assertSame('/dev', $base->url('/dev'));
         $this->assertSame('<a href="/dev">x</a>', $base->rewriteHtml('<a href="/dev">x</a>'));
+    }
+
+    public function testStripDeployPrefix(): void
+    {
+        $this->assertSame('/', BasePath::stripDeployPrefix('/wf/'));
+        $this->assertSame('/dev', BasePath::stripDeployPrefix('/wf/dev'));
     }
 
     public function testFromEnvNormalizesValue(): void

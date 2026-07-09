@@ -9,6 +9,8 @@ namespace Capsule;
  */
 final class BasePath
 {
+    public const DEPLOY_PREFIX = '/wf';
+
     public function __construct(private readonly string $path)
     {
     }
@@ -44,7 +46,7 @@ final class BasePath
     public function strip(string $requestPath): string
     {
         if ($this->path === '') {
-            return $requestPath;
+            return self::stripDeployPrefix($requestPath);
         }
 
         if ($requestPath === $this->path || $requestPath === $this->path . '/') {
@@ -57,7 +59,28 @@ final class BasePath
             return $rest === '' ? '/' : $rest;
         }
 
-        return $requestPath;
+        return self::stripDeployPrefix($requestPath);
+    }
+
+    /**
+     * Retire /wf même si APP_BASE_PATH est absent (filet de sécurité production).
+     */
+    public static function stripDeployPrefix(string $path): string
+    {
+        $prefix = self::DEPLOY_PREFIX;
+        $prefixSlash = $prefix . '/';
+
+        if ($path === $prefix || $path === $prefixSlash) {
+            return '/';
+        }
+
+        if (str_starts_with($path, $prefixSlash)) {
+            $rest = substr($path, strlen($prefix));
+
+            return $rest === '' ? '/' : $rest;
+        }
+
+        return $path;
     }
 
     /**

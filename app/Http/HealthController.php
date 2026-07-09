@@ -18,6 +18,8 @@ final class HealthController
         return $this->responseFactory->json([
             'status' => 'ok',
             'service' => 'capsule-micro',
+            'deploy' => 'wf-uri-v4',
+            'path' => $request->path,
         ]);
     }
 }

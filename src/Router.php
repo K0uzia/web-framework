@@ -27,7 +27,7 @@ final class Router implements HandlerInterface
     public function handle(Request $request): Response
     {
         $method = strtoupper($request->method);
-        $path = $this->normalizePath($request->path);
+        $path = $this->normalizePath(Request::stripWfSubfolder($request->path));
         $key = "{$method} {$path}";
 
         if (isset($this->routes[$key])) {
@@ -115,6 +115,8 @@ final class Router implements HandlerInterface
 
     private function normalizePath(string $path): string
     {
+        $path = BasePath::stripDeployPrefix($path);
+
         if ($path === '' || $path === '/') {
             return '/';
         }

@@ -74,6 +74,7 @@ final class Request
         // optionnel: compacter les doubles slashes (sauf préfixe)
         $path = preg_replace('#//+#', '/', $path) ?? $path;
 
+        $path = self::stripWfSubfolder($path);
         $path = \Capsule\BasePath::fromEnv($basePath ?? '')->strip($path);
 
         // 3) En-têtes (sans getallheaders)
@@ -110,6 +111,24 @@ final class Request
             rawBody: $rawBody,
             files: $_FILES,
         );
+    }
+
+    /**
+     * Retire le préfixe /wf (déploiement lacapsule.org). Autonome, sans config.
+     */
+    public static function stripWfSubfolder(string $path): string
+    {
+        if ($path === '/wf' || $path === '/wf/') {
+            return '/';
+        }
+
+        if (str_starts_with($path, '/wf/')) {
+            $rest = substr($path, 3);
+
+            return $rest === '' ? '/' : $rest;
+        }
+
+        return $path;
     }
 
     /**

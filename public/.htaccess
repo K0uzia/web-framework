@@ -1,9 +1,7 @@
-# Production lacapsule.org : document root = ce dossier, URL publique = /wf/
-# Pages publiques, /dev, /api/* passent par index.php.
+# dev.lacapsule.org/wf — document root = ce dossier (public/).
 
 DirectoryIndex index.php
 
-# PHP (Apache mod_php et la plupart des configs FPM via Apache)
 <IfModule mod_env.c>
     SetEnv APP_BASE_PATH /wf
 </IfModule>
@@ -12,19 +10,23 @@ DirectoryIndex index.php
     RewriteEngine On
     RewriteBase /wf/
 
-    # Expose APP_BASE_PATH aux setups PHP-FPM + proxy_fcgi
     RewriteRule .* - [E=APP_BASE_PATH:/wf]
 
-    # Fichiers et dossiers existants servis tels quels (assets, uploads, etc.).
-    RewriteCond %{REQUEST_FILENAME} -f [OR]
-    RewriteCond %{REQUEST_FILENAME} -d
+    # Favicon navigateur (évite 404 console sur /wf/favicon.ico)
+    RewriteRule ^favicon\.ico$ favicon.svg [L]
+
+    # Fichiers statiques existants uniquement (pas les dossiers : sinon 403).
+    RewriteCond %{REQUEST_FILENAME} -f
     RewriteRule ^ - [L]
 
-    # Front controller
-    RewriteRule ^ index.php [QSA,L]
+    # Front controller : /, /dev, /api/*, pages dynamiques
+    RewriteRule ^ index.php [L,QSA]
 </IfModule>
 
-# Pas d'exécution PHP dans les uploads
+<IfModule !mod_rewrite.c>
+    FallbackResource /wf/index.php
+</IfModule>
+
 <IfModule mod_rewrite.c>
     RewriteRule ^uploads/.+\.php$ - [F,L]
 </IfModule>

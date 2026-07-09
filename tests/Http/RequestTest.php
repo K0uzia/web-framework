@@ -140,4 +140,12 @@ final class RequestTest extends TestCase
 
         $this->assertSame('/', $req->path);
     }
+
+    public function testStripWfSubfolder(): void
+    {
+        $this->assertSame('/', Request::stripWfSubfolder('/wf/'));
+        $this->assertSame('/api/health', Request::stripWfSubfolder('/wf/api/health'));
+        $this->assertSame('/dev', Request::stripWfSubfolder('/wf/dev'));
+        $this->assertSame('/about', Request::stripWfSubfolder('/about'));
+    }
 }

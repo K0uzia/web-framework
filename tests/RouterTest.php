@@ -34,6 +34,31 @@ final class RouterTest extends TestCase
         $this->assertSame('ok', $response->getBody());
     }
 
+    public function testWfSubfolderPrefixIsStripped(): void
+    {
+        $c = new Container();
+        $c->set(ResponseFactory::class, static fn () => new ResponseFactory());
+        $c->set(StubController::class, static fn (Container $c) => new StubController($c->get(ResponseFactory::class)));
+
+        $router = new Router(['GET /' => [StubController::class, 'ok']], [], $c);
+        $response = $router->handle(new Request('GET', '/wf/', [], [], [], []));
+
+        $this->assertSame(200, $response->getStatus());
+        $this->assertSame('ok', $response->getBody());
+    }
+
+    public function testWfApiHealthPathIsStripped(): void
+    {
+        $c = new Container();
+        $c->set(ResponseFactory::class, static fn () => new ResponseFactory());
+        $c->set(StubController::class, static fn (Container $c) => new StubController($c->get(ResponseFactory::class)));
+
+        $router = new Router(['GET /api/health' => [StubController::class, 'ok']], [], $c);
+        $response = $router->handle(new Request('GET', '/wf/api/health', [], [], [], []));
+
+        $this->assertSame(200, $response->getStatus());
+    }
+
     public function testPatternRoutePassesSlug(): void
     {
         $c = new Container();
