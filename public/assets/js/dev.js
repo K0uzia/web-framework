@@ -1314,7 +1314,7 @@
                     showToast('Vidéo importée depuis YouTube');
                 })
                 .catch(function () {
-                    window.location.href = '/dev/medias?tab=videos';
+                    window.location.href = window.capsuleUrl('/dev/medias?tab=videos');
                 });
             return;
         }

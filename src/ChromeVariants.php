@@ -153,7 +153,13 @@ final class ChromeVariants
 
         return [
             'id' => (string) ($variant['id'] ?? 'default'),
-            'name' => trim((string) ($variant['name'] ?? '')) !== '' ? trim((string) $variant['name']) : 'Sans titre',
+            'name' => trim((string) ($variant['name'] ?? '')) !== '' ? trim((string) ($variant['name'] ?? '')) : 'Sans titre',
+            'template' => HeaderStyle::normalizeTemplate((string) ($variant['template'] ?? HeaderStyle::TEMPLATE_DEFAULT)),
+            'menu_items' => self::normalizeMenuItems($variant['menu_items'] ?? []),
+            'features' => self::normalizeFeatureItems($variant['features'] ?? []),
+            'nav_links' => self::normalizeLinks($variant['nav_links'] ?? []),
+            'mobile_links' => self::normalizeLinks($variant['mobile_links'] ?? []),
+            'features_label' => trim((string) ($variant['features_label'] ?? '')),
             'brand' => [
                 'show_logo' => ($brand['show_logo'] ?? true) !== false,
                 'show_name' => ($brand['show_name'] ?? true) !== false,
@@ -222,6 +228,7 @@ final class ChromeVariants
         return self::normalizeHeader([
             'id' => 'default',
             'name' => 'Par défaut',
+            'template' => HeaderStyle::TEMPLATE_DEFAULT,
             'brand' => [
                 'show_logo' => ($brand['show_logo'] ?? true) !== false,
                 'show_name' => ($brand['show_name'] ?? true) !== false,
@@ -388,5 +395,79 @@ final class ChromeVariants
         }
 
         return $links;
+    }
+
+    /**
+     * @param mixed $raw
+     *
+     * @return list<array{label: string, href: string, children: list<array{label: string, description: string, href: string, icon: string}>}>
+     */
+    private static function normalizeMenuItems(mixed $raw): array
+    {
+        if (!is_array($raw)) {
+            return [];
+        }
+        $items = [];
+        foreach ($raw as $item) {
+            if (!is_array($item)) {
+                continue;
+            }
+            $label = trim((string) ($item['label'] ?? ''));
+            if ($label === '') {
+                continue;
+            }
+            $children = [];
+            foreach (is_array($item['children'] ?? null) ? $item['children'] : [] as $child) {
+                if (!is_array($child)) {
+                    continue;
+                }
+                $childLabel = trim((string) ($child['label'] ?? ''));
+                if ($childLabel === '') {
+                    continue;
+                }
+                $children[] = [
+                    'label' => $childLabel,
+                    'description' => trim((string) ($child['description'] ?? '')),
+                    'href' => trim((string) ($child['href'] ?? '')) !== '' ? trim((string) ($child['href'] ?? '')) : '#',
+                    'icon' => trim((string) ($child['icon'] ?? '')),
+                ];
+            }
+            $items[] = [
+                'label' => $label,
+                'href' => trim((string) ($item['href'] ?? '')) !== '' ? trim((string) ($item['href'] ?? '')) : '#',
+                'children' => $children,
+            ];
+        }
+
+        return $items;
+    }
+
+    /**
+     * @param mixed $raw
+     *
+     * @return list<array{title: string, description: string, href: string}>
+     */
+    private static function normalizeFeatureItems(mixed $raw): array
+    {
+        if (!is_array($raw)) {
+            return [];
+        }
+        $features = [];
+        foreach ($raw as $feature) {
+            if (!is_array($feature)) {
+                continue;
+            }
+            $title = trim((string) ($feature['title'] ?? ''));
+            if ($title === '') {
+                continue;
+            }
+            $features[] = [
+                'title' => $title,
+                'description' => trim((string) ($feature['description'] ?? '')),
+                'href' => trim((string) ($feature['href'] ?? '')) !== '' ? trim((string) ($feature['href'] ?? '')) : '#',
+            ];
+        }
+
+        return $features;
     }
 }

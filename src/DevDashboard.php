@@ -15,6 +15,7 @@ final class DevDashboard
         private readonly string $devRoot,
         private readonly ResponseFactory $responses,
         private readonly ?SiteRepository $site = null,
+        private readonly ?BasePath $basePath = null,
     ) {
     }
 
@@ -47,6 +48,8 @@ final class DevDashboard
         $data = self::withNav($data, $section);
         $data['crumb_html'] ??= '';
         $data['theme_css'] = $this->themeCssMarkup();
+        $data['base_path'] = $this->basePath?->value() ?? '';
+        $data['base_path_json'] = json_encode($data['base_path'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
         $html = $this->view()->page($template, $data, 'dev.html');
 
@@ -74,6 +77,8 @@ final class DevDashboard
      */
     public function renderAuth(string $template, array $data = [], int $status = 200): Response
     {
+        $data['base_path'] = $this->basePath?->value() ?? '';
+        $data['base_path_json'] = json_encode($data['base_path'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         $html = $this->view()->page($template, $data, 'auth.html');
 
         return $this->responses->html($html, $status);
@@ -107,8 +112,10 @@ final class DevDashboard
 
     public function withFlash(Response $response, string $message): Response
     {
+        $path = $this->basePath !== null ? $this->basePath->cookiePath('/dev') : '/dev';
+
         return $this->responses->withCookie($response, Cookie::create('capsule_flash', $message, [
-            'path' => '/dev',
+            'path' => $path,
             'httpOnly' => false,
             'maxAge' => 60,
         ]));

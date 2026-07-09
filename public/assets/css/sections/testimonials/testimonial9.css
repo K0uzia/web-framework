@@ -1,9 +1,69 @@
-/* Variante testimonial9 : styles spécifiques hérités de base.css */
+/* Variante testimonial9 : masonry avec icônes réseaux (shadcnblocks testimonial9) */
 
+/* py-32 : priorité sur section--pad-* */
+.section-testimonials.section-testimonials--testimonial9[class*="section--pad-"] {
+    padding-block: 8rem;
+    padding-inline: 0;
+}
+
+.section-testimonials--testimonial9 .section-testimonials__container {
+    padding-inline: var(--space-md, 1.5rem);
+}
+
+/* gap-6 entre titre et description */
+.section-testimonials--testimonial9 .section-testimonials__intro--center {
+    gap: 1.5rem;
+}
+
+/* mt-14 entre intro et grille */
 .section-testimonials--testimonial9 .section-testimonials__masonry {
     margin-top: 3.5rem;
 }
 
+/* gutter 20px (comme ResponsiveMasonry) */
+.section-testimonials--testimonial9 .section-testimonials__masonry--columns {
+    column-gap: 1.25rem;
+}
+
+.section-testimonials--testimonial9 .section-testimonials__masonry-item {
+    margin-bottom: 1.25rem;
+}
+
 .section-testimonials--testimonial9 .section-testimonials__masonry-card {
     margin-bottom: 0;
+    padding: 1.25rem;
+}
+
+.section-testimonials--testimonial9 .section-testimonials__masonry-head {
+    margin-bottom: 0;
+}
+
+/* gap-4 leading-5 sur la ligne auteur */
+.section-testimonials--testimonial9 .section-testimonials__masonry-author {
+    gap: 1rem;
+    line-height: 1.25rem;
+}
+
+.section-testimonials--testimonial9 .section-testimonials__masonry-author .section-testimonials__avatar {
+    width: 2.25rem;
+    height: 2.25rem;
+}
+
+.section-testimonials--testimonial9 .section-testimonials__meta {
+    gap: 0;
+}
+
+.section-testimonials--testimonial9 .section-testimonials__name {
+    font-weight: 500;
+    line-height: 1.25rem;
+}
+
+.section-testimonials--testimonial9 .section-testimonials__role {
+    line-height: 1.25rem;
+}
+
+/* mt-2 leading-7 sur la citation */
+.section-testimonials--testimonial9 .section-testimonials__quote--muted {
+    margin-top: 0.5rem;
+    line-height: 1.75rem;
 }

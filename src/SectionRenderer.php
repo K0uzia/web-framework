@@ -67,6 +67,10 @@ final class SectionRenderer
             $variant = TestimonialStyle::normalizeVariant($variant);
             $section['variant'] = $variant;
         }
+        if ($type === 'gallery') {
+            $variant = GalleryStyle::normalizeVariant($variant);
+            $section['variant'] = $variant;
+        }
         if ($type === '') {
             return '';
         }
@@ -114,6 +118,9 @@ final class SectionRenderer
             }
             if ($type === 'testimonials') {
                 $variant = TestimonialStyle::normalizeVariant($variant);
+            }
+            if ($type === 'gallery') {
+                $variant = GalleryStyle::normalizeVariant($variant);
             }
             if ($type !== '') {
                 $refs[] = ['type' => $type, 'variant' => $variant];
@@ -260,6 +267,12 @@ final class SectionRenderer
                 $data['style_' . $key] = $value;
             }
             $data = TestimonialVariantRenderer::enrich($data, $content, $data['variant']);
+        } elseif ($data['type'] === 'gallery') {
+            $resolvedStyle = GalleryStyle::resolve($style, $data['variant']);
+            foreach ($resolvedStyle as $key => $value) {
+                $data['style_' . $key] = $value;
+            }
+            $data = GalleryVariantRenderer::enrich($data, $content, $data['variant']);
         } else {
             $imageUrl = MediaDisplaySettings::normalizeUrl((string) ($content['image_url'] ?? ''));
             $imageTitle = trim((string) ($content['title'] ?? ''));

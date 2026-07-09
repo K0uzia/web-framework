@@ -1,0 +1,67 @@
+<div class="dev-editor">
+    <div class="dev-page-head">
+        <div>
+            <h1>{{variant_name}} {{{is_active_badge}}}</h1>
+            <p class="dev-lead">{{type_label}} · {{template_label}}</p>
+        </div>
+        <div class="dev-page-head__actions">
+            <p class="dev-section-form__status" id="chrome-variant-status" aria-live="polite"></p>
+            <a class="dev-button dev-button--ghost" href="{{back_url}}">
+                <i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Retour à la liste
+            </a>
+            <details class="dev-menu">
+                <summary class="dev-icon-btn" aria-label="Plus d'actions"><i class="fa-solid fa-ellipsis-vertical" aria-hidden="true"></i></summary>
+                <div class="dev-menu__panel" role="menu">
+                    <form method="post" action="/dev/chrome/footer/{{variant_id_url}}/duplicate" role="none">
+                        <button type="submit" role="menuitem"><i class="fa-solid fa-copy" aria-hidden="true"></i> Dupliquer</button>
+                    </form>
+                    {{{delete_form_html}}}
+                </div>
+            </details>
+        </div>
+    </div>
+
+    <div class="dev-builder dev-builder--site">
+        <form method="post" action="/dev/chrome/footer" class="dev-form dev-stack dev-stack--lg" id="chrome-variant-form" hx-post="/dev/chrome/footer" hx-trigger="change, input delay:400ms" hx-target="#chrome-variant-status" hx-swap="innerHTML" data-dev-toast-form="Pied de page enregistré">
+            <input type="hidden" name="variant_id" value="{{variant_id}}" />
+            <input type="hidden" name="footer_template" value="{{footer_template}}" />
+
+            <div class="dev-panel">
+                <div class="dev-field">
+                    <label class="dev-label" for="chrome_variant_name">Nom de la variante</label>
+                    <input class="dev-input" id="chrome_variant_name" type="text" name="variant_name" value="{{variant_name}}" />
+                </div>
+            </div>
+
+            {{{footer_blocks_form_html}}}
+
+            <div class="dev-panel">
+                <h2 class="dev-panel__title">Mentions légales</h2>
+                <div class="dev-field">
+                    <label class="dev-label" for="footer_text">Copyright affiché en bas</label>
+                    <input class="dev-input" id="footer_text" type="text" name="footer_text" value="{{footer_text}}" placeholder="© {year} {name}" />
+                    <span class="dev-hint">Jetons disponibles : <code>{year}</code>, <code>{name}</code>. Le logo et le nom viennent de Site, onglet Identité.</span>
+                </div>
+            </div>
+        </form>
+
+        <div class="dev-builder__preview">
+            <div class="dev-preview-label">
+                <span>Aperçu du pied de page</span>
+                <div class="dev-device-toolbar" role="group" aria-label="Taille de l'aperçu" data-dev-device-toolbar data-target="chrome-preview-frame">
+                    <button type="button" class="dev-device-btn" data-device="tablet" aria-label="Tablette" title="Tablette"><i class="fa-solid fa-tablet-screen-button" aria-hidden="true"></i></button>
+                    <button type="button" class="dev-device-btn is-active" data-device="mobile" aria-label="Mobile" title="Mobile"><i class="fa-solid fa-mobile-screen-button" aria-hidden="true"></i></button>
+                </div>
+                <a class="dev-preview-desktop" href="{{preview_url}}" target="_blank" rel="noopener noreferrer">Plein écran <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+                <button type="button" class="dev-button dev-button--ghost dev-button--sm" data-dev-preview-toggle aria-expanded="true" aria-controls="chrome-preview-frame">
+                    <i class="fa-solid fa-eye-slash" aria-hidden="true"></i> <span data-preview-toggle-label>Masquer</span>
+                </button>
+            </div>
+            <div class="dev-preview-frame dev-preview-frame--chrome" id="chrome-preview-frame" data-device="mobile">
+                <div class="dev-preview-device">
+                    <iframe id="preview-frame" src="{{preview_url}}" title="Aperçu du pied de page"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

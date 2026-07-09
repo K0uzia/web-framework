@@ -131,7 +131,9 @@ final class TestimonialVariantRenderer
     {
         $html = '';
         foreach (self::items($content, 'testimonial9') as $index => $item) {
-            $html .= self::renderMasonryCard($item, $index, 0, true);
+            $html .= '<div class="section-testimonials__masonry-item">'
+                . self::renderMasonryCard($item, $index, 0, true)
+                . '</div>';
         }
         $data['testimonial_masonry_html'] = $html;
 
@@ -147,39 +149,30 @@ final class TestimonialVariantRenderer
     private static function enrichTestimonial10(array $data, array $content): array
     {
         $quote = trim((string) ($content['quote'] ?? ''));
-        if ($quote === '') {
-            $items = self::items($content, 'testimonial10');
-            $quote = trim((string) ($items[0]['text'] ?? ''));
-        }
-
         $name = trim((string) ($content['author_name'] ?? ''));
         $role = trim((string) ($content['author_role'] ?? ''));
         $avatar = trim((string) ($content['author_avatar'] ?? ''));
-        if ($name === '') {
+
+        if ($quote === '' || $name === '') {
             $items = self::items($content, 'testimonial10');
-            $name = trim((string) ($items[0]['title'] ?? ''));
-            $role = trim((string) ($items[0]['label'] ?? ''));
-            $avatar = trim((string) ($items[0]['url'] ?? ''));
+            if ($quote === '') {
+                $quote = trim((string) ($items[0]['text'] ?? ''));
+            }
+            if ($name === '') {
+                $name = trim((string) ($items[0]['title'] ?? ''));
+                $role = trim((string) ($items[0]['label'] ?? ''));
+                $avatar = trim((string) ($items[0]['url'] ?? ''));
+            }
         }
 
-        $safeQuote = htmlspecialchars($quote, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
         $avatarUrl = self::avatarUrl($avatar, 0);
-        $safeAvatarUrl = htmlspecialchars($avatarUrl, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-        $safeName = htmlspecialchars($name, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-        $safeRole = htmlspecialchars($role, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-        $safeAlt = htmlspecialchars($name !== '' ? $name : 'Auteur', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+        $alt = $name !== '' ? $name : 'Auteur';
 
-        $data['testimonial_single_html'] = '<blockquote class="section-testimonials__single-quote">'
-            . '<p>&ldquo;' . $safeQuote . '&rdquo;</p>'
-            . '</blockquote>'
-            . '<div class="section-testimonials__single-author">'
-            . '<img class="section-testimonials__single-avatar" src="' . $safeAvatarUrl . '" alt="' . $safeAlt
-            . '" width="64" height="64" loading="lazy" decoding="async" />'
-            . '<div class="section-testimonials__single-meta">'
-            . '<p class="section-testimonials__single-name">' . $safeName . '</p>'
-            . '<p class="section-testimonials__single-role">' . $safeRole . '</p>'
-            . '</div>'
-            . '</div>';
+        $data['content_quote'] = $quote;
+        $data['content_author_name'] = $name;
+        $data['content_author_role'] = $role;
+        $data['testimonial_author_avatar_url'] = htmlspecialchars($avatarUrl, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+        $data['testimonial_author_alt'] = htmlspecialchars($alt, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 
         return $data;
     }

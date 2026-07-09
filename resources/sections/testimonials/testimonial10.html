@@ -1,5 +1,14 @@
 <section class="section-testimonials section-testimonials--testimonial10 section--pad-{{style_padding}} section--bg-{{style_bg}}" id="{{section_id}}">
     <div class="section-testimonials__container">
-        <div class="section-testimonials__single">{{{testimonial_single_html}}}</div>
+        <div class="section-testimonials__single">
+            <p class="section-testimonials__single-quote">&ldquo;{{content_quote}}&rdquo;</p>
+            <div class="section-testimonials__single-author">
+                <img class="section-testimonials__single-avatar" src="{{testimonial_author_avatar_url}}" alt="{{testimonial_author_alt}}" width="64" height="64" loading="lazy" decoding="async" />
+                <div class="section-testimonials__single-meta">
+                    <p class="section-testimonials__single-name">{{content_author_name}}</p>
+                    <p class="section-testimonials__single-role">{{content_author_role}}</p>
+                </div>
+            </div>
+        </div>
     </div>
 </section>

@@ -118,4 +118,26 @@ final class RequestTest extends TestCase
         $this->assertSame(['foo' => '1', 'bar' => 'b'], $req->query);
         $this->assertSame(['sid' => 'abc123', 'prefs' => 'x'], $req->cookies);
     }
+
+    public function testFromGlobalsStripsBasePath(): void
+    {
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+        $_SERVER['REQUEST_URI']    = '/wf/dev/pages';
+        $_SERVER['SCRIPT_NAME']    = '/index.php';
+
+        $req = Request::fromGlobals('/wf');
+
+        $this->assertSame('/dev/pages', $req->path);
+    }
+
+    public function testFromGlobalsAutoDetectsWfPrefix(): void
+    {
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+        $_SERVER['REQUEST_URI']    = '/wf/';
+        $_SERVER['SCRIPT_NAME']    = '/index.php';
+
+        $req = Request::fromGlobals('');
+
+        $this->assertSame('/', $req->path);
+    }
 }

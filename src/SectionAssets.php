@@ -92,6 +92,14 @@ final class SectionAssets
         return TestimonialStyle::VISUAL_VARIANTS;
     }
 
+    /**
+     * @return list<string>
+     */
+    public static function galleryVariantIds(): array
+    {
+        return GalleryStyle::VISUAL_VARIANTS;
+    }
+
     private static function safeSegment(string $value): string
     {
         $safe = preg_replace('/[^a-z0-9_-]/', '', strtolower($value)) ?? '';

@@ -4,9 +4,17 @@ declare(strict_types=1);
 
 namespace App\Http\Dev;
 
+use App\Http\Dev\FooterFormRenderer;
+use App\Http\Dev\FooterTemplatePickerRenderer;
+use App\Http\Dev\FooterTemplates;
+use App\Http\Dev\HeaderFormRenderer;
+use App\Http\Dev\HeaderTemplatePickerRenderer;
+use App\Http\Dev\HeaderTemplates;
 use Capsule\ChromeButtonRenderer;
 use Capsule\ChromeVariants;
 use Capsule\DevDashboard;
+use Capsule\FooterStyle;
+use Capsule\HeaderStyle;
 use Capsule\Http\Message\Request;
 use Capsule\Http\Message\Response;
 use Capsule\Http\Support\FormData;
@@ -27,6 +35,10 @@ final class ChromeController
         private readonly DevDashboard $ui,
         private readonly SiteRepository $site,
         private readonly PageRepository $pages,
+        private readonly FooterFormRenderer $footerForms = new FooterFormRenderer(),
+        private readonly FooterTemplatePickerRenderer $footerTemplatePicker = new FooterTemplatePickerRenderer(),
+        private readonly HeaderFormRenderer $headerForms = new HeaderFormRenderer(),
+        private readonly HeaderTemplatePickerRenderer $headerTemplatePicker = new HeaderTemplatePickerRenderer(),
     ) {
     }
 
@@ -58,6 +70,8 @@ final class ChromeController
             'footer_rows_html' => $this->variantRowsHtml('footer', $footerVariants, $activeFooterId, $footerVisible),
             'header_active_id' => htmlspecialchars($activeHeaderId, ENT_QUOTES),
             'footer_active_id' => htmlspecialchars($activeFooterId, ENT_QUOTES),
+            'header_template_picker_html' => $this->headerTemplatePicker->renderPickerHtml(),
+            'footer_template_picker_html' => $this->footerTemplatePicker->renderPickerHtml(),
         ]);
     }
 
@@ -116,6 +130,15 @@ final class ChromeController
         ];
 
         if ($type === 'header') {
+            $template = HeaderStyle::normalizeTemplate((string) ($variant['template'] ?? HeaderStyle::TEMPLATE_DEFAULT));
+            if (HeaderStyle::isBlocksTemplate($template)) {
+                $vars['header_template'] = htmlspecialchars($template, ENT_QUOTES);
+                $vars['template_label'] = htmlspecialchars($template === 'navbar5' ? 'Navbar 5' : 'Navbar 1', ENT_QUOTES);
+                $vars['header_blocks_form_html'] = $this->headerForms->render($variant);
+
+                return $this->ui->render('chrome-edit-header-blocks.html', $vars);
+            }
+
             $vars['cta_enabled_checked'] = ($variant['cta']['enabled'] ?? false) ? 'checked' : '';
             $vars['cta_label'] = htmlspecialchars((string) $variant['cta']['label'], ENT_QUOTES);
             $vars['cta_style_options'] = ChromeButtonRenderer::optionsHtml((string) ($variant['cta']['style'] ?? 'primary'));
@@ -124,6 +147,14 @@ final class ChromeController
         } else {
             $vars['brand_visible_checked'] = ($variant['brand']['visible'] ?? true) ? 'checked' : '';
             $vars['footer_text'] = htmlspecialchars((string) ($site['footer_text'] ?? ''), ENT_QUOTES);
+            $template = FooterStyle::normalizeTemplate((string) ($variant['template'] ?? FooterStyle::TEMPLATE_DEFAULT));
+            if (FooterStyle::isBlocksTemplate($template)) {
+                $vars['footer_template'] = htmlspecialchars($template, ENT_QUOTES);
+                $vars['template_label'] = htmlspecialchars($template === 'footer7' ? 'Footer 7' : 'Footer 2', ENT_QUOTES);
+                $vars['footer_blocks_form_html'] = $this->footerForms->render($variant);
+
+                return $this->ui->render('chrome-edit-footer-blocks.html', $vars);
+            }
         }
 
         return $this->ui->render('chrome-edit-' . $type . '.html', $vars);
@@ -174,9 +205,31 @@ final class ChromeController
             ?? $variants[0];
 
         $name = trim($data['variant_name'] ?? '');
-        $new = $base;
-        $new['id'] = ChromeVariants::newId();
-        $new['name'] = $name !== '' ? $name : 'Nouvelle variante';
+        if ($type === 'header') {
+            $template = HeaderStyle::normalizeTemplate(trim($data['header_template'] ?? HeaderStyle::TEMPLATE_DEFAULT));
+            if (HeaderStyle::isBlocksTemplate($template)) {
+                $new = HeaderTemplates::create($template, $name !== '' ? $name : 'Nouvelle variante');
+            } else {
+                $new = $base;
+                $new['id'] = ChromeVariants::newId();
+                $new['name'] = $name !== '' ? $name : 'Nouvelle variante';
+                $new['template'] = HeaderStyle::TEMPLATE_DEFAULT;
+            }
+        } elseif ($type === 'footer') {
+            $template = FooterStyle::normalizeTemplate(trim($data['footer_template'] ?? FooterStyle::TEMPLATE_DEFAULT));
+            if (FooterStyle::isBlocksTemplate($template)) {
+                $new = FooterTemplates::create($template, $name !== '' ? $name : 'Nouvelle variante');
+            } else {
+                $new = $base;
+                $new['id'] = ChromeVariants::newId();
+                $new['name'] = $name !== '' ? $name : 'Nouvelle variante';
+                $new['template'] = FooterStyle::TEMPLATE_DEFAULT;
+            }
+        } else {
+            $new = $base;
+            $new['id'] = ChromeVariants::newId();
+            $new['name'] = $name !== '' ? $name : 'Nouvelle variante';
+        }
         $variants[] = $new;
 
         $site = $this->persistVariants($site, $type, $variants);
@@ -275,9 +328,16 @@ final class ChromeController
      */
     private function applyHeaderForm(array $variant, array $data): array
     {
-        return ChromeVariants::normalizeHeader([
+        $template = HeaderStyle::normalizeTemplate((string) ($variant['template'] ?? HeaderStyle::TEMPLATE_DEFAULT));
+        $payload = [
             'id' => $variant['id'],
             'name' => trim($data['variant_name'] ?? (string) $variant['name']),
+            'template' => $template,
+            'menu_items' => $variant['menu_items'] ?? [],
+            'features' => $variant['features'] ?? [],
+            'nav_links' => $variant['nav_links'] ?? [],
+            'mobile_links' => $variant['mobile_links'] ?? [],
+            'features_label' => $variant['features_label'] ?? '',
             'brand' => [
                 'show_logo' => ($data['brand_show_logo'] ?? '0') === '1',
                 'show_name' => ($data['brand_show_name'] ?? '0') === '1',
@@ -302,7 +362,20 @@ final class ChromeController
                 'cta' => $data['zone_cta'] ?? '',
                 'login' => $data['zone_login'] ?? '',
             ],
-        ]);
+        ];
+
+        if (HeaderStyle::isBlocksTemplate($template)) {
+            $blocks = $this->headerForms->parseForm($data, $template);
+            $payload['menu_items'] = $blocks['menu_items'] ?? $payload['menu_items'];
+            $payload['features'] = $blocks['features'] ?? $payload['features'];
+            $payload['nav_links'] = $blocks['nav_links'] ?? $payload['nav_links'];
+            $payload['mobile_links'] = $blocks['mobile_links'] ?? $payload['mobile_links'];
+            $payload['features_label'] = $blocks['features_label'] ?? $payload['features_label'];
+            $payload['login'] = $blocks['login'] ?? $payload['login'];
+            $payload['cta'] = $blocks['cta'] ?? $payload['cta'];
+        }
+
+        return ChromeVariants::normalizeHeader($payload);
     }
 
     /**
@@ -313,9 +386,15 @@ final class ChromeController
      */
     private function applyFooterForm(array $variant, array $data): array
     {
-        return ChromeVariants::normalizeFooter([
+        $template = FooterStyle::normalizeTemplate((string) ($variant['template'] ?? FooterStyle::TEMPLATE_DEFAULT));
+        $payload = [
             'id' => $variant['id'],
             'name' => trim($data['variant_name'] ?? (string) $variant['name']),
+            'template' => $template,
+            'description' => $variant['description'] ?? '',
+            'sections' => $variant['sections'] ?? [],
+            'legal_links' => $variant['legal_links'] ?? [],
+            'social_links' => $variant['social_links'] ?? [],
             'brand' => [
                 'visible' => ($data['brand_visible'] ?? '0') === '1',
                 'show_logo' => ($data['brand_show_logo'] ?? '0') === '1',
@@ -334,7 +413,17 @@ final class ChromeController
                 'nav' => $data['zone_nav'] ?? '',
                 'login' => $data['zone_login'] ?? '',
             ],
-        ]);
+        ];
+
+        if (FooterStyle::isBlocksTemplate($template)) {
+            $blocks = $this->footerForms->parseForm($data, $template);
+            $payload['description'] = $blocks['description'];
+            $payload['sections'] = $blocks['sections'];
+            $payload['legal_links'] = $blocks['legal_links'];
+            $payload['social_links'] = $blocks['social_links'];
+        }
+
+        return ChromeVariants::normalizeFooter($payload);
     }
 
     /**

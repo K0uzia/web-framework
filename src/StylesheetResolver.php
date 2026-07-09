@@ -71,6 +71,9 @@ final class StylesheetResolver
             if ($type === 'testimonials') {
                 $this->push($candidates, 'sections/testimonials/base.css');
             }
+            if ($type === 'gallery') {
+                $this->push($candidates, 'sections/gallery/base.css');
+            }
             foreach (SectionLayoutFamilies::cssFamilies($variant) as $family) {
                 $this->push($candidates, 'sections/' . $type . '/' . $family . '.css');
             }

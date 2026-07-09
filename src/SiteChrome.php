@@ -81,13 +81,29 @@ final class SiteChrome
         unset($data['show_header'], $data['show_footer']);
 
         $data['header_html'] = $showHeader
-            ? $this->view->render('site-header.html', $data)
+            ? $this->renderHeaderHtml($data, $headerVariant, $name, $logoUrl)
             : '';
         $data['footer_html'] = $showFooter
             ? $this->renderFooterHtml($data, $footerVariant, $siteInfo, $name, $logoUrl)
             : '';
 
         return $data;
+    }
+
+    /**
+     * @param array<string, mixed> $data
+     * @param array<string, mixed> $variant
+     */
+    private function renderHeaderHtml(array $data, array $variant, string $name, string $logoUrl): string
+    {
+        $template = HeaderStyle::normalizeTemplate((string) ($variant['template'] ?? HeaderStyle::TEMPLATE_DEFAULT));
+        if (!HeaderStyle::isBlocksTemplate($template)) {
+            return $this->view->render('site-header.html', $data);
+        }
+
+        $data = HeaderVariantRenderer::enrich($data, $variant, $name, $logoUrl);
+
+        return $this->view->render('site-header-' . $template . '.html', $data);
     }
 
     /**

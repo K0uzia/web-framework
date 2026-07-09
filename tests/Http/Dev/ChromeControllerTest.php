@@ -130,6 +130,36 @@ final class ChromeControllerTest extends TestCase
         $this->assertNotSame('default', $copy['id']);
     }
 
+    public function testCreateFooter2VariantUsesBlockTemplate(): void
+    {
+        $this->controller->create(
+            $this->post('/dev/chrome/footer/create', 'variant_name=Colonnes&footer_template=footer2'),
+            'footer',
+        );
+
+        $site = $this->site->getSite();
+        $variants = ChromeVariants::footerVariants($site);
+        $created = $variants[array_key_last($variants)];
+        $this->assertSame('footer2', $created['template']);
+        $this->assertSame('Colonnes', $created['name']);
+        $this->assertNotEmpty($created['sections']);
+    }
+
+    public function testCreateNavbar1VariantUsesBlockTemplate(): void
+    {
+        $this->controller->create(
+            $this->post('/dev/chrome/header/create', 'variant_name=Navigation&header_template=navbar1'),
+            'header',
+        );
+
+        $site = $this->site->getSite();
+        $variants = ChromeVariants::headerVariants($site);
+        $created = $variants[array_key_last($variants)];
+        $this->assertSame('navbar1', $created['template']);
+        $this->assertSame('Navigation', $created['name']);
+        $this->assertNotEmpty($created['menu_items']);
+    }
+
     private function post(string $path, string $body): Request
     {
         return new Request(

@@ -19,10 +19,12 @@ use App\Http\Dev\SiteController;
 use App\Http\Dev\ThemeController;
 use App\Http\Dev\VideoImportController;
 use App\Http\HealthController;
+use Capsule\BasePath;
 use Capsule\Container;
 use Capsule\Database;
 use Capsule\DevDashboard;
 use Capsule\Http\Factory\ResponseFactory;
+use Capsule\Middleware\BasePathMiddleware;
 use Capsule\Middleware\DevAuth;
 use Capsule\Middleware\ErrorBoundary;
 use Capsule\Middleware\SecurityHeaders;
@@ -66,6 +68,7 @@ return (function (): Container {
     $appConfig = require __DIR__ . '/app.php';
 
     $c->set('config', static fn () => $appConfig);
+    $c->set(BasePath::class, static fn () => BasePath::fromEnv((string) ($appConfig['base_path'] ?? '')));
     $c->set(ResponseFactory::class, static fn () => new ResponseFactory());
     $c->set(Database::class, static fn () => Database::fromConfig());
     $c->set(PageRepository::class, static fn (Container $c) => new PageRepository(
@@ -81,9 +84,16 @@ return (function (): Container {
         $resources . '/layouts',
         $resources . '/partials',
     ));
-    $c->set(StylesheetResolver::class, static fn () => new StylesheetResolver(
-        $root . '/public/assets/css',
-    ));
+    $c->set(StylesheetResolver::class, static function (Container $c) use ($root, $appConfig): StylesheetResolver {
+        $basePath = $c->get(BasePath::class)->value();
+        $assetsPrefix = $basePath !== '' ? $basePath . '/assets' : '/assets';
+
+        return new StylesheetResolver(
+            $root . '/public/assets/css',
+            $assetsPrefix . '/css',
+            $assetsPrefix,
+        );
+    });
     $c->set(SectionRenderer::class, static fn (Container $c) => new SectionRenderer(
         $c->get(View::class),
         $resources . '/sections',
@@ -118,6 +128,7 @@ return (function (): Container {
         $resources . '/dev',
         $c->get(ResponseFactory::class),
         $c->get(SiteRepository::class),
+        $c->get(BasePath::class),
     ));
     $c->set(AuthController::class, static fn (Container $c) => new AuthController(
         $c->get(DevDashboard::class),
@@ -334,6 +345,9 @@ return (function (): Container {
     $c->set(SecurityHeaders::class, static fn (Container $c) => new SecurityHeaders(
         $appConfig['is_dev'],
         $appConfig['https'],
+    ));
+    $c->set(BasePathMiddleware::class, static fn (Container $c) => new BasePathMiddleware(
+        $c->get(BasePath::class),
     ));
 
     return $c;

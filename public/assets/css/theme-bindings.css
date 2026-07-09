@@ -59,13 +59,13 @@
    Liens
    ========================================================================== */
 
-.site-main a:not(.section-button):not(.btn):not(.site-chrome-btn):not(.site-nav__link):not(.site-header__cta):not(.site-header__login):not(.site-header__brand):not(.site-footer__name):not([class*="section-hero__button"]):not([class*="section-features__btn"]):not([class*="section-pricing__btn"]):not([class*="section-contact__"]):not([class*="section-testimonials__"]):not(.section-features__overlay-link),
+.site-main a:not(.section-button):not(.btn):not(.site-chrome-btn):not(.site-nav__link):not(.site-header__cta):not(.site-header__login):not(.site-header__brand):not(.site-footer__name):not([class*="section-hero__button"]):not([class*="section-features__btn"]):not([class*="section-pricing__btn"]):not([class*="section-contact__"]):not([class*="section-testimonials__"]):not([class*="site-footer__column-link"]):not([class*="site-footer__social-link"]):not([class*="site-footer__brand-link"]):not(.section-features__overlay-link),
 .section-banner__link,
 .section-ui-announcement__link {
     color: var(--color-link);
 }
 
-.site-main a:not(.section-button):not(.btn):not(.site-chrome-btn):not(.site-nav__link):not(.site-header__cta):not(.site-header__login):not(.site-header__brand):not(.site-footer__name):not([class*="section-hero__button"]):not([class*="section-features__btn"]):not([class*="section-pricing__btn"]):not([class*="section-contact__"]):not([class*="section-testimonials__"]):not(.section-features__overlay-link):hover,
+.site-main a:not(.section-button):not(.btn):not(.site-chrome-btn):not(.site-nav__link):not(.site-header__cta):not(.site-header__login):not(.site-header__brand):not(.site-footer__name):not([class*="section-hero__button"]):not([class*="section-features__btn"]):not([class*="section-pricing__btn"]):not([class*="section-contact__"]):not([class*="section-testimonials__"]):not([class*="site-footer__column-link"]):not([class*="site-footer__social-link"]):not([class*="site-footer__brand-link"]):not(.section-features__overlay-link):hover,
 .section-banner__link:hover,
 .section-ui-announcement__link:hover {
     color: var(--color-link-hover);

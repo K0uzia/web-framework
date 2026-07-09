@@ -593,3 +593,63 @@ testimonials:
       label: Espacement vertical
       options: '[sm, md, lg, xl]'
       group: general
+
+gallery:
+  label: Galerie
+  group: gallery
+  icon: fa-solid fa-images
+  description: 'Bibliothèque de blocs galerie shadcnblocks.'
+  variants:
+    gallery4:
+      label: Gallery 4
+      description: 'Carousel horizontal avec cartes image et texte superposé.'
+    gallery6:
+      label: Gallery 6
+      description: 'Carousel horizontal avec image et texte sous la carte.'
+  content_fields:
+    title:
+      type: text
+      label: Titre
+      client_editable: true
+    subtitle:
+      type: textarea
+      label: Description (gallery4)
+      client_editable: true
+    demo_label:
+      type: text
+      label: Libellé lien démo (gallery6)
+      client_editable: true
+    demo_href:
+      type: text
+      label: URL lien démo (gallery6)
+      client_editable: true
+    read_more_label:
+      type: text
+      label: Libellé « En savoir plus »
+      client_editable: true
+    items:
+      type: repeater
+      label: Éléments
+      fields:
+        title:
+          type: text
+          label: Titre
+        text:
+          type: textarea
+          label: Description
+        href:
+          type: text
+          label: Lien
+        url:
+          type: image
+          label: Image
+  style_fields:
+    bg:
+      type: color-token
+      label: Fond
+      group: general
+    padding:
+      type: select
+      label: Espacement vertical
+      options: '[sm, md, lg, xl]'
+      group: general

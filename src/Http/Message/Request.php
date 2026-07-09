@@ -52,7 +52,7 @@ final class Request
      *
      * @return self Instance de Request
      */
-    public static function fromGlobals(): self
+    public static function fromGlobals(?string $basePath = null): self
     {
         $srv = $_SERVER;
 
@@ -73,6 +73,8 @@ final class Request
         $path = rawurldecode($path);
         // optionnel: compacter les doubles slashes (sauf préfixe)
         $path = preg_replace('#//+#', '/', $path) ?? $path;
+
+        $path = \Capsule\BasePath::fromEnv($basePath ?? '')->strip($path);
 
         // 3) En-têtes (sans getallheaders)
         $headers = [];

@@ -9,9 +9,7 @@
 }
 
 .section-testimonials--testimonial4,
-.section-testimonials--testimonial8,
-.section-testimonials--testimonial9,
-.section-testimonials--testimonial10 {
+.section-testimonials--testimonial8 {
     padding-block: 8rem;
 }
 
@@ -253,86 +251,4 @@
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 5;
     overflow: hidden;
-}
-
-.section-testimonials .section-testimonials__single {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-}
-
-.section-testimonials .section-testimonials__single-quote {
-    margin: 0 0 4rem;
-    max-width: 56rem;
-    padding-inline: 2rem;
-    font-size: 1.125rem;
-    font-weight: 500;
-    line-height: 1.5;
-    color: var(--color-text, #0f172a);
-}
-
-@media (min-width: 1024px) {
-    .section-testimonials .section-testimonials__single-quote {
-        font-size: 1.875rem;
-    }
-}
-
-.section-testimonials .section-testimonials__single-quote p {
-    margin: 0;
-}
-
-.section-testimonials .section-testimonials__single-author {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-}
-
-@media (min-width: 768px) {
-    .section-testimonials .section-testimonials__single-author {
-        gap: 1rem;
-    }
-}
-
-.section-testimonials .section-testimonials__single-avatar {
-    width: 3rem;
-    height: 3rem;
-    border-radius: 999px;
-    object-fit: cover;
-}
-
-@media (min-width: 768px) {
-    .section-testimonials .section-testimonials__single-avatar {
-        width: 4rem;
-        height: 4rem;
-    }
-}
-
-.section-testimonials .section-testimonials__single-meta {
-    text-align: left;
-}
-
-.section-testimonials .section-testimonials__single-name {
-    margin: 0;
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: var(--color-text, #0f172a);
-}
-
-@media (min-width: 768px) {
-    .section-testimonials .section-testimonials__single-name {
-        font-size: 1rem;
-    }
-}
-
-.section-testimonials .section-testimonials__single-role {
-    margin: 0;
-    font-size: 0.875rem;
-    color: var(--color-text-muted, #64748b);
-}
-
-@media (min-width: 768px) {
-    .section-testimonials .section-testimonials__single-role {
-        font-size: 1rem;
-    }
 }

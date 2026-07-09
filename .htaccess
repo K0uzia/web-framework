@@ -1,0 +1,25 @@
+# Production lacapsule.org : dépôt servi sous /wf/ (document root parent).
+# Si le document root pointe directement sur public/, ce fichier est ignoré.
+
+<IfModule mod_env.c>
+    SetEnv APP_BASE_PATH /wf
+</IfModule>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /wf/
+
+    RewriteRule .* - [E=APP_BASE_PATH:/wf]
+
+    # Bloque l'accès HTTP direct au code, aux données et aux outils CLI.
+    RewriteRule ^(?:app|bin|bootstrap|config|data|migrations|resources|scripts|src|tests|vendor)(?:/|$) - [F,L]
+
+    # Fichiers cachés (.env, .git, etc.)
+    RewriteRule (^|/)\. - [F,L]
+
+    # Délègue au dossier public/ (site + /dev + assets statiques).
+    RewriteCond %{REQUEST_URI} !^/wf/public/
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
+
+Options -Indexes

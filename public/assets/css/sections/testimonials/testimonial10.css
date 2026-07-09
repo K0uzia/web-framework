@@ -1,1 +1,101 @@
-/* Variante testimonial10 : styles spécifiques hérités de base.css */
+/* Variante testimonial10 : citation unique centrée (shadcnblocks testimonial10) */
+
+/* py-32 : priorité sur section--pad-* (comme hero115) */
+.section-testimonials.section-testimonials--testimonial10[class*="section--pad-"] {
+    padding-block: 8rem;
+    padding-inline: 0;
+}
+
+.section-testimonials--testimonial10 .section-testimonials__container {
+    padding-inline: var(--space-md, 1.5rem);
+}
+
+.section-testimonials--testimonial10 .section-testimonials__single {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+/* mb-16 max-w-4xl px-8 font-medium lg:text-3xl */
+.section-testimonials--testimonial10 .section-testimonials__single-quote {
+    width: 100%;
+    max-width: 56rem;
+    margin: 0 0 4rem;
+    padding-inline: 2rem;
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.5;
+    color: var(--color-text, #0f172a);
+}
+
+@media (min-width: 1024px) {
+    .section-testimonials--testimonial10 .section-testimonials__single-quote {
+        font-size: 1.875rem;
+        line-height: 2.25rem;
+    }
+}
+
+/* gap-2 md:gap-4 */
+.section-testimonials--testimonial10 .section-testimonials__single-author {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+@media (min-width: 768px) {
+    .section-testimonials--testimonial10 .section-testimonials__single-author {
+        gap: 1rem;
+    }
+}
+
+/* size-12 md:size-16 */
+.section-testimonials--testimonial10 .section-testimonials__single-avatar {
+    flex-shrink: 0;
+    width: 3rem;
+    height: 3rem;
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 999px;
+    object-fit: cover;
+}
+
+@media (min-width: 768px) {
+    .section-testimonials--testimonial10 .section-testimonials__single-avatar {
+        width: 4rem;
+        height: 4rem;
+    }
+}
+
+.section-testimonials--testimonial10 .section-testimonials__single-meta {
+    text-align: left;
+}
+
+/* text-sm md:text-base */
+.section-testimonials--testimonial10 .section-testimonials__single-name {
+    margin: 0;
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.25rem;
+    color: var(--color-text, #0f172a);
+}
+
+@media (min-width: 768px) {
+    .section-testimonials--testimonial10 .section-testimonials__single-name {
+        font-size: 1rem;
+        line-height: 1.5rem;
+    }
+}
+
+.section-testimonials--testimonial10 .section-testimonials__single-role {
+    margin: 0;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: var(--color-text-muted, #64748b);
+}
+
+@media (min-width: 768px) {
+    .section-testimonials--testimonial10 .section-testimonials__single-role {
+        font-size: 1rem;
+        line-height: 1.5rem;
+    }
+}

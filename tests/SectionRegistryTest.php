@@ -81,4 +81,14 @@ final class SectionRegistryTest extends TestCase
         $this->assertArrayHasKey('items', $registry->getContentFields('testimonials'));
         $this->assertSame('testimonial', $registry->getGroup('testimonials'));
     }
+
+    public function testLoadsAllGalleryVariants(): void
+    {
+        $registry = new SectionRegistry(dirname(__DIR__) . '/resources/sections/registry.yaml');
+        $variants = array_keys($registry->getVariants('gallery'));
+
+        $this->assertSame(SectionAssets::galleryVariantIds(), $variants);
+        $this->assertArrayHasKey('items', $registry->getContentFields('gallery'));
+        $this->assertSame('gallery', $registry->getGroup('gallery'));
+    }
 }

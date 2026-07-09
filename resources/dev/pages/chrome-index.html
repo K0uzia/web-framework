@@ -75,12 +75,17 @@
             <button type="button" class="dev-icon-btn" data-dev-modal-close="dev-header-variant-new" aria-label="Fermer"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
         </div>
         <div class="dev-modal__body">
-            <form method="post" action="/dev/chrome/header/create" class="dev-form">
+            <form method="post" action="/dev/chrome/header/create" class="dev-form" id="dev-header-variant-new-form">
                 <input type="hidden" name="from" value="{{header_active_id}}" />
+                <input type="hidden" name="header_template" id="dev-header-new-template" value="default" />
                 <div class="dev-field">
                     <label class="dev-label" for="header_new_name">Nom de la variante</label>
                     <input class="dev-input" id="header_new_name" type="text" name="variant_name" placeholder="Ex. : En-tête campagne" required />
-                    <span class="dev-hint">La nouvelle variante part d'une copie de la variante active et reste en brouillon tant qu'elle n'est pas activée.</span>
+                </div>
+                <div class="dev-field">
+                    <span class="dev-label">Modèle</span>
+                    {{{header_template_picker_html}}}
+                    <span class="dev-hint">Choisissez un gabarit shadcnblocks ou le modèle classique à trois zones.</span>
                 </div>
                 <div>
                     <button type="submit" class="dev-button"><i class="fa-solid fa-plus" aria-hidden="true"></i> Créer la variante</button>
@@ -98,12 +103,17 @@
             <button type="button" class="dev-icon-btn" data-dev-modal-close="dev-footer-variant-new" aria-label="Fermer"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
         </div>
         <div class="dev-modal__body">
-            <form method="post" action="/dev/chrome/footer/create" class="dev-form">
+            <form method="post" action="/dev/chrome/footer/create" class="dev-form" id="dev-footer-variant-new-form">
                 <input type="hidden" name="from" value="{{footer_active_id}}" />
+                <input type="hidden" name="footer_template" id="dev-footer-new-template" value="default" />
                 <div class="dev-field">
                     <label class="dev-label" for="footer_new_name">Nom de la variante</label>
                     <input class="dev-input" id="footer_new_name" type="text" name="variant_name" placeholder="Ex. : Pied de page complet" required />
-                    <span class="dev-hint">La nouvelle variante part d'une copie de la variante active et reste en brouillon tant qu'elle n'est pas activée.</span>
+                </div>
+                <div class="dev-field">
+                    <span class="dev-label">Modèle</span>
+                    {{{footer_template_picker_html}}}
+                    <span class="dev-hint">Choisissez un gabarit shadcnblocks ou le modèle classique à deux zones.</span>
                 </div>
                 <div>
                     <button type="submit" class="dev-button"><i class="fa-solid fa-plus" aria-hidden="true"></i> Créer la variante</button>
@@ -112,3 +122,5 @@
         </div>
     </div>
 </div>
+
+<script src="/assets/js/dev-chrome-index.js" defer></script>

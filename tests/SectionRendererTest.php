@@ -294,6 +294,7 @@ final class SectionRendererTest extends TestCase
         ]);
 
         $this->assertStringContainsString('section-testimonials--testimonial9', $html);
+        $this->assertStringContainsString('section-testimonials__masonry-item', $html);
         $this->assertStringContainsString('section-testimonials__social-link', $html);
         $this->assertStringContainsString('fa-brands', $html);
     }
@@ -309,7 +310,47 @@ final class SectionRendererTest extends TestCase
         ]);
 
         $this->assertStringContainsString('section-testimonials--testimonial10', $html);
-        $this->assertStringContainsString('section-testimonials__single-quote', $html);
+        $this->assertStringContainsString('class="section-testimonials__single-quote"', $html);
+        $this->assertStringContainsString('&ldquo;Cette bibliothèque de composants', $html);
         $this->assertStringContainsString('Camille Dupont', $html);
+        $this->assertStringContainsString('avatars-webp/avatar-1.webp', $html);
+        $this->assertStringNotContainsString('<blockquote', $html);
+    }
+
+    public function testRendersGallery4Section(): void
+    {
+        $html = $this->renderer->renderOne([
+            'id' => 'gallery-4',
+            'type' => 'gallery',
+            'variant' => 'gallery4',
+            'content' => SectionDefaults::content('gallery', 'gallery4'),
+            'style' => ['bg' => 'background', 'padding' => 'xl'],
+        ]);
+
+        $this->assertStringContainsString('section-gallery--gallery4', $html);
+        $this->assertStringContainsString('section-gallery__container--gallery4', $html);
+        $this->assertStringContainsString('section-gallery__viewport--gallery4', $html);
+        $this->assertStringContainsString('section-gallery__track--gallery4', $html);
+        $this->assertStringContainsString('section-gallery__card--overlay', $html);
+        $this->assertStringContainsString('section-gallery__dots--gallery4', $html);
+        $this->assertStringContainsString('saas-hero-1-16x9.png', $html);
+        $this->assertStringContainsString('Études de cas', $html);
+    }
+
+    public function testRendersGallery6Section(): void
+    {
+        $html = $this->renderer->renderOne([
+            'id' => 'gallery-6',
+            'type' => 'gallery',
+            'variant' => 'gallery6',
+            'content' => SectionDefaults::content('gallery', 'gallery6'),
+            'style' => ['bg' => 'background', 'padding' => 'xl'],
+        ]);
+
+        $this->assertStringContainsString('section-gallery--gallery6', $html);
+        $this->assertStringContainsString('section-gallery__demo-link', $html);
+        $this->assertStringContainsString('section-gallery__card--stacked', $html);
+        $this->assertStringContainsString('Réserver une démo', $html);
+        $this->assertStringNotContainsString('section-gallery__dots', $html);
     }
 }

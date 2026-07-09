@@ -305,4 +305,127 @@ final class SiteChromeTest extends TestCase
 
         $this->assertStringContainsString('site-footer', $data['footer_html']);
     }
+
+    public function testFooter2TemplateRendersBlockLayout(): void
+    {
+        $pdo = new \PDO('sqlite::memory:');
+        $pdo->exec(file_get_contents(dirname(__DIR__) . '/migrations/sqlite_init.sql') ?: '');
+
+        $pages = new PageRepository($pdo);
+        $site = new SiteRepository($pdo);
+        $pages->save(new Page('', 'Home', 'default', '', [], [], true, ''));
+
+        $site->setSite([
+            'name' => 'Demo',
+            'tagline' => 'Tagline test',
+            'footer_variants' => [
+                [
+                    'id' => 'footer-blocks',
+                    'name' => 'Footer colonnes',
+                    'template' => 'footer2',
+                    'description' => 'Description pied de page.',
+                    'sections' => [
+                        [
+                            'title' => 'Produit',
+                            'links' => [['label' => 'Tarifs', 'href' => '/pricing']],
+                        ],
+                    ],
+                    'legal_links' => [
+                        ['label' => 'Mentions légales', 'href' => '/legal'],
+                    ],
+                ],
+            ],
+            'active_footer_variant' => 'footer-blocks',
+        ]);
+
+        $root = dirname(__DIR__);
+        $view = new View($root . '/resources/layouts', $root . '/resources/partials');
+        $chrome = new SiteChrome($pages, $site, $view, 'Fallback');
+        $data = $chrome->enrich([], '/');
+
+        $this->assertStringContainsString('site-footer--footer2', $data['footer_html']);
+        $this->assertStringContainsString('site-footer__column-title', $data['footer_html']);
+        $this->assertStringContainsString('Tarifs', $data['footer_html']);
+        $this->assertStringContainsString('Mentions légales', $data['footer_html']);
+    }
+
+    public function testNavbar1TemplateRendersBlockLayout(): void
+    {
+        $pdo = new \PDO('sqlite::memory:');
+        $pdo->exec(file_get_contents(dirname(__DIR__) . '/migrations/sqlite_init.sql') ?: '');
+
+        $pages = new PageRepository($pdo);
+        $site = new SiteRepository($pdo);
+        $pages->save(new Page('', 'Home', 'default', '', [], [], true, ''));
+
+        $site->setSite([
+            'name' => 'Demo',
+            'header_variants' => [
+                [
+                    'id' => 'header-blocks',
+                    'name' => 'Navbar principale',
+                    'template' => 'navbar1',
+                    'menu_items' => [
+                        ['label' => 'Accueil', 'href' => '/'],
+                        ['label' => 'Tarifs', 'href' => '/pricing'],
+                    ],
+                    'login' => ['enabled' => true, 'label' => 'Connexion', 'href' => '/login', 'style' => 'outline'],
+                    'cta' => ['enabled' => true, 'label' => 'Commencer', 'href' => '#', 'style' => 'primary'],
+                ],
+            ],
+            'active_header_variant' => 'header-blocks',
+        ]);
+
+        $root = dirname(__DIR__);
+        $view = new View($root . '/resources/layouts', $root . '/resources/partials');
+        $chrome = new SiteChrome($pages, $site, $view, 'Fallback');
+        $data = $chrome->enrich([], '/');
+
+        $this->assertStringContainsString('site-header--navbar1', $data['header_html']);
+        $this->assertStringContainsString('site-header__blocks-brand', $data['header_html']);
+        $this->assertStringContainsString('Accueil', $data['header_html']);
+        $this->assertStringContainsString('Connexion', $data['header_html']);
+    }
+
+    public function testNavbar5TemplateRendersBlockLayout(): void
+    {
+        $pdo = new \PDO('sqlite::memory:');
+        $pdo->exec(file_get_contents(dirname(__DIR__) . '/migrations/sqlite_init.sql') ?: '');
+
+        $pages = new PageRepository($pdo);
+        $site = new SiteRepository($pdo);
+        $pages->save(new Page('', 'Home', 'default', '', [], [], true, ''));
+
+        $site->setSite([
+            'name' => 'Demo',
+            'header_variants' => [
+                [
+                    'id' => 'header-navbar5',
+                    'name' => 'Navbar 5',
+                    'template' => 'navbar5',
+                    'features_label' => 'Fonctionnalités',
+                    'features' => [
+                        ['title' => 'Tableau de bord', 'description' => 'Vue d\'ensemble', 'href' => '#'],
+                    ],
+                    'nav_links' => [
+                        ['label' => 'Produits', 'href' => '#'],
+                    ],
+                    'login' => ['enabled' => true, 'label' => 'Connexion', 'href' => '/login', 'style' => 'outline'],
+                    'cta' => ['enabled' => true, 'label' => 'Essai gratuit', 'href' => '#', 'style' => 'primary'],
+                ],
+            ],
+            'active_header_variant' => 'header-navbar5',
+        ]);
+
+        $root = dirname(__DIR__);
+        $view = new View($root . '/resources/layouts', $root . '/resources/partials');
+        $chrome = new SiteChrome($pages, $site, $view, 'Fallback');
+        $data = $chrome->enrich([], '/');
+
+        $this->assertStringContainsString('site-header--navbar5', $data['header_html']);
+        $this->assertStringContainsString('site-header__blocks-nav--navbar5', $data['header_html']);
+        $this->assertStringContainsString('site-header__blocks-sheet', $data['header_html']);
+        $this->assertStringContainsString('Fonctionnalités', $data['header_html']);
+        $this->assertStringContainsString('Produits', $data['header_html']);
+    }
 }
