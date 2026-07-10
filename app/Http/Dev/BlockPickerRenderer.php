@@ -20,6 +20,7 @@ final class BlockPickerRenderer
         'content' => 'Contenu',
         'gallery' => 'Galerie',
         'pricing' => 'Tarifs',
+        'rate-card' => 'Grilles tarifaires',
         'compare' => 'Comparaison',
         'cta' => 'Appel à l\'action',
         'newsletter' => 'Inscription',

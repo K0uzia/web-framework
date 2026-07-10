@@ -9,6 +9,7 @@ use Capsule\Middleware\BasePathMiddleware;
 use Capsule\Middleware\DevAuth;
 use Capsule\Middleware\ErrorBoundary;
 use Capsule\Middleware\SecurityHeaders;
+use Capsule\Middleware\StaticAssetMiddleware;
 use Capsule\Router;
 
 $container = require dirname(__DIR__) . '/config/container.php';
@@ -19,6 +20,7 @@ if (!$container instanceof Container) {
 
 $middlewares = [
     $container->get(ErrorBoundary::class),
+    $container->get(StaticAssetMiddleware::class),
     $container->get(DevAuth::class),
     $container->get(SecurityHeaders::class),
     $container->get(BasePathMiddleware::class),

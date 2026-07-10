@@ -5,15 +5,30 @@ declare(strict_types=1);
 namespace App\Http\Dev;
 
 use Capsule\DevDashboard;
+use Capsule\BlogStyle;
+use Capsule\ChangelogStyle;
+use Capsule\ContactStyle;
+use Capsule\IndustryStyle;
+use Capsule\ListStyle;
+use Capsule\ProcessStyle;
+use Capsule\DownloadStyle;
+use Capsule\FeatureStyle;
+use Capsule\GalleryStyle;
 use Capsule\HeroStyle;
 use Capsule\Http\Message\Request;
 use Capsule\Http\Message\Response;
 use Capsule\Http\Support\FormData;
+use Capsule\IntegrationStyle;
 use Capsule\MediaLibrary;
 use Capsule\MediaRepository;
 use Capsule\Page;
 use Capsule\PageRepository;
+use Capsule\PricingStyle;
+use Capsule\RateCardStyle;
 use Capsule\SectionRegistry;
+use Capsule\TeamStyle;
+use Capsule\TestimonialStyle;
+use Capsule\TimelineStyle;
 
 final class SectionsController
 {
@@ -588,6 +603,52 @@ final class SectionsController
         $keys = array_map('strval', array_keys($variants));
         if ($requested !== '' && in_array($requested, $keys, true)) {
             return $requested;
+        }
+
+        if ($requested === '') {
+            $fallback = match ($type) {
+                'hero' => 'hero3',
+                'features' => 'feature3',
+                'integrations' => 'integration3',
+                'pricing' => 'pricing2',
+                'rate-card' => 'rate-card2',
+                'contact' => 'contact2',
+                'testimonials' => 'testimonial4',
+                'gallery' => 'gallery4',
+                'blog' => 'blog7',
+                'changelog' => 'changelog1',
+                'process' => 'process1',
+                'list' => 'list2',
+                'industry' => 'industries1',
+                'download' => 'download1',
+                'team' => 'team1',
+                'projects' => 'projects5',
+                'timeline' => 'timeline3',
+                default => $keys[0] ?? 'default',
+            };
+            $normalized = match ($type) {
+                'hero' => HeroStyle::normalizeVariant($fallback),
+                'features' => FeatureStyle::normalizeVariant($fallback),
+                'integrations' => IntegrationStyle::normalizeVariant($fallback),
+                'pricing' => PricingStyle::normalizeVariant($fallback),
+                'rate-card' => RateCardStyle::normalizeVariant($fallback),
+                'contact' => ContactStyle::normalizeVariant($fallback),
+                'testimonials' => TestimonialStyle::normalizeVariant($fallback),
+                'gallery' => GalleryStyle::normalizeVariant($fallback),
+                'blog' => BlogStyle::normalizeVariant($fallback),
+                'changelog' => ChangelogStyle::normalizeVariant($fallback),
+                'process' => ProcessStyle::normalizeVariant($fallback),
+                'list' => ListStyle::normalizeVariant($fallback),
+                'industry' => IndustryStyle::normalizeVariant($fallback),
+                'download' => DownloadStyle::normalizeVariant($fallback),
+                'team' => TeamStyle::normalizeVariant($fallback),
+                'projects' => ProjectsStyle::normalizeVariant($fallback),
+                'timeline' => TimelineStyle::normalizeVariant($fallback),
+                default => $fallback,
+            };
+            if (in_array($normalized, $keys, true)) {
+                return $normalized;
+            }
         }
 
         return $keys[0] ?? 'default';

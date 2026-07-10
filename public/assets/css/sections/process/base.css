@@ -1,0 +1,5 @@
+/* Tokens partagés process (variantes autonomes dans process1.css, etc.) */
+
+.section-process {
+    color: var(--color-text, #0f172a);
+}

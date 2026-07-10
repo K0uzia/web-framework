@@ -1,0 +1,84 @@
+/* Variante team1 : grille centrée avec avatars bordés (shadcnblocks team1) */
+
+.section-team--team1 {
+    padding-block: 8rem;
+}
+
+.section-team--team1 .section-team__head--team1 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.section-team--team1 .section-team__title--team1 {
+    margin-block: 1.5rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+@media (min-width: 1024px) {
+    .section-team--team1 .section-team__title--team1 {
+        font-size: 2.25rem;
+    }
+}
+
+.section-team--team1 .section-team__subtitle--team1 {
+    max-width: 48rem;
+    margin-bottom: 2rem;
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+@media (min-width: 1024px) {
+    .section-team--team1 .section-team__subtitle--team1 {
+        font-size: 1.25rem;
+    }
+}
+
+.section-team--team1 .section-team__grid--team1 {
+    gap: 4rem 2rem;
+    margin-top: 4rem;
+}
+
+@media (min-width: 768px) {
+    .section-team--team1 .section-team__grid--team1 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1024px) {
+    .section-team--team1 .section-team__grid--team1 {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+.section-team--team1 .section-team__avatar--team1 {
+    width: 5rem;
+    height: 5rem;
+    margin-bottom: 1rem;
+    border: 1px solid var(--color-border, #e2e8f0);
+}
+
+@media (min-width: 768px) {
+    .section-team--team1 .section-team__avatar--team1 {
+        margin-bottom: 1.25rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .section-team--team1 .section-team__avatar--team1 {
+        width: 6rem;
+        height: 6rem;
+    }
+}
+
+.section-team--team1 .section-team__name--team1,
+.section-team--team1 .section-team__role--team1 {
+    text-align: center;
+}
+
+.section-team--team1 .section-team__role--team1 {
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+}

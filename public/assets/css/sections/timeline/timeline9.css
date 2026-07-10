@@ -1,0 +1,132 @@
+/* Variante timeline9 : ligne verticale avec jalons (shadcnblocks timeline9) */
+
+.section-timeline--timeline9 {
+    padding-block: 8rem;
+}
+
+.section-timeline--timeline9 .section-timeline__container--timeline9 {
+    width: 100%;
+    max-width: var(--container, 72rem);
+    margin-inline: auto;
+}
+
+.section-timeline--timeline9 .section-timeline__title--timeline9 {
+    margin: 0 0 2.5rem;
+    font-size: 1.875rem;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    text-align: center;
+    color: var(--color-text, #0f172a);
+    text-wrap: pretty;
+}
+
+@media (min-width: 640px) {
+    .section-timeline--timeline9 .section-timeline__title--timeline9 {
+        font-size: 3.75rem;
+    }
+}
+
+.section-timeline--timeline9 .section-timeline__track--timeline9 {
+    position: relative;
+    max-width: 56rem;
+    margin-inline: auto;
+}
+
+.section-timeline--timeline9 .section-timeline__line--timeline9 {
+    position: absolute;
+    top: 1rem;
+    bottom: 0;
+    left: 0.5rem;
+    width: 1px;
+    background: var(--color-border, #e2e8f0);
+}
+
+.section-timeline--timeline9 .section-timeline__entry--timeline9 {
+    position: relative;
+    margin-bottom: 2.5rem;
+    padding-left: 2rem;
+}
+
+.section-timeline--timeline9 .section-timeline__entry--timeline9:last-child {
+    margin-bottom: 0;
+}
+
+.section-timeline--timeline9 .section-timeline__dot--timeline9 {
+    position: absolute;
+    top: 0.875rem;
+    left: 0;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 999px;
+    background: var(--color-text, #0f172a);
+}
+
+.section-timeline--timeline9 .section-timeline__entry-date--timeline9 {
+    margin: 0 0 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--color-muted-foreground, #64748b);
+}
+
+.section-timeline--timeline9 .section-timeline__entry-title--timeline9 {
+    margin: 0;
+    padding-block: 0.5rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: -0.025em;
+    color: var(--color-text, #0f172a);
+}
+
+.section-timeline--timeline9 .section-timeline__entry-content--timeline9 {
+    margin-top: 1.25rem;
+}
+
+.section-timeline--timeline9 .section-timeline__entry-content--timeline9 p {
+    margin: 0;
+    line-height: 1.7;
+    color: var(--color-text, #0f172a);
+}
+
+@media (min-width: 1280px) {
+    .section-timeline--timeline9 .section-timeline__track--timeline9 {
+        padding-left: 9rem;
+    }
+
+    .section-timeline--timeline9 .section-timeline__line--timeline9 {
+        left: 9.4375rem;
+    }
+
+    .section-timeline--timeline9 .section-timeline__entry--timeline9 {
+        padding-left: 2rem;
+    }
+
+    .section-timeline--timeline9 .section-timeline__dot--timeline9 {
+        left: 0;
+        top: 0.875rem;
+    }
+
+    .section-timeline--timeline9 .section-timeline__entry-date--timeline9 {
+        position: absolute;
+        top: 0.75rem;
+        left: 0;
+        width: 8.5rem;
+        margin: 0;
+        padding-right: 1.25rem;
+        text-align: right;
+        white-space: nowrap;
+        transform: translateX(-100%);
+    }
+
+    .section-timeline--timeline9 .section-timeline__entry-title--timeline9 {
+        margin-bottom: 1rem;
+        padding-inline: 0.75rem;
+    }
+
+    .section-timeline--timeline9 .section-timeline__entry-content--timeline9 {
+        margin-top: 0;
+        padding-inline: 0.5rem;
+    }
+}

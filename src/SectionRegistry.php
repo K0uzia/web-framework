@@ -104,6 +104,7 @@ final class SectionRegistry
         'content',
         'gallery',
         'pricing',
+        'rate-card',
         'compare',
         'cta',
         'newsletter',

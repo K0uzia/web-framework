@@ -1,0 +1,47 @@
+---
+description: Architecture PHP sections — handlers, renderers, DI
+globs: "src/SectionRenderer.php,src/Section/**/*.php,src/*Style.php,src/*VariantRenderer.php"
+alwaysApply: false
+---
+
+# Architecture sections PHP
+
+## Cible
+
+Interface `SectionTypeHandler` par type :
+
+- `type(): string`
+- `normalizeVariant(string): string`
+- `resolveStyle(array, string): array`
+- `enrich(array, array, string): array`
+- `cssFamilies(string): array`
+- `jsModules(string): array`
+
+`SectionRenderer` délègue au `SectionHandlerRegistry`. **Ne pas** ajouter de nouveau `if ($type === '…')` sans ticket de migration.
+
+## En attendant la migration complète
+
+- Nouveau type : `*Style` + `*VariantRenderer` dédiés dès le départ.
+- Logique HTML répétée : extraire dans le renderer, pas dans `SectionRenderer`.
+- Images : `SectionAssets::resolve()`, jamais d'URL CDN en dur.
+
+## *Style.php
+
+- `VISUAL_VARIANTS`, `defaults()`, `resolve()`, `normalizeVariant()` seulement.
+- Pas de génération HTML volumineuse (déplacer vers `*VariantRenderer`).
+
+## *VariantRenderer.php
+
+- Méthodes statiques `enrich()` + helpers privés.
+- Mutualiser via `SectionItemsTrait` quand le pattern se répète.
+- Échappement : `htmlspecialchars(..., ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')` systématique.
+
+## SectionDefaults
+
+- Un fichier par type dans `app/Http/Dev/Defaults/`.
+- Chaque clé `content_fields` du registry doit avoir une valeur default.
+
+## DI
+
+- Enregistrer nouveaux services dans `config/container.php`.
+- Pas de `new` dans les contrôleurs dev.

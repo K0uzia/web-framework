@@ -1,0 +1,89 @@
+/* Variante careers4 : intro et postes par catégorie */
+
+.section-careers--careers4 .section-careers__title--careers4 {
+    margin: 0;
+    font-size: clamp(1.875rem, 3vw, 2.25rem);
+    font-weight: 500;
+    line-height: 1.15;
+    color: var(--color-text, #0f172a);
+}
+
+.section-careers--careers4 .section-careers__intro--careers4 {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-width: 42rem;
+    margin-top: 1rem;
+}
+
+.section-careers--careers4 .section-careers__intro-text--careers4 {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.55;
+    color: var(--color-muted-foreground, #64748b);
+}
+
+.section-careers--careers4 .section-careers__categories--careers4 {
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+    margin-top: 2.5rem;
+}
+
+@media (min-width: 48rem) {
+    .section-careers--careers4 .section-careers__categories--careers4 {
+        margin-top: 3.5rem;
+    }
+}
+
+.section-careers--careers4 .section-careers__category-title--careers4 {
+    margin: 0;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--color-border, #e2e8f0);
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--color-text, #0f172a);
+}
+
+.section-careers--careers4 .section-careers__opening--careers4 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-block: 1rem;
+    border-bottom: 1px solid var(--color-border, #e2e8f0);
+}
+
+.section-careers--careers4 .section-careers__opening-main--careers4 {
+    min-width: 0;
+}
+
+.section-careers--careers4 .section-careers__opening-title--careers4 {
+    font-weight: 600;
+    color: var(--color-text, #0f172a);
+    text-decoration: none;
+}
+
+.section-careers--careers4 .section-careers__opening-title--careers4:hover {
+    text-decoration: underline;
+}
+
+.section-careers--careers4 .section-careers__opening-location--careers4 {
+    margin: 0.25rem 0 0;
+    font-size: 0.875rem;
+    color: var(--color-muted-foreground, #64748b);
+}
+
+.section-careers--careers4 .section-careers__opening-arrow-link--careers4 {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text, #0f172a);
+    text-decoration: none;
+}
+
+.section-careers--careers4 .section-careers__opening-arrow-link--careers4:hover {
+    color: var(--color-muted-foreground, #64748b);
+}

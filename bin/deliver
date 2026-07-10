@@ -1,0 +1,69 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+/**
+ * Vérifie qu'un export statique contient les assets attendus par le layout actuel.
+ *
+ * Usage : php bin/deliver [dist]
+ */
+
+$root = dirname(__DIR__);
+$distDir = isset($argv[1]) && $argv[1] !== '' ? $argv[1] : $root . '/dist';
+
+if (!is_dir($distDir)) {
+    fwrite(STDERR, "Dossier d'export introuvable : {$distDir}\n");
+    fwrite(STDERR, "Lancez d'abord : make export-static\n");
+    exit(1);
+}
+
+$required = [
+    'assets/js/site-nav.js',
+    'assets/js/site-header-blocks.js',
+    'assets/css/theme-generated.css',
+    'assets/css/site.css',
+];
+
+$missing = [];
+foreach ($required as $relative) {
+    $path = rtrim($distDir, '/\\') . '/' . $relative;
+    if (!is_file($path)) {
+        $missing[] = $relative;
+    }
+}
+
+$indexFiles = glob(rtrim($distDir, '/\\') . '/**/*.html') ?: [];
+$indexFiles = array_merge($indexFiles, glob(rtrim($distDir, '/\\') . '/*.html') ?: []);
+$htmlIssues = [];
+foreach ($indexFiles as $htmlFile) {
+    $html = file_get_contents($htmlFile);
+    if (!is_string($html)) {
+        continue;
+    }
+    if (!str_contains($html, 'theme-generated.css')) {
+        $htmlIssues[] = basename($htmlFile) . ' : lien theme-generated.css absent';
+    }
+    if (!str_contains($html, 'site-nav.js')) {
+        $htmlIssues[] = basename($htmlFile) . ' : script site-nav.js absent';
+    }
+}
+
+if ($missing !== []) {
+    fwrite(STDERR, "Assets manquants dans {$distDir} :\n");
+    foreach ($missing as $item) {
+        fwrite(STDERR, "  - {$item}\n");
+    }
+    exit(1);
+}
+
+if ($htmlIssues !== []) {
+    fwrite(STDERR, "Pages HTML incohérentes avec le layout :\n");
+    foreach ($htmlIssues as $issue) {
+        fwrite(STDERR, "  - {$issue}\n");
+    }
+    exit(1);
+}
+
+$pageCount = count($indexFiles);
+echo "Livraison OK : {$distDir} ({$pageCount} page(s), assets alignés sur le layout).\n";

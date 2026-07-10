@@ -122,30 +122,38 @@ final class RequestTest extends TestCase
     public function testFromGlobalsStripsBasePath(): void
     {
         $_SERVER['REQUEST_METHOD'] = 'GET';
-        $_SERVER['REQUEST_URI']    = '/wf/dev/pages';
+        $_SERVER['REQUEST_URI']    = '/mon-app/dev/pages';
         $_SERVER['SCRIPT_NAME']    = '/index.php';
 
-        $req = Request::fromGlobals('/wf');
+        $req = Request::fromGlobals('/mon-app');
 
         $this->assertSame('/dev/pages', $req->path);
     }
 
-    public function testFromGlobalsAutoDetectsWfPrefix(): void
+    public function testFromGlobalsAutoDetectsSubfolderPrefix(): void
     {
         $_SERVER['REQUEST_METHOD'] = 'GET';
-        $_SERVER['REQUEST_URI']    = '/wf/';
-        $_SERVER['SCRIPT_NAME']    = '/index.php';
+        $_SERVER['REQUEST_URI']    = '/apps/site/';
+        $_SERVER['SCRIPT_NAME']    = '/apps/site/public/index.php';
 
         $req = Request::fromGlobals('');
 
         $this->assertSame('/', $req->path);
     }
 
-    public function testStripWfSubfolder(): void
+    public function testStripWfSubfolderDelegatesToDetectedPrefix(): void
     {
-        $this->assertSame('/', Request::stripWfSubfolder('/wf/'));
-        $this->assertSame('/api/health', Request::stripWfSubfolder('/wf/api/health'));
-        $this->assertSame('/dev', Request::stripWfSubfolder('/wf/dev'));
-        $this->assertSame('/about', Request::stripWfSubfolder('/about'));
+        $backup = $_SERVER;
+        $_SERVER['SCRIPT_NAME'] = '/wf/public/index.php';
+        unset($_ENV['APP_BASE_PATH'], $_SERVER['APP_BASE_PATH']);
+
+        try {
+            $this->assertSame('/', Request::stripWfSubfolder('/wf/'));
+            $this->assertSame('/api/health', Request::stripWfSubfolder('/wf/api/health'));
+            $this->assertSame('/dev', Request::stripWfSubfolder('/wf/dev'));
+            $this->assertSame('/about', Request::stripWfSubfolder('/about'));
+        } finally {
+            $_SERVER = $backup;
+        }
     }
 }

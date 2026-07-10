@@ -1,0 +1,84 @@
+/* Variante cta38 : fond sombre, texte clair, boutons inversés */
+
+.section-cta--cta38 .section-cta__panel--cta38 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    max-width: 64rem;
+    margin-inline: auto;
+    padding: 2rem;
+    border-radius: var(--radius-xl, 0.75rem);
+    background: var(--color-foreground, #0f172a);
+    color: var(--color-background, #fff);
+    text-align: center;
+}
+
+@media (min-width: 48rem) {
+    .section-cta--cta38 .section-cta__panel--cta38 {
+        padding: 3rem;
+    }
+}
+
+@media (min-width: 64rem) {
+    .section-cta--cta38 .section-cta__panel--cta38 {
+        gap: 1.5rem;
+        padding: 4rem;
+    }
+}
+
+.section-cta--cta38 .section-cta__title--cta38 {
+    font-size: clamp(1.5rem, 2.5vw, 2.25rem);
+    letter-spacing: -0.02em;
+    color: inherit;
+}
+
+.section-cta--cta38 .section-cta__subtitle--cta38 {
+    max-width: 42rem;
+    font-size: 1rem;
+    color: color-mix(in srgb, var(--color-background, #fff) 70%, transparent);
+}
+
+@media (min-width: 64rem) {
+    .section-cta--cta38 .section-cta__subtitle--cta38 {
+        font-size: 1.125rem;
+    }
+}
+
+.section-cta--cta38 .section-cta__buttons--cta38 {
+    margin-top: 0.5rem;
+    justify-content: center;
+    flex-direction: column;
+}
+
+@media (min-width: 40rem) {
+    .section-cta--cta38 .section-cta__buttons--cta38 {
+        flex-direction: row;
+    }
+}
+
+.section-cta--cta38 .section-cta__buttons--cta38 .section-button {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+}
+
+.section-cta--cta38 .section-cta__buttons--cta38 .section-button--primary {
+    background: var(--color-background, #fff);
+    color: var(--color-foreground, #0f172a);
+    border: 1px solid transparent;
+}
+
+.section-cta--cta38 .section-cta__buttons--cta38 .section-button--primary:hover {
+    background: color-mix(in srgb, var(--color-background, #fff) 90%, transparent);
+}
+
+.section-cta--cta38 .section-cta__buttons--cta38 .section-button--secondary {
+    background: transparent;
+    color: var(--color-background, #fff);
+    border: 1px solid color-mix(in srgb, var(--color-background, #fff) 30%, transparent);
+}
+
+.section-cta--cta38 .section-cta__buttons--cta38 .section-button--secondary:hover {
+    background: color-mix(in srgb, var(--color-background, #fff) 10%, transparent);
+    color: var(--color-background, #fff);
+}

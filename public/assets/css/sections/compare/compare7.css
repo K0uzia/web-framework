@@ -1,0 +1,129 @@
+/* Variante compare7 : tableau comparatif texte (shadcnblocks compare7) */
+
+.section-compare--compare7 {
+    padding-block: 8rem;
+}
+
+.section-compare--compare7 .section-compare__container--compare7 {
+    width: 100%;
+    max-width: var(--container, 72rem);
+    margin-inline: auto;
+}
+
+.section-compare--compare7 .section-compare__title--compare7 {
+    margin: 0 0 1rem;
+    font-size: 2.25rem;
+    font-weight: 600;
+    line-height: 1.15;
+    text-align: center;
+    color: var(--color-text, #0f172a);
+}
+
+.section-compare--compare7 .section-compare__subtitle--compare7 {
+    margin: 0 0 2rem;
+    text-align: center;
+    color: var(--color-muted-foreground, #64748b);
+}
+
+.section-compare--compare7 .section-compare__table-wrap--compare7 {
+    max-width: 48rem;
+    margin-inline: auto;
+    overflow-x: auto;
+}
+
+.section-compare--compare7 .section-compare__table--compare7 {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: var(--radius-lg, 0.5rem);
+    overflow: hidden;
+    box-shadow: 0 10px 15px -3px rgb(15 23 42 / 8%);
+    text-align: left;
+    background: var(--color-background, #fff);
+}
+
+.section-compare--compare7 .section-compare__head--compare7 {
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text, #0f172a);
+    background: var(--color-background, #fff);
+    border-bottom: 1px solid var(--color-border, #e2e8f0);
+}
+
+.section-compare--compare7 .section-compare__head--primary--compare7,
+.section-compare--compare7 .section-compare__cell--primary--compare7 {
+    background: var(--color-muted, #f1f5f9);
+}
+
+.section-compare--compare7 .section-compare__row--compare7 + .section-compare__row--compare7 .section-compare__feature--compare7,
+.section-compare--compare7 .section-compare__row--compare7 + .section-compare__row--compare7 .section-compare__cell--compare7 {
+    border-top: 1px solid var(--color-border, #e2e8f0);
+}
+
+.section-compare--compare7 .section-compare__feature--compare7,
+.section-compare--compare7 .section-compare__cell--compare7 {
+    padding: 1rem 1.5rem;
+    font-weight: 400;
+    vertical-align: top;
+    color: var(--color-text, #0f172a);
+}
+
+.section-compare--compare7 .section-compare__feature--compare7 {
+    font-weight: 500;
+}
+
+.section-compare--compare7 .section-compare__tooltip-wrap--compare7 {
+    position: relative;
+    display: inline-block;
+}
+
+.section-compare--compare7 .section-compare__tooltip-trigger--compare7 {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    font: inherit;
+    color: inherit;
+    cursor: help;
+}
+
+.section-compare--compare7 .section-compare__tooltip-value--compare7 {
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    text-underline-offset: 0.2em;
+}
+
+.section-compare--compare7 .section-compare__tooltip-panel--compare7 {
+    position: absolute;
+    z-index: 2;
+    top: calc(100% + 0.5rem);
+    left: 0;
+    display: none;
+    width: max-content;
+    max-width: 18rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: var(--radius-md, 0.375rem);
+    background: var(--color-background, #fff);
+    box-shadow: 0 8px 24px rgb(15 23 42 / 12%);
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--color-text, #0f172a);
+}
+
+.section-compare--compare7 .section-compare__tooltip-title--compare7 {
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.section-compare--compare7 .section-compare__tooltip-wrap--compare7:focus-within .section-compare__tooltip-panel--compare7,
+.section-compare--compare7 .section-compare__tooltip-trigger--compare7:hover + .section-compare__tooltip-panel--compare7,
+.section-compare--compare7 .section-compare__tooltip-trigger--compare7:focus + .section-compare__tooltip-panel--compare7 {
+    display: block;
+}
+
+.section-compare--compare7 .section-compare__tooltip-trigger--compare7:focus-visible {
+    outline: 2px solid var(--color-focus-ring, #3b82f6);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm, 0.25rem);
+}

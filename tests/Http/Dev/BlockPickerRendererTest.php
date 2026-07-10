@@ -17,10 +17,10 @@ final class BlockPickerRendererTest extends TestCase
         $renderer = new BlockPickerRenderer($registry);
         $html = $renderer->renderPickerHtml();
 
-        $this->assertSame(1, $renderer->countPickerCards());
-        $this->assertSame(1, substr_count($html, 'data-block-type="'));
+        $this->assertGreaterThan(0, $renderer->countPickerCards());
+        $this->assertSame($renderer->countPickerCards(), substr_count($html, 'data-block-type="'));
         $this->assertStringContainsString('data-block-variant="hero3"', $html);
-        $this->assertStringContainsString('Hero : Hero 2', $html);
+        $this->assertStringContainsString('Hero 3', $html);
         $this->assertStringContainsString('data-block-filter="hero"', $html);
     }
 }

@@ -1,0 +1,77 @@
+/* Variante stats8 : en-tête avec lien et grille de métriques */
+
+.section-stats--stats8 .section-stats__head--stats8 {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.section-stats--stats8 .section-stats__title--stats8 {
+    margin: 0;
+    font-size: clamp(1.5rem, 2.5vw, 2.25rem);
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--color-text, #0f172a);
+}
+
+.section-stats--stats8 .section-stats__subtitle--stats8 {
+    margin: 0;
+    max-width: 42rem;
+    font-size: 1rem;
+    line-height: 1.55;
+    color: var(--color-text, #0f172a);
+}
+
+.section-stats--stats8 .section-stats__link--stats8 {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    width: fit-content;
+    font-weight: 700;
+    color: var(--color-text, #0f172a);
+    text-decoration: none;
+}
+
+.section-stats--stats8 .section-stats__link--stats8:hover {
+    text-decoration: underline;
+}
+
+.section-stats--stats8 .section-stats__link--stats8:focus-visible {
+    outline: 2px solid var(--color-primary, #0f172a);
+    outline-offset: 2px;
+}
+
+.section-stats--stats8 .section-stats__grid--stats8 {
+    display: grid;
+    gap: 2rem 1.25rem;
+    margin-top: 3.5rem;
+}
+
+@media (min-width: 48rem) {
+    .section-stats--stats8 .section-stats__grid--stats8 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 64rem) {
+    .section-stats--stats8 .section-stats__grid--stats8 {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+.section-stats--stats8 .section-stats__item--stats8 {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.section-stats--stats8 .section-stats__value--stats8 {
+    font-size: clamp(3rem, 4vw, 3.75rem);
+    font-weight: 700;
+}
+
+.section-stats--stats8 .section-stats__label--stats8 {
+    margin: 0;
+    font-size: 1rem;
+    color: var(--color-text, #0f172a);
+}

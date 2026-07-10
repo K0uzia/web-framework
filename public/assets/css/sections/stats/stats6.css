@@ -1,0 +1,104 @@
+/* Variante stats6 : fond accent, titre, boutons et grille de métriques */
+
+.section-stats--stats6 {
+    background: var(--color-accent, #f1f5f9);
+}
+
+.section-stats--stats6 .section-stats__container--stats6 {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+}
+
+.section-stats--stats6 .section-stats__head--stats6 {
+    width: 100%;
+    margin-bottom: 3rem;
+}
+
+@media (min-width: 48rem) {
+    .section-stats--stats6 .section-stats__head--stats6 {
+        margin-bottom: 4rem;
+    }
+}
+
+.section-stats--stats6 .section-stats__title--stats6 {
+    max-width: 37rem;
+    margin: 0 0 2rem;
+    font-size: clamp(1.875rem, 3vw, 3rem);
+    font-weight: 700;
+    line-height: 1.15;
+    text-wrap: pretty;
+    color: var(--color-text, #0f172a);
+}
+
+.section-stats--stats6 .section-stats__buttons--stats6 {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+@media (min-width: 40rem) {
+    .section-stats--stats6 .section-stats__buttons--stats6 {
+        flex-direction: row;
+        gap: 0.5rem;
+    }
+}
+
+.section-stats--stats6 .section-stats__buttons--stats6 .section-button {
+    width: 100%;
+    justify-content: center;
+    padding: 0.625rem 1.25rem;
+}
+
+@media (min-width: 40rem) {
+    .section-stats--stats6 .section-stats__buttons--stats6 .section-button {
+        width: auto;
+    }
+}
+
+.section-stats--stats6 .section-stats__buttons--stats6 .section-button--secondary {
+    background: transparent;
+    color: var(--color-text, #0f172a);
+    border: 1px solid var(--color-border, #e2e8f0);
+}
+
+.section-stats--stats6 .section-stats__buttons--stats6 .section-button--secondary:hover {
+    background: var(--color-background, #fff);
+}
+
+.section-stats--stats6 .section-stats__grid--stats6 {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 3rem;
+}
+
+@media (min-width: 40rem) {
+    .section-stats--stats6 .section-stats__grid--stats6 {
+        width: fit-content;
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (min-width: 64rem) {
+    .section-stats--stats6 .section-stats__grid--stats6 {
+        gap: 4rem;
+    }
+}
+
+.section-stats--stats6 .section-stats__value--stats6 {
+    margin-bottom: 0.5rem;
+    font-size: clamp(2.25rem, 3vw, 3rem);
+    font-weight: 600;
+}
+
+.section-stats--stats6 .section-stats__label--stats6 {
+    font-size: 1rem;
+}
+
+@media (min-width: 64rem) {
+    .section-stats--stats6 .section-stats__label--stats6 {
+        font-size: 1.125rem;
+    }
+}

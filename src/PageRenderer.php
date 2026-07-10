@@ -19,6 +19,8 @@ final class PageRenderer
         private readonly SiteChrome $chrome,
         private readonly string $baseUrl,
         private readonly StylesheetResolver $stylesheets,
+        private readonly ScriptResolver $scripts,
+        private readonly string $publicCssDir,
         private readonly bool $publishedOnly = true,
         private readonly ?BasePath $basePath = null,
     ) {
@@ -46,28 +48,30 @@ final class PageRenderer
 
         $theme = $this->site->getTheme();
         $data['theme'] = $theme;
-        $data['theme_css'] = '<style>' . $this->site->themeCss() . '</style>';
+        $data['asset_root'] = $this->basePath?->value() ?? '';
+        $this->site->ensureThemeCssFile($this->publicCssDir);
+        $data['theme_css'] = $this->site->themeCssLinkHtml($data['asset_root']);
 
         $body = $this->sections->renderAll($page->sections);
         $data = Seo::apply($data, $path, $this->baseUrl);
         $data = $this->chrome->enrich($data, $path, $publishedOnly);
-        $data['asset_root'] = $this->basePath?->value() ?? '';
 
         $pageSlugForCss = $slug === '' ? 'index' : $slug;
+        $sectionRefs = $this->sections->extractSectionRefs($page->sections);
         $hrefs = $this->stylesheets->resolve(
             $layout,
             $pageSlugForCss,
             $body,
             $data,
-            $this->sections->extractSectionRefs($page->sections),
+            $sectionRefs,
+            $page->sections,
         );
         $data['stylesheets'] = $this->stylesheets->toHtml($hrefs);
 
-        $html = $this->view->pageFromString($body, $data, $layout . '.html');
+        $scriptSrcs = $this->scripts->resolve($body, $sectionRefs);
+        $data['scripts'] = $this->scripts->toHtml($scriptSrcs, $data['asset_root']);
 
-        if ($this->basePath !== null && !$this->basePath->isEmpty()) {
-            $html = $this->basePath->rewriteHtml($html);
-        }
+        $html = $this->view->pageFromString($body, $data, $layout . '.html');
 
         return $this->responseFactory->html($html);
     }

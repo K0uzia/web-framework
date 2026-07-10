@@ -15,6 +15,7 @@ use Capsule\SiteChrome;
 use Capsule\SiteExportPath;
 use Capsule\SiteExporter;
 use Capsule\SiteRepository;
+use Capsule\ScriptResolver;
 use Capsule\StylesheetResolver;
 use Capsule\View;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -43,6 +44,7 @@ final class ExportControllerTest extends TestCase
             new SectionRenderer($view, $resources . '/sections', false),
             new SiteChrome($pages, $site, $view, 'Test'),
             new StylesheetResolver($root . '/public/assets/css'),
+            new ScriptResolver($root . '/public/assets/js'),
             $root,
             $root . '/public',
             'http://localhost:8080',

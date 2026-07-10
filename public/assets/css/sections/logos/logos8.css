@@ -1,0 +1,42 @@
+/* Variante logos8 : titre centré + grille statique (shadcnblocks logos8) */
+
+.section-logos--logos8 {
+    padding-block: 8rem;
+}
+
+.section-logos--logos8 .section-logos__container--logos8 {
+    width: 100%;
+    max-width: var(--container, 72rem);
+    margin-inline: auto;
+}
+
+.section-logos--logos8 .section-logos__head--logos8 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.section-logos--logos8 .section-logos__title--logos8 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.025em;
+    color: var(--color-text, #0f172a);
+}
+
+.section-logos--logos8 .section-logos__grid--logos8 {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem 2rem;
+    margin-top: 2rem;
+}
+
+@media (min-width: 1024px) {
+    .section-logos--logos8 .section-logos__grid--logos8 {
+        gap: 1.5rem 3rem;
+    }
+}

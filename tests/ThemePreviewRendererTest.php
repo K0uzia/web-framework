@@ -20,13 +20,18 @@ final class ThemePreviewRendererTest extends TestCase
         $pages = new \Capsule\PageRepository($pdo);
         $chrome = new \Capsule\SiteChrome($pages, $site, $view, 'CapsulePHP');
         $stylesheets = new \Capsule\StylesheetResolver($root . '/public/assets/css');
+        $scripts = new \Capsule\ScriptResolver($root . '/public/assets/js');
+        $cssDir = sys_get_temp_dir() . '/capsule-theme-preview-' . uniqid('', true);
+        mkdir($cssDir);
 
-        $renderer = new ThemePreviewRenderer(
+        $renderer = new \Capsule\ThemePreviewRenderer(
             new ResponseFactory(),
             $view,
             $site,
             $chrome,
             $stylesheets,
+            $scripts,
+            $cssDir,
             'https://example.com',
         );
 
@@ -34,6 +39,7 @@ final class ThemePreviewRendererTest extends TestCase
 
         $this->assertStringContainsString('theme-preview', $body);
         $this->assertStringContainsString('theme-preview.css', $body);
+        $this->assertStringContainsString('theme-generated.css', $body);
         $this->assertStringContainsString('theme-bindings.css', $body);
         $this->assertStringContainsString('section-hero--hero3', $body);
         $this->assertStringContainsString('theme-preview__alert--success', $body);

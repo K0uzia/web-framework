@@ -1,0 +1,92 @@
+/* Variante team2 : cartes avec liens sociaux (shadcnblocks team2) */
+
+.section-team--team2 {
+    padding-block: 6rem;
+}
+
+@media (min-width: 1024px) {
+    .section-team--team2 {
+        padding-block: 8rem;
+    }
+}
+
+.section-team--team2 .section-team__head--team2 {
+    margin-bottom: 4rem;
+}
+
+.section-team--team2 .section-team__title--team2 {
+    margin-bottom: 1.5rem;
+    font-size: 1.875rem;
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+}
+
+@media (min-width: 1024px) {
+    .section-team--team2 .section-team__title--team2 {
+        font-size: 3rem;
+    }
+}
+
+.section-team--team2 .section-team__subtitle--team2 {
+    max-width: 42rem;
+    margin-inline: auto;
+    font-size: 1.125rem;
+    line-height: 1.625;
+}
+
+.section-team--team2 .section-team__grid--team2 {
+    gap: 2rem;
+}
+
+@media (min-width: 768px) {
+    .section-team--team2 .section-team__grid--team2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1024px) {
+    .section-team--team2 .section-team__grid--team2 {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+.section-team--team2 .section-team__member--team2 {
+    padding: 1.5rem;
+}
+
+.section-team--team2 .section-team__member-inner--team2 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.section-team--team2 .section-team__avatar--team2 {
+    width: 5rem;
+    height: 5rem;
+    margin-bottom: 1rem;
+}
+
+@media (min-width: 1024px) {
+    .section-team--team2 .section-team__avatar--team2 {
+        width: 6rem;
+        height: 6rem;
+    }
+}
+
+.section-team--team2 .section-team__meta--team2 {
+    margin-bottom: 1.5rem;
+}
+
+.section-team--team2 .section-team__name--team2 {
+    margin-bottom: 0.25rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+.section-team--team2 .section-team__role--team2 {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-primary, #2563eb);
+}

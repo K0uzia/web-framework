@@ -11,6 +11,7 @@ use Capsule\SectionRenderer;
 use Capsule\SiteChrome;
 use Capsule\SiteExporter;
 use Capsule\SiteRepository;
+use Capsule\ScriptResolver;
 use Capsule\StylesheetResolver;
 use Capsule\View;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -34,6 +35,7 @@ final class SiteExporterTest extends TestCase
         $sections = new SectionRenderer($view, $resources . '/sections', false);
         $chrome = new SiteChrome($pages, $siteRepo, $view, 'Test');
         $stylesheets = new StylesheetResolver($root . '/public/assets/css');
+        $scripts = new ScriptResolver($root . '/public/assets/js');
 
         $outputDir = sys_get_temp_dir() . '/capsule-export-' . bin2hex(random_bytes(4));
         if (is_dir($outputDir)) {
@@ -48,6 +50,7 @@ final class SiteExporterTest extends TestCase
             $sections,
             $chrome,
             $stylesheets,
+            $scripts,
             $root,
             $root . '/public',
             'http://localhost:8080',
@@ -86,6 +89,7 @@ final class SiteExporterTest extends TestCase
             new SectionRenderer($view, $resources . '/sections', false),
             new SiteChrome($pages, $siteRepo, $view, 'Test'),
             new StylesheetResolver($root . '/public/assets/css'),
+            new ScriptResolver($root . '/public/assets/js'),
             $root,
             $root . '/public',
             'http://localhost:8080',

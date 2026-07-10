@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Capsule;
 
 use Capsule\MediaDisplaySettings;
+use Capsule\Section\SectionEnrichContext;
+use Capsule\Section\SectionHandlerRegistry;
 use Capsule\Support\Utf8;
 
 final class SectionRenderer
@@ -13,7 +15,13 @@ final class SectionRenderer
         private readonly View $view,
         private readonly string $sectionsDir,
         private readonly bool $isDev = true,
+        private readonly ?SectionHandlerRegistry $handlers = null,
     ) {
+    }
+
+    private function handlers(): SectionHandlerRegistry
+    {
+        return $this->handlers ?? new SectionHandlerRegistry();
     }
 
     /**
@@ -43,32 +51,9 @@ final class SectionRenderer
 
         $type = is_string($section['type'] ?? null) ? $section['type'] : '';
         $variant = is_string($section['variant'] ?? null) ? $section['variant'] : 'default';
-        if ($type === 'hero') {
-            $variant = HeroStyle::normalizeVariant($variant);
-            $section['variant'] = $variant;
-        }
-        if ($type === 'features') {
-            $variant = FeatureStyle::normalizeVariant($variant);
-            $section['variant'] = $variant;
-        }
-        if ($type === 'integrations') {
-            $variant = IntegrationStyle::normalizeVariant($variant);
-            $section['variant'] = $variant;
-        }
-        if ($type === 'pricing') {
-            $variant = PricingStyle::normalizeVariant($variant);
-            $section['variant'] = $variant;
-        }
-        if ($type === 'contact') {
-            $variant = ContactStyle::normalizeVariant($variant);
-            $section['variant'] = $variant;
-        }
-        if ($type === 'testimonials') {
-            $variant = TestimonialStyle::normalizeVariant($variant);
-            $section['variant'] = $variant;
-        }
-        if ($type === 'gallery') {
-            $variant = GalleryStyle::normalizeVariant($variant);
+        $handler = $this->handlers()->get($type);
+        if ($handler !== null) {
+            $variant = $handler->normalizeVariant($variant);
             $section['variant'] = $variant;
         }
         if ($type === '') {
@@ -101,26 +86,9 @@ final class SectionRenderer
             }
             $type = is_string($section['type'] ?? null) ? $section['type'] : '';
             $variant = is_string($section['variant'] ?? null) ? $section['variant'] : 'default';
-            if ($type === 'hero') {
-                $variant = HeroStyle::normalizeVariant($variant);
-            }
-            if ($type === 'features') {
-                $variant = FeatureStyle::normalizeVariant($variant);
-            }
-            if ($type === 'integrations') {
-                $variant = IntegrationStyle::normalizeVariant($variant);
-            }
-            if ($type === 'pricing') {
-                $variant = PricingStyle::normalizeVariant($variant);
-            }
-            if ($type === 'contact') {
-                $variant = ContactStyle::normalizeVariant($variant);
-            }
-            if ($type === 'testimonials') {
-                $variant = TestimonialStyle::normalizeVariant($variant);
-            }
-            if ($type === 'gallery') {
-                $variant = GalleryStyle::normalizeVariant($variant);
+            $handler = $this->handlers()->get($type);
+            if ($handler !== null) {
+                $variant = $handler->normalizeVariant($variant);
             }
             if ($type !== '') {
                 $refs[] = ['type' => $type, 'variant' => $variant];
@@ -222,57 +190,15 @@ final class SectionRenderer
         $data['hero_backdrop_html'] = '';
         $data['hero_backdrop_class'] = '';
 
-        if ($data['type'] === 'hero') {
-            $resolvedStyle = HeroStyle::resolve($style, $data['variant']);
+        $handler = $this->handlers()->get($data['type']);
+        if ($handler !== null) {
+            $data['variant'] = $handler->normalizeVariant($data['variant']);
+            $resolvedStyle = $handler->resolveStyle($style, $data['variant']);
             foreach ($resolvedStyle as $key => $value) {
                 $data['style_' . $key] = $value;
             }
-            $data['hero_modifiers'] = HeroStyle::modifierClasses($style, $data['variant']);
-            $badgeText = trim((string) ($content['badge'] ?? ''));
-            $data['hero_badge_html'] = $badgeText !== ''
-                ? '<span class="section-hero__badge">' . htmlspecialchars($badgeText, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</span>'
-                : '';
-            $subheading = trim((string) ($content['subheading'] ?? ''));
-            $data['hero_subheading_html'] = $subheading !== ''
-                ? ' <span class="section-hero__subheading">' . htmlspecialchars($subheading, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</span>'
-                : '';
-            $data = HeroVariantRenderer::enrich($data, $content, $data['variant'], $this->renderHeroButtons($content));
-        } elseif ($data['type'] === 'features') {
-            $resolvedStyle = FeatureStyle::resolve($style, $data['variant']);
-            foreach ($resolvedStyle as $key => $value) {
-                $data['style_' . $key] = $value;
-            }
-            $data = FeatureVariantRenderer::enrich($data, $content, $data['variant']);
-        } elseif ($data['type'] === 'integrations') {
-            $resolvedStyle = IntegrationStyle::resolve($style, $data['variant']);
-            foreach ($resolvedStyle as $key => $value) {
-                $data['style_' . $key] = $value;
-            }
-            $data = IntegrationVariantRenderer::enrich($data, $content, $data['variant']);
-        } elseif ($data['type'] === 'pricing') {
-            $resolvedStyle = PricingStyle::resolve($style, $data['variant']);
-            foreach ($resolvedStyle as $key => $value) {
-                $data['style_' . $key] = $value;
-            }
-            $data = PricingVariantRenderer::enrich($data, $content, $data['variant']);
-        } elseif ($data['type'] === 'contact') {
-            $resolvedStyle = ContactStyle::resolve($style, $data['variant']);
-            foreach ($resolvedStyle as $key => $value) {
-                $data['style_' . $key] = $value;
-            }
-            $data = ContactVariantRenderer::enrich($data, $content, $data['variant']);
-        } elseif ($data['type'] === 'testimonials') {
-            $resolvedStyle = TestimonialStyle::resolve($style, $data['variant']);
-            foreach ($resolvedStyle as $key => $value) {
-                $data['style_' . $key] = $value;
-            }
-            $data = TestimonialVariantRenderer::enrich($data, $content, $data['variant']);
-        } elseif ($data['type'] === 'gallery') {
-            $resolvedStyle = GalleryStyle::resolve($style, $data['variant']);
-            foreach ($resolvedStyle as $key => $value) {
-                $data['style_' . $key] = $value;
-            }
-            $data = GalleryVariantRenderer::enrich($data, $content, $data['variant']);
+            $context = new SectionEnrichContext($this->renderHeroButtons(...));
+            $data = $handler->enrich($data, $content, $data['variant'], $context);
         } else {
             $imageUrl = MediaDisplaySettings::normalizeUrl((string) ($content['image_url'] ?? ''));
             $imageTitle = trim((string) ($content['title'] ?? ''));

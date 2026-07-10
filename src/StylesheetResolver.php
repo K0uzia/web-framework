@@ -31,6 +31,7 @@ final class StylesheetResolver
         string $pageBody,
         array $meta = [],
         array $sectionRefs = [],
+        array $sections = [],
     ): array {
         $candidates = [];
 
@@ -54,7 +55,9 @@ final class StylesheetResolver
             if ($type === 'hero') {
                 $this->push($candidates, 'sections/hero/base.css');
                 $this->push($candidates, 'sections/hero/variants.css');
-                $this->push($candidates, 'sections/hero/customize.css');
+                if ($this->heroNeedsCustomizeCss($sections)) {
+                    $this->push($candidates, 'sections/hero/customize.css');
+                }
             }
             if ($type === 'features') {
                 $this->push($candidates, 'sections/features/base.css');
@@ -65,6 +68,9 @@ final class StylesheetResolver
             if ($type === 'pricing') {
                 $this->push($candidates, 'sections/pricing/base.css');
             }
+            if ($type === 'rate-card') {
+                $this->push($candidates, 'sections/rate-card/base.css');
+            }
             if ($type === 'contact') {
                 $this->push($candidates, 'sections/contact/base.css');
             }
@@ -73,6 +79,78 @@ final class StylesheetResolver
             }
             if ($type === 'gallery') {
                 $this->push($candidates, 'sections/gallery/base.css');
+            }
+            if ($type === 'blog') {
+                $this->push($candidates, 'sections/blog/base.css');
+            }
+            if ($type === 'changelog') {
+                $this->push($candidates, 'sections/changelog/base.css');
+            }
+            if ($type === 'process') {
+                $this->push($candidates, 'sections/process/base.css');
+            }
+            if ($type === 'list') {
+                $this->push($candidates, 'sections/list/base.css');
+            }
+            if ($type === 'industry') {
+                $this->push($candidates, 'sections/industry/base.css');
+            }
+            if ($type === 'download') {
+                $this->push($candidates, 'sections/download/base.css');
+            }
+            if ($type === 'team') {
+                $this->push($candidates, 'sections/team/base.css');
+            }
+            if ($type === 'projects') {
+                $this->push($candidates, 'sections/projects/base.css');
+            }
+            if ($type === 'timeline') {
+                $this->push($candidates, 'sections/timeline/base.css');
+            }
+            if ($type === 'logos') {
+                $this->push($candidates, 'sections/logos/base.css');
+            }
+            if ($type === 'services') {
+                $this->push($candidates, 'sections/services/base.css');
+            }
+            if ($type === 'compare') {
+                $this->push($candidates, 'sections/compare/base.css');
+            }
+            if ($type === 'cta') {
+                $this->push($candidates, 'sections/cta/base.css');
+            }
+            if ($type === 'awards') {
+                $this->push($candidates, 'sections/awards/base.css');
+            }
+            if ($type === 'community') {
+                $this->push($candidates, 'sections/community/base.css');
+            }
+            if ($type === 'stats') {
+                $this->push($candidates, 'sections/stats/base.css');
+            }
+            if ($type === 'careers') {
+                $this->push($candidates, 'sections/careers/base.css');
+            }
+            if ($type === 'faq') {
+                $this->push($candidates, 'sections/faq/base.css');
+            }
+            if ($type === 'code') {
+                $this->push($candidates, 'sections/code/base.css');
+            }
+            if ($type === 'compliance') {
+                $this->push($candidates, 'sections/compliance/base.css');
+            }
+            if ($type === 'case-study') {
+                $this->push($candidates, 'sections/case-study/base.css');
+            }
+            if ($type === 'demo') {
+                $this->push($candidates, 'sections/demo/base.css');
+            }
+            if ($type === 'experience') {
+                $this->push($candidates, 'sections/experience/base.css');
+            }
+            if ($type === 'waitlist') {
+                $this->push($candidates, 'sections/waitlist/base.css');
             }
             foreach (SectionLayoutFamilies::cssFamilies($variant) as $family) {
                 $this->push($candidates, 'sections/' . $type . '/' . $family . '.css');
@@ -194,6 +272,26 @@ final class StylesheetResolver
     private function push(array &$list, string $relative): void
     {
         $list[] = str_replace('\\', '/', $relative);
+    }
+
+    /**
+     * @param list<array<string, mixed>> $sections
+     */
+    private function heroNeedsCustomizeCss(array $sections): bool
+    {
+        foreach ($sections as $section) {
+            if (!is_array($section) || ($section['type'] ?? '') !== 'hero') {
+                continue;
+            }
+            $style = is_array($section['style'] ?? null) ? $section['style'] : [];
+            foreach ($style as $key => $value) {
+                if (!in_array((string) $key, ['bg', 'padding'], true) && (string) $value !== '') {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     private function safeName(string $name): string

@@ -25,7 +25,8 @@ alwaysApply: false
 - Chaque section en DB : `"visible": true|false`.
 - `false` : masquée sur le site public, visible dans l'éditeur `/dev`.
 
-## Tests
+## Workflow nouveau bloc
 
-- Étendre `SectionRegistryTest` pour toute variante ajoutée au registry.
-- `SectionsControllerTest` pour add/update/move/destroy et fallback variante.
+Suivre [`section-block-workflow.mdc`](section-block-workflow.mdc) : registry → HTML → CSS autonome → renderer → defaults → JS → tests.
+
+Voir aussi [`section-tests.mdc`](section-tests.mdc), [`section-css-isolation.mdc`](section-css-isolation.mdc), [`section-assets.mdc`](section-assets.mdc).

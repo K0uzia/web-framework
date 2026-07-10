@@ -1,0 +1,104 @@
+/* Tokens et styles communs aux variantes blog shadcnblocks */
+
+.section-blog {
+    background: var(--color-background, #fff);
+}
+
+.section-blog[class*="section--pad-"] {
+    padding-inline: var(--space-md, 1rem);
+}
+
+.section-blog--blog7,
+.section-blog--blog8 {
+    padding-block: 8rem;
+}
+
+.section-blog--blog7[class*="section--pad-"],
+.section-blog--blog8[class*="section--pad-"] {
+    padding-inline: var(--space-md, 1rem);
+}
+
+.section-blog .section-blog__container {
+    width: 100%;
+    max-width: var(--container, 72rem);
+    margin-inline: auto;
+}
+
+.section-blog .section-blog__head {
+    text-align: center;
+}
+
+.section-blog .section-blog__title {
+    margin: 0;
+    color: var(--color-text, #0f172a);
+}
+
+.section-blog .section-blog__subtitle {
+    margin: 0;
+    color: var(--color-muted-foreground, #64748b);
+}
+
+.section-blog .section-blog__read-more--blog7,
+.section-blog .section-blog__read-more--blog8 {
+    display: inline-flex;
+    align-items: center;
+    color: var(--color-muted-foreground, #64748b);
+    text-decoration: none;
+}
+
+.section-blog .section-blog__read-more--blog7:hover,
+.section-blog .section-blog__read-more--blog8:hover {
+    text-decoration: underline;
+}
+
+.section-blog .section-blog__read-more--blog7 i,
+.section-blog .section-blog__read-more--blog8 i {
+    margin-inline-start: 0.25rem;
+    font-size: 1rem;
+}
+
+.section-blog .section-blog__card-title--blog7 a,
+.section-blog .section-blog__row-title--blog8 a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.section-blog .section-blog__card-title--blog7 a:hover,
+.section-blog .section-blog__row-title--blog8 a:hover {
+    text-decoration: underline;
+}
+
+.section-blog .section-blog__img--blog7,
+.section-blog .section-blog__img--blog8 {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.section-blog .section-blog__media--blog7 {
+    display: block;
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+    transition: opacity 0.2s ease;
+}
+
+.section-blog .section-blog__media--blog7:hover {
+    opacity: 0.7;
+}
+
+.section-blog .section-blog__media-frame--blog8 {
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: var(--radius-lg, 0.5rem);
+}
+
+.section-blog .section-blog__media-frame--blog8 img {
+    transition: opacity 0.2s ease;
+}
+
+.section-blog .section-blog__row-media--blog8 a:hover .section-blog__img--blog8 {
+    opacity: 0.7;
+}

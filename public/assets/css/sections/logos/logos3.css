@@ -1,0 +1,86 @@
+/* Variante logos3 : titre centré + défilement horizontal (shadcnblocks logos3) */
+
+.section-logos--logos3 {
+    padding-block: 8rem;
+}
+
+.section-logos--logos3 .section-logos__container--logos3 {
+    width: 100%;
+    max-width: var(--container, 72rem);
+    margin-inline: auto;
+}
+
+.section-logos--logos3 .section-logos__head--logos3 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.section-logos--logos3 .section-logos__title--logos3 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.025em;
+    color: var(--color-text, #0f172a);
+}
+
+.section-logos--logos3 .section-logos__marquee--logos3 {
+    overflow: hidden;
+    margin-top: 2rem;
+    mask-image: linear-gradient(to right, transparent, #000 4rem, #000 calc(100% - 4rem), transparent);
+}
+
+@media (min-width: 1024px) {
+    .section-logos--logos3 .section-logos__marquee--logos3 {
+        margin-top: 3rem;
+    }
+}
+
+.section-logos--logos3 .section-logos__marquee-track--logos3 {
+    display: flex;
+    align-items: center;
+    width: max-content;
+    animation: section-logos-marquee-logos3 60s linear infinite;
+}
+
+.section-logos--logos3 .section-logos__marquee--logos3:hover .section-logos__marquee-track--logos3 {
+    animation-play-state: paused;
+}
+
+.section-logos--logos3 .section-logos__cell--logos3,
+.section-logos--logos3 .section-logos__link--logos3 {
+    margin-inline: 2rem;
+}
+
+@media (min-width: 1024px) {
+    .section-logos--logos3 .section-logos__cell--logos3,
+    .section-logos--logos3 .section-logos__link--logos3 {
+        margin-inline: 2.5rem;
+    }
+}
+
+@keyframes section-logos-marquee-logos3 {
+    from {
+        transform: translateX(0);
+    }
+
+    to {
+        transform: translateX(-50%);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .section-logos--logos3 .section-logos__marquee-track--logos3 {
+        animation: none;
+        flex-wrap: wrap;
+        justify-content: center;
+        width: auto;
+        gap: 1.5rem 2rem;
+    }
+
+    .section-logos--logos3 .section-logos__marquee--logos3 {
+        mask-image: none;
+    }
+}

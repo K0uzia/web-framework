@@ -1,0 +1,191 @@
+/* Variante experience1 : parcours professionnel avec périodes et entreprises */
+
+.section-experience.section-experience--experience1 {
+    overflow-x: clip;
+}
+
+.section-experience.section-experience--experience1[class*="section--pad-"] {
+    padding-block: 4rem;
+    padding-inline: var(--space-md, 1rem);
+}
+
+@media (min-width: 48rem) {
+    .section-experience.section-experience--experience1[class*="section--pad-"] {
+        padding-block: 6rem;
+    }
+}
+
+@media (min-width: 64rem) {
+    .section-experience.section-experience--experience1[class*="section--pad-"] {
+        padding-block: 8rem;
+    }
+}
+
+.section-experience--experience1 .section-experience__container--experience1,
+.section-experience--experience1 .section-experience__stack--experience1 {
+    min-width: 0;
+}
+
+.section-experience--experience1 .section-experience__stack--experience1 {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+}
+
+@media (min-width: 64rem) {
+    .section-experience--experience1 .section-experience__stack--experience1 {
+        gap: 5rem;
+    }
+}
+
+.section-experience--experience1 .section-experience__head--experience1 {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+    width: 100%;
+    min-width: 0;
+}
+
+@media (min-width: 40rem) {
+    .section-experience--experience1 .section-experience__head--experience1 {
+        flex-direction: row;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 1rem;
+    }
+}
+
+.section-experience--experience1 .section-experience__title--experience1 {
+    margin: 0;
+    font-size: clamp(2.25rem, 5vw, 3.75rem);
+    font-weight: 600;
+    line-height: 1.05;
+    letter-spacing: -0.04em;
+    text-wrap: balance;
+    color: var(--color-text, #0f172a);
+}
+
+.section-experience--experience1 .section-experience__cv-btn--experience1 {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+    padding: 0.625rem 1rem;
+    border-radius: var(--radius-md, 0.375rem);
+    background: transparent;
+    color: var(--color-text, #0f172a);
+    font: inherit;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.section-experience--experience1 .section-experience__cv-btn--experience1:hover {
+    background: color-mix(in srgb, var(--color-text, #0f172a) 6%, transparent);
+}
+
+.section-experience--experience1 .section-experience__cv-btn--experience1:focus-visible {
+    outline: 2px solid var(--color-primary, #3b82f6);
+    outline-offset: 2px;
+}
+
+.section-experience--experience1 .section-experience__list--experience1 {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    min-width: 0;
+}
+
+.section-experience--experience1 .section-experience__entry--experience1 {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding-block: 2.5rem;
+    border-bottom: 1px solid var(--color-border, #e2e8f0);
+    min-width: 0;
+}
+
+@media (min-width: 48rem) {
+    .section-experience--experience1 .section-experience__entry--experience1 {
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 2rem;
+    }
+}
+
+.section-experience--experience1 .section-experience__period--experience1 {
+    flex: 0 1 auto;
+    max-width: 32rem;
+    font-size: 1.125rem;
+    line-height: 1.4;
+    letter-spacing: -0.03em;
+    color: var(--color-text, #0f172a);
+    overflow-wrap: anywhere;
+}
+
+@media (min-width: 48rem) {
+    .section-experience--experience1 .section-experience__period--experience1 {
+        flex: 0 0 33.333%;
+        font-size: 1.25rem;
+    }
+}
+
+.section-experience--experience1 .section-experience__body--experience1 {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+@media (min-width: 48rem) {
+    .section-experience--experience1 .section-experience__body--experience1 {
+        flex: 0 0 33.333%;
+    }
+}
+
+.section-experience--experience1 .section-experience__role--experience1 {
+    margin: 0 0 1rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.03em;
+    color: var(--color-text, #0f172a);
+    overflow-wrap: anywhere;
+}
+
+.section-experience--experience1 .section-experience__description--experience1 {
+    margin: 0;
+    line-height: 1.55;
+    color: var(--color-text-muted, #64748b);
+    overflow-wrap: anywhere;
+}
+
+.section-experience--experience1 .section-experience__company--experience1 {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 0.75rem;
+    min-width: 0;
+    text-align: left;
+}
+
+@media (min-width: 48rem) {
+    .section-experience--experience1 .section-experience__company--experience1 {
+        flex: 0 0 25%;
+        justify-content: flex-end;
+        text-align: right;
+    }
+}
+
+.section-experience--experience1 .section-experience__logo--experience1 {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.section-experience--experience1 .section-experience__company-name--experience1 {
+    font-size: 1rem;
+    line-height: 1.4;
+    color: var(--color-text, #0f172a);
+    overflow-wrap: anywhere;
+}

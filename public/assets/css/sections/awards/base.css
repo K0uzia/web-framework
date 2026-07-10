@@ -1,0 +1,15 @@
+/* Tokens communs au type awards */
+
+.section-awards {
+    background: var(--color-background, #fff);
+}
+
+.section-awards[class*="section--pad-"] {
+    padding-inline: var(--space-md, 1rem);
+}
+
+.section-awards [class*="section-awards__container"] {
+    width: 100%;
+    max-width: var(--container, 72rem);
+    margin-inline: auto;
+}

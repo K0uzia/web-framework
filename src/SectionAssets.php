@@ -100,6 +100,206 @@ final class SectionAssets
         return GalleryStyle::VISUAL_VARIANTS;
     }
 
+    /**
+     * @return list<string>
+     */
+    public static function blogVariantIds(): array
+    {
+        return BlogStyle::VISUAL_VARIANTS;
+    }
+
+    /**
+     * @return list<string>
+     */
+    public static function changelogVariantIds(): array
+    {
+        return ChangelogStyle::VISUAL_VARIANTS;
+    }
+
+    /**
+     * @return list<string>
+     */
+    public static function processVariantIds(): array
+    {
+        return ProcessStyle::VISUAL_VARIANTS;
+    }
+
+    /**
+     * @return list<string>
+     */
+    public static function listVariantIds(): array
+    {
+        return ListStyle::VISUAL_VARIANTS;
+    }
+
+    /**
+     * @return list<string>
+     */
+    public static function industryVariantIds(): array
+    {
+        return IndustryStyle::VISUAL_VARIANTS;
+    }
+
+    /**
+     * @return list<string>
+     */
+    public static function rateCardVariantIds(): array
+    {
+        return RateCardStyle::VISUAL_VARIANTS;
+    }
+
+    /**
+     * @return list<string>
+     */
+    public static function downloadVariantIds(): array
+    {
+        return DownloadStyle::VISUAL_VARIANTS;
+    }
+
+    /**
+     * @return list<string>
+     */
+    public static function teamVariantIds(): array
+    {
+        return TeamStyle::VISUAL_VARIANTS;
+    }
+
+    /**
+     * @return list<string>
+     */
+    public static function projectsVariantIds(): array
+    {
+        return ProjectsStyle::VISUAL_VARIANTS;
+    }
+
+    /**
+     * @return list<string>
+     */
+    public static function timelineVariantIds(): array
+    {
+        return TimelineStyle::VISUAL_VARIANTS;
+    }
+
+    /**
+     * @return list<string>
+     */
+    public static function logosVariantIds(): array
+    {
+        return LogosStyle::VISUAL_VARIANTS;
+    }
+
+    /**
+     * @return list<string>
+     */
+    public static function servicesVariantIds(): array
+    {
+        return ServicesStyle::VISUAL_VARIANTS;
+    }
+
+    /**
+     * @return list<string>
+     */
+    public static function compareVariantIds(): array
+    {
+        return CompareStyle::VISUAL_VARIANTS;
+    }
+
+    /**
+     * @return list<string>
+     */
+    public static function ctaVariantIds(): array
+    {
+        return CtaStyle::VISUAL_VARIANTS;
+    }
+
+    /**
+     * @return list<string>
+     */
+    public static function awardsVariantIds(): array
+    {
+        return AwardsStyle::VISUAL_VARIANTS;
+    }
+
+    /**
+     * @return list<string>
+     */
+    public static function communityVariantIds(): array
+    {
+        return CommunityStyle::VISUAL_VARIANTS;
+    }
+
+    /**
+     * @return list<string>
+     */
+    public static function statsVariantIds(): array
+    {
+        return StatsStyle::VISUAL_VARIANTS;
+    }
+
+    /**
+     * @return list<string>
+     */
+    public static function careersVariantIds(): array
+    {
+        return CareersStyle::VISUAL_VARIANTS;
+    }
+
+    /**
+     * @return list<string>
+     */
+    public static function faqVariantIds(): array
+    {
+        return FaqStyle::VISUAL_VARIANTS;
+    }
+
+    /**
+     * @return list<string>
+     */
+    public static function codeVariantIds(): array
+    {
+        return CodeStyle::VISUAL_VARIANTS;
+    }
+
+    /**
+     * @return list<string>
+     */
+    public static function complianceVariantIds(): array
+    {
+        return ComplianceStyle::VISUAL_VARIANTS;
+    }
+
+    /**
+     * @return list<string>
+     */
+    public static function caseStudyVariantIds(): array
+    {
+        return CaseStudyStyle::VISUAL_VARIANTS;
+    }
+
+    /**
+     * @return list<string>
+     */
+    public static function demoVariantIds(): array
+    {
+        return DemoStyle::VISUAL_VARIANTS;
+    }
+
+    /**
+     * @return list<string>
+     */
+    public static function experienceVariantIds(): array
+    {
+        return ExperienceStyle::VISUAL_VARIANTS;
+    }
+
+    /**
+     * @return list<string>
+     */
+    public static function waitlistVariantIds(): array
+    {
+        return WaitlistStyle::VISUAL_VARIANTS;
+    }
+
     private static function safeSegment(string $value): string
     {
         $safe = preg_replace('/[^a-z0-9_-]/', '', strtolower($value)) ?? '';

@@ -32,6 +32,7 @@ final class ThemeController
         private readonly DevDashboard $ui,
         private readonly SiteRepository $site,
         private readonly FontUploader $fonts,
+        private readonly string $publicCssDir,
     ) {
     }
 
@@ -85,7 +86,7 @@ final class ThemeController
                 'format' => $stored['format'],
             ];
             $theme['custom_fonts'] = $customFonts;
-            $this->site->setTheme($theme);
+            $this->site->persistTheme($theme, $this->publicCssDir);
             $message = 'Police « ' . $stored['name'] . ' » importée.';
         } catch (FontUploadException $e) {
             $message = $e->getMessage();
@@ -110,7 +111,7 @@ final class ThemeController
         }
 
         $theme['custom_fonts'] = $remaining;
-        $this->site->setTheme($theme);
+        $this->site->persistTheme($theme, $this->publicCssDir);
 
         return $this->ui->withFlash($this->ui->redirect('/dev/theme'), 'Police supprimée.');
     }
@@ -184,7 +185,7 @@ final class ThemeController
     public function update(Request $request): Response
     {
         $data = FormData::fromRequest($request);
-        $this->site->setTheme($this->buildThemeFromForm($data));
+        $this->site->persistTheme($this->buildThemeFromForm($data), $this->publicCssDir);
 
         if ($this->isHx($request)) {
             return $this->ui->partial('saved.html', ['message' => 'Thème enregistré']);
@@ -195,7 +196,7 @@ final class ThemeController
 
     public function reset(Request $request): Response
     {
-        $this->site->setTheme($this->site->defaultTheme());
+        $this->site->persistTheme($this->site->defaultTheme(), $this->publicCssDir);
 
         if ($this->isHx($request)) {
             return $this->ui->partial('saved.html', ['message' => 'Thème réinitialisé']);

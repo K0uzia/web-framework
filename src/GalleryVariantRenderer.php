@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace Capsule;
 
+use Capsule\Section\SectionItemsTrait;
+
 /**
  * Rendu HTML spécifique aux variantes gallery (conversion des blocs React).
  */
 final class GalleryVariantRenderer
 {
+    use SectionItemsTrait;
     private const SHARED = 'gallery';
 
     /** @var array<string, int> */
@@ -57,7 +60,7 @@ final class GalleryVariantRenderer
         $safeReadMore = htmlspecialchars($readMore, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
         $items = self::items($content, $variant);
 
-        $data['gallery_nav_html'] = self::navHtml($sectionId);
+        $data['gallery_nav_html'] = self::navHtml($sectionId, $variant);
         $data['gallery_slides_html'] = match ($variant) {
             'gallery6' => self::slidesGallery6Html($items, $safeReadMore),
             default => self::slidesGallery4Html($items, $safeReadMore),
@@ -69,14 +72,17 @@ final class GalleryVariantRenderer
         return $data;
     }
 
-    private static function navHtml(string $sectionId): string
+    private static function navHtml(string $sectionId, string $variant = 'gallery4'): string
     {
         $safeId = htmlspecialchars($sectionId, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+        $isGallery6 = $variant === 'gallery6';
+        $navClass = $isGallery6 ? 'section-gallery__nav--gallery6' : 'section-gallery__nav';
+        $btnClass = $isGallery6 ? 'section-gallery__nav-btn--gallery6' : 'section-gallery__nav-btn';
 
-        return '<div class="section-gallery__nav" data-gallery-nav data-gallery-id="' . $safeId . '">'
-            . '<button type="button" class="section-gallery__nav-btn" data-gallery-prev aria-label="Diapositive précédente">'
+        return '<div class="' . $navClass . '" data-gallery-nav data-gallery-id="' . $safeId . '">'
+            . '<button type="button" class="' . $btnClass . '" data-gallery-prev aria-label="Diapositive précédente">'
             . '<i class="fa-solid fa-arrow-left" aria-hidden="true"></i></button>'
-            . '<button type="button" class="section-gallery__nav-btn" data-gallery-next aria-label="Diapositive suivante">'
+            . '<button type="button" class="' . $btnClass . '" data-gallery-next aria-label="Diapositive suivante">'
             . '<i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>'
             . '</div>';
     }
@@ -136,11 +142,13 @@ final class GalleryVariantRenderer
             $safeImageUrl = htmlspecialchars($imageUrl, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
             $safeAlt = htmlspecialchars($title, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 
-            $html .= '<article class="section-gallery__slide section-gallery__slide--stacked">'
+            $html .= '<article class="section-gallery__slide section-gallery__slide--stacked" role="group" aria-roledescription="slide">'
                 . '<a class="section-gallery__card section-gallery__card--stacked" href="' . $href . '">'
                 . '<div class="section-gallery__media section-gallery__media--ratio">'
+                . '<div class="section-gallery__media-inner">'
                 . '<img class="section-gallery__img" src="' . $safeImageUrl . '" alt="' . $safeAlt
                 . '" width="452" height="301" loading="lazy" decoding="async" />'
+                . '</div>'
                 . '</div>'
                 . '<h3 class="section-gallery__card-title">' . $safeTitle . '</h3>'
                 . ($summary !== '' ? '<p class="section-gallery__card-text">' . $safeSummary . '</p>' : '')
@@ -180,16 +188,7 @@ final class GalleryVariantRenderer
      */
     private static function items(array $content, string $variant): array
     {
-        $raw = is_array($content['items'] ?? null) ? $content['items'] : [];
-        $max = self::MAX_ITEMS[$variant] ?? 8;
-        $items = [];
-        foreach (array_slice($raw, 0, $max) as $item) {
-            if (is_array($item)) {
-                $items[] = $item;
-            }
-        }
-
-        return $items;
+        return self::itemsFromContent($content, self::MAX_ITEMS[$variant] ?? 8);
     }
 
     private static function imageUrl(string $url, int $index, string $variant = 'gallery6'): string
@@ -206,8 +205,6 @@ final class GalleryVariantRenderer
 
     private static function href(string $href): string
     {
-        $trimmed = trim($href);
-
-        return htmlspecialchars($trimmed !== '' ? $trimmed : '#', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+        return self::hrefFromItem($href);
     }
 }

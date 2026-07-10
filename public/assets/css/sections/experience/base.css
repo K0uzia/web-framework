@@ -1,0 +1,41 @@
+/* Tokens communs au type experience */
+
+.section-experience {
+    background: var(--color-background, #fff);
+}
+
+.section-experience[class*="section--pad-"] {
+    padding-inline: var(--space-md, 1rem);
+}
+
+.section-experience--experience1 {
+    padding-block: 4rem;
+}
+
+@media (min-width: 48rem) {
+    .section-experience--experience1 {
+        padding-block: 6rem;
+    }
+}
+
+@media (min-width: 64rem) {
+    .section-experience--experience1 {
+        padding-block: 8rem;
+    }
+}
+
+.section-experience--experience1[class*="section--pad-"] {
+    padding-inline: var(--space-md, 1rem);
+}
+
+.section-experience [class*="section-experience__container"] {
+    width: 100%;
+    max-width: var(--container, 72rem);
+    margin-inline: auto;
+}
+
+.section-experience__logo--experience1 {
+    display: block;
+    flex-shrink: 0;
+    object-fit: contain;
+}

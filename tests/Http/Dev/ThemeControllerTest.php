@@ -16,6 +16,7 @@ final class ThemeControllerTest extends TestCase
 {
     private SiteRepository $site;
     private ThemeController $controller;
+    private string $cssDir;
 
     protected function setUp(): void
     {
@@ -25,7 +26,9 @@ final class ThemeControllerTest extends TestCase
         $this->site = new SiteRepository($pdo);
         $ui = new DevDashboard(dirname(__DIR__, 3) . '/resources/dev', new ResponseFactory(), $this->site);
         $fonts = new FontUploader(sys_get_temp_dir() . '/capsule-test-fonts-' . bin2hex(random_bytes(4)));
-        $this->controller = new ThemeController($ui, $this->site, $fonts);
+        $this->cssDir = sys_get_temp_dir() . '/capsule-theme-ctrl-' . bin2hex(random_bytes(4));
+        mkdir($this->cssDir);
+        $this->controller = new ThemeController($ui, $this->site, $fonts, $this->cssDir);
     }
 
     public function testEditListsCustomFontsInPickerAndManager(): void

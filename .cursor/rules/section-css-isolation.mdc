@@ -1,0 +1,35 @@
+---
+description: Isolation CSS par variante de section
+globs: "public/assets/css/sections/**/*,resources/sections/**/*.html"
+alwaysApply: false
+---
+
+# Isolation CSS sections
+
+## Règle principale
+
+Chaque variante utilise des classes **suffixées** `--{variant}` dans HTML et CSS.
+
+Exemple : `section-gallery__head--gallery6`, pas `section-gallery__head` seul.
+
+## CSS autonome par variante
+
+- Fichier `public/assets/css/sections/{type}/{variant}.css` complet pour layout, typo, nav, carousel.
+- Le `base.css` du type ne contient que des tokens vraiment partagés (ex. `background`).
+- **Interdit** dans `base.css` : scroll sur `.section-gallery__track`, nav masquée mobile, tailles titre par variante.
+
+## Carousel
+
+- Scroll sur **viewport** (`overflow-x: auto`).
+- Piste interne : `overflow: visible`, `scroll-snap-type: none`.
+- Stage : `overflow-x: clip` pour éviter le scroll horizontal de page.
+
+## Spécificité
+
+- Ne pas compter sur l'ordre de chargement pour gagner sur `base.css`.
+- Préférer l'absence de classes génériques dans le HTML des nouvelles variantes.
+
+## Conversion shadcnblocks
+
+- Breakpoints : `768px`, `1024px`, `1536px` (2xl).
+- Valeurs `rem`/`px` littérales acceptées pour fidélité au bloc source (exception documentée à `css-conventions.mdc`).

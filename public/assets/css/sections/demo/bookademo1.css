@@ -1,0 +1,318 @@
+/* Variante bookademo1 : intro, formulaire et carrousel de logos */
+
+.section-demo.section-demo--bookademo1 {
+    overflow-x: clip;
+}
+
+.section-demo.section-demo--bookademo1[class*="section--pad-"] {
+    padding-block: 4rem;
+    padding-inline: var(--space-md, 1rem);
+}
+
+@media (min-width: 48rem) {
+    .section-demo.section-demo--bookademo1[class*="section--pad-"] {
+        padding-block: 6rem;
+    }
+}
+
+@media (min-width: 64rem) {
+    .section-demo.section-demo--bookademo1[class*="section--pad-"] {
+        padding-block: 8rem;
+    }
+}
+
+.section-demo--bookademo1 .section-demo__container--bookademo1,
+.section-demo--bookademo1 .section-demo__layout--bookademo1 {
+    min-width: 0;
+}
+
+.section-demo--bookademo1 .section-demo__layout--bookademo1 {
+    display: grid;
+    gap: 3.5rem;
+    min-width: 0;
+}
+
+@media (min-width: 64rem) {
+    .section-demo--bookademo1 .section-demo__layout--bookademo1 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1rem;
+        align-items: start;
+    }
+}
+
+.section-demo--bookademo1 .section-demo__intro--bookademo1 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    min-width: 0;
+}
+
+@media (min-width: 64rem) {
+    .section-demo--bookademo1 .section-demo__intro--bookademo1 {
+        align-items: flex-start;
+        gap: 2rem;
+    }
+}
+
+.section-demo--bookademo1 .section-demo__badge--bookademo1 {
+    display: inline-flex;
+    margin: 0;
+    padding: 0.25rem 0.625rem;
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-text, #0f172a);
+}
+
+.section-demo--bookademo1 .section-demo__title--bookademo1 {
+    margin: 0.5rem 0 0;
+    max-width: 28rem;
+    font-size: clamp(1.875rem, 4vw, 3rem);
+    font-weight: 500;
+    line-height: 1.1;
+    text-align: center;
+    text-wrap: balance;
+    color: var(--color-text, #0f172a);
+}
+
+@media (min-width: 64rem) {
+    .section-demo--bookademo1 .section-demo__title--bookademo1 {
+        margin-top: 0;
+        max-width: 36rem;
+        text-align: left;
+    }
+}
+
+.section-demo--bookademo1 .section-demo__benefits--bookademo1 {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    width: 100%;
+    max-width: 28rem;
+}
+
+@media (min-width: 64rem) {
+    .section-demo--bookademo1 .section-demo__benefits--bookademo1 {
+        max-width: none;
+    }
+}
+
+.section-demo--bookademo1 .section-demo__benefit--bookademo1 {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding-inline: 1rem;
+    min-width: 0;
+}
+
+.section-demo--bookademo1 .section-demo__benefit--last--bookademo1 {
+    display: none;
+}
+
+@media (min-width: 64rem) {
+    .section-demo--bookademo1 .section-demo__benefit--bookademo1 {
+        padding-inline: 1rem;
+        padding-block: 1.5rem;
+        border-bottom: 1px solid var(--color-border, #e2e8f0);
+    }
+
+    .section-demo--bookademo1 .section-demo__benefit--last--bookademo1 {
+        display: flex;
+        border-bottom: 0;
+    }
+}
+
+.section-demo--bookademo1 .section-demo__benefit-icon--bookademo1 {
+    display: none;
+    width: 1.5rem;
+    flex-shrink: 0;
+    margin-top: 0.125rem;
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: var(--color-text, #0f172a);
+}
+
+@media (min-width: 64rem) {
+    .section-demo--bookademo1 .section-demo__benefit-icon--bookademo1 {
+        display: block;
+    }
+}
+
+.section-demo--bookademo1 .section-demo__benefit-text--bookademo1 {
+    margin: 0;
+    max-width: 28rem;
+    font-weight: 500;
+    line-height: 1.5;
+    text-align: center;
+    overflow-wrap: anywhere;
+    color: var(--color-text, #0f172a);
+}
+
+@media (min-width: 64rem) {
+    .section-demo--bookademo1 .section-demo__benefit-text--bookademo1 {
+        text-align: left;
+    }
+}
+
+.section-demo--bookademo1 .section-demo__marquee-wrap--bookademo1 {
+    width: 100%;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.section-demo--bookademo1 .section-demo__marquee-wrap--mobile--bookademo1 {
+    margin-top: 5rem;
+}
+
+.section-demo--bookademo1 .section-demo__marquee-wrap--desktop--bookademo1 {
+    display: none;
+    margin-top: 0;
+}
+
+@media (min-width: 64rem) {
+    .section-demo--bookademo1 .section-demo__marquee-wrap--desktop--bookademo1 {
+        display: block;
+        margin-top: 5rem;
+    }
+
+    .section-demo--bookademo1 .section-demo__marquee-wrap--mobile--bookademo1 {
+        display: none;
+    }
+}
+
+.section-demo--bookademo1 .section-demo__marquee--bookademo1 {
+    overflow: hidden;
+    width: 100%;
+    mask-image: linear-gradient(to right, transparent, #000 15%, #000 85%, transparent);
+}
+
+.section-demo--bookademo1 .section-demo__logo-cell--bookademo1 {
+    flex-shrink: 0;
+}
+
+.section-demo--bookademo1 .section-demo__marquee-track--bookademo1 {
+    display: flex;
+    width: max-content;
+    align-items: center;
+    gap: 3rem;
+    animation: section-demo-marquee-bookademo1 48s linear infinite;
+}
+
+.section-demo--bookademo1 .section-demo__marquee--bookademo1:hover .section-demo__marquee-track--bookademo1 {
+    animation-play-state: paused;
+}
+
+@keyframes section-demo-marquee-bookademo1 {
+    from {
+        transform: translateX(0);
+    }
+
+    to {
+        transform: translateX(-50%);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .section-demo--bookademo1 .section-demo__marquee-track--bookademo1 {
+        animation: none;
+        flex-wrap: wrap;
+        justify-content: center;
+        width: 100%;
+    }
+}
+
+.section-demo--bookademo1 .section-demo__logo-img--bookademo1 {
+    width: 6rem;
+    height: 6rem;
+    opacity: 0.7;
+    filter: grayscale(1);
+}
+
+.section-demo--bookademo1 .section-demo__form-card--bookademo1 {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 36rem;
+    min-width: 0;
+    margin-inline: auto;
+    padding: 2.5rem 1rem 1rem;
+    border-radius: var(--radius-lg, 0.5rem);
+    background: color-mix(in srgb, var(--color-surface, #f1f5f9) 70%, var(--color-background, #fff));
+}
+
+@media (min-width: 64rem) {
+    .section-demo--bookademo1 .section-demo__form-card--bookademo1 {
+        max-width: none;
+        margin-inline: 0;
+        justify-self: start;
+    }
+}
+
+.section-demo--bookademo1 .section-demo__form--bookademo1 {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+@media (min-width: 40rem) {
+    .section-demo--bookademo1 .section-demo__form--bookademo1 {
+        gap: 2.5rem;
+    }
+}
+
+.section-demo--bookademo1 .section-demo__fields--bookademo1 {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+@media (min-width: 40rem) {
+    .section-demo--bookademo1 .section-demo__fields--bookademo1 {
+        gap: 2.5rem;
+    }
+}
+
+.section-demo--bookademo1 .section-demo__field-row--bookademo1 {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.section-demo--bookademo1 .section-demo__field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    min-width: 0;
+}
+
+.section-demo--bookademo1 .section-demo__submit--bookademo1 {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    margin-left: auto;
+    min-height: 2.5rem;
+    padding: 0.625rem 1rem;
+    border: 0;
+    border-radius: var(--radius-md, 0.375rem);
+    background: var(--color-primary, #3b82f6);
+    color: var(--color-button-primary-text, #fff);
+    font: inherit;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.section-demo--bookademo1 .section-demo__submit--bookademo1:hover {
+    background: var(--color-primary-hover, #2563eb);
+}
+
+.section-demo--bookademo1 .section-demo__submit--bookademo1:focus-visible {
+    outline: 2px solid var(--color-primary, #3b82f6);
+    outline-offset: 2px;
+}
+
+.section-demo--bookademo1 .section-demo__submit--bookademo1:disabled {
+    opacity: 0.7;
+    cursor: wait;
+}

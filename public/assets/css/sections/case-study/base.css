@@ -1,0 +1,56 @@
+/* Tokens communs au type case-study */
+
+.section-case-study {
+    background: var(--color-background, #fff);
+}
+
+.section-case-study[class*="section--pad-"] {
+    padding-inline: var(--space-md, 1rem);
+}
+
+.section-case-study--casestudies2,
+.section-case-study--casestudies3 {
+    padding-block: 4rem;
+}
+
+@media (min-width: 48rem) {
+    .section-case-study--casestudies2,
+    .section-case-study--casestudies3 {
+        padding-block: 6rem;
+    }
+}
+
+@media (min-width: 64rem) {
+    .section-case-study--casestudies2,
+    .section-case-study--casestudies3 {
+        padding-block: 8rem;
+    }
+}
+
+.section-case-study--casestudies2[class*="section--pad-"],
+.section-case-study--casestudies3[class*="section--pad-"] {
+    padding-inline: var(--space-md, 1rem);
+}
+
+.section-case-study [class*="section-case-study__container"] {
+    width: 100%;
+    max-width: var(--container, 72rem);
+    margin-inline: auto;
+}
+
+.section-case-study__company-logo--casestudies2,
+.section-case-study__card-logo--casestudies3,
+.section-case-study__card-image--casestudies3 {
+    display: block;
+    max-width: none;
+}
+
+.section-case-study__photo--casestudies2,
+.section-case-study__card-image--casestudies3 {
+    object-fit: cover;
+}
+
+.section-case-study__company-logo--casestudies2,
+.section-case-study__card-logo--casestudies3 {
+    object-fit: contain;
+}

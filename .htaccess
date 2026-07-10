@@ -1,31 +1,33 @@
-# dev.lacapsule.org/wf — document root = racine du dépôt (pas public/).
+# Hébergement mutualisé : document root = racine du dépôt (pas public/).
+# Le chemin URL (/wf, /mon-app, etc.) est détecté automatiquement par PHP (SCRIPT_NAME).
 
 DirectoryIndex index.php index.html
 
-<IfModule mod_env.c>
-    SetEnv APP_BASE_PATH /wf
-</IfModule>
-
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteBase /wf/
 
-    RewriteRule .* - [E=APP_BASE_PATH:/wf]
-
-    # Bloque l'accès HTTP direct au code source (chemins relatifs à /wf/).
+    # Bloque l'accès HTTP direct au code source.
     RewriteRule ^(?:app|bin|bootstrap|config|data|migrations|resources|scripts|src|tests|vendor)(?:/|$) - [F,L]
     RewriteRule (^|/)\. - [F,L]
 
     # Assets statiques : fichiers réels dans public/ uniquement.
-    RewriteCond %{DOCUMENT_ROOT}/public/$1 -f
-    RewriteRule ^(.+)$ public/$1 [L]
+    # Règles explicites (fiables en FTP / sous-dossier /wf).
+    RewriteRule ^assets/(.*)$ public/assets/$1 [L]
+    RewriteRule ^uploads/(.*)$ public/uploads/$1 [L]
+    RewriteRule ^favicon\.(ico|svg)$ public/favicon.$1 [L]
 
-    # Front controller (y compris /wf/ et /wf/dev — ne pas traiter les dossiers comme fin de chaîne).
+    # Autres fichiers présents dans public/ (deploy-check.php, etc.).
+    RewriteCond public/$1 -f
+    RewriteRule ^([^/]+)$ public/$1 [L]
+
+    # Front controller (y compris / et /dev).
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^ public/index.php [L,QSA]
 </IfModule>
 
 <IfModule !mod_rewrite.c>
-    FallbackResource /wf/public/index.php
+    FallbackResource public/index.php
 </IfModule>
 
 Options -Indexes

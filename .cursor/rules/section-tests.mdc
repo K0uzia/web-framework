@@ -1,0 +1,37 @@
+---
+description: Tests obligatoires pour sections et variantes
+globs: "tests/**/*,resources/sections/**/*"
+alwaysApply: false
+---
+
+# Tests sections
+
+## À chaque nouvelle variante
+
+1. `SectionRegistryTest` : la variante est listée pour son type.
+2. Test de rendu HTML :
+   - classe `section-{type}--{variant}` présente ;
+   - éléments structurels clés (container, viewport carousel, etc.) ;
+   - pas de fuite (`section-gallery__dots` absent si non prévu).
+3. Si enrichissement PHP : assertions sur le HTML généré (`*VariantRenderer`).
+
+## Contrôleurs dev
+
+- Toute route POST `/dev` nouvelle : test dans `tests/Http/Dev/`.
+- Variante invalide : fallback première variante du registry (`SectionsControllerTest`).
+
+## Assets
+
+- `StylesheetResolverTest` : CSS de la variante résolu quand la section est présente.
+- `ScriptResolverTest` : JS chargé seulement si section présente.
+
+## Non régression CSS
+
+- Vérifier mobile `< 768px` et desktop `≥ 768px`.
+- Header variante : nav visible sur mobile si le TSX d'origine l'affiche.
+
+## QA locale
+
+```bash
+composer qa
+```

@@ -1,18 +1,12 @@
-# dev.lacapsule.org/wf — document root = ce dossier (public/).
+# Hébergement mutualisé : document root = ce dossier (public/).
+# Le chemin URL parent est détecté automatiquement par PHP (SCRIPT_NAME).
 
 DirectoryIndex index.php
 
-<IfModule mod_env.c>
-    SetEnv APP_BASE_PATH /wf
-</IfModule>
-
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteBase /wf/
 
-    RewriteRule .* - [E=APP_BASE_PATH:/wf]
-
-    # Favicon navigateur (évite 404 console sur /wf/favicon.ico)
+    # Favicon navigateur (évite 404 console sur favicon.ico)
     RewriteRule ^favicon\.ico$ favicon.svg [L]
 
     # Fichiers statiques existants uniquement (pas les dossiers : sinon 403).
@@ -20,11 +14,13 @@ DirectoryIndex index.php
     RewriteRule ^ - [L]
 
     # Front controller : /, /dev, /api/*, pages dynamiques
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^ index.php [L,QSA]
 </IfModule>
 
 <IfModule !mod_rewrite.c>
-    FallbackResource /wf/index.php
+    FallbackResource index.php
 </IfModule>
 
 <IfModule mod_rewrite.c>
@@ -32,3 +28,23 @@ DirectoryIndex index.php
 </IfModule>
 
 Options -Indexes
+
+# Cache navigateur pour les assets statiques (Apache direct, hors PHP)
+<IfModule mod_headers.c>
+    <FilesMatch "\.(css|js|woff2?|ttf|eot|svg|png|jpe?g|gif|webp|ico)$">
+        <If "%{REQUEST_URI} =~ m#^/assets/#">
+            Header set Cache-Control "public, max-age=31536000, immutable"
+        </If>
+    </FilesMatch>
+</IfModule>
+
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/css "access plus 1 year"
+    ExpiresByType application/javascript "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType font/woff2 "access plus 1 year"
+</IfModule>

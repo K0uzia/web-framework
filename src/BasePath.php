@@ -5,12 +5,10 @@ declare(strict_types=1);
 namespace Capsule;
 
 /**
- * Préfixe URL pour un déploiement en sous-dossier (ex. /wf/).
+ * Préfixe URL pour un déploiement en sous-dossier (ex. /mon-app/).
  */
 final class BasePath
 {
-    public const DEPLOY_PREFIX = '/wf';
-
     public function __construct(private readonly string $path)
     {
     }
@@ -22,12 +20,9 @@ final class BasePath
             return new self(self::normalize($trimmed));
         }
 
-        $detected = self::detectFromScriptName();
-        if ($detected === '') {
-            $detected = self::detectFromRequestUri();
-        }
+        self::ensureBootstrap();
 
-        return new self($detected);
+        return new self(capsule_base_path_detect());
     }
 
     public function value(): string
@@ -45,42 +40,19 @@ final class BasePath
      */
     public function strip(string $requestPath): string
     {
-        if ($this->path === '') {
-            return self::stripDeployPrefix($requestPath);
-        }
+        self::ensureBootstrap();
 
-        if ($requestPath === $this->path || $requestPath === $this->path . '/') {
-            return '/';
-        }
-
-        if (str_starts_with($requestPath, $this->path . '/')) {
-            $rest = substr($requestPath, strlen($this->path));
-
-            return $rest === '' ? '/' : $rest;
-        }
-
-        return self::stripDeployPrefix($requestPath);
+        return capsule_base_path_strip($requestPath, $this->path);
     }
 
     /**
-     * Retire /wf même si APP_BASE_PATH est absent (filet de sécurité production).
+     * Retire le préfixe détecté (filet de sécurité si APP_BASE_PATH est absent).
      */
-    public static function stripDeployPrefix(string $path): string
+    public static function stripDetectedPrefix(string $path): string
     {
-        $prefix = self::DEPLOY_PREFIX;
-        $prefixSlash = $prefix . '/';
+        self::ensureBootstrap();
 
-        if ($path === $prefix || $path === $prefixSlash) {
-            return '/';
-        }
-
-        if (str_starts_with($path, $prefixSlash)) {
-            $rest = substr($path, strlen($prefix));
-
-            return $rest === '' ? '/' : $rest;
-        }
-
-        return $path;
+        return capsule_base_path_strip($path);
     }
 
     /**
@@ -93,6 +65,10 @@ final class BasePath
         }
 
         if ($this->path === '') {
+            return $path;
+        }
+
+        if ($path === $this->path || str_starts_with($path, $this->path . '/')) {
             return $path;
         }
 
@@ -114,9 +90,20 @@ final class BasePath
             return $html;
         }
 
+        $prefix = $this->path;
+
         $rewritten = preg_replace_callback(
-            '#(?<attr>href|src|action)=(["\'])/(?!/)#',
-            fn (array $matches): string => $matches['attr'] . '=' . $matches[2] . $this->path . '/',
+            '#(?<attr>href|src|action)=(["\'])(?<url>/[^"\']*)#',
+            static function (array $matches) use ($prefix): string {
+                $url = $matches['url'];
+                if (str_starts_with($url, '//')
+                    || $url === $prefix
+                    || str_starts_with($url, $prefix . '/')) {
+                    return $matches['attr'] . '=' . $matches[2] . $url;
+                }
+
+                return $matches['attr'] . '=' . $matches[2] . $prefix . $url;
+            },
             $html,
         );
 
@@ -130,33 +117,14 @@ final class BasePath
         return $path === '/' ? '' : $path;
     }
 
-    private static function detectFromScriptName(): string
+    private static function ensureBootstrap(): void
     {
-        $script = str_replace('\\', '/', (string) ($_SERVER['SCRIPT_NAME'] ?? ''));
-        if ($script === '' || $script === '/index.php') {
-            return '';
+        static $loaded = false;
+        if ($loaded) {
+            return;
         }
+        $loaded = true;
 
-        $dir = dirname($script);
-        if ($dir === '/' || $dir === '.') {
-            return '';
-        }
-
-        return $dir;
-    }
-
-    /**
-     * Détection mutualisée : REQUEST_URI commence par /wf/ (lacapsule.org).
-     */
-    private static function detectFromRequestUri(): string
-    {
-        $uri = strtok((string) ($_SERVER['REQUEST_URI'] ?? '/'), '?') ?: '/';
-        $uri = rawurldecode($uri);
-
-        if ($uri === '/wf' || str_starts_with($uri, '/wf/')) {
-            return '/wf';
-        }
-
-        return '';
+        require_once dirname(__DIR__) . '/bootstrap/base-path.php';
     }
 }

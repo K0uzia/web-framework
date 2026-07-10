@@ -61,6 +61,19 @@ final class PageRepositoryTest extends TestCase
         $this->assertSame('About', $home?->title);
         $this->assertSame('Home', $former?->title);
     }
+
+    public function testAllPublishedUsesRequestCache(): void
+    {
+        $this->pages->save(new Page('a', 'A', 'default', '', [], [], true, ''));
+        $this->pages->save(new Page('b', 'B', 'default', '', [], [], true, ''));
+
+        $first = $this->pages->allPublished();
+        $this->pages->save(new Page('c', 'C', 'default', '', [], [], true, ''));
+        $second = $this->pages->allPublished();
+
+        $this->assertCount(2, $first);
+        $this->assertCount(3, $second);
+    }
 }
 
 final class SiteRepositoryTest extends TestCase
@@ -119,5 +132,16 @@ final class SiteRepositoryTest extends TestCase
         $site->setTheme($theme);
 
         $this->assertStringNotContainsString('@font-face', $site->themeCss());
+    }
+
+    public function testThemeCssFromAvoidsSecondDbRead(): void
+    {
+        $site = $this->makeSite();
+        $theme = $site->defaultTheme();
+        $theme['colors']['primary'] = '#abcdef';
+
+        $css = $site->themeCssFrom($theme);
+
+        $this->assertStringContainsString('--color-primary: #abcdef', $css);
     }
 }

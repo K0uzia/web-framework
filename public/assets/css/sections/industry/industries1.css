@@ -1,0 +1,183 @@
+/* Variante industries1 : grille de cartes image avec survol (shadcnblocks industries1) */
+
+.section-industry--industries1 .section-industry__container--industries1 {
+    width: 100%;
+    max-width: 72rem;
+    margin-inline: auto;
+    padding-inline: 1rem;
+}
+
+.section-industry--industries1 .section-industry__title--industries1 {
+    margin: 0 0 2rem;
+    font-size: 1.875rem;
+    font-weight: 500;
+    line-height: 1.2;
+    text-wrap: pretty;
+}
+
+.section-industry--industries1 .section-industry__grid--industries1 {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.25rem;
+}
+
+@media (min-width: 1024px) {
+    .section-industry--industries1 .section-industry__grid--industries1 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1280px) {
+    .section-industry--industries1 .section-industry__grid--industries1 {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+.section-industry--industries1 .section-industry__card-link--industries1 {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+}
+
+.section-industry--industries1 .section-industry__card--industries1 {
+    position: relative;
+    overflow: hidden;
+    min-height: 30rem;
+    background: var(--color-surface, #f1f5f9);
+}
+
+@media (min-width: 1024px) {
+    .section-industry--industries1 .section-industry__card--industries1 {
+        min-height: 36rem;
+    }
+}
+
+@media (min-width: 1280px) {
+    .section-industry--industries1 .section-industry__card--industries1 {
+        min-height: 28rem;
+    }
+}
+
+.section-industry--industries1 .section-industry__front--industries1 {
+    position: relative;
+    z-index: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    min-height: inherit;
+    transition: clip-path 0.4s cubic-bezier(0.25, 0.1, 0.25, 1), opacity 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.section-industry--industries1 .section-industry__img--industries1 {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.section-industry--industries1 .section-industry__card-title--industries1 {
+    position: absolute;
+    bottom: 2.5rem;
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 500;
+    line-height: 1.3;
+}
+
+.section-industry--industries1 .section-industry__overlay--industries1 {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    background: #000;
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.section-industry--industries1 .section-industry__hover--industries1 {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: inherit;
+    padding: 2rem;
+    color: #fff;
+    opacity: 0;
+    transform: translateY(1.25rem);
+    transition: opacity 0.4s cubic-bezier(0.25, 0.1, 0.25, 1), transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.section-industry--industries1 .section-industry__hover-inner--industries1 {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.section-industry--industries1 .section-industry__hover-label--industries1 {
+    margin: 0;
+    font-weight: 500;
+    opacity: 0.9;
+}
+
+.section-industry--industries1 .section-industry__hover-text--industries1 {
+    margin: 0;
+    line-height: 1.6;
+}
+
+.section-industry--industries1 .section-industry__plus--industries1 {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 999px;
+    font-size: 1rem;
+    color: var(--color-text, #0f172a);
+    background: color-mix(in srgb, var(--color-muted-foreground, #64748b) 20%, transparent);
+    opacity: 0.7;
+    transition: opacity 0.4s cubic-bezier(0.25, 0.1, 0.25, 1), transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1), background-color 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .section-industry--industries1 .section-industry__card--industries1:hover .section-industry__front--industries1 {
+        clip-path: inset(0 0 100% 0);
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .section-industry--industries1 .section-industry__card--industries1:hover .section-industry__overlay--industries1 {
+        transform: translateY(0);
+    }
+
+    .section-industry--industries1 .section-industry__card--industries1:hover .section-industry__hover--industries1 {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .section-industry--industries1 .section-industry__card--industries1:hover .section-industry__plus--industries1 {
+        opacity: 1;
+        transform: rotate(90deg);
+        background: var(--color-muted-foreground, #64748b);
+        color: #fff;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .section-industry--industries1 .section-industry__front--industries1,
+    .section-industry--industries1 .section-industry__overlay--industries1,
+    .section-industry--industries1 .section-industry__hover--industries1,
+    .section-industry--industries1 .section-industry__plus--industries1 {
+        transition: none;
+    }
+}
+
+.section-industry--industries1 .section-industry__card-link--industries1:focus-visible .section-industry__card--industries1 {
+    outline: 2px solid var(--color-primary, #2563eb);
+    outline-offset: 2px;
+}

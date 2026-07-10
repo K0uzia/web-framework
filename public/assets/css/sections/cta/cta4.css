@@ -1,0 +1,66 @@
+/* Variante cta4 : bandeau muted avec liste d'avantages */
+
+.section-cta--cta4 .section-cta__card--cta4 {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 2rem;
+    max-width: 64rem;
+    margin-inline: auto;
+    padding: 2.5rem 1.5rem;
+    border-radius: var(--radius-lg, 0.5rem);
+    background: var(--color-muted, #f1f5f9);
+}
+
+@media (min-width: 48rem) {
+    .section-cta--cta4 .section-cta__card--cta4 {
+        flex-direction: row;
+        padding: 2.5rem 5rem;
+    }
+}
+
+.section-cta--cta4 .section-cta__main--cta4 {
+    flex: 1 1 50%;
+}
+
+.section-cta--cta4 .section-cta__aside--cta4 {
+    flex: 0 1 33%;
+}
+
+.section-cta--cta4 .section-cta__title--cta4 {
+    margin-bottom: 0.25rem;
+    font-size: clamp(1.5rem, 2.5vw, 1.875rem);
+    font-weight: 700;
+}
+
+.section-cta--cta4 .section-cta__subtitle--cta4 {
+    font-size: 1rem;
+}
+
+.section-cta--cta4 .section-cta__buttons--cta4 {
+    margin-top: 1.5rem;
+}
+
+.section-cta--cta4 .section-cta__features--cta4 {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.section-cta--cta4 .section-cta__feature--cta4 {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.section-cta--cta4 .section-cta__feature-icon--cta4 {
+    flex-shrink: 0;
+    font-size: 1rem;
+    color: var(--color-text, #0f172a);
+}

@@ -1,0 +1,99 @@
+/* Variante cta10 : panneau accent horizontal */
+
+.section-cta--cta10.section--pad-lg {
+    padding-block: 3rem;
+}
+
+@media (min-width: 48rem) {
+    .section-cta--cta10.section--pad-lg {
+        padding-block: 4rem;
+    }
+}
+
+@media (min-width: 64rem) {
+    .section-cta--cta10.section--pad-lg {
+        padding-block: 8rem;
+    }
+}
+
+.section-cta--cta10 .section-cta__panel--cta10 {
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+    max-width: 64rem;
+    margin-inline: auto;
+    padding: 2rem;
+    overflow: hidden;
+    border-radius: var(--radius-lg, 0.5rem);
+    background: var(--color-accent, #f1f5f9);
+}
+
+@media (min-width: 64rem) {
+    .section-cta--cta10 .section-cta__panel--cta10 {
+        flex-direction: row;
+        align-items: center;
+        padding: 3rem;
+        border-radius: var(--radius-xl, 0.75rem);
+    }
+}
+
+.section-cta--cta10 .section-cta__content--cta10 {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+@media (min-width: 48rem) {
+    .section-cta--cta10 .section-cta__content--cta10 {
+        gap: 1rem;
+    }
+}
+
+@media (min-width: 64rem) {
+    .section-cta--cta10 .section-cta__content--cta10 {
+        gap: 1.5rem;
+    }
+}
+
+.section-cta--cta10 .section-cta__title--cta10 {
+    font-size: clamp(1.5rem, 2.5vw, 2.25rem);
+    letter-spacing: -0.02em;
+}
+
+.section-cta--cta10 .section-cta__subtitle--cta10 {
+    max-width: 36rem;
+    font-size: 1rem;
+}
+
+@media (min-width: 64rem) {
+    .section-cta--cta10 .section-cta__subtitle--cta10 {
+        font-size: 1.125rem;
+    }
+}
+
+.section-cta--cta10 .section-cta__buttons--cta10 {
+    flex-shrink: 0;
+    flex-direction: column;
+}
+
+@media (min-width: 40rem) {
+    .section-cta--cta10 .section-cta__buttons--cta10 {
+        flex-direction: row;
+    }
+}
+
+.section-cta--cta10 .section-cta__buttons--cta10 .section-button {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+}
+
+.section-cta--cta10 .section-cta__buttons--cta10 .section-button--secondary {
+    background: transparent;
+    color: var(--color-text, #0f172a);
+    border: 1px solid var(--color-border, #e2e8f0);
+}
+
+.section-cta--cta10 .section-cta__buttons--cta10 .section-button--secondary:hover {
+    background: var(--color-background, #fff);
+}

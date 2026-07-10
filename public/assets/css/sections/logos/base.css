@@ -1,0 +1,65 @@
+/* Tokens communs au type logos */
+
+.section-logos {
+    background: var(--color-background, #fff);
+}
+
+.section-logos[class*="section--pad-"] {
+    padding-inline: var(--space-md, 1rem);
+}
+
+.section-logos__img--logos3,
+.section-logos__img--logos8,
+.section-logos__img--logos18,
+.section-logos__img--logos19 {
+    display: block;
+    height: auto;
+    max-height: 1.75rem;
+    width: auto;
+    object-fit: contain;
+}
+
+.section-logos__img--compact--logos3,
+.section-logos__img--compact--logos8,
+.section-logos__img--compact--logos18,
+.section-logos__img--compact--logos19 {
+    max-height: 1.25rem;
+}
+
+.section-logos__cell--logos3,
+.section-logos__cell--logos8,
+.section-logos__cell--logos18,
+.section-logos__cell--logos19 {
+    display: flex;
+    aspect-ratio: 3 / 1;
+    width: 7rem;
+    align-items: center;
+    justify-content: center;
+}
+
+@media (min-width: 640px) {
+    .section-logos__cell--logos3,
+    .section-logos__cell--logos8,
+    .section-logos__cell--logos18,
+    .section-logos__cell--logos19 {
+        width: 8rem;
+    }
+}
+
+.section-logos__link--logos3,
+.section-logos__link--logos8,
+.section-logos__link--logos18,
+.section-logos__link--logos19 {
+    display: inline-flex;
+    text-decoration: none;
+    color: inherit;
+}
+
+.section-logos__link--logos3:focus-visible,
+.section-logos__link--logos8:focus-visible,
+.section-logos__link--logos18:focus-visible,
+.section-logos__link--logos19:focus-visible {
+    outline: 2px solid var(--color-focus-ring, #3b82f6);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm, 0.25rem);
+}

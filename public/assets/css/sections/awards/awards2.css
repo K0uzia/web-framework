@@ -1,0 +1,89 @@
+/* Variante awards2 : liste sticky avec marqueur */
+
+.section-awards--awards2 .section-awards__layout--awards2 {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 5rem;
+}
+
+@media (min-width: 64rem) {
+    .section-awards--awards2 .section-awards__layout--awards2 {
+        grid-template-columns: repeat(6, 1fr);
+        gap: 5rem;
+    }
+}
+
+.section-awards--awards2 .section-awards__aside--awards2 {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: fit-content;
+    height: fit-content;
+    padding-block: 2rem;
+}
+
+@media (min-width: 64rem) {
+    .section-awards--awards2 .section-awards__aside--awards2 {
+        position: sticky;
+        top: 2.5rem;
+        grid-column: span 2;
+    }
+}
+
+.section-awards--awards2 .section-awards__marker--awards2 {
+    display: block;
+    width: 0.75rem;
+    height: 0.75rem;
+    flex-shrink: 0;
+    background: #f97316;
+}
+
+.section-awards--awards2 .section-awards__tagline--awards2 {
+    margin: 0;
+    font-size: 1.5rem;
+    line-height: 1.2;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--color-text, #0f172a) 30%, transparent);
+}
+
+.section-awards--awards2 .section-awards__list--awards2 {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    width: 100%;
+}
+
+@media (min-width: 64rem) {
+    .section-awards--awards2 .section-awards__list--awards2 {
+        grid-column: span 4;
+    }
+}
+
+.section-awards--awards2 .section-awards__item--awards2 {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding-block: 1rem;
+    border-bottom: 1px solid var(--color-border, #e2e8f0);
+}
+
+.section-awards--awards2 .section-awards__item-title--awards2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 500;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    color: var(--color-text, #0f172a);
+}
+
+.section-awards--awards2 .section-awards__item-year--awards2 {
+    margin: 0;
+    flex-shrink: 0;
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-size: 1.125rem;
+    line-height: 1.2;
+    letter-spacing: -0.03em;
+    color: color-mix(in srgb, var(--color-text, #0f172a) 50%, transparent);
+}

@@ -1,0 +1,46 @@
+---
+description: Résolution CSS et JS par section (StylesheetResolver, ScriptResolver)
+globs: "src/StylesheetResolver.php,src/ScriptResolver.php,resources/layouts/*.html"
+alwaysApply: false
+---
+
+# Assets sections
+
+## Principe
+
+Le layout public (`default.html`) ne liste **jamais** les scripts ou CSS de section en dur.
+
+- CSS : `{{{stylesheets}}}` via `StylesheetResolver`.
+- JS : `{{{scripts}}}` via `ScriptResolver`.
+
+## Toujours chargés
+
+- CSS : `base.css`, `sections/shared.css`, layout, chrome, `theme-bindings.css`.
+- JS : `site-nav.js`, `site-header-blocks.js`.
+
+## Par type de section
+
+Déclarer dans le handler ou `ScriptResolver` / `StylesheetResolver` :
+
+| Type | JS typique |
+|------|------------|
+| hero | `sections/hero.js` (+ `hero-video.js` si `data-hero-video`) |
+| features | `sections/features.js` |
+| gallery | `sections/gallery.js` |
+| pricing | `sections/pricing.js` |
+| contact | `sections/contact.js` |
+
+## Hero CSS
+
+- `sections/hero/base.css` + `variants.css` : toujours si hero présent.
+- `customize.css` : seulement si tokens custom dans le style section.
+
+## Export statique
+
+- Vérifier que `dist/` reflète le layout après `make export-static`.
+- Thème : `theme-generated.css` copié avec les autres assets.
+
+## Interdit
+
+- Ajouter `<script src=".../sections/*.js">` dans `default.html`.
+- Charger Font Awesome subset sans scan des icônes utilisées (amélioration future).

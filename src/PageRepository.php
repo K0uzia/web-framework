@@ -8,6 +8,9 @@ use PDO;
 
 final class PageRepository
 {
+    /** @var list<Page>|null */
+    private ?array $publishedCache = null;
+
     public function __construct(private readonly PDO $pdo)
     {
     }
@@ -31,11 +34,15 @@ final class PageRepository
      */
     public function allPublished(): array
     {
+        if ($this->publishedCache !== null) {
+            return $this->publishedCache;
+        }
+
         $stmt = $this->pdo->query(
             'SELECT slug, title, layout, description, sections, meta, published, updated_at FROM pages WHERE published = 1 ORDER BY slug',
         );
         if ($stmt === false) {
-            return [];
+            return $this->publishedCache = [];
         }
 
         $pages = [];
@@ -45,7 +52,7 @@ final class PageRepository
             }
         }
 
-        return $pages;
+        return $this->publishedCache = $pages;
     }
 
     /**
@@ -94,12 +101,14 @@ final class PageRepository
             'meta' => json_encode($page->meta, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE),
             'published' => $page->published ? 1 : 0,
         ]);
+        $this->invalidatePublishedCache();
     }
 
     public function delete(string $slug): void
     {
         $stmt = $this->pdo->prepare('DELETE FROM pages WHERE slug = :slug');
         $stmt->execute(['slug' => $slug]);
+        $this->invalidatePublishedCache();
     }
 
     public function setHomePage(string $slug): void
@@ -127,11 +136,17 @@ final class PageRepository
 
             $stmt->execute(['new' => '', 'old' => $temp]);
             $this->pdo->commit();
+            $this->invalidatePublishedCache();
         } catch (\Throwable $e) {
             $this->pdo->rollBack();
 
             throw $e;
         }
+    }
+
+    private function invalidatePublishedCache(): void
+    {
+        $this->publishedCache = null;
     }
 
     /**

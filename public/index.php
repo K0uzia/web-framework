@@ -2,7 +2,8 @@
 
 declare(strict_types=1);
 
-require dirname(__DIR__) . '/bootstrap/wf-uri.php';
+require dirname(__DIR__) . '/bootstrap/base-path.php';
+capsule_normalize_request_uri();
 
 use Capsule\Http\Emitter\SapiEmitter;
 use Capsule\Http\Message\Request;

@@ -1,0 +1,26 @@
+/* Tokens communs au type stats */
+
+.section-stats {
+    background: var(--color-background, #fff);
+}
+
+.section-stats[class*="section--pad-"] {
+    padding-inline: var(--space-md, 1rem);
+}
+
+.section-stats [class*="section-stats__container"] {
+    width: 100%;
+    max-width: var(--container, 72rem);
+    margin-inline: auto;
+}
+
+.section-stats [class*="section-stats__value"] {
+    font-weight: 600;
+    line-height: 1.1;
+    color: var(--color-text, #0f172a);
+}
+
+.section-stats [class*="section-stats__label"] {
+    color: var(--color-muted-foreground, #64748b);
+    line-height: 1.5;
+}

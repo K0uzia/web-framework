@@ -403,6 +403,62 @@ pricing:
       label: Espacement vertical
       options: '[sm, md, lg, xl]'
       group: general
+
+rate-card:
+  label: Grille tarifaire
+  group: rate-card
+  icon: fa-solid fa-money-check-dollar
+  description: 'Cartes tarifaires détaillées avec liste d''avantages et bouton outline.'
+  variants:
+    rate-card2:
+      label: Rate card 2
+      description: 'Deux cartes côte à côte avec prix, avantages et bouton à coins décorés.'
+  content_fields:
+    features_heading:
+      type: text
+      label: Titre de la liste d'avantages
+      client_editable: true
+    cta_label:
+      type: text
+      label: Libellé bouton par défaut
+      client_editable: true
+    items:
+      type: repeater
+      label: Offres
+      client_editable: true
+      fields:
+        title:
+          type: text
+          label: Nom de l'offre
+        text:
+          type: textarea
+          label: Description
+        price:
+          type: text
+          label: Prix
+        period:
+          type: text
+          label: Période affichée
+        features:
+          type: textarea
+          label: Avantages (un par ligne)
+        cta_label:
+          type: text
+          label: Libellé bouton
+        href:
+          type: text
+          label: Lien
+  style_fields:
+    bg:
+      type: color-token
+      label: Fond
+      group: general
+    padding:
+      type: select
+      label: Espacement vertical
+      options: '[sm, md, lg, xl]'
+      group: general
+
 contact:
   label: Contact
   group: contact
@@ -637,6 +693,1550 @@ gallery:
         text:
           type: textarea
           label: Description
+        href:
+          type: text
+          label: Lien
+        url:
+          type: image
+          label: Image
+  style_fields:
+    bg:
+      type: color-token
+      label: Fond
+      group: general
+    padding:
+      type: select
+      label: Espacement vertical
+      options: '[sm, md, lg, xl]'
+      group: general
+
+download:
+  label: Téléchargement
+  group: download
+  icon: fa-solid fa-download
+  description: 'Bibliothèque de blocs téléchargement shadcnblocks.'
+  variants:
+    download1:
+      label: Download 1
+      description: 'Cartes desktop, iOS et Android avec boutons de téléchargement.'
+    download2:
+      label: Download 2
+      description: 'Grille minimaliste centrée avec icônes et badges store.'
+  content_fields:
+    title:
+      type: text
+      label: Titre
+      client_editable: true
+    subtitle:
+      type: textarea
+      label: Description
+      client_editable: true
+    desktop_heading:
+      type: text
+      label: Libellé carte desktop
+      client_editable: true
+    desktop_title:
+      type: text
+      label: Titre carte desktop
+      client_editable: true
+    desktop_text:
+      type: textarea
+      label: Description carte desktop
+      client_editable: true
+    desktop_button_label:
+      type: text
+      label: Libellé bouton desktop
+      client_editable: true
+    desktop_href:
+      type: text
+      label: Lien téléchargement desktop
+      client_editable: true
+    ios_heading:
+      type: text
+      label: Libellé carte iOS
+      client_editable: true
+    ios_title:
+      type: text
+      label: Titre carte iOS
+      client_editable: true
+    ios_text:
+      type: textarea
+      label: Description carte iOS
+      client_editable: true
+    ios_href:
+      type: text
+      label: Lien App Store
+      client_editable: true
+    android_heading:
+      type: text
+      label: Libellé carte Android
+      client_editable: true
+    android_title:
+      type: text
+      label: Titre carte Android
+      client_editable: true
+    android_text:
+      type: textarea
+      label: Description carte Android
+      client_editable: true
+    android_href:
+      type: text
+      label: Lien Google Play
+      client_editable: true
+  style_fields:
+    bg:
+      type: color-token
+      label: Fond
+      group: general
+    padding:
+      type: select
+      label: Espacement vertical
+      options: '[sm, md, lg, xl]'
+      group: general
+
+team:
+  label: Équipe
+  group: team
+  icon: fa-solid fa-users
+  description: 'Bibliothèque de blocs équipe shadcnblocks.'
+  variants:
+    team1:
+      label: Team 1
+      description: 'Grille de membres avec avatar, nom et rôle.'
+    team2:
+      label: Team 2
+      description: 'Cartes membres avec liens GitHub, X et LinkedIn.'
+  content_fields:
+    title:
+      type: text
+      label: Titre
+      client_editable: true
+    subtitle:
+      type: textarea
+      label: Description
+      client_editable: true
+    items:
+      type: repeater
+      label: Membres
+      client_editable: true
+      fields:
+        title:
+          type: text
+          label: Nom
+        label:
+          type: text
+          label: Rôle
+        url:
+          type: image
+          label: Avatar
+        github:
+          type: text
+          label: Lien GitHub (team2)
+        twitter:
+          type: text
+          label: Lien X (team2)
+        linkedin:
+          type: text
+          label: Lien LinkedIn (team2)
+  style_fields:
+    bg:
+      type: color-token
+      label: Fond
+      group: general
+    padding:
+      type: select
+      label: Espacement vertical
+      options: '[sm, md, lg, xl]'
+      group: general
+
+projects:
+  label: Projets
+  group: project
+  icon: fa-solid fa-folder-open
+  description: 'Bibliothèque de blocs portfolio shadcnblocks.'
+  variants:
+    projects5:
+      label: Projects 5
+      description: 'Grille de projets avec image, catégorie et année.'
+  content_fields:
+    title:
+      type: text
+      label: Titre
+      client_editable: true
+    items:
+      type: repeater
+      label: Projets
+      client_editable: true
+      fields:
+        title:
+          type: text
+          label: Titre
+        label:
+          type: text
+          label: Catégorie
+        date:
+          type: text
+          label: Année
+        href:
+          type: text
+          label: Lien
+        url:
+          type: image
+          label: Image
+  style_fields:
+    bg:
+      type: color-token
+      label: Fond
+      group: general
+    padding:
+      type: select
+      label: Espacement vertical
+      options: '[sm, md, lg, xl]'
+      group: general
+
+changelog:
+  label: Changelog
+  group: changelog
+  icon: fa-solid fa-code-commit
+  description: 'Journal des versions avec entrées datées et listes de changements.'
+  variants:
+    changelog1:
+      label: Changelog 1
+      description: 'Titre centré, entrées en deux colonnes avec badge version et date sticky.'
+  content_fields:
+    title:
+      type: text
+      label: Titre
+      client_editable: true
+    subtitle:
+      type: textarea
+      label: Description
+      client_editable: true
+    items:
+      type: repeater
+      label: Versions
+      client_editable: true
+      fields:
+        label:
+          type: text
+          label: Version (badge)
+        date:
+          type: text
+          label: Date
+        title:
+          type: text
+          label: Titre
+        text:
+          type: textarea
+          label: Description
+        features:
+          type: textarea
+          label: Points (un par ligne)
+        url:
+          type: image
+          label: Image
+        href:
+          type: text
+          label: Lien bouton
+        cta_label:
+          type: text
+          label: Libellé bouton
+  style_fields:
+    bg:
+      type: color-token
+      label: Fond
+      group: general
+    padding:
+      type: select
+      label: Espacement vertical
+      options: '[sm, md, lg, xl]'
+      group: general
+
+process:
+  label: Processus
+  group: process
+  icon: fa-solid fa-diagram-project
+  description: 'Étapes de méthode avec colonne sticky et liste numérotée.'
+  variants:
+    process1:
+      label: Process 1
+      description: 'Titre décoré, CTA et étapes avec repères visuels.'
+  content_fields:
+    title:
+      type: text
+      label: Titre
+      client_editable: true
+    subtitle:
+      type: textarea
+      label: Description
+      client_editable: true
+    buttons:
+      type: repeater
+      label: Bouton d'action
+      client_editable: true
+      fields:
+        label:
+          type: text
+          label: Libellé
+        href:
+          type: text
+          label: Lien
+        style:
+          type: select
+          label: Style
+          options: '[primary, secondary]'
+    items:
+      type: repeater
+      label: Étapes
+      client_editable: true
+      fields:
+        label:
+          type: text
+          label: Numéro d'étape
+        title:
+          type: text
+          label: Titre
+        text:
+          type: textarea
+          label: Description
+  style_fields:
+    bg:
+      type: color-token
+      label: Fond
+      group: general
+    padding:
+      type: select
+      label: Espacement vertical
+      options: '[sm, md, lg, xl]'
+      group: general
+
+industry:
+  label: Secteurs
+  group: industry
+  icon: fa-solid fa-industry
+  description: 'Blocs secteurs d''activité avec cartes visuelles ou liste détaillée.'
+  variants:
+    industries1:
+      label: Industries 1
+      description: 'Grille de cartes image avec survol et libellé d''aperçu.'
+    industries2:
+      label: Industries 2
+      description: 'Badge, titre et lignes avec icône et description.'
+  content_fields:
+    title:
+      type: text
+      label: Titre
+      client_editable: true
+    badge:
+      type: text
+      label: Badge (industries2)
+      client_editable: true
+    overview_label:
+      type: text
+      label: Libellé survol (industries1)
+      client_editable: true
+    items:
+      type: repeater
+      label: Secteurs
+      client_editable: true
+      fields:
+        title:
+          type: text
+          label: Nom
+        text:
+          type: textarea
+          label: Description
+        url:
+          type: image
+          label: Image
+        image_alt:
+          type: text
+          label: Texte alternatif image
+        href:
+          type: text
+          label: Lien (industries1)
+  style_fields:
+    bg:
+      type: color-token
+      label: Fond
+      group: general
+    padding:
+      type: select
+      label: Espacement vertical
+      options: '[sm, md, lg, xl]'
+      group: general
+
+list:
+  label: Liste
+  group: list
+  icon: fa-solid fa-list
+  description: 'Lignes séparées avec icône, catégorie, texte mis en avant et lien.'
+  variants:
+    list2:
+      label: List 2
+      description: 'Grille de lignes avec séparateurs et bouton outline par entrée.'
+  content_fields:
+    title:
+      type: text
+      label: Titre
+      client_editable: true
+    read_more_label:
+      type: text
+      label: Libellé du lien
+      client_editable: true
+    items:
+      type: repeater
+      label: Entrées
+      client_editable: true
+      fields:
+        icon:
+          type: text
+          label: Icône (fa-*)
+        title:
+          type: text
+          label: Titre
+        label:
+          type: text
+          label: Catégorie
+        text:
+          type: textarea
+          label: Texte principal
+        href:
+          type: text
+          label: Lien
+        cta_label:
+          type: text
+          label: Libellé bouton (optionnel)
+  style_fields:
+    bg:
+      type: color-token
+      label: Fond
+      group: general
+    padding:
+      type: select
+      label: Espacement vertical
+      options: '[sm, md, lg, xl]'
+      group: general
+
+timeline:
+  label: Chronologie
+  group: timeline
+  icon: fa-solid fa-timeline
+  description: 'Bibliothèque de blocs chronologie shadcnblocks.'
+  variants:
+    timeline3:
+      label: Timeline 3
+      description: 'Colonne sticky avec cartes illustrées et boutons d''action.'
+    timeline9:
+      label: Timeline 9
+      description: 'Ligne de temps verticale avec dates et jalons.'
+  content_fields:
+    title:
+      type: text
+      label: Titre
+      client_editable: true
+    subtitle:
+      type: textarea
+      label: Description (timeline3)
+      client_editable: true
+    buttons:
+      type: repeater
+      label: Boutons (timeline3)
+      client_editable: true
+      fields:
+        label:
+          type: text
+          label: Libellé
+        href:
+          type: text
+          label: Lien
+        style:
+          type: select
+          label: Style
+          options: '[primary, secondary]'
+    items:
+      type: repeater
+      label: Étapes
+      client_editable: true
+      fields:
+        title:
+          type: text
+          label: Titre
+        text:
+          type: textarea
+          label: Description
+        date:
+          type: text
+          label: Date (timeline9)
+        url:
+          type: image
+          label: Image (timeline3)
+  style_fields:
+    bg:
+      type: color-token
+      label: Fond
+      group: general
+    padding:
+      type: select
+      label: Espacement vertical
+      options: '[sm, md, lg, xl]'
+      group: general
+
+logos:
+  label: Logos
+  group: logos
+  icon: fa-solid fa-building
+  description: 'Bibliothèque de blocs logos partenaires shadcnblocks.'
+  variants:
+    logos3:
+      label: Logos 3
+      description: 'Titre centré et bandeau de logos en défilement.'
+    logos8:
+      label: Logos 8
+      description: 'Titre centré et grille statique de logos (6 max).'
+    logos18:
+      label: Logos 18
+      description: 'Grille compacte de logos sans titre (6 max).'
+    logos19:
+      label: Logos 19
+      description: 'Bandeau de logos en défilement sans titre.'
+  content_fields:
+    title:
+      type: text
+      label: Titre (logos3, logos8)
+      client_editable: true
+    items:
+      type: repeater
+      label: Logos
+      client_editable: true
+      fields:
+        title:
+          type: text
+          label: Texte alternatif
+        url:
+          type: image
+          label: Image
+        href:
+          type: text
+          label: Lien (optionnel)
+  style_fields:
+    bg:
+      type: color-token
+      label: Fond
+      group: general
+    padding:
+      type: select
+      label: Espacement vertical
+      options: '[sm, md, lg, xl]'
+      group: general
+
+services:
+  label: Services
+  group: service
+  icon: fa-solid fa-briefcase
+  description: 'Bibliothèque de blocs services shadcnblocks.'
+  variants:
+    services4:
+      label: Services 4
+      description: 'Grille de cartes avec icône, description et points clés.'
+    services12:
+      label: Services 12
+      description: 'Colonne intro et cartes image en vedette.'
+  content_fields:
+    title:
+      type: text
+      label: Titre
+      client_editable: true
+    subtitle:
+      type: textarea
+      label: Description
+      client_editable: true
+    buttons:
+      type: repeater
+      label: Boutons (services12)
+      client_editable: true
+      fields:
+        label:
+          type: text
+          label: Libellé
+        href:
+          type: text
+          label: Lien
+        style:
+          type: select
+          label: Style
+          options: '[primary, secondary]'
+    items:
+      type: repeater
+      label: Services
+      client_editable: true
+      fields:
+        title:
+          type: text
+          label: Titre
+        text:
+          type: textarea
+          label: Description (services4)
+        icon:
+          type: text
+          label: Icône Font Awesome (services4)
+        label:
+          type: text
+          label: Points clés (services4, séparés par des virgules)
+        url:
+          type: image
+          label: Image (services12)
+        href:
+          type: text
+          label: Lien (services12)
+  style_fields:
+    bg:
+      type: color-token
+      label: Fond
+      group: general
+    padding:
+      type: select
+      label: Espacement vertical
+      options: '[sm, md, lg, xl]'
+      group: general
+
+compare:
+  label: Comparaison
+  group: compare
+  icon: fa-solid fa-scale-balanced
+  description: 'Bibliothèque de blocs comparaison shadcnblocks.'
+  variants:
+    compare7:
+      label: Compare 7
+      description: 'Tableau comparatif texte avec info-bulles.'
+    compare8:
+      label: Compare 8
+      description: 'Liste avec icônes et statuts oui/non/partiel.'
+  content_fields:
+    title:
+      type: text
+      label: Titre
+      client_editable: true
+    subtitle:
+      type: textarea
+      label: Description
+      client_editable: true
+    primary_label:
+      type: text
+      label: Libellé colonne principale
+      client_editable: true
+    secondary_label:
+      type: text
+      label: Libellé colonne secondaire
+      client_editable: true
+    items:
+      type: repeater
+      label: Lignes de comparaison
+      client_editable: true
+      fields:
+        title:
+          type: text
+          label: Fonctionnalité
+        text:
+          type: textarea
+          label: Valeur secondaire (compare7) ou description (compare8)
+        label:
+          type: text
+          label: Valeur principale (compare7)
+        icon:
+          type: text
+          label: Icône Font Awesome (compare8)
+        primary:
+          type: text
+          label: Statut principal (compare8: oui, non, partiel)
+        secondary:
+          type: text
+          label: Statut secondaire (compare8: oui, non, partiel)
+        tooltip_title:
+          type: text
+          label: Titre info-bulle
+        tooltip_text:
+          type: textarea
+          label: Texte info-bulle
+  style_fields:
+    bg:
+      type: color-token
+      label: Fond
+      group: general
+    padding:
+      type: select
+      label: Espacement vertical
+      options: '[sm, md, lg, xl]'
+      group: general
+
+cta:
+  label: Appel à l''action
+  group: cta
+  icon: fa-solid fa-bullhorn
+  description: 'Bibliothèque de blocs CTA shadcnblocks.'
+  variants:
+    cta4:
+      label: CTA 4
+      description: 'Bandeau muted avec liste d''avantages et bouton principal.'
+    cta10:
+      label: CTA 10
+      description: 'Panneau accent horizontal, texte et boutons côte à côte.'
+    cta11:
+      label: CTA 11
+      description: 'Carte avec image latérale, badge icône et bouton principal.'
+    cta13:
+      label: CTA 13
+      description: 'Panneau accent empilé avec boutons pleine largeur sur mobile.'
+    cta34:
+      label: CTA 34
+      description: 'Bloc centré avec séparateur haut.'
+    cta35:
+      label: CTA 35
+      description: 'Bloc avec bordure gauche accent.'
+    cta36:
+      label: CTA 36
+      description: 'Split horizontal avec séparateur bas.'
+    cta37:
+      label: CTA 37
+      description: 'Grille bordée, texte large et boutons empilés.'
+    cta38:
+      label: CTA 38
+      description: 'Fond sombre, texte clair et boutons inversés.'
+  content_fields:
+    title:
+      type: text
+      label: Titre
+      client_editable: true
+    subtitle:
+      type: textarea
+      label: Description
+      client_editable: true
+    image_url:
+      type: image
+      label: Image (cta11)
+      client_editable: true
+    image_alt:
+      type: text
+      label: Texte alternatif image (cta11)
+      client_editable: true
+    icon:
+      type: text
+      label: Icône Font Awesome (cta11)
+      client_editable: true
+    buttons:
+      type: repeater
+      label: Boutons
+      client_editable: true
+      fields:
+        label:
+          type: text
+          label: Libellé
+        href:
+          type: text
+          label: Lien
+        style:
+          type: select
+          label: Style
+          options: '[primary, secondary]'
+    items:
+      type: repeater
+      label: Avantages (cta4)
+      client_editable: true
+      fields:
+        title:
+          type: text
+          label: Libellé
+  style_fields:
+    bg:
+      type: color-token
+      label: Fond
+      group: general
+    padding:
+      type: select
+      label: Espacement vertical
+      options: '[sm, md, lg, xl]'
+      group: general
+
+awards:
+  label: Récompenses
+  group: award
+  icon: fa-solid fa-award
+  description: 'Bibliothèque de blocs récompenses shadcnblocks.'
+  variants:
+    awards1:
+      label: Awards 1
+      description: 'Tableau des distinctions avec nom, description et année.'
+    awards2:
+      label: Awards 2
+      description: 'Liste sticky avec marqueur et années en colonne.'
+  content_fields:
+    title:
+      type: text
+      label: Titre (awards1)
+      client_editable: true
+    tagline:
+      type: text
+      label: Libellé latéral (awards2)
+      client_editable: true
+    items:
+      type: repeater
+      label: Récompenses
+      client_editable: true
+      fields:
+        title:
+          type: text
+          label: Nom
+        text:
+          type: textarea
+          label: Description (awards1)
+        label:
+          type: text
+          label: Année
+        href:
+          type: text
+          label: Lien (awards1)
+  style_fields:
+    bg:
+      type: color-token
+      label: Fond
+      group: general
+    padding:
+      type: select
+      label: Espacement vertical
+      options: '[sm, md, lg, xl]'
+      group: general
+
+community:
+  label: Communauté
+  group: community
+  icon: fa-solid fa-users
+  description: 'Bibliothèque de blocs communauté shadcnblocks.'
+  variants:
+    community1:
+      label: Community 1
+      description: 'Logo, titre centré et boutons réseaux sociaux.'
+    community2:
+      label: Community 2
+      description: 'Grille de cartes réseaux avec titre et description.'
+  content_fields:
+    title:
+      type: text
+      label: Titre
+      client_editable: true
+    subtitle:
+      type: textarea
+      label: Sous-titre ou description
+      client_editable: true
+    image_url:
+      type: image
+      label: Logo (community1)
+      client_editable: true
+    image_alt:
+      type: text
+      label: Texte alternatif logo (community1)
+      client_editable: true
+    items:
+      type: repeater
+      label: Réseaux sociaux
+      client_editable: true
+      fields:
+        title:
+          type: text
+          label: Nom
+        text:
+          type: textarea
+          label: Description (community2)
+        icon:
+          type: text
+          label: Icône (twitter, github, discord, linkedin ou classe FA)
+        href:
+          type: text
+          label: Lien
+  style_fields:
+    bg:
+      type: color-token
+      label: Fond
+      group: general
+    padding:
+      type: select
+      label: Espacement vertical
+      options: '[sm, md, lg, xl]'
+      group: general
+
+stats:
+  label: Chiffres clés
+  group: stats
+  icon: fa-solid fa-chart-simple
+  description: 'Bibliothèque de blocs statistiques shadcnblocks.'
+  variants:
+    stats6:
+      label: Stats 6
+      description: 'Fond accent, titre, boutons et grille de quatre métriques.'
+    stats8:
+      label: Stats 8
+      description: 'En-tête avec lien, grille de métriques valeur et libellé.'
+  content_fields:
+    title:
+      type: text
+      label: Titre
+      client_editable: true
+    subtitle:
+      type: textarea
+      label: Description (stats8)
+      client_editable: true
+    link_label:
+      type: text
+      label: Libellé du lien (stats8)
+      client_editable: true
+    href:
+      type: text
+      label: Lien (stats8)
+      client_editable: true
+    buttons:
+      type: repeater
+      label: Boutons (stats6)
+      client_editable: true
+      fields:
+        label:
+          type: text
+          label: Libellé
+        href:
+          type: text
+          label: Lien
+        style:
+          type: select
+          label: Style
+          options: '[primary, secondary]'
+    items:
+      type: repeater
+      label: Métriques
+      client_editable: true
+      fields:
+        title:
+          type: text
+          label: Valeur
+        label:
+          type: text
+          label: Libellé
+  style_fields:
+    bg:
+      type: color-token
+      label: Fond
+      group: general
+    padding:
+      type: select
+      label: Espacement vertical
+      options: '[sm, md, lg, xl]'
+      group: general
+
+careers:
+  label: Carrières
+  group: career
+  icon: fa-solid fa-briefcase
+  description: 'Bibliothèque de blocs carrières shadcnblocks.'
+  variants:
+    careers1:
+      label: Careers 1
+      description: 'Titre, description et postes regroupés par département.'
+    careers4:
+      label: Careers 4
+      description: 'Intro et liste de postes par catégorie avec flèche.'
+  content_fields:
+    title:
+      type: text
+      label: Titre
+      client_editable: true
+    subtitle:
+      type: textarea
+      label: Description
+      client_editable: true
+    text:
+      type: textarea
+      label: Texte d''introduction secondaire (careers4)
+      client_editable: true
+    items:
+      type: repeater
+      label: Postes
+      client_editable: true
+      fields:
+        group:
+          type: text
+          label: Département ou catégorie
+        title:
+          type: text
+          label: Intitulé du poste
+        label:
+          type: text
+          label: Lieu
+        href:
+          type: text
+          label: Lien
+  style_fields:
+    bg:
+      type: color-token
+      label: Fond
+      group: general
+    padding:
+      type: select
+      label: Espacement vertical
+      options: '[sm, md, lg, xl]'
+      group: general
+
+faq:
+  label: FAQ
+  group: faq
+  icon: fa-solid fa-circle-question
+  description: 'Bibliothèque de blocs FAQ shadcnblocks.'
+  variants:
+    faq1:
+      label: FAQ 1
+      description: 'Accordéon simple avec titre centré.'
+    faq3:
+      label: FAQ 3
+      description: 'En-tête avec description et accordéon centré sur desktop.'
+    faq5:
+      label: FAQ 5
+      description: 'Badge, titre centré et liste numérotée de questions.'
+  content_fields:
+    tagline:
+      type: text
+      label: Badge (faq5)
+      client_editable: true
+    title:
+      type: text
+      label: Titre
+      client_editable: true
+    subtitle:
+      type: textarea
+      label: Description
+      client_editable: true
+    items:
+      type: repeater
+      label: Questions
+      client_editable: true
+      fields:
+        title:
+          type: text
+          label: Question
+        text:
+          type: textarea
+          label: Réponse
+  style_fields:
+    bg:
+      type: color-token
+      label: Fond
+      group: general
+    padding:
+      type: select
+      label: Espacement vertical
+      options: '[sm, md, lg, xl]'
+      group: general
+
+code:
+  label: Exemple de code
+  group: code
+  icon: fa-solid fa-code
+  description: 'Bibliothèque de blocs exemple de code shadcnblocks.'
+  variants:
+    codeexample1:
+      label: Code example 1
+      description: 'Split texte et bloc multi-langages avec onglets et copie.'
+  content_fields:
+    tagline:
+      type: text
+      label: Tagline
+      client_editable: true
+    title:
+      type: text
+      label: Titre (ligne principale)
+      client_editable: true
+    subtitle:
+      type: text
+      label: Titre (ligne secondaire)
+      client_editable: true
+    text:
+      type: textarea
+      label: Description
+      client_editable: true
+    buttons:
+      type: repeater
+      label: Bouton
+      client_editable: true
+      fields:
+        label:
+          type: text
+          label: Libellé
+        href:
+          type: text
+          label: Lien
+        style:
+          type: select
+          label: Style
+          options: '[primary, secondary]'
+    items:
+      type: repeater
+      label: Snippets de code
+      client_editable: true
+      fields:
+        label:
+          type: text
+          label: Libellé onglet
+        icon:
+          type: text
+          label: Identifiant langage
+        title:
+          type: text
+          label: Nom de fichier
+        text:
+          type: textarea
+          label: Code
+  style_fields:
+    bg:
+      type: color-token
+      label: Fond
+      group: general
+    padding:
+      type: select
+      label: Espacement vertical
+      options: '[sm, md, lg, xl]'
+      group: general
+
+compliance:
+  label: Conformité
+  group: compliance
+  icon: fa-solid fa-shield-halved
+  description: 'Bibliothèque de blocs conformité shadcnblocks.'
+  variants:
+    compliance1:
+      label: Compliance 1
+      description: 'Intro certifications et panneau de fonctionnalités conformité.'
+  content_fields:
+    tagline:
+      type: text
+      label: Badge statut
+      client_editable: true
+    title:
+      type: text
+      label: Titre
+      client_editable: true
+    text:
+      type: textarea
+      label: Description
+      client_editable: true
+    logos:
+      type: repeater
+      label: Certifications (en-tête)
+      client_editable: true
+      fields:
+        url:
+          type: image
+          label: Logo
+        label:
+          type: text
+          label: Texte alternatif
+    items:
+      type: repeater
+      label: Fonctionnalités
+      client_editable: true
+      fields:
+        title:
+          type: text
+          label: Titre
+        text:
+          type: textarea
+          label: Description
+        url:
+          type: image
+          label: Badge
+        label:
+          type: text
+          label: Texte alternatif du badge
+  style_fields:
+    bg:
+      type: color-token
+      label: Fond
+      group: general
+    padding:
+      type: select
+      label: Espacement vertical
+      options: '[sm, md, lg, xl]'
+      group: general
+
+case-study:
+  label: Études de cas
+  group: case-study
+  icon: fa-solid fa-file-lines
+  description: 'Bibliothèque de blocs études de cas shadcnblocks.'
+  variants:
+    casestudies2:
+      label: Case Studies 2
+      description: 'Témoignages clients avec portrait, citation et métriques.'
+    casestudies3:
+      label: Case Studies 3
+      description: 'Étude mise en avant et cartes secondaires dans un cadre bordé.'
+  content_fields:
+    tagline:
+      type: text
+      label: Accroche (casestudies2)
+      client_editable: true
+    title:
+      type: text
+      label: Titre (casestudies2)
+      client_editable: true
+    read_more_label:
+      type: text
+      label: Libellé du lien (casestudies3)
+      client_editable: true
+    featured_logo:
+      type: image
+      label: Logo (étude principale)
+      client_editable: true
+    featured_company:
+      type: text
+      label: Entreprise (étude principale)
+      client_editable: true
+    featured_tags:
+      type: text
+      label: Tags (étude principale)
+      client_editable: true
+    featured_title:
+      type: text
+      label: Titre (étude principale)
+      client_editable: true
+    featured_subtitle:
+      type: text
+      label: Sous-titre (étude principale)
+      client_editable: true
+    featured_url:
+      type: image
+      label: Image (étude principale)
+      client_editable: true
+    featured_href:
+      type: text
+      label: Lien (étude principale)
+      client_editable: true
+    items:
+      type: repeater
+      label: Études
+      client_editable: true
+      fields:
+        url:
+          type: image
+          label: Photo (casestudies2)
+        text:
+          type: textarea
+          label: Citation (casestudies2)
+        author:
+          type: text
+          label: Auteur (casestudies2)
+        role:
+          type: text
+          label: Fonction (casestudies2)
+        logo:
+          type: image
+          label: Logo entreprise
+        stat1_value:
+          type: text
+          label: Métrique 1 valeur
+        stat1_label:
+          type: text
+          label: Métrique 1 titre
+        stat1_text:
+          type: text
+          label: Métrique 1 description
+        stat2_value:
+          type: text
+          label: Métrique 2 valeur
+        stat2_label:
+          type: text
+          label: Métrique 2 titre
+        stat2_text:
+          type: text
+          label: Métrique 2 description
+        company:
+          type: text
+          label: Entreprise (casestudies3)
+        tags:
+          type: text
+          label: Tags (casestudies3)
+        title:
+          type: text
+          label: Titre
+        subtitle:
+          type: text
+          label: Sous-titre (casestudies3)
+        href:
+          type: text
+          label: Lien
+  style_fields:
+    bg:
+      type: color-token
+      label: Fond
+      group: general
+    padding:
+      type: select
+      label: Espacement vertical
+      options: '[sm, md, lg, xl]'
+      group: general
+
+waitlist:
+  label: Liste d'attente
+  group: waitlist
+  icon: fa-solid fa-envelope-open-text
+  description: 'Bibliothèque de blocs inscription liste d''attente shadcnblocks.'
+  variants:
+    waitlist1:
+      label: Waitlist 1
+      description: 'Inscription email plein écran avec lignes décoratives et preuve sociale.'
+  content_fields:
+    title:
+      type: text
+      label: Titre
+      client_editable: true
+    subtitle:
+      type: textarea
+      label: Description
+      client_editable: true
+    tagline:
+      type: text
+      label: Preuve sociale
+      client_editable: true
+    placeholder:
+      type: text
+      label: Placeholder email
+      client_editable: true
+    submit_label:
+      type: text
+      label: Libellé du bouton
+      client_editable: true
+    submitting_label:
+      type: text
+      label: Libellé pendant l'envoi
+      client_editable: true
+    success_message:
+      type: text
+      label: Message de confirmation
+      client_editable: true
+    items:
+      type: repeater
+      label: Avatars
+      client_editable: true
+      fields:
+        url:
+          type: image
+          label: Portrait
+  style_fields:
+    bg:
+      type: color-token
+      label: Fond
+      group: general
+    padding:
+      type: select
+      label: Espacement vertical
+      options: '[sm, md, lg, xl]'
+      group: general
+
+experience:
+  label: Expérience
+  group: experience
+  icon: fa-solid fa-briefcase
+  description: 'Bibliothèque de blocs parcours professionnel shadcnblocks.'
+  variants:
+    experience1:
+      label: Experience 1
+      description: 'Liste chronologique de postes avec période, description et entreprise.'
+  content_fields:
+    title:
+      type: text
+      label: Titre
+      client_editable: true
+    link_label:
+      type: text
+      label: Libellé du bouton CV
+      client_editable: true
+    href:
+      type: text
+      label: Lien du bouton CV
+      client_editable: true
+    items:
+      type: repeater
+      label: Expériences
+      client_editable: true
+      fields:
+        label:
+          type: text
+          label: Période
+        title:
+          type: text
+          label: Intitulé du poste
+        text:
+          type: textarea
+          label: Description
+        company:
+          type: text
+          label: Entreprise
+        logo:
+          type: image
+          label: Logo entreprise
+  style_fields:
+    bg:
+      type: color-token
+      label: Fond
+      group: general
+    padding:
+      type: select
+      label: Espacement vertical
+      options: '[sm, md, lg, xl]'
+      group: general
+
+demo:
+  label: Démo
+  group: demo
+  icon: fa-solid fa-calendar-check
+  description: 'Bibliothèque de blocs réservation de démo shadcnblocks.'
+  variants:
+    bookademo1:
+      label: Book a Demo 1
+      description: 'Intro avantages, formulaire et carrousel de logos.'
+    bookademo2:
+      label: Book a Demo 2
+      description: 'En-tête avec avatars, formulaire, témoignages et logos partenaires.'
+  content_fields:
+    tagline:
+      type: text
+      label: Badge (bookademo1)
+      client_editable: true
+    title:
+      type: text
+      label: Titre
+      client_editable: true
+    text:
+      type: textarea
+      label: Description (bookademo2)
+      client_editable: true
+    link_label:
+      type: text
+      label: Lien dans la description (bookademo2)
+      client_editable: true
+    href:
+      type: text
+      label: URL du lien (bookademo2)
+      client_editable: true
+    avatar1_url:
+      type: image
+      label: Avatar gauche (bookademo2)
+      client_editable: true
+    avatar2_url:
+      type: image
+      label: Avatar droite (bookademo2)
+      client_editable: true
+    footer_title:
+      type: text
+      label: Titre pied de page (bookademo2)
+      client_editable: true
+    submit_label:
+      type: text
+      label: Libellé du bouton d'envoi
+      client_editable: true
+    submitting_label:
+      type: text
+      label: Libellé pendant l'envoi
+      client_editable: true
+    success_message:
+      type: text
+      label: Message de confirmation
+      client_editable: true
+    logos:
+      type: repeater
+      label: Logos
+      client_editable: true
+      fields:
+        url:
+          type: image
+          label: Logo
+    items:
+      type: repeater
+      label: Éléments
+      client_editable: true
+      fields:
+        text:
+          type: textarea
+          label: Texte (avantage ou citation)
+        label:
+          type: text
+          label: Mots surlignés (bookademo2, séparés par des virgules)
+        author:
+          type: text
+          label: Auteur (bookademo2)
+        role:
+          type: text
+          label: Fonction (bookademo2)
+        logo:
+          type: image
+          label: Logo entreprise (bookademo2)
+        url:
+          type: image
+          label: Portrait (bookademo2)
+  style_fields:
+    bg:
+      type: color-token
+      label: Fond
+      group: general
+    padding:
+      type: select
+      label: Espacement vertical
+      options: '[sm, md, lg, xl]'
+      group: general
+
+blog:
+  label: Blog
+  group: blog
+  icon: fa-solid fa-newspaper
+  description: 'Bibliothèque de blocs blog shadcnblocks.'
+  variants:
+    blog7:
+      label: Blog 7
+      description: 'Grille de cartes avec badge, image et métadonnées auteur.'
+    blog8:
+      label: Blog 8
+      description: 'Liste d''articles en disposition horizontale avec tags.'
+  content_fields:
+    tagline:
+      type: text
+      label: Badge (blog7)
+      client_editable: true
+    title:
+      type: text
+      label: Titre
+      client_editable: true
+    subtitle:
+      type: textarea
+      label: Description
+      client_editable: true
+    read_more_label:
+      type: text
+      label: Libellé « Lire l'article »
+      client_editable: true
+    items:
+      type: repeater
+      label: Articles
+      client_editable: true
+      fields:
+        title:
+          type: text
+          label: Titre
+        text:
+          type: textarea
+          label: Résumé
+        author:
+          type: text
+          label: Auteur
+        published:
+          type: text
+          label: Date de publication
+        label:
+          type: text
+          label: Tags (blog8, séparés par des virgules)
         href:
           type: text
           label: Lien

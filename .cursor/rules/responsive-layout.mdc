@@ -39,3 +39,9 @@ Principes universels pour sites publics et interfaces admin. Adapter les noms de
 - [ ] `min-width: 0` sur enfants flex/grid qui tronquent du texte.
 - [ ] Scroll isolé dans la bonne zone (admin).
 - [ ] Lisible et utilisable sur mobile sans scroll horizontal involontaire.
+
+## Carousels sections
+
+- Zone de scroll = **viewport** (`overflow-x: auto`), pas la piste flex interne.
+- Piste : `overflow: visible` ; stage parent : `overflow-x: clip`.
+- Voir `section-css-isolation.mdc`.

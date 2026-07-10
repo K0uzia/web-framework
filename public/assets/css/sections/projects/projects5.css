@@ -1,0 +1,100 @@
+/* Variante projects5 : grille portfolio avec année (shadcnblocks projects5) */
+
+.section-projects--projects5 {
+    padding-block: 8rem;
+}
+
+.section-projects--projects5 .section-projects__container--projects5 {
+    width: 100%;
+    max-width: var(--container, 72rem);
+    margin-inline: auto;
+}
+
+.section-projects--projects5 .section-projects__title--projects5 {
+    margin: 0;
+    font-size: clamp(2.5rem, 8vw, 4.5rem);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    text-transform: uppercase;
+    color: var(--color-text, #0f172a);
+}
+
+.section-projects--projects5 .section-projects__grid--projects5 {
+    display: grid;
+    gap: 1.5rem;
+    margin-top: 2.5rem;
+}
+
+@media (min-width: 768px) {
+    .section-projects--projects5 .section-projects__grid--projects5 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.section-projects--projects5 .section-projects__card--projects5 {
+    overflow: hidden;
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: var(--radius-lg, 0.5rem);
+    background: var(--color-background, #fff);
+}
+
+.section-projects--projects5 .section-projects__media--projects5 {
+    display: block;
+    overflow: hidden;
+}
+
+.section-projects--projects5 .section-projects__img--projects5 {
+    display: block;
+    width: 100%;
+    height: 24rem;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.section-projects--projects5 .section-projects__card--projects5:hover .section-projects__img--projects5 {
+    transform: scale(1.05);
+}
+
+.section-projects--projects5 .section-projects__foot--projects5 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+}
+
+.section-projects--projects5 .section-projects__meta--projects5 {
+    min-width: 0;
+}
+
+.section-projects--projects5 .section-projects__card-title--projects5 {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--color-text, #0f172a);
+}
+
+.section-projects--projects5 .section-projects__card-type--projects5 {
+    margin: 0.25rem 0 0;
+    font-size: 0.875rem;
+    line-height: 1.4;
+    color: var(--color-muted-foreground, #64748b);
+}
+
+.section-projects--projects5 .section-projects__year--projects5 {
+    flex-shrink: 0;
+    padding: 0.5rem 1.25rem;
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 1rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.25rem;
+    color: var(--color-text, #0f172a);
+}
+
+.section-projects--projects5 .section-projects__media--projects5:focus-visible {
+    outline: 2px solid var(--color-focus-ring, #3b82f6);
+    outline-offset: -2px;
+}

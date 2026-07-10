@@ -28,6 +28,7 @@ use Capsule\Middleware\BasePathMiddleware;
 use Capsule\Middleware\DevAuth;
 use Capsule\Middleware\ErrorBoundary;
 use Capsule\Middleware\SecurityHeaders;
+use Capsule\Middleware\StaticAssetMiddleware;
 use Capsule\LayoutRegistry;
 use Capsule\MediaLibrary;
 use Capsule\MediaRepository;
@@ -38,12 +39,14 @@ use Capsule\PageRepository;
 use Capsule\Router;
 use Capsule\SectionRegistry;
 use Capsule\SectionRenderer;
+use Capsule\Section\SectionHandlerRegistry;
 use Capsule\ProcessRunner;
 use Capsule\SiteChrome;
 use Capsule\ExportPathPicker;
 use Capsule\SiteExportPath;
 use Capsule\SiteExporter;
 use Capsule\SiteRepository;
+use Capsule\ScriptResolver;
 use Capsule\StylesheetResolver;
 use Capsule\ThemePreviewRenderer;
 use Capsule\VideoImportCleaner;
@@ -101,10 +104,22 @@ return (function (): Container {
             $assetsPrefix,
         );
     });
+    $c->set(ScriptResolver::class, static function (Container $c) use ($root, $appConfig): ScriptResolver {
+        $basePath = $c->get(BasePath::class)->value();
+        $assetsPrefix = $basePath !== '' ? $basePath . '/assets' : '/assets';
+
+        return new ScriptResolver(
+            $root . '/public/assets/js',
+            $assetsPrefix . '/js',
+            $c->get(SectionHandlerRegistry::class),
+        );
+    });
+    $c->set(SectionHandlerRegistry::class, static fn () => new SectionHandlerRegistry());
     $c->set(SectionRenderer::class, static fn (Container $c) => new SectionRenderer(
         $c->get(View::class),
         $resources . '/sections',
         $appConfig['is_dev'],
+        $c->get(SectionHandlerRegistry::class),
     ));
     $c->set(SiteChrome::class, static fn (Container $c) => new SiteChrome(
         $c->get(PageRepository::class),
@@ -124,6 +139,8 @@ return (function (): Container {
         $c->get(SiteChrome::class),
         $appConfig['base_url'],
         $c->get(StylesheetResolver::class),
+        $c->get(ScriptResolver::class),
+        $root . '/public/assets/css',
         true,
         $c->get(BasePath::class),
     ));
@@ -279,6 +296,7 @@ return (function (): Container {
         $c->get(DevDashboard::class),
         $c->get(SiteRepository::class),
         $c->get(FontUploader::class),
+        $root . '/public/assets/css',
     ));
     $c->set(ThemePreviewRenderer::class, static fn (Container $c) => new ThemePreviewRenderer(
         $c->get(ResponseFactory::class),
@@ -286,6 +304,8 @@ return (function (): Container {
         $c->get(SiteRepository::class),
         $c->get(SiteChrome::class),
         $c->get(StylesheetResolver::class),
+        $c->get(ScriptResolver::class),
+        $root . '/public/assets/css',
         $appConfig['base_url'],
     ));
     $c->set(PreviewController::class, static fn (Container $c) => new PreviewController(
@@ -307,6 +327,7 @@ return (function (): Container {
         $c->get(SectionRenderer::class),
         $c->get(SiteChrome::class),
         $c->get(StylesheetResolver::class),
+        $c->get(ScriptResolver::class),
         $root,
         $root . '/public',
         $appConfig['base_url'],
@@ -345,6 +366,10 @@ return (function (): Container {
         $c->get(ResponseFactory::class),
         $appConfig['is_dev'],
         $appConfig['app_name'],
+    ));
+    $c->set(StaticAssetMiddleware::class, static fn (Container $c) => new StaticAssetMiddleware(
+        $root . '/public',
+        $c->get(ResponseFactory::class),
     ));
     $c->set(DevAuth::class, static fn (Container $c) => new DevAuth(
         $c->get(ResponseFactory::class),

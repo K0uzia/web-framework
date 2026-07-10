@@ -104,6 +104,48 @@ final class SiteRepository
         $this->setJson(self::THEME_KEY, $theme);
     }
 
+    public function persistTheme(array $theme, string $publicCssDir): void
+    {
+        $this->setTheme($theme);
+        $this->writeThemeCssFile($theme, $publicCssDir);
+    }
+
+    public function ensureThemeCssFile(string $publicCssDir): void
+    {
+        $path = $this->themeCssPath($publicCssDir);
+        if (!is_file($path)) {
+            $this->writeThemeCssFile($this->getTheme(), $publicCssDir);
+        }
+    }
+
+    /**
+     * @param array<string, mixed> $theme
+     */
+    public function writeThemeCssFile(array $theme, string $publicCssDir): void
+    {
+        $dir = rtrim($publicCssDir, '/\\');
+        if (!is_dir($dir) && !mkdir($dir, 0755, true) && !is_dir($dir)) {
+            throw new \RuntimeException('Impossible de créer le dossier CSS thème : ' . $dir);
+        }
+
+        $written = file_put_contents($this->themeCssPath($publicCssDir), $this->themeCssFrom($theme));
+        if ($written === false) {
+            throw new \RuntimeException('Impossible d\'écrire le fichier CSS thème.');
+        }
+    }
+
+    public function themeCssLinkHtml(string $assetRoot): string
+    {
+        $href = rtrim($assetRoot, '/') . '/assets/css/theme-generated.css';
+
+        return '<link rel="stylesheet" href="' . htmlspecialchars($href, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '" />';
+    }
+
+    private function themeCssPath(string $publicCssDir): string
+    {
+        return rtrim($publicCssDir, '/\\') . '/theme-generated.css';
+    }
+
     /**
      * @return array<string, mixed>
      */
@@ -128,7 +170,14 @@ final class SiteRepository
 
     public function themeCss(): string
     {
-        $theme = $this->getTheme();
+        return $this->themeCssFrom($this->getTheme());
+    }
+
+    /**
+     * @param array<string, mixed> $theme
+     */
+    public function themeCssFrom(array $theme): string
+    {
         $colors = is_array($theme['colors'] ?? null) ? $theme['colors'] : [];
         $fonts = is_array($theme['fonts'] ?? null) ? $theme['fonts'] : [];
         $spacing = is_array($theme['spacing'] ?? null) ? $theme['spacing'] : [];

@@ -25,6 +25,8 @@ final class ThemePreviewRenderer
         private readonly SiteRepository $site,
         private readonly SiteChrome $chrome,
         private readonly StylesheetResolver $stylesheets,
+        private readonly ScriptResolver $scripts,
+        private readonly string $publicCssDir,
         private readonly string $baseUrl,
     ) {
     }
@@ -38,7 +40,9 @@ final class ThemePreviewRenderer
             'description' => 'Échantillons pour tester couleurs, typographie et composants du site.',
             'layout' => 'default',
         ];
-        $data['theme_css'] = '<style>' . $this->site->themeCss() . '</style>';
+        $data['theme'] = $this->site->getTheme();
+        $this->site->ensureThemeCssFile($this->publicCssDir);
+        $data['theme_css'] = $this->site->themeCssLinkHtml('');
         $data = Seo::apply($data, $path, $this->baseUrl);
         $data = $this->chrome->enrich($data, $path, false);
 
@@ -47,6 +51,9 @@ final class ThemePreviewRenderer
         $hrefs = $this->stylesheets->resolve('default', 'theme-preview', $body, $data, self::SECTION_REFS);
         $hrefs[] = '/assets/css/theme-preview.css';
         $data['stylesheets'] = $this->stylesheets->toHtml($hrefs);
+
+        $scriptSrcs = $this->scripts->resolve($body, self::SECTION_REFS);
+        $data['scripts'] = $this->scripts->toHtml($scriptSrcs);
 
         $html = $this->view->pageFromString($body, $data, 'default.html');
         $html = str_replace(

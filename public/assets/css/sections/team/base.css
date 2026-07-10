@@ -1,0 +1,115 @@
+/* Tokens et styles communs aux variantes team */
+
+.section-team {
+    background: var(--color-background, #fff);
+}
+
+.section-team[class*="section--pad-"] {
+    padding-inline: var(--space-md, 1rem);
+}
+
+.section-team .section-team__container {
+    width: 100%;
+    max-width: var(--container, 72rem);
+    margin-inline: auto;
+}
+
+.section-team .section-team__head {
+    text-align: center;
+}
+
+.section-team .section-team__title {
+    margin: 0;
+    color: var(--color-text, #0f172a);
+    text-wrap: pretty;
+}
+
+.section-team .section-team__subtitle {
+    margin: 0;
+    color: var(--color-muted-foreground, #64748b);
+}
+
+.section-team .section-team__grid {
+    display: grid;
+}
+
+.section-team .section-team__member {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.section-team .section-team__avatar {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 999px;
+    background: var(--color-surface, #f1f5f9);
+}
+
+.section-team .section-team__avatar-img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.section-team .section-team__avatar-fallback {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--color-text, #0f172a);
+}
+
+.section-team .section-team__avatar:not(:has(.section-team__avatar-img[src])) .section-team__avatar-fallback,
+.section-team .section-team__avatar-img[src=""] + .section-team__avatar-fallback {
+    display: flex;
+}
+
+.section-team .section-team__name {
+    margin: 0;
+    font-weight: 500;
+    color: var(--color-text, #0f172a);
+}
+
+.section-team .section-team__role {
+    margin: 0;
+    color: var(--color-muted-foreground, #64748b);
+}
+
+.section-team .section-team__social {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.section-team .section-team__social-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    background: color-mix(in srgb, var(--color-surface, #f1f5f9) 70%, transparent);
+    color: var(--color-muted-foreground, #64748b);
+    text-decoration: none;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.section-team .section-team__social-link:hover {
+    color: var(--color-text, #0f172a);
+}
+
+.section-team .section-team__social-link:focus-visible {
+    outline: 2px solid var(--color-focus-ring, #3b82f6);
+    outline-offset: 2px;
+}
+
+.section-team .section-team__social-link i {
+    font-size: 1rem;
+    line-height: 1;
+}

@@ -12,6 +12,7 @@ use Capsule\PageRepository;
 use Capsule\SectionRenderer;
 use Capsule\SiteChrome;
 use Capsule\SiteRepository;
+use Capsule\ScriptResolver;
 use Capsule\StylesheetResolver;
 use Capsule\View;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -56,6 +57,8 @@ final class PageRendererTest extends TestCase
 
         $root = dirname(__DIR__);
         $view = new View($root . '/resources/layouts', $root . '/resources/partials');
+        $cssDir = sys_get_temp_dir() . '/capsule-page-css-' . uniqid('', true);
+        mkdir($cssDir);
 
         $this->renderer = new PageRenderer(
             new ResponseFactory(),
@@ -66,6 +69,8 @@ final class PageRendererTest extends TestCase
             new SiteChrome($this->pages, $site, $view, 'CapsulePHP'),
             'https://example.com',
             new StylesheetResolver($root . '/public/assets/css'),
+            new ScriptResolver($root . '/public/assets/js'),
+            $cssDir,
         );
     }
 
@@ -74,8 +79,10 @@ final class PageRendererTest extends TestCase
         $body = (string) $this->renderer->renderBySlug('home', [], '/home')->getBody();
 
         $this->assertStringContainsString('Safe title', $body);
-        $this->assertStringContainsString('--color-primary', $body);
+        $this->assertStringContainsString('theme-generated.css', $body);
         $this->assertStringContainsString('<meta name="description" content="Meta desc"', $body);
+        $this->assertStringContainsString('sections/hero.js', $body);
+        $this->assertStringNotContainsString('sections/gallery.js', $body);
     }
 
     public function testEscapesPageTitleInLayout(): void

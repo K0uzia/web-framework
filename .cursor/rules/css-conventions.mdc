@@ -24,3 +24,7 @@ S'applique aux feuilles de style et aux blocs `<style>` intégrés.
 - [ ] Aucune nouvelle valeur magique hors fichier tokens.
 - [ ] Propriétés dans l'ordre attendu.
 - [ ] Sélecteurs plats, pas de nesting inutile.
+
+## Exception conversion shadcnblocks
+
+Pour les variantes converties depuis `block ui/`, les valeurs `rem`/`px` et breakpoints (`768px`, `1024px`, `1536px`) peuvent être littérales dans `{variant}.css` pour fidélité au TSX. Documenter en en-tête du fichier CSS.

@@ -24,6 +24,7 @@ final class Database
             $config['options'],
         );
         self::ensureSchema($pdo);
+        $pdo->exec('PRAGMA journal_mode = WAL');
 
         return new self($pdo);
     }

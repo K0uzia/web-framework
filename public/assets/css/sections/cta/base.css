@@ -1,0 +1,40 @@
+/* Tokens communs au type cta */
+
+.section-cta {
+    background: var(--color-background, #fff);
+}
+
+.section-cta[class*="section--pad-"] {
+    padding-inline: var(--space-md, 1rem);
+}
+
+.section-cta [class*="section-cta__container"] {
+    width: 100%;
+    max-width: var(--container, 72rem);
+    margin-inline: auto;
+}
+
+.section-cta [class*="section-cta__buttons"] {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.section-cta [class*="section-cta__buttons"] .section-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.section-cta [class*="section-cta__title"] {
+    margin: 0;
+    font-weight: 600;
+    line-height: 1.15;
+    color: var(--color-text, #0f172a);
+}
+
+.section-cta [class*="section-cta__subtitle"] {
+    margin: 0;
+    color: var(--color-muted-foreground, #64748b);
+    line-height: 1.55;
+}

@@ -16,6 +16,7 @@ final class SiteExporter
         private readonly SectionRenderer $sections,
         private readonly SiteChrome $chrome,
         private readonly StylesheetResolver $stylesheets,
+        private readonly ScriptResolver $scripts,
         private readonly string $projectRoot,
         private readonly string $publicDir,
         private readonly string $defaultBaseUrl,
@@ -52,6 +53,8 @@ final class SiteExporter
             $this->chrome,
             $baseUrl,
             $this->stylesheets,
+            $this->scripts,
+            $this->projectRoot . '/public/assets/css',
         );
 
         $written = [];

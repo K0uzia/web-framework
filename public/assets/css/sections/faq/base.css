@@ -1,0 +1,28 @@
+/* Tokens communs au type faq */
+
+.section-faq {
+    background: var(--color-background, #fff);
+}
+
+.section-faq[class*="section--pad-"] {
+    padding-inline: var(--space-md, 1rem);
+}
+
+.section-faq [class*="section-faq__container"] {
+    width: 100%;
+    max-width: var(--container, 72rem);
+    margin-inline: auto;
+}
+
+.section-faq .section-faq__question::-webkit-details-marker {
+    display: none;
+}
+
+.section-faq .section-faq__question::marker {
+    content: "";
+}
+
+.section-faq .section-faq__question:focus-visible {
+    outline: 2px solid var(--color-primary, #0f172a);
+    outline-offset: 2px;
+}

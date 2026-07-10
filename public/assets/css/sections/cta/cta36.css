@@ -1,0 +1,61 @@
+/* Variante cta36 : split horizontal avec bordure basse */
+
+.section-cta--cta36 .section-cta__inner--cta36 {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 2rem;
+    max-width: 64rem;
+    margin-inline: auto;
+    padding-bottom: 3rem;
+    border-bottom: 1px solid var(--color-border, #e2e8f0);
+}
+
+@media (min-width: 64rem) {
+    .section-cta--cta36 .section-cta__inner--cta36 {
+        flex-direction: row;
+        align-items: center;
+    }
+}
+
+.section-cta--cta36 .section-cta__content--cta36 {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.section-cta--cta36 .section-cta__title--cta36 {
+    font-size: clamp(1.5rem, 2.5vw, 2.25rem);
+    letter-spacing: -0.02em;
+}
+
+.section-cta--cta36 .section-cta__subtitle--cta36 {
+    max-width: 36rem;
+    font-size: 1rem;
+}
+
+@media (min-width: 64rem) {
+    .section-cta--cta36 .section-cta__subtitle--cta36 {
+        font-size: 1.125rem;
+    }
+}
+
+.section-cta--cta36 .section-cta__buttons--cta36 {
+    flex-shrink: 0;
+}
+
+.section-cta--cta36 .section-cta__buttons--cta36 .section-button {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+}
+
+.section-cta--cta36 .section-cta__buttons--cta36 .section-button--secondary {
+    background: transparent;
+    color: var(--color-text, #0f172a);
+    border: 1px solid var(--color-border, #e2e8f0);
+}
+
+.section-cta--cta36 .section-cta__buttons--cta36 .section-button--secondary:hover {
+    background: var(--color-muted, #f1f5f9);
+}

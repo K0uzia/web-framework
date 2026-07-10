@@ -15,6 +15,7 @@ use Capsule\Router;
 use Capsule\SectionRenderer;
 use Capsule\SiteChrome;
 use Capsule\SiteRepository;
+use Capsule\ScriptResolver;
 use Capsule\StylesheetResolver;
 use Capsule\View;
 use PHPUnit\Framework\TestCase;
@@ -34,27 +35,27 @@ final class RouterTest extends TestCase
         $this->assertSame('ok', $response->getBody());
     }
 
-    public function testWfSubfolderPrefixIsStripped(): void
+    public function testSubfolderPrefixIsStripped(): void
     {
         $c = new Container();
         $c->set(ResponseFactory::class, static fn () => new ResponseFactory());
         $c->set(StubController::class, static fn (Container $c) => new StubController($c->get(ResponseFactory::class)));
 
         $router = new Router(['GET /' => [StubController::class, 'ok']], [], $c);
-        $response = $router->handle(new Request('GET', '/wf/', [], [], [], []));
+        $response = $router->handle(new Request('GET', '/', [], [], [], []));
 
         $this->assertSame(200, $response->getStatus());
         $this->assertSame('ok', $response->getBody());
     }
 
-    public function testWfApiHealthPathIsStripped(): void
+    public function testApiHealthPathIsResolved(): void
     {
         $c = new Container();
         $c->set(ResponseFactory::class, static fn () => new ResponseFactory());
         $c->set(StubController::class, static fn (Container $c) => new StubController($c->get(ResponseFactory::class)));
 
         $router = new Router(['GET /api/health' => [StubController::class, 'ok']], [], $c);
-        $response = $router->handle(new Request('GET', '/wf/api/health', [], [], [], []));
+        $response = $router->handle(new Request('GET', '/api/health', [], [], [], []));
 
         $this->assertSame(200, $response->getStatus());
     }
@@ -89,6 +90,7 @@ final class RouterTest extends TestCase
         $c->set(SiteRepository::class, static fn () => new SiteRepository($pdo));
         $c->set(View::class, static fn () => new View($resources . '/layouts', $resources . '/partials'));
         $c->set(StylesheetResolver::class, static fn () => new StylesheetResolver($root . '/public/assets/css'));
+        $c->set(ScriptResolver::class, static fn () => new ScriptResolver($root . '/public/assets/js'));
         $c->set(SectionRenderer::class, static fn (Container $c) => new SectionRenderer(
             $c->get(View::class),
             $resources . '/sections',
@@ -109,6 +111,8 @@ final class RouterTest extends TestCase
             $c->get(SiteChrome::class),
             'http://localhost:8080',
             $c->get(StylesheetResolver::class),
+            $c->get(ScriptResolver::class),
+            $root . '/public/assets/css',
         ));
         $c->set(PageRegistry::class, static fn (Container $c) => new PageRegistry($c->get(PageRepository::class)));
         $c->set(Router::class, static function (Container $c): Router {

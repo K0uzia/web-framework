@@ -1,0 +1,35 @@
+---
+description: Checklist conversion bloc block ui vers section PHP
+globs: "block ui/**/*,resources/sections/**/*,src/*VariantRenderer.php,public/assets/css/sections/**/*"
+alwaysApply: false
+---
+
+# Workflow nouveau bloc (block ui → PHP)
+
+Référence obligatoire : `block ui/src/components/{variant}.tsx`.
+
+## Checklist (dans l'ordre)
+
+1. **Registry** : entrée dans `resources/sections/registry.yaml` (une seule clé par type, pas de doublon).
+2. **HTML** : `resources/sections/{type}/{variant}.html` avec classes suffixées `--{variant}` uniquement.
+3. **CSS** : `public/assets/css/sections/{type}/{variant}.css` autonome (pas de dépendance aux styles génériques conflictuels du `base.css` du type).
+4. **Renderer** : `src/{Type}VariantRenderer.php` si logique dynamique (carousel, items, boutons).
+5. **Style** : `src/{Type}Style.php` pour variantes et tokens style.
+6. **Defaults** : valeurs dans `app/Http/Dev/Defaults/` ou `SectionDefaults` (chaque `content_fields` du registry).
+7. **JS** : déclarer dans `ScriptResolver` / handler (`jsModules()`), jamais dans le layout en dur.
+8. **Tests** : `SectionRegistryTest` + rendu contractuel (`SectionRendererTest`).
+9. **Responsive** : vérifier mobile `< 768px` et desktop `≥ 768px` vs le TSX.
+10. **Export** : `make export-static` puis contrôler la page dans `dist/`.
+
+## Conversion Tailwind → CSS
+
+- `py-32` → `padding-block: 8rem`
+- `text-3xl md:text-4xl` → breakpoints `@media (min-width: 768px)`
+- Carousel : viewport scroll (`overflow-x: auto`), piste interne `overflow: visible`
+- Icônes : Font Awesome local (`fa-solid`), pas Lucide
+
+## Interdit
+
+- Classes génériques partagées (`section-gallery__head`) sans suffixe `--{variant}` sur les nouvelles variantes.
+- URL CDN en dur : utiliser `SectionAssets::resolve()`.
+- `if ($type === '…')` dans `SectionRenderer` (utiliser handler registry).

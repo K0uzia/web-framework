@@ -75,6 +75,44 @@ final class StylesheetResolverTest extends TestCase
         $this->assertStringContainsString('href="/assets/css/base.css"', $html);
     }
 
+    public function testHeroCustomizeCssSkippedWithoutCustomStyle(): void
+    {
+        mkdir($this->cssDir . '/sections/hero', 0775, true);
+        file_put_contents($this->cssDir . '/sections/hero/base.css', '/* base */');
+        file_put_contents($this->cssDir . '/sections/hero/variants.css', '/* variants */');
+        file_put_contents($this->cssDir . '/sections/hero/customize.css', '/* customize */');
+
+        $resolver = new StylesheetResolver($this->cssDir);
+        $hrefs = $resolver->resolve('default', 'index', '', [], [
+            ['type' => 'hero', 'variant' => 'hero3'],
+        ], [[
+            'type' => 'hero',
+            'variant' => 'hero3',
+            'style' => ['bg' => 'primary', 'padding' => 'lg'],
+        ]]);
+
+        $this->assertNotContains('/assets/css/sections/hero/customize.css', $hrefs);
+    }
+
+    public function testHeroCustomizeCssLoadedWithCustomStyle(): void
+    {
+        mkdir($this->cssDir . '/sections/hero', 0775, true);
+        file_put_contents($this->cssDir . '/sections/hero/base.css', '/* base */');
+        file_put_contents($this->cssDir . '/sections/hero/variants.css', '/* variants */');
+        file_put_contents($this->cssDir . '/sections/hero/customize.css', '/* customize */');
+
+        $resolver = new StylesheetResolver($this->cssDir);
+        $hrefs = $resolver->resolve('default', 'index', '', [], [
+            ['type' => 'hero', 'variant' => 'hero3'],
+        ], [[
+            'type' => 'hero',
+            'variant' => 'hero3',
+            'style' => ['bg' => 'primary', 'padding' => 'lg', 'text_align' => 'center'],
+        ]]);
+
+        $this->assertContains('/assets/css/sections/hero/customize.css', $hrefs);
+    }
+
     private function removeDir(string $dir): void
     {
         if (!is_dir($dir)) {

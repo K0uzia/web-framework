@@ -1,0 +1,97 @@
+/* Variante awards1 : tableau des récompenses */
+
+.section-awards--awards1 .section-awards__container--awards1 {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+}
+
+@media (min-width: 64rem) {
+    .section-awards--awards1 .section-awards__container--awards1 {
+        gap: 3rem;
+    }
+}
+
+.section-awards--awards1 .section-awards__title--awards1 {
+    max-width: 28rem;
+    margin: 0;
+    font-size: clamp(3rem, 6vw, 4.5rem);
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: var(--color-text, #0f172a);
+}
+
+.section-awards--awards1 .section-awards__table-wrap--awards1 {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.section-awards--awards1 .section-awards__table--awards1 {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.section-awards--awards1 .section-awards__head-row--awards1 {
+    height: 3rem;
+    border-bottom: 1px solid var(--color-border, #e2e8f0);
+    font-size: 0.875rem;
+    color: color-mix(in srgb, var(--color-text, #0f172a) 80%, transparent);
+}
+
+.section-awards--awards1 .section-awards__head--awards1 {
+    padding: 0;
+    font-weight: 600;
+    text-align: left;
+}
+
+.section-awards--awards1 .section-awards__head--year--awards1 {
+    text-align: right;
+}
+
+.section-awards--awards1 .section-awards__row--awards1 {
+    height: 5rem;
+    border-bottom: 1px solid var(--color-border, #e2e8f0);
+    font-size: 0.875rem;
+    color: color-mix(in srgb, var(--color-text, #0f172a) 40%, transparent);
+}
+
+.section-awards--awards1 .section-awards__name--awards1 {
+    padding: 0;
+    font-size: 1.125rem;
+    font-weight: 300;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+    color: var(--color-text, #0f172a);
+}
+
+@media (min-width: 64rem) {
+    .section-awards--awards1 .section-awards__name--awards1 {
+        font-size: 1.25rem;
+    }
+}
+
+.section-awards--awards1 .section-awards__link--awards1 {
+    color: inherit;
+    text-decoration: none;
+}
+
+.section-awards--awards1 .section-awards__link--awards1:hover {
+    text-decoration: underline;
+}
+
+.section-awards--awards1 .section-awards__link--awards1:focus-visible {
+    outline: 2px solid var(--color-primary, #0f172a);
+    outline-offset: 2px;
+}
+
+.section-awards--awards1 .section-awards__description--awards1 {
+    padding-inline: 1rem 0;
+}
+
+.section-awards--awards1 .section-awards__year--awards1 {
+    padding: 0;
+    text-align: right;
+    color: var(--color-text, #0f172a);
+}

@@ -1,0 +1,81 @@
+/* Variante faq5 : badge, titre centré et liste numérotée */
+
+.section-faq--faq5 .section-faq__head--faq5 {
+    text-align: center;
+}
+
+.section-faq--faq5 .section-faq__badge--faq5 {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.625rem;
+    border-radius: var(--radius-md, 0.375rem);
+    background: var(--color-muted, #f1f5f9);
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-text, #0f172a);
+}
+
+.section-faq--faq5 .section-faq__title--faq5 {
+    margin: 1rem 0 0;
+    font-size: clamp(2.25rem, 3vw, 2.25rem);
+    font-weight: 600;
+    line-height: 1.15;
+    color: var(--color-text, #0f172a);
+}
+
+.section-faq--faq5 .section-faq__subtitle--faq5 {
+    margin: 1.5rem auto 0;
+    max-width: 36rem;
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.55;
+    color: var(--color-muted-foreground, #64748b);
+}
+
+.section-faq--faq5 .section-faq__list--faq5 {
+    max-width: 36rem;
+    margin: 3.5rem auto 0;
+}
+
+.section-faq--faq5 .section-faq__entry--faq5 {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.section-faq--faq5 .section-faq__entry--faq5:last-child {
+    margin-bottom: 0;
+}
+
+.section-faq--faq5 .section-faq__number--faq5 {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    flex-shrink: 0;
+    border-radius: var(--radius-sm, 0.25rem);
+    background: var(--color-muted, #f1f5f9);
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-size: 0.75rem;
+    color: var(--color-text, #0f172a);
+}
+
+.section-faq--faq5 .section-faq__entry-body--faq5 {
+    min-width: 0;
+}
+
+.section-faq--faq5 .section-faq__entry-question--faq5 {
+    margin: 0 0 0.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.4;
+    color: var(--color-text, #0f172a);
+}
+
+.section-faq--faq5 .section-faq__entry-answer--faq5 {
+    margin: 0;
+    font-size: 0.875rem;
+    line-height: 1.55;
+    color: var(--color-muted-foreground, #64748b);
+}

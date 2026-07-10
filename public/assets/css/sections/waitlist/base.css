@@ -1,0 +1,31 @@
+/* Tokens communs au type waitlist */
+
+.section-waitlist {
+    background: var(--color-background, #fff);
+}
+
+.section-waitlist[class*="section--pad-"] {
+    padding-inline: var(--space-md, 1rem);
+}
+
+.section-waitlist [class*="section-waitlist__container"] {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: var(--container, 72rem);
+    margin-inline: auto;
+}
+
+.section-waitlist__avatar--waitlist1 {
+    display: block;
+    object-fit: cover;
+    border-radius: 999px;
+    border: 2px solid var(--color-background, #fff);
+}
+
+.section-waitlist__form-success.is-visible {
+    margin-bottom: 1rem;
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-md, 0.375rem);
+    background: color-mix(in srgb, var(--color-success, #16a34a) 12%, var(--color-background, #fff));
+}

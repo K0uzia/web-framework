@@ -1,0 +1,30 @@
+/* Tokens communs au type compliance */
+
+.section-compliance {
+    background: var(--color-background, #fff);
+}
+
+.section-compliance[class*="section--pad-"] {
+    padding-inline: var(--space-md, 1rem);
+}
+
+.section-compliance--compliance1 {
+    padding-block: 8rem;
+}
+
+.section-compliance--compliance1[class*="section--pad-"] {
+    padding-inline: var(--space-md, 1rem);
+}
+
+.section-compliance [class*="section-compliance__container"] {
+    width: 100%;
+    max-width: var(--container, 72rem);
+    margin-inline: auto;
+}
+
+.section-compliance__logo--compliance1,
+.section-compliance__feature-badge--compliance1 {
+    display: block;
+    max-width: none;
+    object-fit: contain;
+}

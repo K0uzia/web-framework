@@ -8,7 +8,7 @@ PORT ?= 8080
 
 .PHONY: \
   help \
-  version info deps init reset dev db-shell bin open open-pma doc health styles export-static netlify-build \
+  version info deps init reset dev db-shell bin open open-pma doc health styles export-static deliver netlify-build \
   up down restart build pull logs \
   d-init d-setup setup-docker setup-dev vendor-clean dump \
   phpstan test video-tools video-worker \
@@ -40,11 +40,15 @@ init:         ## Crée data/, applique migration SQLite si absente, génère bin
 styles:       ## Copie resources/styles/ vers public/assets/css/ (optionnel)
 	bash bin/sync-styles
 
-export-static: ## Exporte le site public en HTML statique (dossier dist/)
+export-static: ## Exporte le site public en HTML statique (dossier dist/). Obligatoire avant livraison client.
 	@$(MAKE) styles
 	APP_URL=$(or $(APP_URL),https://web-framework.netlify.app) \
 	APP_BASE_PATH=$(or $(APP_BASE_PATH),) \
 	php scripts/export-static.php dist
+
+deliver: ## Export statique + vérification des assets résolus (livraison client)
+	@$(MAKE) export-static
+	php bin/deliver dist
 
 netlify-build: ## Build complet pour Netlify (équivalent au build distant)
 	NETLIFY=true bash scripts/netlify-build.sh

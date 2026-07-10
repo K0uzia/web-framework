@@ -1,0 +1,90 @@
+/* Tokens communs au type demo */
+
+.section-demo {
+    background: var(--color-background, #fff);
+}
+
+.section-demo[class*="section--pad-"] {
+    padding-inline: var(--space-md, 1rem);
+}
+
+.section-demo--bookademo1,
+.section-demo--bookademo2 {
+    padding-block: 4rem;
+}
+
+@media (min-width: 48rem) {
+    .section-demo--bookademo1,
+    .section-demo--bookademo2 {
+        padding-block: 6rem;
+    }
+}
+
+@media (min-width: 64rem) {
+    .section-demo--bookademo1,
+    .section-demo--bookademo2 {
+        padding-block: 8rem;
+    }
+}
+
+.section-demo--bookademo2[class*="section--pad-"] {
+    padding-inline: var(--space-md, 1rem);
+}
+
+.section-demo [class*="section-demo__container"] {
+    width: 100%;
+    max-width: var(--container, 72rem);
+    margin-inline: auto;
+}
+
+.section-demo__label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-text, #0f172a);
+}
+
+.section-demo__input,
+.section-demo__textarea,
+.section-demo__select {
+    width: 100%;
+    min-width: 0;
+    padding: 0.5rem 0.75rem;
+    font: inherit;
+    color: var(--color-text, #0f172a);
+    background: var(--color-background, #fff);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: var(--radius-md, 0.375rem);
+}
+
+.section-demo__input:focus-visible,
+.section-demo__textarea:focus-visible,
+.section-demo__select:focus-visible {
+    outline: 2px solid var(--color-ring, #94a3b8);
+    outline-offset: 2px;
+}
+
+.section-demo__textarea {
+    min-height: 6rem;
+    resize: vertical;
+}
+
+.section-demo__form-success.is-visible {
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-md, 0.375rem);
+    background: color-mix(in srgb, var(--color-success, #16a34a) 12%, var(--color-background, #fff));
+}
+
+.section-demo__logo-img--bookademo1,
+.section-demo__testimonial-logo--bookademo2,
+.section-demo__footer-logo--bookademo2 {
+    display: block;
+    max-width: none;
+    object-fit: contain;
+}
+
+.section-demo__avatar-img--bookademo2,
+.section-demo__testimonial-avatar--bookademo2 {
+    display: block;
+    object-fit: cover;
+    border-radius: 999px;
+}
