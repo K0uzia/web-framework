@@ -39,7 +39,7 @@
     font-weight: 600;
     line-height: 1.15;
     letter-spacing: -0.025em;
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
     text-wrap: pretty;
 }
 
@@ -54,7 +54,7 @@
     font-size: 1rem;
     font-weight: 500;
     line-height: 1.6;
-    color: var(--color-muted-foreground, #64748b);
+    color: var(--color-muted-foreground);
 }
 
 @media (min-width: 768px) {
@@ -86,25 +86,25 @@
 }
 
 .section-timeline--timeline3 .section-timeline__buttons--timeline3 .section-button--primary {
-    background: var(--color-button-primary-bg, var(--color-primary, #3b82f6));
-    color: var(--color-button-primary-text, #fff);
+    background: var(--color-button-primary-bg, var(--color-primary));
+    color: var(--color-button-primary-text);
     border: 1px solid transparent;
 }
 
 .section-timeline--timeline3 .section-timeline__buttons--timeline3 .section-button--primary:hover {
-    background: var(--color-button-primary-hover, var(--color-primary-hover, #2563eb));
+    background: var(--color-button-primary-hover, var(--color-primary-hover));
     opacity: 1;
 }
 
 .section-timeline--timeline3 .section-timeline__buttons--timeline3 .section-button--secondary {
     background: transparent;
-    color: var(--color-text, #0f172a);
-    border: 1px solid var(--color-border, #e2e8f0);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
 }
 
 .section-timeline--timeline3 .section-timeline__buttons--timeline3 .section-button--secondary:hover {
-    background: color-mix(in srgb, var(--color-text, #0f172a) 5%, transparent);
-    border-color: var(--color-border, #e2e8f0);
+    background: color-mix(in srgb, var(--color-text) 5%, transparent);
+    border-color: var(--color-border);
 }
 
 .section-timeline--timeline3 .section-timeline__entries--timeline3 {
@@ -121,10 +121,10 @@
 
 .section-timeline--timeline3 .section-timeline__card--timeline3 {
     overflow: hidden;
-    border: 1px solid var(--color-border, #e2e8f0);
+    border: 1px solid var(--color-border);
     border-radius: var(--radius-xl, 0.75rem);
     padding: 0.5rem;
-    background: var(--color-background, #fff);
+    background: var(--color-elevated);
 }
 
 .section-timeline--timeline3 .section-timeline__card-img--timeline3 {
@@ -132,7 +132,7 @@
     width: 100%;
     aspect-ratio: 16 / 9;
     object-fit: cover;
-    border: 1px dashed var(--color-border, #e2e8f0);
+    border: 1px dashed var(--color-border);
     border-radius: var(--radius-xl, 0.75rem);
 }
 
@@ -145,11 +145,11 @@
     font-size: 1.5rem;
     font-weight: 600;
     line-height: 1.3;
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
 }
 
 .section-timeline--timeline3 .section-timeline__card-text--timeline3 {
     margin: 0;
     line-height: 1.6;
-    color: var(--color-muted-foreground, #64748b);
+    color: var(--color-muted-foreground);
 }

@@ -15,12 +15,13 @@ final class HeaderFormRenderer
     /**
      * @param array<string, mixed> $variant
      */
-    public function render(array $variant): string
+    public function render(array $variant, array $site): string
     {
         $template = HeaderStyle::normalizeTemplate((string) ($variant['template'] ?? HeaderStyle::TEMPLATE_DEFAULT));
+        $login = is_array($variant['login'] ?? null) ? $variant['login'] : [];
 
-        $html = '<div class="dev-panel"><h2 class="dev-panel__title">Boutons d\'action</h2><div class="dev-form--grid dev-form--grid-2">'
-            . $this->buttonFields('login', 'Connexion', is_array($variant['login'] ?? null) ? $variant['login'] : [])
+        $html = '<div class="dev-panel dev-panel--compact"><h2 class="dev-panel__title">Boutons d\'action</h2><div class="dev-form--grid dev-form--grid-2">'
+            . $this->loginFields($login, $site)
             . $this->buttonFields('cta', 'Appel à l\'action', is_array($variant['cta'] ?? null) ? $variant['cta'] : [], 'primary')
             . '</div></div>';
 
@@ -37,7 +38,7 @@ final class HeaderFormRenderer
     private function renderNavbar1Fields(array $variant): string
     {
         $items = is_array($variant['menu_items'] ?? null) ? $variant['menu_items'] : [];
-        $html = '<div class="dev-panel"><h2 class="dev-panel__title">Menu principal</h2>';
+        $html = '<div class="dev-panel dev-panel--compact"><h2 class="dev-panel__title">Menu principal</h2>';
         for ($i = 0; $i < 5; $i++) {
             $item = is_array($items[$i] ?? null) ? $items[$i] : [];
             $childrenText = '';
@@ -82,7 +83,7 @@ final class HeaderFormRenderer
         $navLinks = is_array($variant['nav_links'] ?? null) ? $variant['nav_links'] : [];
         $mobileLinks = is_array($variant['mobile_links'] ?? null) ? $variant['mobile_links'] : [];
 
-        $html = '<div class="dev-panel"><h2 class="dev-panel__title">Méga-menu</h2>'
+        $html = '<div class="dev-panel dev-panel--compact"><h2 class="dev-panel__title">Méga-menu</h2>'
             . '<div class="dev-field"><label class="dev-label" for="features_label">Libellé du menu déroulant</label>'
             . '<input class="dev-input" id="features_label" type="text" name="features_label" value="'
             . htmlspecialchars((string) ($variant['features_label'] ?? 'Fonctionnalités'), ENT_QUOTES) . '" /></div>';
@@ -102,14 +103,14 @@ final class HeaderFormRenderer
         }
         $html .= '</div>';
 
-        $html .= '<div class="dev-panel"><h2 class="dev-panel__title">Liens de navigation</h2>';
+        $html .= '<div class="dev-panel dev-panel--compact"><h2 class="dev-panel__title">Liens de navigation</h2>';
         for ($i = 0; $i < 4; $i++) {
             $link = is_array($navLinks[$i] ?? null) ? $navLinks[$i] : [];
             $html .= $this->linkPairFields('nav_' . $i, (string) ($link['label'] ?? ''), (string) ($link['href'] ?? ''));
         }
         $html .= '</div>';
 
-        $html .= '<div class="dev-panel"><h2 class="dev-panel__title">Liens mobile supplémentaires</h2>';
+        $html .= '<div class="dev-panel dev-panel--compact"><h2 class="dev-panel__title">Liens mobile supplémentaires</h2>';
         for ($i = 0; $i < 3; $i++) {
             $link = is_array($mobileLinks[$i] ?? null) ? $mobileLinks[$i] : [];
             $html .= $this->linkPairFields('mobile_' . $i, (string) ($link['label'] ?? ''), (string) ($link['href'] ?? ''));
@@ -122,12 +123,42 @@ final class HeaderFormRenderer
     /**
      * @param array<string, mixed> $button
      */
+    private function loginFields(array $button, array $site): string
+    {
+        $enabled = ($button['enabled'] ?? false) === true ? 'checked' : '';
+        $display = (string) ($button['display'] ?? 'page');
+
+        return '<div class="dev-field dev-form__full"><h3 class="dev-panel__subtitle">Connexion</h3>'
+            . '<label class="dev-checkbox"><input type="hidden" name="login_enabled" value="0" />'
+            . '<input type="checkbox" name="login_enabled" value="1" ' . $enabled . ' /> Activé</label>'
+            . '<div class="dev-form--grid dev-form--grid-2">'
+            . '<div class="dev-field"><label class="dev-label" for="login_display">Affichage</label>'
+            . '<select class="dev-input dev-select" id="login_display" name="login_display" data-login-display-select>'
+            . LoginBlockPicker::displayOptions($display)
+            . '</select></div>'
+            . '<div class="dev-field"><label class="dev-label" for="login_label">Libellé</label>'
+            . '<input class="dev-input" id="login_label" type="text" name="login_label" value="'
+            . htmlspecialchars((string) ($button['label'] ?? ''), ENT_QUOTES) . '" /></div>'
+            . LoginBlockPicker::render('login_block_ref', 'login_block_ref', (string) ($button['block_ref'] ?? ''), $site, 'chrome-variant-form')
+            . '<div class="dev-field" data-login-href-field><label class="dev-label" for="login_href">Lien (page dédiée)</label>'
+            . '<input class="dev-input" id="login_href" type="text" name="login_href" value="'
+            . htmlspecialchars((string) ($button['href'] ?? ''), ENT_QUOTES) . '" placeholder="/login" /></div>'
+            . '<div class="dev-field"><label class="dev-label" for="login_style">Style</label>'
+            . '<select class="dev-input dev-select" id="login_style" name="login_style">'
+            . ChromeButtonRenderer::optionsHtml((string) ($button['style'] ?? 'outline'))
+            . '</select></div></div></div>';
+    }
+
+    /**
+     * @param array<string, mixed> $button
+     */
     private function buttonFields(string $prefix, string $title, array $button, string $defaultStyle = 'outline'): string
     {
         $enabled = ($button['enabled'] ?? false) === true ? 'checked' : '';
 
         return '<div class="dev-field dev-form__full"><h3 class="dev-panel__subtitle">' . htmlspecialchars($title, ENT_QUOTES) . '</h3>'
-            . '<label class="dev-checkbox"><input type="checkbox" name="' . $prefix . '_enabled" value="1" ' . $enabled . ' /> Activé</label>'
+            . '<label class="dev-checkbox"><input type="hidden" name="' . $prefix . '_enabled" value="0" />'
+            . '<input type="checkbox" name="' . $prefix . '_enabled" value="1" ' . $enabled . ' /> Activé</label>'
             . '<div class="dev-form--grid dev-form--grid-2">'
             . '<div class="dev-field"><label class="dev-label" for="' . $prefix . '_label">Libellé</label>'
             . '<input class="dev-input" id="' . $prefix . '_label" type="text" name="' . $prefix . '_label" value="'
@@ -160,7 +191,7 @@ final class HeaderFormRenderer
     {
         $template = HeaderStyle::normalizeTemplate($template);
         $payload = [
-            'login' => $this->parseButton($data, 'login', '/login', 'outline'),
+            'login' => $this->parseButton($data, 'login', '/login', 'outline', true),
             'cta' => $this->parseButton($data, 'cta', '#', 'primary'),
         ];
 
@@ -206,14 +237,21 @@ final class HeaderFormRenderer
      *
      * @return array{enabled: bool, label: string, href: string, style: string}
      */
-    private function parseButton(array $data, string $prefix, string $defaultHref, string $defaultStyle): array
+    private function parseButton(array $data, string $prefix, string $defaultHref, string $defaultStyle, bool $withLoginOptions = false): array
     {
-        return [
+        $button = [
             'enabled' => ($data[$prefix . '_enabled'] ?? '0') === '1',
             'label' => trim($data[$prefix . '_label'] ?? ''),
             'href' => trim($data[$prefix . '_href'] ?? '') !== '' ? trim($data[$prefix . '_href'] ?? '') : $defaultHref,
             'style' => trim($data[$prefix . '_style'] ?? '') !== '' ? trim($data[$prefix . '_style'] ?? '') : $defaultStyle,
         ];
+        if ($withLoginOptions) {
+            $display = trim($data['login_display'] ?? 'page');
+            $button['display'] = in_array($display, ['page', 'modal'], true) ? $display : 'page';
+            $button['block_ref'] = trim($data['login_block_ref'] ?? '');
+        }
+
+        return $button;
     }
 
     /**

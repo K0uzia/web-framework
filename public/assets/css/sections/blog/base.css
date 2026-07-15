@@ -1,9 +1,5 @@
 /* Tokens et styles communs aux variantes blog shadcnblocks */
 
-.section-blog {
-    background: var(--color-background, #fff);
-}
-
 .section-blog[class*="section--pad-"] {
     padding-inline: var(--space-md, 1rem);
 }
@@ -30,19 +26,19 @@
 
 .section-blog .section-blog__title {
     margin: 0;
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
 }
 
 .section-blog .section-blog__subtitle {
     margin: 0;
-    color: var(--color-muted-foreground, #64748b);
+    color: var(--color-muted-foreground);
 }
 
 .section-blog .section-blog__read-more--blog7,
 .section-blog .section-blog__read-more--blog8 {
     display: inline-flex;
     align-items: center;
-    color: var(--color-muted-foreground, #64748b);
+    color: var(--color-muted-foreground);
     text-decoration: none;
 }
 
@@ -91,7 +87,7 @@
 .section-blog .section-blog__media-frame--blog8 {
     overflow: hidden;
     aspect-ratio: 16 / 9;
-    border: 1px solid var(--color-border, #e2e8f0);
+    border: 1px solid var(--color-border);
     border-radius: var(--radius-lg, 0.5rem);
 }
 

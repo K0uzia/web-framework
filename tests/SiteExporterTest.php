@@ -29,6 +29,7 @@ final class SiteExporterTest extends TestCase
         $pages = new PageRepository($pdo);
         $siteRepo = new SiteRepository($pdo);
         $pages->save(new Page('', 'Accueil', 'default', 'Description accueil', [], [], true, ''));
+        $pages->save(new Page('about', 'À propos', 'default', 'Description about', [], [], true, ''));
 
         $resources = $root . '/resources';
         $view = new View($resources . '/layouts', $resources . '/partials', $resources . '/pages');
@@ -58,10 +59,22 @@ final class SiteExporterTest extends TestCase
 
         $result = $exporter->export($outputDir);
 
-        $this->assertSame(1, $result->pageCount);
+        $this->assertSame(2, $result->pageCount);
         $this->assertFileExists($outputDir . '/index.html');
-        $this->assertStringContainsString('Accueil', file_get_contents($outputDir . '/index.html') ?: '');
+        $this->assertFileExists($outputDir . '/about/index.html');
+        $homeHtml = file_get_contents($outputDir . '/index.html') ?: '';
+        $aboutHtml = file_get_contents($outputDir . '/about/index.html') ?: '';
+        $this->assertStringContainsString('Accueil', $homeHtml);
+        $this->assertStringContainsString('href="assets/css/base.css"', $homeHtml);
+        $this->assertStringNotContainsString('href="/assets/css/base.css"', $homeHtml);
+        $this->assertStringContainsString('href="../assets/css/base.css"', $aboutHtml);
+        $this->assertStringNotContainsString('href="/assets/css/base.css"', $aboutHtml);
         $this->assertDirectoryExists($outputDir . '/assets');
+        $this->assertFileExists($outputDir . '/assets/css/base.css');
+        $this->assertFileExists($outputDir . '/.htaccess');
+        $htaccess = file_get_contents($outputDir . '/.htaccess') ?: '';
+        $this->assertStringContainsString('RewriteEngine On', $htaccess);
+        $this->assertStringContainsString('DirectoryIndex index.html', $htaccess);
 
         $this->removeTree($outputDir);
     }

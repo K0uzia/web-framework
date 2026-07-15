@@ -1,9 +1,5 @@
 /* Tokens communs au type compare */
 
-.section-compare {
-    background: var(--color-background, #fff);
-}
-
 .section-compare[class*="section--pad-"] {
     padding-inline: var(--space-md, 1rem);
 }

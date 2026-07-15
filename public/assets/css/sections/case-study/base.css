@@ -1,9 +1,5 @@
 /* Tokens communs au type case-study */
 
-.section-case-study {
-    background: var(--color-background, #fff);
-}
-
 .section-case-study[class*="section--pad-"] {
     padding-inline: var(--space-md, 1rem);
 }

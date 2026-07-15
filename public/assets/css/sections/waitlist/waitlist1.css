@@ -22,7 +22,7 @@
     z-index: 0;
     overflow: hidden;
     pointer-events: none;
-    background: var(--color-background, #fff);
+    background: var(--color-elevated);
 }
 
 .section-waitlist--waitlist1 .section-waitlist__lines-svg--waitlist1 {
@@ -134,7 +134,7 @@
     line-height: 1;
     letter-spacing: -0.05em;
     text-wrap: balance;
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
 }
 
 @media (min-width: 48rem) {
@@ -150,7 +150,7 @@
     max-width: 36rem;
     font-size: 1rem;
     line-height: 1.55;
-    color: var(--color-text-muted, #64748b);
+    color: var(--color-text-muted);
     overflow-wrap: anywhere;
 }
 
@@ -205,14 +205,14 @@
     padding: 0 0.75rem;
     border: 0;
     border-radius: 0.75rem;
-    background: var(--color-surface, #f1f5f9);
-    color: var(--color-text, #0f172a);
+    background: var(--color-surface);
+    color: var(--color-text);
     font: inherit;
     box-shadow: none;
 }
 
 .section-waitlist--waitlist1 .section-waitlist__input--waitlist1:focus-visible {
-    outline: 2px solid var(--color-primary, #3b82f6);
+    outline: 2px solid var(--color-primary);
     outline-offset: 2px;
 }
 
@@ -225,8 +225,8 @@
     padding: 0.625rem 1rem;
     border: 0;
     border-radius: 0.75rem;
-    background: var(--color-primary, #3b82f6);
-    color: var(--color-button-primary-text, #fff);
+    background: var(--color-primary);
+    color: var(--color-button-primary-text);
     font: inherit;
     font-weight: 500;
     white-space: nowrap;
@@ -240,11 +240,11 @@
 }
 
 .section-waitlist--waitlist1 .section-waitlist__submit--waitlist1:hover {
-    background: var(--color-primary-hover, #2563eb);
+    background: var(--color-primary-hover);
 }
 
 .section-waitlist--waitlist1 .section-waitlist__submit--waitlist1:focus-visible {
-    outline: 2px solid var(--color-primary, #3b82f6);
+    outline: 2px solid var(--color-primary);
     outline-offset: 2px;
 }
 
@@ -283,5 +283,5 @@
     margin: 0;
     font-size: 0.9375rem;
     letter-spacing: -0.02em;
-    color: color-mix(in srgb, var(--color-text-muted, #64748b) 80%, transparent);
+    color: color-mix(in srgb, var(--color-text-muted) 80%, transparent);
 }

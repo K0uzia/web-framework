@@ -36,7 +36,7 @@
     min-width: 0;
     padding: 2.5rem;
     border-radius: 1.5rem;
-    background: var(--color-muted, #f1f5f9);
+    background: var(--color-muted);
 }
 
 .section-rate-card--rate-card2 .section-rate-card__card-title--rate-card2 {
@@ -53,7 +53,7 @@
     font-size: 1.125rem;
     line-height: 1.5;
     letter-spacing: -0.025em;
-    color: color-mix(in srgb, var(--color-text, #0f172a) 30%, transparent);
+    color: color-mix(in srgb, var(--color-text) 30%, transparent);
 }
 
 .section-rate-card--rate-card2 .section-rate-card__features--rate-card2 {
@@ -69,7 +69,7 @@
     line-height: 1.2;
     letter-spacing: 0.05em;
     text-transform: uppercase;
-    color: color-mix(in srgb, var(--color-text, #0f172a) 40%, transparent);
+    color: color-mix(in srgb, var(--color-text) 40%, transparent);
 }
 
 .section-rate-card--rate-card2 .section-rate-card__feature--rate-card2 {
@@ -148,7 +148,7 @@
     flex-shrink: 0;
     overflow: visible;
     padding: 0.5rem 1rem;
-    border: 1px solid var(--color-border, #cbd5e1);
+    border: 1px solid var(--color-border);
     border-radius: 0;
     font-size: 0.875rem;
     font-weight: 500;
@@ -156,13 +156,13 @@
     letter-spacing: 0.05em;
     text-transform: uppercase;
     text-decoration: none;
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
     background: transparent;
     box-shadow: none;
 }
 
 .section-rate-card--rate-card2 .section-rate-card__btn--rate-card2:hover {
-    background: color-mix(in srgb, var(--color-text, #0f172a) 5%, transparent);
+    background: color-mix(in srgb, var(--color-text) 5%, transparent);
 }
 
 .section-rate-card--rate-card2 .section-rate-card__btn-corner--rate-card2 {

@@ -1,0 +1,28 @@
+/* Bascule login / inscription / mot de passe oublié */
+
+.site-auth[data-auth-mode="login"] [data-auth-panel="signup"],
+.site-auth[data-auth-mode="login"] [data-auth-panel="forgot"] {
+    display: none;
+}
+
+.site-auth[data-auth-mode="signup"] [data-auth-panel="login"],
+.site-auth[data-auth-mode="signup"] [data-auth-panel="forgot"] {
+    display: none;
+}
+
+.site-auth[data-auth-mode="forgot"] [data-auth-panel="login"],
+.site-auth[data-auth-mode="forgot"] [data-auth-panel="signup"] {
+    display: none;
+}
+
+.site-auth[data-auth-mode="signup"] [data-auth-panel="signup"],
+.site-auth[data-auth-mode="forgot"] [data-auth-panel="forgot"],
+.site-auth[data-auth-mode="login"] [data-auth-panel="login"] {
+    display: block;
+}
+
+.site-auth[data-auth-mode="signup"] [data-auth-panel="signup"][hidden],
+.site-auth[data-auth-mode="forgot"] [data-auth-panel="forgot"][hidden],
+.site-auth[data-auth-mode="login"] [data-auth-panel="login"][hidden] {
+    display: block;
+}

@@ -1,0 +1,53 @@
+<div class="dev-chrome-nav__body">
+    <div class="dev-chrome-nav__toolbar">
+        <p class="dev-chrome-nav__meta">Mode <strong>{{nav_mode_label}}</strong> · liens partagés en-tête et pied de page</p>
+        <div class="dev-chrome-nav__actions">
+            <form method="post" action="/dev/site/nav/sync" data-dev-ajax="nav" data-dev-toast-form="Navigation synchronisée">
+                <button type="submit" class="dev-button dev-button--ghost dev-button--sm">
+                    <i class="fa-solid fa-arrows-rotate" aria-hidden="true"></i> Sync pages
+                </button>
+            </form>
+            <form method="post" action="/dev/site/nav/reset" data-dev-ajax="nav-reload" data-dev-confirm="Revenir à la navigation automatique ? Les liens personnalisés seront remplacés.">
+                <button type="submit" class="dev-button dev-button--ghost dev-button--sm">Mode auto</button>
+            </form>
+        </div>
+    </div>
+
+    <form method="post" action="/dev/site" class="dev-field dev-field--narrow dev-chrome-nav__home" id="home-label-form" hx-post="/dev/site" hx-trigger="change, input delay:400ms" hx-target="#home-label-status" hx-swap="innerHTML" data-dev-toast-form="Libellé enregistré">
+        <label class="dev-label" for="home_label">Libellé accueil (mode auto)</label>
+        <input class="dev-input dev-input--sm" id="home_label" name="home_label" type="text" value="{{home_label}}" />
+        <p class="dev-section-form__status" id="home-label-status" aria-live="polite"></p>
+    </form>
+
+    <div id="dev-nav-list" class="dev-chrome-nav__list" aria-live="polite">
+        {{{nav_panel_html}}}
+    </div>
+
+    <div class="dev-chrome-inset">
+        <h4 class="dev-chrome-inset__title">Ajouter un lien</h4>
+        <form method="post" action="/dev/site/nav/add" data-dev-ajax="nav" class="dev-form" data-dev-toast-form="Lien ajouté à la navigation">
+            <div class="dev-form--grid dev-form--grid-2 dev-chrome-fields">
+                <div class="dev-field">
+                    <label class="dev-label" for="nav_label">Libellé</label>
+                    <input class="dev-input dev-input--sm" id="nav_label" type="text" name="nav_label" required placeholder="À propos" />
+                </div>
+                <div class="dev-field">
+                    <label class="dev-label" for="nav_type">Type</label>
+                    <select class="dev-input dev-select dev-input--sm" id="nav_type" name="nav_type" data-nav-type-field>
+                        <option value="page">Page du site</option>
+                        <option value="link">URL externe</option>
+                        <option value="button">Bouton mis en avant</option>
+                        <option value="group">Menu déroulant</option>
+                    </select>
+                </div>
+                <div class="dev-field dev-form__full">
+                    <label class="dev-label" for="nav_target">Destination</label>
+                    {{{nav_add_target_html}}}
+                </div>
+            </div>
+            <button type="submit" class="dev-button dev-button--ghost dev-button--sm dev-chrome-inset__submit">
+                <i class="fa-solid fa-plus" aria-hidden="true"></i> Ajouter
+            </button>
+        </form>
+    </div>
+</div>

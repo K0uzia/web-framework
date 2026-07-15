@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Http\Dev;
 
 use App\Http\Dev\ChromeController;
+use App\Http\Dev\SiteNavFormRenderer;
 use Capsule\ChromeVariants;
 use Capsule\DevDashboard;
 use Capsule\Http\Factory\ResponseFactory;
@@ -27,7 +28,7 @@ final class ChromeControllerTest extends TestCase
         $pages = new PageRepository($pdo);
         $this->site = new SiteRepository($pdo);
         $ui = new DevDashboard(dirname(__DIR__, 3) . '/resources/dev', new ResponseFactory());
-        $this->controller = new ChromeController($ui, $this->site, $pages);
+        $this->controller = new ChromeController($ui, $this->site, $pages, new SiteNavFormRenderer($pages));
 
         $pages->save(new Page('', 'Home', 'default', '', [], [], true, ''));
     }
@@ -51,7 +52,8 @@ final class ChromeControllerTest extends TestCase
             . '&brand_show_logo=1&brand_show_name=0&brand_show_tagline=0'
             . '&nav_visible=1&zone_brand=center&zone_nav=left&zone_cta=right&zone_login=right'
             . '&cta_enabled=1&cta_label=Essayer&cta_href=%2Fabout&cta_style=primary'
-            . '&login_enabled=1&login_label=Connexion&login_href=%2Flogin&login_style=outline';
+            . '&login_enabled=1&login_label=Connexion&login_href=%2Flogin&login_style=outline'
+            . '&login_display=modal&login_block_ref=login%3Alogin1-default';
         $this->controller->update($this->post('/dev/chrome/header', $body), 'header');
 
         $site = $this->site->getSite();
@@ -65,6 +67,30 @@ final class ChromeControllerTest extends TestCase
         $this->assertSame('outline', $header['login']['style']);
         $this->assertSame('Essayer', $header['cta']['label']);
         $this->assertTrue($header['login']['enabled']);
+        $this->assertSame('modal', $header['login']['display']);
+        $this->assertSame('login:login1-default', $header['login']['block_ref']);
+    }
+
+    public function testUpdateNavbar1PreservesNavVisibilityWhenBlocksFormOmitsNavFields(): void
+    {
+        $this->controller->create(
+            $this->post('/dev/chrome/header/create', 'variant_name=Navigation&header_template=navbar1'),
+            'header',
+        );
+        $site = $this->site->getSite();
+        $variants = ChromeVariants::headerVariants($site);
+        $id = (string) $variants[array_key_last($variants)]['id'];
+
+        $body = 'variant_id=' . rawurlencode($id)
+            . '&variant_name=Navigation&header_template=navbar1'
+            . '&login_enabled=1&login_label=Connexion&login_href=%2Flogin&login_style=outline'
+            . '&login_display=page&login_block_ref=';
+        $this->controller->update($this->post('/dev/chrome/header', $body), 'header');
+
+        $header = ChromeVariants::resolveHeader($this->site->getSite(), $id);
+        $this->assertTrue($header['login']['enabled']);
+        $this->assertTrue($header['nav']['visible']);
+        $this->assertTrue($header['brand']['show_logo']);
     }
 
     public function testActivateSwitchesActiveVariantAndShowsPartial(): void
@@ -158,6 +184,34 @@ final class ChromeControllerTest extends TestCase
         $this->assertSame('navbar1', $created['template']);
         $this->assertSame('Navigation', $created['name']);
         $this->assertNotEmpty($created['menu_items']);
+    }
+
+    public function testUpdateFooterDefaultPersistsLegalLinks(): void
+    {
+        $body = 'variant_id=default&variant_name=Principal'
+            . '&brand_visible=1&brand_show_logo=1&brand_show_name=1&brand_show_tagline=1'
+            . '&nav_visible=1&zone_brand=left&zone_nav=right&zone_login=right'
+            . '&login_enabled=0&login_label=&login_href='
+            . '&footer_text=%C2%A9+test'
+            . '&legal_0_label=Mentions+l%C3%A9gales&legal_0_href=%2Flegal'
+            . '&legal_1_label=Confidentialit%C3%A9&legal_1_href=%2Fprivacy';
+        $this->controller->update($this->post('/dev/chrome/footer', $body), 'footer');
+
+        $footer = ChromeVariants::resolveFooter($this->site->getSite());
+        $this->assertSame('Mentions légales', $footer['legal_links'][0]['label'] ?? '');
+        $this->assertSame('/legal', $footer['legal_links'][0]['href'] ?? '');
+    }
+
+    public function testUpdateHeaderPersistsAppearanceBg(): void
+    {
+        $body = 'variant_id=default&variant_name=Principal&appearance_bg=primary'
+            . '&brand_show_logo=1&brand_show_name=1&brand_show_tagline=0'
+            . '&nav_visible=1&zone_brand=left&zone_nav=right&zone_cta=right&zone_login=right'
+            . '&cta_enabled=0&login_enabled=0';
+        $this->controller->update($this->post('/dev/chrome/header', $body), 'header');
+
+        $header = ChromeVariants::resolveHeader($this->site->getSite());
+        $this->assertSame('primary', $header['appearance']['bg'] ?? '');
     }
 
     private function post(string $path, string $body): Request

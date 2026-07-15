@@ -146,11 +146,21 @@
 
 <div class="dev-modal" id="dev-section-editor" hidden>
     <button type="button" class="dev-modal__backdrop" data-dev-modal-close="dev-section-editor" tabindex="-1" aria-hidden="true"></button>
-    <div class="dev-block-picker__panel dev-modal__panel--form dev-section-editor__panel" role="dialog" aria-modal="true" aria-labelledby="dev-section-editor-title">
-        <div class="dev-block-picker__head">
-            <h2 id="dev-section-editor-title">Modifier le bloc</h2>
-            <button type="button" class="dev-icon-btn" data-dev-modal-close="dev-section-editor" aria-label="Fermer"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+    <div class="dev-section-editor__panel" role="dialog" aria-modal="true" aria-labelledby="dev-section-editor-title">
+        <header class="dev-section-editor__head">
+            <div class="dev-section-editor__identity">
+                <span class="dev-section-editor__icon" id="dev-section-editor-icon" aria-hidden="true"><i class="fa-solid fa-layer-group"></i></span>
+                <div class="dev-section-editor__head-copy">
+                    <p class="dev-section-editor__eyebrow">Édition de bloc</p>
+                    <h2 id="dev-section-editor-title">Modifier le bloc</h2>
+                    <p class="dev-section-editor__subtitle" id="dev-section-editor-subtitle">Modifiez le contenu et l'apparence. Les changements sont enregistrés automatiquement.</p>
+                </div>
+            </div>
+            <button type="button" class="dev-icon-btn dev-section-editor__close" data-dev-modal-close="dev-section-editor" aria-label="Fermer"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+        </header>
+        <div class="dev-section-editor__workspace">
+            <div class="dev-section-editor__body" id="dev-section-editor-slot"></div>
+            <footer class="dev-section-editor__foot" id="dev-section-editor-foot" hidden></footer>
         </div>
-        <div class="dev-modal__body" id="dev-section-editor-slot"></div>
     </div>
 </div>

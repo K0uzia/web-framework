@@ -80,7 +80,7 @@ final class FooterVariantRenderer
     /**
      * @param list<array<string, mixed>> $links
      */
-    private static function linksListHtml(array $links, string $listClass): string
+    public static function linksListHtml(array $links, string $listClass, string $linkClass = 'site-footer__column-link'): string
     {
         $items = '';
         foreach ($links as $link) {
@@ -94,7 +94,7 @@ final class FooterVariantRenderer
             }
             $safeLabel = htmlspecialchars($label, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
             $safeHref = htmlspecialchars($href !== '' ? $href : '#', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-            $items .= '<li><a class="site-footer__column-link" href="' . $safeHref . '">' . $safeLabel . '</a></li>';
+            $items .= '<li><a class="' . htmlspecialchars($linkClass, ENT_QUOTES) . '" href="' . $safeHref . '">' . $safeLabel . '</a></li>';
         }
         if ($items === '') {
             return '';

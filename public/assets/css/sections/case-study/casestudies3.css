@@ -2,7 +2,7 @@
 
 .section-case-study--casestudies3 .section-case-study__panel--casestudies3 {
     overflow: hidden;
-    border: 1px solid var(--color-border, #e2e8f0);
+    border: 1px solid var(--color-border);
 }
 
 .section-case-study--casestudies3 .section-case-study__card--casestudies3 {
@@ -12,16 +12,16 @@
     padding: 1.5rem;
     color: inherit;
     text-decoration: none;
-    background: var(--color-background, #fff);
+    background: var(--color-elevated);
     transition: background 0.5s ease;
 }
 
 .section-case-study--casestudies3 .section-case-study__card--casestudies3:hover {
-    background: color-mix(in srgb, var(--color-surface, #f1f5f9) 40%, var(--color-background, #fff));
+    background: color-mix(in srgb, var(--color-surface) 40%, var(--color-background));
 }
 
 .section-case-study--casestudies3 .section-case-study__card--casestudies3:focus-visible {
-    outline: 2px solid var(--color-primary, #3b82f6);
+    outline: 2px solid var(--color-primary);
     outline-offset: 2px;
 }
 
@@ -74,7 +74,7 @@
     min-width: 0;
     font-size: clamp(1.25rem, 3vw, 1.5rem);
     font-weight: 500;
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
 }
 
 .section-case-study--casestudies3 .section-case-study__card-logo--casestudies3 {
@@ -93,7 +93,7 @@
     line-height: 1.4;
     letter-spacing: 0.02em;
     overflow-wrap: anywhere;
-    color: var(--color-text-muted, #64748b);
+    color: var(--color-text-muted);
 }
 
 @media (min-width: 40rem) {
@@ -109,17 +109,17 @@
     line-height: 1.25;
     text-wrap: balance;
     overflow-wrap: anywhere;
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
 }
 
 .section-case-study--casestudies3 .section-case-study__card-subtitle--casestudies3 {
     font-weight: 500;
-    color: color-mix(in srgb, var(--color-primary, #3b82f6) 50%, transparent);
+    color: color-mix(in srgb, var(--color-primary) 50%, transparent);
     transition: color 0.5s ease;
 }
 
 .section-case-study--casestudies3 .section-case-study__card--casestudies3:hover .section-case-study__card-subtitle--casestudies3 {
-    color: color-mix(in srgb, var(--color-primary, #3b82f6) 70%, transparent);
+    color: color-mix(in srgb, var(--color-primary) 70%, transparent);
 }
 
 .section-case-study--casestudies3 .section-case-study__card-link--casestudies3 {
@@ -127,7 +127,7 @@
     align-items: center;
     gap: 0.5rem;
     font-weight: 500;
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
 }
 
 .section-case-study--casestudies3 .section-case-study__card-link--casestudies3 i {
@@ -162,8 +162,8 @@
     isolation: isolate;
     height: 100%;
     padding: 0.5rem;
-    border: 1px solid var(--color-border, #e2e8f0);
-    background: var(--color-background, #fff);
+    border: 1px solid var(--color-border);
+    background: var(--color-elevated);
 }
 
 .section-case-study--casestudies3 .section-case-study__card-media--casestudies3 {
@@ -185,7 +185,7 @@
 .section-case-study--casestudies3 .section-case-study__bottom--casestudies3 {
     display: flex;
     min-width: 0;
-    border-top: 1px solid var(--color-border, #e2e8f0);
+    border-top: 1px solid var(--color-border);
 }
 
 .section-case-study--casestudies3 .section-case-study__dots--casestudies3 {
@@ -193,7 +193,7 @@
     width: 7rem;
     flex-shrink: 0;
     opacity: 0.15;
-    background-image: radial-gradient(var(--color-text-muted, #64748b) 1px, transparent 1px);
+    background-image: radial-gradient(var(--color-text-muted) 1px, transparent 1px);
     background-size: 10px 10px;
 }
 
@@ -235,25 +235,25 @@
 }
 
 .section-case-study--casestudies3 .section-case-study__card--second--casestudies3 {
-    border-top: 1px solid var(--color-border, #e2e8f0);
+    border-top: 1px solid var(--color-border);
 }
 
 @media (min-width: 64rem) {
     .section-case-study--casestudies3 .section-case-study__card--second--casestudies3 {
         border-top: 0;
-        border-left: 1px solid var(--color-border, #e2e8f0);
+        border-left: 1px solid var(--color-border);
     }
 }
 
 @media (min-width: 80rem) {
     .section-case-study--casestudies3 .section-case-study__card--first--casestudies3 {
         padding-left: 2rem;
-        border-left: 1px solid var(--color-border, #e2e8f0);
+        border-left: 1px solid var(--color-border);
     }
 
     .section-case-study--casestudies3 .section-case-study__card--second--casestudies3 {
         padding-left: 2rem;
-        border-right: 1px solid var(--color-border, #e2e8f0);
+        border-right: 1px solid var(--color-border);
     }
 
     .section-case-study--casestudies3 .section-case-study__card--first--casestudies3,

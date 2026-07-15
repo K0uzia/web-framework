@@ -6,6 +6,7 @@ namespace Tests\Http\Dev;
 
 use App\Http\Dev\MediaUploader;
 use App\Http\Dev\SiteController;
+use App\Http\Dev\SiteNavFormRenderer;
 use Capsule\DevDashboard;
 use Capsule\Http\Factory\ResponseFactory;
 use Capsule\Http\Message\Request;
@@ -32,7 +33,7 @@ final class SiteControllerTest extends TestCase
         $ui = new DevDashboard(dirname(__DIR__, 3) . '/resources/dev', new ResponseFactory());
         $media = new MediaUploader(sys_get_temp_dir() . '/capsule-test-uploads');
         $library = new MediaLibrary(new MediaRepository($pdo), sys_get_temp_dir() . '/capsule-test-uploads', '/uploads/site', $this->pages, $this->site, '', dirname(__DIR__, 3) . '/public');
-        $this->controller = new SiteController($ui, $this->site, $this->pages, $media, $library);
+        $this->controller = new SiteController($ui, $this->site, $this->pages, $media, $library, new SiteNavFormRenderer($this->pages));
 
         $this->pages->save(new Page('', 'Home', 'default', '', [], [], true, ''));
         $this->pages->save(new Page('about', 'About', 'default', '', [], [], true, ''));

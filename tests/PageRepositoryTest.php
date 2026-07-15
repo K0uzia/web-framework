@@ -143,5 +143,54 @@ final class SiteRepositoryTest extends TestCase
         $css = $site->themeCssFrom($theme);
 
         $this->assertStringContainsString('--color-primary: #abcdef', $css);
+        $this->assertStringContainsString('--color-muted-foreground: var(--color-text-muted)', $css);
+        $this->assertStringContainsString('--color-primary-foreground: var(--color-button-primary-text)', $css);
+        $this->assertStringContainsString('--color-foreground: var(--color-text)', $css);
+        $this->assertStringContainsString('--color-accent: var(--color-surface)', $css);
+        $this->assertStringContainsString('--color-destructive: var(--color-error)', $css);
+        $this->assertStringContainsString('--color-ring: var(--color-focus-ring)', $css);
+    }
+
+    public function testThemeCssInlineHtmlIncludesTokensAndBindings(): void
+    {
+        $site = $this->makeSite();
+        $theme = $site->defaultTheme();
+        $theme['colors']['background'] = '#aabbcc';
+        $cssDir = dirname(__DIR__) . '/public/assets/css';
+
+        $html = $site->themeHeadHtml('', $theme, $cssDir);
+
+        $this->assertStringStartsWith('<style>', $html);
+        $this->assertStringContainsString('--color-background: #aabbcc', $html);
+        $this->assertStringContainsString('href="/assets/css/theme-bindings.css?v=', $html);
+        $this->assertStringNotContainsString('section.section--bg-primary', explode('</style>', $html)[0]);
+    }
+
+    public function testThemeCssLinkHtmlIncludesCacheBust(): void
+    {
+        $site = $this->makeSite();
+        $theme = $site->defaultTheme();
+        $theme['colors']['background'] = '#aabbcc';
+        $cssDir = dirname(__DIR__) . '/public/assets/css';
+
+        $html = $site->themeCssLinkHtml('', $theme, $cssDir);
+
+        $this->assertStringContainsString('theme-generated.css?v=', $html);
+        $this->assertStringContainsString(rawurlencode($site->themeCssVersion($theme, $cssDir)), $html);
+    }
+
+    public function testThemeCssVersionChangesWhenBindingsChange(): void
+    {
+        $site = $this->makeSite();
+        $theme = $site->defaultTheme();
+        $cssDir = sys_get_temp_dir() . '/capsule-bindings-version-' . uniqid('', true);
+        mkdir($cssDir);
+        file_put_contents($cssDir . '/theme-bindings.css', '/* v1 */');
+
+        $versionOne = $site->themeCssVersion($theme, $cssDir);
+        file_put_contents($cssDir . '/theme-bindings.css', '/* v2 */');
+        $versionTwo = $site->themeCssVersion($theme, $cssDir);
+
+        $this->assertNotSame($versionOne, $versionTwo);
     }
 }

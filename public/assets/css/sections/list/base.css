@@ -1,5 +1,5 @@
 /* Tokens partagés list (variantes autonomes dans list2.css, etc.) */
 
 .section-list {
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
 }

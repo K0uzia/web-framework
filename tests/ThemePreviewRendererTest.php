@@ -23,6 +23,10 @@ final class ThemePreviewRendererTest extends TestCase
         $scripts = new \Capsule\ScriptResolver($root . '/public/assets/js');
         $cssDir = sys_get_temp_dir() . '/capsule-theme-preview-' . uniqid('', true);
         mkdir($cssDir);
+        copy(
+            $root . '/public/assets/css/theme-bindings.css',
+            $cssDir . '/theme-bindings.css',
+        );
 
         $renderer = new \Capsule\ThemePreviewRenderer(
             new ResponseFactory(),
@@ -39,8 +43,9 @@ final class ThemePreviewRendererTest extends TestCase
 
         $this->assertStringContainsString('theme-preview', $body);
         $this->assertStringContainsString('theme-preview.css', $body);
-        $this->assertStringContainsString('theme-generated.css', $body);
-        $this->assertStringContainsString('theme-bindings.css', $body);
+        $this->assertStringContainsString('<style>', $body);
+        $this->assertStringContainsString('--color-primary:', $body);
+        $this->assertStringContainsString('href="/assets/css/theme-bindings.css?v=', $body);
         $this->assertStringContainsString('section-hero--hero3', $body);
         $this->assertStringContainsString('theme-preview__alert--success', $body);
         $this->assertStringContainsString('noindex, nofollow', $body);

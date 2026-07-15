@@ -1,9 +1,5 @@
 /* Feature 17 : liste icones et CTA centre */
 
-.section-features--feature17 {
-    background: var(--color-background, #fff);
-}
-
 .section-features--feature17 .section-features__header--center {
     display: flex;
     flex-direction: column;
@@ -21,8 +17,8 @@
     font-size: 0.75rem;
     font-weight: 500;
     border-radius: 999px;
-    background: var(--color-muted, #f1f5f9);
-    color: var(--color-text, #0f172a);
+    background: var(--color-muted);
+    color: var(--color-text);
 }
 
 .section-features--feature17 .section-features__label--badge {
@@ -32,8 +28,8 @@
     font-size: 0.75rem;
     font-weight: 500;
     border-radius: 999px;
-    background: var(--color-muted, #f1f5f9);
-    color: var(--color-text, #0f172a);
+    background: var(--color-muted);
+    color: var(--color-text);
 }
 
 .section-features--feature17 .section-features__title {
@@ -42,7 +38,7 @@
     font-weight: 600;
     line-height: 1.15;
     letter-spacing: -0.025em;
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
 }
 
 .section-features--feature17 .section-features__grid--list {
@@ -77,8 +73,8 @@
     width: 2.5rem;
     height: 2.5rem;
     border-radius: 999px;
-    background: var(--color-muted, #f1f5f9);
-    color: var(--color-text, #0f172a);
+    background: var(--color-muted);
+    color: var(--color-text);
 }
 
 @media (min-width: 768px) {
@@ -104,14 +100,14 @@
     margin: 0;
     font-size: 1.125rem;
     font-weight: 600;
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
 }
 
 .section-features--feature17 .section-features__item--row p {
     margin: 0.5rem 0 0;
     font-size: 0.875rem;
     line-height: 1.6;
-    color: var(--color-text-muted, #64748b);
+    color: var(--color-text-muted);
 }
 
 .section-features--feature17 .section-features__cta {
@@ -130,8 +126,8 @@
     font-weight: 500;
     text-decoration: none;
     border-radius: 0.5rem;
-    background: var(--color-text, #0f172a);
-    color: var(--color-background, #fff);
+    background: var(--color-text);
+    color: var(--color-background);
     transition: opacity 0.15s ease;
 }
 

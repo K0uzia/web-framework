@@ -41,8 +41,8 @@ foreach ($indexFiles as $htmlFile) {
     if (!is_string($html)) {
         continue;
     }
-    if (!str_contains($html, 'theme-generated.css')) {
-        $htmlIssues[] = basename($htmlFile) . ' : lien theme-generated.css absent';
+    if (!str_contains($html, 'theme-generated.css') && !str_contains($html, '--color-primary:')) {
+        $htmlIssues[] = basename($htmlFile) . ' : thème absent (ni theme-generated.css ni style inline :root)';
     }
     if (!str_contains($html, 'site-nav.js')) {
         $htmlIssues[] = basename($htmlFile) . ' : script site-nav.js absent';

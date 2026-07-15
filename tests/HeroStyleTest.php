@@ -107,6 +107,33 @@ final class HeroStyleTest extends TestCase
         $this->assertStringNotContainsString('allowfullscreen', $html);
     }
 
+    public function testRenderHeroShaderBackdrop(): void
+    {
+        $html = \Capsule\Section\Hero\HeroStyle::renderHeroBackdrop([
+            'background_type' => 'shader',
+            'background_shader_id' => 'shader3-sky',
+            'background_shader_color' => '#7dd3fc',
+        ]);
+
+        $this->assertStringContainsString('data-hero-shader', $html);
+        $this->assertStringContainsString('shader3-sky', $html);
+        $this->assertStringContainsString('section-hero__shader-canvas', $html);
+        $this->assertStringContainsString('--shader-fallback:#0f172a', $html);
+        $this->assertStringContainsString('data-shader-color="#7dd3fc"', $html);
+    }
+
+    public function testRenderHeroVideoBackdropFromBackgroundField(): void
+    {
+        $html = \Capsule\Section\Hero\HeroStyle::renderHeroBackdrop([
+            'background_type' => 'video',
+            'background_video_url' => 'https://youtu.be/dQw4w9WgXcQ',
+            'video_controls' => 'off',
+        ]);
+
+        $this->assertStringContainsString('section-hero__backdrop--video', $html);
+        $this->assertStringContainsString('section-hero__backdrop-iframe', $html);
+    }
+
     public function testBadgeFieldOnlyForBadgeVariant(): void
     {
         $field = ['show_for_variants' => ['badge']];

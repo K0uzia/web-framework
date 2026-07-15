@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Capsule;
 
 use Capsule\MediaDisplaySettings;
+use Capsule\Section\Support\SectionButtons;
 use Capsule\Section\SectionEnrichContext;
 use Capsule\Section\SectionHandlerRegistry;
+use Capsule\Section\SectionTemplateData;
 use Capsule\Support\Utf8;
 
 final class SectionRenderer
@@ -16,7 +18,13 @@ final class SectionRenderer
         private readonly string $sectionsDir,
         private readonly bool $isDev = true,
         private readonly ?SectionHandlerRegistry $handlers = null,
+        private readonly ?SectionTemplateData $templateData = null,
     ) {
+    }
+
+    private function templateDataBuilder(): SectionTemplateData
+    {
+        return $this->templateData ?? new SectionTemplateData($this->view, $this->handlers());
     }
 
     private function handlers(): SectionHandlerRegistry
@@ -71,7 +79,74 @@ final class SectionRenderer
 
         $data = $this->buildTemplateData($section);
 
-        return $this->view->renderString($template, $data);
+        $html = $this->view->renderString($template, $data);
+
+        return $this->applySectionStyleModifiers($html, $section);
+    }
+
+    /**
+     * @param array<string, mixed> $section
+     */
+    private function applySectionStyleModifiers(string $html, array $section): string
+    {
+        $style = is_array($section['style'] ?? null) ? $section['style'] : [];
+        $classes = [];
+
+        $align = trim((string) ($style['text_align'] ?? ''));
+        if (in_array($align, ['left', 'center', 'right'], true)) {
+            $classes[] = 'section--align-' . $align;
+        }
+
+        if (($style['border'] ?? 'none') === 'yes') {
+            $classes[] = 'section--border';
+        }
+
+        $titleSize = trim((string) ($style['title_size'] ?? ''));
+        if ($titleSize !== '' && $titleSize !== 'inherit') {
+            $classes[] = 'section--title-' . $titleSize;
+        }
+
+        $subtitleSize = trim((string) ($style['subtitle_size'] ?? ''));
+        if ($subtitleSize !== '' && $subtitleSize !== 'inherit') {
+            $classes[] = 'section--subtitle-' . $subtitleSize;
+        }
+
+        $inlineStyle = $this->sectionTextColorStyle($style);
+
+        if ($classes === [] && $inlineStyle === '') {
+            return $html;
+        }
+
+        $inject = $classes !== [] ? implode(' ', $classes) . ' ' : '';
+
+        if ($inlineStyle !== '') {
+            return preg_replace(
+                '/^<section\s+class="([^"]*)"/',
+                '<section class="' . $inject . '$1"' . $inlineStyle,
+                $html,
+                1,
+            ) ?? $html;
+        }
+
+        return preg_replace('/^<section\s+class="/', '<section class="' . $inject, $html, 1) ?? $html;
+    }
+
+    /**
+     * @param array<string, mixed> $style
+     */
+    private function sectionTextColorStyle(array $style): string
+    {
+        $raw = trim((string) ($style['text_color'] ?? ''));
+        if ($raw === '') {
+            return '';
+        }
+
+        $normalized = ThemeColor::normalize($raw, '#000000');
+        if (!preg_match('/^#[0-9a-f]{6}$/', $normalized)) {
+            return '';
+        }
+
+        return ' style="--section-text-override:' . htmlspecialchars($normalized, ENT_QUOTES) . '"';
     }
 
     /**
@@ -129,93 +204,11 @@ final class SectionRenderer
      */
     private function buildTemplateData(array $section): array
     {
-        $data = [];
-        $data['section_id'] = is_string($section['id'] ?? null) ? $section['id'] : '';
-        $data['type'] = is_string($section['type'] ?? null) ? $section['type'] : '';
-        $data['variant'] = is_string($section['variant'] ?? null) ? $section['variant'] : 'default';
-
+        $data = $this->templateDataBuilder()->build($section);
         $content = is_array($section['content'] ?? null) ? $section['content'] : [];
-        foreach ($content as $key => $value) {
-            if (is_scalar($value)) {
-                $data['content_' . $key] = (string) $value;
-            }
-        }
-
-        $style = is_array($section['style'] ?? null) ? $section['style'] : [];
-        foreach ($style as $key => $value) {
-            if (is_scalar($value)) {
-                $data['style_' . $key] = (string) $value;
-            }
-        }
-
         if (isset($content['items']) && is_array($content['items'])) {
-            $data['items_html'] = $this->renderItems($content['items'], $data['type'], $data['variant']);
+            $data['items_html'] = $this->renderItems($content['items'], (string) $data['type'], (string) $data['variant']);
         }
-
-        $data['head_html'] = $this->buildHeadHtml($content);
-        $data['buttons_html'] = $this->resolveButtonsHtml($content);
-
-        if (is_string($content['text'] ?? null)) {
-            $paragraphs = array_values(array_filter(
-                array_map('trim', preg_split('/\r\n|\n|\r/', $content['text']) ?: []),
-                static fn (string $p): bool => $p !== '',
-            ));
-            $data['text_paragraphs_html'] = implode('', array_map(
-                static fn (string $p): string => '<p>' . htmlspecialchars($p, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</p>',
-                $paragraphs,
-            ));
-        }
-
-        $sectionTitle = trim((string) ($content['title'] ?? ''));
-        $data['optional_section_title_html'] = $sectionTitle !== ''
-            ? '<h2 class="section-content__title">' . htmlspecialchars($sectionTitle, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</h2>'
-            : '';
-
-        $bannerHref = trim((string) ($content['href'] ?? ''));
-        $bannerLinkLabel = trim((string) ($content['link_label'] ?? ''));
-        $data['banner_link_html'] = ($bannerHref !== '' && $bannerLinkLabel !== '')
-            ? ' <a class="section-banner__link" href="' . htmlspecialchars($bannerHref, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '">'
-                . htmlspecialchars($bannerLinkLabel, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</a>'
-            : '';
-
-        $badgeText = trim((string) ($content['badge'] ?? ''));
-        if ($badgeText === '' && $data['variant'] === 'badge') {
-            $badgeText = 'Nouveau';
-        }
-        $data['badge_html'] = $badgeText !== ''
-            ? '<span class="section-hero__badge">' . htmlspecialchars($badgeText, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</span>'
-            : '';
-
-        $data['hero_modifiers'] = '';
-        $data['hero_backdrop_html'] = '';
-        $data['hero_backdrop_class'] = '';
-
-        $handler = $this->handlers()->get($data['type']);
-        if ($handler !== null) {
-            $data['variant'] = $handler->normalizeVariant($data['variant']);
-            $resolvedStyle = $handler->resolveStyle($style, $data['variant']);
-            foreach ($resolvedStyle as $key => $value) {
-                $data['style_' . $key] = $value;
-            }
-            $context = new SectionEnrichContext($this->renderHeroButtons(...));
-            $data = $handler->enrich($data, $content, $data['variant'], $context);
-        } else {
-            $imageUrl = MediaDisplaySettings::normalizeUrl((string) ($content['image_url'] ?? ''));
-            $imageTitle = trim((string) ($content['title'] ?? ''));
-            $safeAlt = htmlspecialchars($imageTitle !== '' ? $imageTitle : 'Illustration', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-            $data['hero_visual_html'] = $imageUrl !== ''
-                ? '<img class="section-hero__img" src="' . htmlspecialchars($imageUrl, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')
-                    . '" alt="' . $safeAlt . '" loading="lazy" decoding="async" />'
-                : '<div class="section-hero__visual-placeholder" aria-hidden="true"></div>';
-            $data['feature_image_html'] = $this->featureSectionImageHtml($data['type'], $data['variant'], $content);
-            $data['quote_html'] = $this->featureQuoteHtml($data['type'], $content);
-            $data['checklist_html'] = $this->featureChecklistHtml($data['type'], $data['variant'], $content);
-        }
-
-        $codeText = trim((string) ($content['code'] ?? $content['text'] ?? ''));
-        $data['code_html'] = $codeText !== ''
-            ? '<pre class="section-code"><code>' . htmlspecialchars($codeText, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</code></pre>'
-            : '';
 
         return $data;
     }
@@ -247,92 +240,29 @@ final class SectionRenderer
 
     /**
      * @param array<string, mixed> $content
+     * @deprecated Use SectionButtons::resolveHtml()
      */
     private function resolveButtonsHtml(array $content): string
     {
-        if (isset($content['buttons']) && is_array($content['buttons'])) {
-            return $this->renderButtons($content['buttons']);
-        }
-
-        // Compatibilité ascendante : anciennes sections enregistrées avant l'introduction
-        // du répéteur de boutons (un seul lien plat en contenu).
-        $legacyLabel = $content['cta_label'] ?? $content['button_label'] ?? null;
-        $legacyHref = $content['cta_href'] ?? $content['button_href'] ?? null;
-        if ($legacyLabel !== null || $legacyHref !== null) {
-            return $this->renderButtons([[
-                'label' => $legacyLabel ?? '',
-                'href' => $legacyHref ?? '',
-                'style' => 'primary',
-            ]]);
-        }
-
-        return '';
+        return SectionButtons::resolveHtml($content);
     }
 
     /**
      * @param list<mixed> $buttons
+     * @deprecated Use SectionButtons::render()
      */
     private function renderButtons(array $buttons): string
     {
-        $parts = [];
-        foreach ($buttons as $button) {
-            if (!is_array($button)) {
-                continue;
-            }
-            $label = trim((string) ($button['label'] ?? ''));
-            $href = trim((string) ($button['href'] ?? ''));
-            if ($label === '' || $href === '') {
-                continue;
-            }
-            $style = ($button['style'] ?? 'primary') === 'secondary' ? 'secondary' : 'primary';
-            $parts[] = '<a class="section-button section-button--' . $style . '" href="'
-                . htmlspecialchars($href, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '">'
-                . htmlspecialchars($label, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</a>';
-        }
-
-        return implode("\n", $parts);
+        return SectionButtons::render($buttons);
     }
 
     /**
      * @param array<string, mixed> $content
+     * @deprecated Use SectionButtons::resolveHeroHtml()
      */
     private function renderHeroButtons(array $content): string
     {
-        $buttons = $content['buttons'] ?? null;
-        if (!is_array($buttons) || $buttons === []) {
-            $legacyLabel = trim((string) ($content['cta_label'] ?? $content['button_label'] ?? ''));
-            $legacyHref = trim((string) ($content['cta_href'] ?? $content['button_href'] ?? ''));
-            if ($legacyLabel === '' || $legacyHref === '') {
-                return '';
-            }
-
-            $buttons = [['label' => $legacyLabel, 'href' => $legacyHref, 'style' => 'primary']];
-        }
-
-        $parts = [];
-        $isFirstPrimary = true;
-        foreach ($buttons as $button) {
-            if (!is_array($button)) {
-                continue;
-            }
-            $label = trim((string) ($button['label'] ?? ''));
-            $href = trim((string) ($button['href'] ?? ''));
-            if ($label === '' || $href === '') {
-                continue;
-            }
-            $style = ($button['style'] ?? 'primary') === 'secondary' ? 'secondary' : 'primary';
-            $icon = ($style === 'primary' && $isFirstPrimary)
-                ? ' <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>'
-                : '';
-            if ($style === 'primary') {
-                $isFirstPrimary = false;
-            }
-            $parts[] = '<a class="section-hero__button section-hero__button--' . $style . '" href="'
-                . htmlspecialchars($href, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '">'
-                . htmlspecialchars($label, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . $icon . '</a>';
-        }
-
-        return implode("\n", $parts);
+        return SectionButtons::resolveHeroHtml($content);
     }
 
     /**
@@ -413,7 +343,6 @@ final class SectionRenderer
         $data['index_padded'] = str_pad((string) $index, 2, '0', STR_PAD_LEFT);
         $data['featured_class'] = match (true) {
             $type === 'pricing' && $index === 2 => ' section-pricing__card--featured',
-            $type === 'features' && $variant === 'feature-5' && $index === 1 => ' section-features__item--lead',
             default => '',
         };
 

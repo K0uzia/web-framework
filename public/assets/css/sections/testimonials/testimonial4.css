@@ -38,16 +38,16 @@
     justify-content: center;
     gap: 1rem;
     padding: 1.5rem;
-    border: 1px solid var(--color-border, #e2e8f0);
+    border: 1px solid var(--color-border);
     border-radius: var(--radius-lg, 0.75rem);
-    background: var(--color-elevated, #fff);
+    background: var(--color-elevated);
 }
 
 .section-testimonials--testimonial4 .section-testimonials__quote--featured q {
     font-size: 1.25rem;
     font-weight: 500;
     line-height: 1.4;
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
 }
 
 @media (min-width: 1024px) {

@@ -112,9 +112,24 @@ final class SiteRepository
 
     public function ensureThemeCssFile(string $publicCssDir): void
     {
+        $theme = $this->getTheme();
+        $css = $this->fullThemeCssFrom($theme, $publicCssDir);
         $path = $this->themeCssPath($publicCssDir);
-        if (!is_file($path)) {
-            $this->writeThemeCssFile($this->getTheme(), $publicCssDir);
+        if (is_file($path)) {
+            $existing = file_get_contents($path);
+            if ($existing === $css) {
+                return;
+            }
+        }
+
+        $dir = rtrim($publicCssDir, '/\\');
+        if (!is_dir($dir) && !mkdir($dir, 0755, true) && !is_dir($dir)) {
+            throw new \RuntimeException('Impossible de créer le dossier CSS thème : ' . $dir);
+        }
+
+        $written = file_put_contents($path, $css);
+        if ($written === false) {
+            throw new \RuntimeException('Impossible d\'écrire le fichier CSS thème.');
         }
     }
 
@@ -128,22 +143,108 @@ final class SiteRepository
             throw new \RuntimeException('Impossible de créer le dossier CSS thème : ' . $dir);
         }
 
-        $written = file_put_contents($this->themeCssPath($publicCssDir), $this->themeCssFrom($theme));
+        $written = file_put_contents($this->themeCssPath($publicCssDir), $this->fullThemeCssFrom($theme, $publicCssDir));
         if ($written === false) {
             throw new \RuntimeException('Impossible d\'écrire le fichier CSS thème.');
         }
     }
 
-    public function themeCssLinkHtml(string $assetRoot): string
+    /**
+     * @param array<string, mixed> $theme
+     */
+    public function themeCssVersion(array $theme, string $publicCssDir): string
     {
-        $href = rtrim($assetRoot, '/') . '/assets/css/theme-generated.css';
+        $colors = is_array($theme['colors'] ?? null) ? $theme['colors'] : [];
+        $fonts = is_array($theme['fonts'] ?? null) ? $theme['fonts'] : [];
+        $spacing = is_array($theme['spacing'] ?? null) ? $theme['spacing'] : [];
+        $layout = is_array($theme['layout'] ?? null) ? $theme['layout'] : [];
+        $bindingsHash = hash('xxh128', $this->themeBindingsCss($publicCssDir));
+
+        return substr(hash('xxh128', json_encode([$colors, $fonts, $spacing, $layout, $bindingsHash], JSON_THROW_ON_ERROR)), 0, 12);
+    }
+
+    public function themeCssLinkHtml(string $assetRoot, ?array $theme = null, string $publicCssDir = ''): string
+    {
+        $theme ??= $this->getTheme();
+        $href = rtrim($assetRoot, '/') . '/assets/css/theme-generated.css?v='
+            . rawurlencode($this->themeCssVersion($theme, $publicCssDir));
 
         return '<link rel="stylesheet" href="' . htmlspecialchars($href, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '" />';
+    }
+
+    public function themeCssInlineHtml(?array $theme = null, string $publicCssDir = '', string $assetRoot = ''): string
+    {
+        return $this->themeHeadHtml($assetRoot, $theme, $publicCssDir);
+    }
+
+    public function themeCssVarsInlineHtml(?array $theme = null): string
+    {
+        $theme ??= $this->getTheme();
+
+        return '<style>' . trim($this->themeCssFrom($theme)) . '</style>';
+    }
+
+    public function themeBindingsLinkHtml(string $assetRoot, ?array $theme = null, string $publicCssDir = ''): string
+    {
+        $theme ??= $this->getTheme();
+        if ($publicCssDir === '' || !is_file($this->themeBindingsPath($publicCssDir))) {
+            return '';
+        }
+
+        $href = rtrim($assetRoot, '/') . '/assets/css/theme-bindings.css?v='
+            . rawurlencode($this->themeCssVersion($theme, $publicCssDir));
+
+        return '<link rel="stylesheet" href="' . htmlspecialchars($href, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '" />';
+    }
+
+    /**
+     * Variables :root inline + theme-bindings.css en dernier (après les CSS de blocs).
+     */
+    public function themeHeadHtml(string $assetRoot, ?array $theme = null, string $publicCssDir = ''): string
+    {
+        $parts = [trim($this->themeCssVarsInlineHtml($theme))];
+        $bindings = trim($this->themeBindingsLinkHtml($assetRoot, $theme, $publicCssDir));
+        if ($bindings !== '') {
+            $parts[] = $bindings;
+        }
+
+        return implode("\n", $parts);
+    }
+
+    /**
+     * @param array<string, mixed> $theme
+     */
+    public function fullThemeCssFrom(array $theme, string $publicCssDir): string
+    {
+        $core = trim($this->themeCssFrom($theme));
+        $bindings = $this->themeBindingsCss($publicCssDir);
+        if ($bindings === '') {
+            return $core;
+        }
+
+        return $core . "\n\n" . $bindings;
+    }
+
+    public function themeBindingsCss(string $publicCssDir): string
+    {
+        $path = $this->themeBindingsPath($publicCssDir);
+        if (!is_file($path)) {
+            return '';
+        }
+
+        $content = file_get_contents($path);
+
+        return is_string($content) ? trim($content) : '';
     }
 
     private function themeCssPath(string $publicCssDir): string
     {
         return rtrim($publicCssDir, '/\\') . '/theme-generated.css';
+    }
+
+    private function themeBindingsPath(string $publicCssDir): string
+    {
+        return rtrim($publicCssDir, '/\\') . '/theme-bindings.css';
     }
 
     /**
@@ -197,6 +298,12 @@ final class SiteRepository
         }
         $lines[] = '    --color-muted: var(--color-surface);';
         $lines[] = '    --color-elevated: var(--color-surface);';
+        $lines[] = '    --color-foreground: var(--color-text);';
+        $lines[] = '    --color-muted-foreground: var(--color-text-muted);';
+        $lines[] = '    --color-primary-foreground: var(--color-button-primary-text);';
+        $lines[] = '    --color-accent: var(--color-surface);';
+        $lines[] = '    --color-destructive: var(--color-error);';
+        $lines[] = '    --color-ring: var(--color-focus-ring);';
         foreach ($fonts as $key => $value) {
             if (is_string($value) && $value !== '') {
                 $lines[] = '    --font-' . $this->cssVarName((string) $key) . ': ' . $value . ';';

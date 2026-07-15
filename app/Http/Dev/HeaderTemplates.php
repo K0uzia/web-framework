@@ -90,7 +90,7 @@ final class HeaderTemplates
                 ['label' => 'Tarifs', 'href' => '#'],
                 ['label' => 'Blog', 'href' => '#'],
             ],
-            'login' => ['enabled' => true, 'label' => 'Connexion', 'href' => '/login', 'style' => 'outline'],
+            'login' => ['enabled' => true, 'label' => 'Connexion', 'href' => '/login', 'style' => 'outline', 'display' => 'page', 'block_ref' => 'login:login1-default'],
             'cta' => ['enabled' => true, 'label' => 'Commencer', 'href' => '#', 'style' => 'primary'],
         ];
     }
@@ -120,7 +120,7 @@ final class HeaderTemplates
                 ['label' => 'Blog', 'href' => '#'],
                 ['label' => 'Tarifs', 'href' => '#'],
             ],
-            'login' => ['enabled' => true, 'label' => 'Connexion', 'href' => '/login', 'style' => 'outline'],
+            'login' => ['enabled' => true, 'label' => 'Connexion', 'href' => '/login', 'style' => 'outline', 'display' => 'page', 'block_ref' => 'login:login1-default'],
             'cta' => ['enabled' => true, 'label' => 'Essai gratuit', 'href' => '#', 'style' => 'primary'],
         ];
     }

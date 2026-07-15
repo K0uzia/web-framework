@@ -1,9 +1,5 @@
 /* Feature 43 : grille icones centree avec CTA */
 
-.section-features--feature43 {
-    background: var(--color-background, #fff);
-}
-
 .section-features--feature43 .section-features__title--center {
     margin: 0 auto 4rem;
     max-width: 48rem;
@@ -12,7 +8,7 @@
     line-height: 1.1;
     letter-spacing: -0.025em;
     text-align: center;
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
     text-wrap: balance;
 }
 
@@ -51,8 +47,8 @@
     height: 4rem;
     margin-bottom: 1.25rem;
     border-radius: 999px;
-    background: var(--color-muted, #f1f5f9);
-    color: var(--color-text, #0f172a);
+    background: var(--color-muted);
+    color: var(--color-text);
 }
 
 .section-features--feature43 .section-features__icon-circle--lg i {
@@ -64,14 +60,14 @@
     margin: 0;
     font-size: 1.25rem;
     font-weight: 600;
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
 }
 
 .section-features--feature43 .section-features__item--icon p {
     margin: 0.5rem 0 0;
     font-size: 0.875rem;
     line-height: 1.6;
-    color: var(--color-text-muted, #64748b);
+    color: var(--color-text-muted);
 }
 
 .section-features--feature43 .section-features__cta {
@@ -90,8 +86,8 @@
     font-weight: 500;
     text-decoration: none;
     border-radius: 0.5rem;
-    background: var(--color-text, #0f172a);
-    color: var(--color-background, #fff);
+    background: var(--color-text);
+    color: var(--color-background);
     transition: opacity 0.15s ease;
 }
 

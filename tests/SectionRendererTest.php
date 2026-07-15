@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests;
 
-use App\Http\Dev\SectionDefaults;
+use App\Http\Dev\Sections\SectionDefaults;
 use Capsule\SectionRenderer;
 use Capsule\View;
 use PHPUnit\Framework\TestCase;

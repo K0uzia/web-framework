@@ -113,6 +113,77 @@ final class StylesheetResolverTest extends TestCase
         $this->assertContains('/assets/css/sections/hero/customize.css', $hrefs);
     }
 
+    public function testAppearanceCssLoadedWithTypographyStyle(): void
+    {
+        mkdir($this->cssDir . '/sections/features', 0775, true);
+        file_put_contents($this->cssDir . '/sections/features/base.css', '/* base */');
+        file_put_contents($this->cssDir . '/sections/features/feature1.css', '/* feature */');
+        file_put_contents($this->cssDir . '/sections/appearance.css', '/* appearance */');
+
+        $resolver = new StylesheetResolver($this->cssDir);
+        $hrefs = $resolver->resolve('default', 'index', '', [], [
+            ['type' => 'features', 'variant' => 'feature1'],
+        ], [[
+            'type' => 'features',
+            'variant' => 'feature1',
+            'style' => ['bg' => 'background', 'padding' => 'md', 'title_size' => 'xl'],
+        ]]);
+
+        $this->assertContains('/assets/css/sections/appearance.css', $hrefs);
+        $appearanceIndex = array_search('/assets/css/sections/appearance.css', $hrefs, true);
+        $featureIndex = array_search('/assets/css/sections/features/feature1.css', $hrefs, true);
+        $this->assertNotFalse($appearanceIndex);
+        $this->assertNotFalse($featureIndex);
+        $this->assertGreaterThan($featureIndex, $appearanceIndex);
+    }
+
+    public function testAppearanceCssSkippedWithoutTypographyStyle(): void
+    {
+        file_put_contents($this->cssDir . '/sections/appearance.css', '/* appearance */');
+
+        $resolver = new StylesheetResolver($this->cssDir);
+        $hrefs = $resolver->resolve('default', 'index', '', [], [
+            ['type' => 'features', 'variant' => 'feature1'],
+        ], [[
+            'type' => 'features',
+            'variant' => 'feature1',
+            'style' => ['bg' => 'background', 'padding' => 'md'],
+        ]]);
+
+        $this->assertNotContains('/assets/css/sections/appearance.css', $hrefs);
+    }
+
+    public function testLoadsLoginCssForModalSectionMeta(): void
+    {
+        mkdir($this->cssDir . '/sections/login', 0775, true);
+        mkdir($this->cssDir . '/sections/signup', 0775, true);
+        file_put_contents($this->cssDir . '/sections/login/base.css', '/* login base */');
+        file_put_contents($this->cssDir . '/sections/login/login1.css', '/* login1 */');
+        file_put_contents($this->cssDir . '/sections/signup/base.css', '/* signup base */');
+        file_put_contents($this->cssDir . '/sections/signup/signup1.css', '/* signup1 */');
+        file_put_contents($this->cssDir . '/sections/auth-switch.css', '/* auth */');
+
+        $resolver = new StylesheetResolver($this->cssDir);
+        $hrefs = $resolver->resolve('default', 'index', '', [
+            'login_modal_section' => [
+                'type' => 'login',
+                'variant' => 'login1',
+                'visible' => true,
+                'content' => [],
+                'style' => [],
+            ],
+            'login_modal_auth_refs' => [
+                ['type' => 'login', 'variant' => 'login1'],
+                ['type' => 'signup', 'variant' => 'signup1'],
+            ],
+        ], []);
+
+        $this->assertContains('/assets/css/sections/login/base.css', $hrefs);
+        $this->assertContains('/assets/css/sections/login/login1.css', $hrefs);
+        $this->assertContains('/assets/css/sections/signup/base.css', $hrefs);
+        $this->assertContains('/assets/css/sections/signup/signup1.css', $hrefs);
+    }
+
     private function removeDir(string $dir): void
     {
         if (!is_dir($dir)) {

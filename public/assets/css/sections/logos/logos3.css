@@ -23,7 +23,7 @@
     font-weight: 600;
     line-height: 1.25;
     letter-spacing: -0.025em;
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
 }
 
 .section-logos--logos3 .section-logos__marquee--logos3 {

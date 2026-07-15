@@ -6,7 +6,7 @@ namespace Tests\Http\Dev;
 
 use App\Http\Dev\LibraryMediaUploader;
 use App\Http\Dev\PagesController;
-use App\Http\Dev\SectionFormRenderer;
+use App\Http\Dev\Sections\SectionFormRenderer;
 use App\Http\Dev\SlugCodec;
 use Capsule\DevDashboard;
 use Capsule\Http\Factory\ResponseFactory;
@@ -35,11 +35,19 @@ final class PagesControllerTest extends TestCase
 
         $root = dirname(__DIR__, 3);
         $ui = new DevDashboard($root . '/resources/dev', new ResponseFactory());
-        $registry = new SectionRegistry($root . '/resources/sections/registry.yaml');
+        $registry = new SectionRegistry(
+            $root . '/resources/sections/registry.yaml',
+            $root . '/resources/sections/_shared/style-fields.yaml',
+        );
         $mediaRepo = new MediaRepository($pdo);
         $library = new MediaLibrary($mediaRepo, sys_get_temp_dir(), '/uploads/site', $this->pages, $this->site);
         $libraryUploader = new LibraryMediaUploader(sys_get_temp_dir());
-        $forms = new SectionFormRenderer($registry, $this->pages, $library, $libraryUploader);
+        $fieldSchema = new \Capsule\Section\SectionFieldSchema(
+            $registry,
+            $root . '/resources/sections/_shared/variant-content-overrides.yaml',
+        );
+        $variantResolver = new \Capsule\Section\SectionVariantResolver($registry, new \Capsule\Section\SectionHandlerRegistry());
+        $forms = new SectionFormRenderer($registry, $this->pages, $library, $libraryUploader, $fieldSchema, $variantResolver);
         $layouts = new LayoutRegistry($root . '/resources/layouts');
 
         $this->controller = new PagesController($ui, $this->pages, $this->site, $registry, $forms, $layouts);

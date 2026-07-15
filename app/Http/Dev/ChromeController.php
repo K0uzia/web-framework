@@ -10,7 +10,10 @@ use App\Http\Dev\FooterTemplates;
 use App\Http\Dev\HeaderFormRenderer;
 use App\Http\Dev\HeaderTemplatePickerRenderer;
 use App\Http\Dev\HeaderTemplates;
+use App\Http\Dev\LoginBlockPicker;
+use Capsule\ChromeAppearance;
 use Capsule\ChromeButtonRenderer;
+use Capsule\LoginBlockLibrary;
 use Capsule\ChromeVariants;
 use Capsule\DevDashboard;
 use Capsule\FooterStyle;
@@ -35,6 +38,7 @@ final class ChromeController
         private readonly DevDashboard $ui,
         private readonly SiteRepository $site,
         private readonly PageRepository $pages,
+        private readonly SiteNavFormRenderer $navForms,
         private readonly FooterFormRenderer $footerForms = new FooterFormRenderer(),
         private readonly FooterTemplatePickerRenderer $footerTemplatePicker = new FooterTemplatePickerRenderer(),
         private readonly HeaderFormRenderer $headerForms = new HeaderFormRenderer(),
@@ -122,19 +126,31 @@ final class ChromeController
             'login_enabled_checked' => ($variant['login']['enabled'] ?? false) ? 'checked' : '',
             'login_label' => htmlspecialchars((string) $variant['login']['label'], ENT_QUOTES),
             'login_style_options' => ChromeButtonRenderer::optionsHtml((string) ($variant['login']['style'] ?? 'outline')),
+            'show_border_checked' => ChromeAppearance::showBorder($variant) ? 'checked' : '',
+            'footer_bg_options' => $this->chromeBgOptions(ChromeAppearance::footerBgToken($variant), 'footer'),
+            'header_bg_options' => $this->chromeBgOptions(ChromeAppearance::headerBgToken($variant), 'header'),
+            'login_display_options' => LoginBlockPicker::displayOptions((string) ($variant['login']['display'] ?? 'page')),
+            'login_block_picker_html' => LoginBlockPicker::render(
+                'chrome_login_block_ref',
+                'login_block_ref',
+                (string) ($variant['login']['block_ref'] ?? ''),
+                $site,
+                'chrome-variant-form',
+            ),
             'login_target_html' => LinkPicker::render($type . '_login_href', 'login_href', (string) $variant['login']['href'], $this->pages, 'chrome-variant-form'),
             'zone_brand_options' => $this->zoneOptions((string) $variant['layout']['brand'], $type === 'header' ? self::HEADER_ZONES : self::FOOTER_ZONES),
             'zone_nav_options' => $this->zoneOptions((string) $variant['layout']['nav'], $type === 'header' ? self::HEADER_ZONES : self::FOOTER_ZONES),
             'zone_login_options' => $this->zoneOptions((string) $variant['layout']['login'], $type === 'header' ? self::HEADER_ZONES : self::FOOTER_ZONES),
             'delete_form_html' => $this->deleteFormHtml($type, $variant, count($variants)),
         ];
+        $vars = array_merge($vars, $this->chromeContentPanels($site));
 
         if ($type === 'header') {
             $template = HeaderStyle::normalizeTemplate((string) ($variant['template'] ?? HeaderStyle::TEMPLATE_DEFAULT));
             if (HeaderStyle::isBlocksTemplate($template)) {
                 $vars['header_template'] = htmlspecialchars($template, ENT_QUOTES);
                 $vars['template_label'] = htmlspecialchars($template === 'navbar5' ? 'Navbar 5' : 'Navbar 1', ENT_QUOTES);
-                $vars['header_blocks_form_html'] = $this->headerForms->render($variant);
+                $vars['header_blocks_form_html'] = $this->headerForms->render($variant, $site);
 
                 return $this->ui->render('chrome-edit-header-blocks.html', $vars);
             }
@@ -147,6 +163,7 @@ final class ChromeController
         } else {
             $vars['brand_visible_checked'] = ($variant['brand']['visible'] ?? true) ? 'checked' : '';
             $vars['footer_text'] = htmlspecialchars((string) ($site['footer_text'] ?? ''), ENT_QUOTES);
+            $vars['footer_legal_links_html'] = $this->footerForms->renderDefaultLegalLinks($variant);
             $template = FooterStyle::normalizeTemplate((string) ($variant['template'] ?? FooterStyle::TEMPLATE_DEFAULT));
             if (FooterStyle::isBlocksTemplate($template)) {
                 $vars['footer_template'] = htmlspecialchars($template, ENT_QUOTES);
@@ -329,6 +346,12 @@ final class ChromeController
     private function applyHeaderForm(array $variant, array $data): array
     {
         $template = HeaderStyle::normalizeTemplate((string) ($variant['template'] ?? HeaderStyle::TEMPLATE_DEFAULT));
+        $isBlocks = HeaderStyle::isBlocksTemplate($template);
+        $brand = is_array($variant['brand'] ?? null) ? $variant['brand'] : [];
+        $nav = is_array($variant['nav'] ?? null) ? $variant['nav'] : [];
+        $layout = is_array($variant['layout'] ?? null) ? $variant['layout'] : [];
+        $existingAppearance = is_array($variant['appearance'] ?? null) ? $variant['appearance'] : [];
+
         $payload = [
             'id' => $variant['id'],
             'name' => trim($data['variant_name'] ?? (string) $variant['name']),
@@ -339,32 +362,30 @@ final class ChromeController
             'mobile_links' => $variant['mobile_links'] ?? [],
             'features_label' => $variant['features_label'] ?? '',
             'brand' => [
-                'show_logo' => ($data['brand_show_logo'] ?? '0') === '1',
-                'show_name' => ($data['brand_show_name'] ?? '0') === '1',
-                'show_tagline' => ($data['brand_show_tagline'] ?? '0') === '1',
+                'show_logo' => $this->boolFromForm($data, 'brand_show_logo', ($brand['show_logo'] ?? true) === true),
+                'show_name' => $this->boolFromForm($data, 'brand_show_name', ($brand['show_name'] ?? true) === true),
+                'show_tagline' => $this->boolFromForm($data, 'brand_show_tagline', ($brand['show_tagline'] ?? false) === true),
             ],
-            'nav' => ['visible' => ($data['nav_visible'] ?? '0') === '1'],
-            'cta' => [
-                'enabled' => ($data['cta_enabled'] ?? '0') === '1',
-                'label' => trim($data['cta_label'] ?? ''),
-                'href' => trim($data['cta_href'] ?? ''),
-                'style' => $data['cta_style'] ?? 'primary',
-            ],
-            'login' => [
-                'enabled' => ($data['login_enabled'] ?? '0') === '1',
-                'label' => trim($data['login_label'] ?? ''),
-                'href' => trim($data['login_href'] ?? ''),
-                'style' => $data['login_style'] ?? 'outline',
+            'nav' => ['visible' => $this->boolFromForm($data, 'nav_visible', ($nav['visible'] ?? true) === true)],
+            'cta' => $this->parseChromeButton($data, 'cta', '', 'primary'),
+            'login' => $this->parseChromeButton($data, 'login', '/login', 'outline', true),
+            'appearance' => [
+                'show_border' => $this->boolFromForm($data, 'show_border', ChromeAppearance::showBorder($variant)),
+                'bg' => ChromeAppearance::normalizeHeaderBg(
+                    array_key_exists('appearance_bg', $data)
+                        ? (string) $data['appearance_bg']
+                        : (string) ($existingAppearance['bg'] ?? 'theme'),
+                ),
             ],
             'layout' => [
-                'brand' => $data['zone_brand'] ?? '',
-                'nav' => $data['zone_nav'] ?? '',
-                'cta' => $data['zone_cta'] ?? '',
-                'login' => $data['zone_login'] ?? '',
+                'brand' => $data['zone_brand'] ?? (string) ($layout['brand'] ?? ''),
+                'nav' => $data['zone_nav'] ?? (string) ($layout['nav'] ?? ''),
+                'cta' => $data['zone_cta'] ?? (string) ($layout['cta'] ?? ''),
+                'login' => $data['zone_login'] ?? (string) ($layout['login'] ?? ''),
             ],
         ];
 
-        if (HeaderStyle::isBlocksTemplate($template)) {
+        if ($isBlocks) {
             $blocks = $this->headerForms->parseForm($data, $template);
             $payload['menu_items'] = $blocks['menu_items'] ?? $payload['menu_items'];
             $payload['features'] = $blocks['features'] ?? $payload['features'];
@@ -379,6 +400,40 @@ final class ChromeController
     }
 
     /**
+     * @param array<string, string> $data
+     */
+    private function boolFromForm(array $data, string $key, bool $default): bool
+    {
+        if (!array_key_exists($key, $data)) {
+            return $default;
+        }
+
+        return ($data[$key] ?? '0') === '1';
+    }
+
+    /**
+     * @param array<string, string> $data
+     *
+     * @return array{enabled: bool, label: string, href: string, style: string, display?: string, block_ref?: string}
+     */
+    private function parseChromeButton(array $data, string $prefix, string $defaultHref, string $defaultStyle, bool $withLoginOptions = false): array
+    {
+        $button = [
+            'enabled' => ($data[$prefix . '_enabled'] ?? '0') === '1',
+            'label' => trim($data[$prefix . '_label'] ?? ''),
+            'href' => trim($data[$prefix . '_href'] ?? ''),
+            'style' => trim($data[$prefix . '_style'] ?? '') !== '' ? trim($data[$prefix . '_style'] ?? '') : $defaultStyle,
+        ];
+        if ($withLoginOptions) {
+            $display = trim($data['login_display'] ?? 'page');
+            $button['display'] = in_array($display, ['page', 'modal'], true) ? $display : 'page';
+            $button['block_ref'] = trim($data['login_block_ref'] ?? '');
+        }
+
+        return $button;
+    }
+
+    /**
      * @param array<string, mixed>  $variant
      * @param array<string, string> $data
      *
@@ -387,6 +442,11 @@ final class ChromeController
     private function applyFooterForm(array $variant, array $data): array
     {
         $template = FooterStyle::normalizeTemplate((string) ($variant['template'] ?? FooterStyle::TEMPLATE_DEFAULT));
+        $existingBrand = is_array($variant['brand'] ?? null) ? $variant['brand'] : [];
+        $existingNav = is_array($variant['nav'] ?? null) ? $variant['nav'] : [];
+        $existingLogin = is_array($variant['login'] ?? null) ? $variant['login'] : [];
+        $existingLayout = is_array($variant['layout'] ?? null) ? $variant['layout'] : [];
+        $existingAppearance = is_array($variant['appearance'] ?? null) ? $variant['appearance'] : [];
         $payload = [
             'id' => $variant['id'],
             'name' => trim($data['variant_name'] ?? (string) $variant['name']),
@@ -396,22 +456,42 @@ final class ChromeController
             'legal_links' => $variant['legal_links'] ?? [],
             'social_links' => $variant['social_links'] ?? [],
             'brand' => [
-                'visible' => ($data['brand_visible'] ?? '0') === '1',
-                'show_logo' => ($data['brand_show_logo'] ?? '0') === '1',
-                'show_name' => ($data['brand_show_name'] ?? '0') === '1',
-                'show_tagline' => ($data['brand_show_tagline'] ?? '0') === '1',
+                'visible' => $this->boolFromForm($data, 'brand_visible', ($existingBrand['visible'] ?? true) !== false),
+                'show_logo' => $this->boolFromForm($data, 'brand_show_logo', ($existingBrand['show_logo'] ?? true) !== false),
+                'show_name' => $this->boolFromForm($data, 'brand_show_name', ($existingBrand['show_name'] ?? true) !== false),
+                'show_tagline' => $this->boolFromForm($data, 'brand_show_tagline', ($existingBrand['show_tagline'] ?? true) !== false),
             ],
-            'nav' => ['visible' => ($data['nav_visible'] ?? '0') === '1'],
+            'nav' => ['visible' => $this->boolFromForm($data, 'nav_visible', ($existingNav['visible'] ?? true) !== false)],
             'login' => [
-                'enabled' => ($data['login_enabled'] ?? '0') === '1',
-                'label' => trim($data['login_label'] ?? ''),
-                'href' => trim($data['login_href'] ?? ''),
-                'style' => $data['login_style'] ?? 'outline',
+                'enabled' => $this->boolFromForm($data, 'login_enabled', ($existingLogin['enabled'] ?? false) === true),
+                'label' => array_key_exists('login_label', $data)
+                    ? trim($data['login_label'])
+                    : trim((string) ($existingLogin['label'] ?? '')),
+                'href' => array_key_exists('login_href', $data)
+                    ? trim($data['login_href'])
+                    : trim((string) ($existingLogin['href'] ?? '')),
+                'style' => array_key_exists('login_style', $data)
+                    ? trim($data['login_style'])
+                    : trim((string) ($existingLogin['style'] ?? 'outline')),
+            ],
+            'appearance' => [
+                'show_border' => $this->boolFromForm($data, 'show_border', ChromeAppearance::showBorder($variant)),
+                'bg' => ChromeAppearance::normalizeFooterBg(
+                    array_key_exists('appearance_bg', $data)
+                        ? (string) $data['appearance_bg']
+                        : (string) ($existingAppearance['bg'] ?? 'theme'),
+                ),
             ],
             'layout' => [
-                'brand' => $data['zone_brand'] ?? '',
-                'nav' => $data['zone_nav'] ?? '',
-                'login' => $data['zone_login'] ?? '',
+                'brand' => array_key_exists('zone_brand', $data)
+                    ? (string) $data['zone_brand']
+                    : (string) ($existingLayout['brand'] ?? ''),
+                'nav' => array_key_exists('zone_nav', $data)
+                    ? (string) $data['zone_nav']
+                    : (string) ($existingLayout['nav'] ?? ''),
+                'login' => array_key_exists('zone_login', $data)
+                    ? (string) $data['zone_login']
+                    : (string) ($existingLayout['login'] ?? ''),
             ],
         ];
 
@@ -421,6 +501,9 @@ final class ChromeController
             $payload['sections'] = $blocks['sections'];
             $payload['legal_links'] = $blocks['legal_links'];
             $payload['social_links'] = $blocks['social_links'];
+        } elseif (array_key_exists('legal_0_label', $data) || array_key_exists('legal_0_href', $data)
+            || array_key_exists('legal_1_label', $data) || array_key_exists('legal_1_href', $data)) {
+            $payload['legal_links'] = $this->footerForms->parseDefaultLegalLinks($data);
         }
 
         return ChromeVariants::normalizeFooter($payload);
@@ -553,6 +636,51 @@ final class ChromeController
         return implode('', $options);
     }
 
+    private function chromeBgOptions(string $current, string $zone): string
+    {
+        $themeLabel = $zone === 'header' ? 'Thème (couleur En-tête)' : 'Thème (couleur Pied de page)';
+        $choices = [
+            'theme' => $themeLabel,
+            'background' => 'Fond de page',
+            'surface' => 'Surface',
+            'muted' => 'Surface atténuée',
+            'primary' => 'Primaire',
+        ];
+        $options = [];
+        foreach ($choices as $value => $label) {
+            $selected = $value === $current ? ' selected' : '';
+            $options[] = '<option value="' . htmlspecialchars($value, ENT_QUOTES) . '"' . $selected . '>'
+                . htmlspecialchars($label, ENT_QUOTES) . '</option>';
+        }
+
+        return implode('', $options);
+    }
+
+    /**
+     * @param array<string, mixed> $site
+     *
+     * @return array<string, string>
+     */
+    private function chromeContentPanels(array $site): array
+    {
+        return [
+            'chrome_identity_panel_html' => $this->ui->partialHtml('chrome-identity-panel.html', [
+                'site_name' => htmlspecialchars((string) ($site['name'] ?? ''), ENT_QUOTES),
+                'site_tagline' => htmlspecialchars((string) ($site['tagline'] ?? ''), ENT_QUOTES),
+            ]),
+            'chrome_nav_section_html' => $this->ui->partialHtml('chrome-nav-section.html', [
+                'nav_mode_label' => htmlspecialchars($this->navForms->navModeLabel($site), ENT_QUOTES),
+                'home_label' => htmlspecialchars((string) ($site['home_label'] ?? 'Accueil'), ENT_QUOTES),
+                'nav_panel_html' => $this->ui->partialHtml('nav-panel.html', [
+                    'nav_rows_html' => $this->navForms->rowsHtml($site),
+                    'nav_delete_forms_html' => $this->navForms->deleteFormsHtml($site),
+                    'message' => '',
+                ]),
+                'nav_add_target_html' => LinkPicker::render('nav_target', 'nav_target', '', $this->pages),
+            ]),
+        ];
+    }
+
     /**
      * @param list<array<string, mixed>> $variants
      */
@@ -597,8 +725,11 @@ final class ChromeController
             || !isset($stored['active_footer_variant'])
             || !is_array($stored['header_variants'] ?? null)
             || $stored['header_variants'] === []
-            || !isset($stored['active_header_variant']);
+            || !isset($stored['active_header_variant'])
+            || !is_array($stored['login_blocks'] ?? null)
+            || $stored['login_blocks'] === [];
         $site = ChromeVariants::materialize($stored);
+        $site = LoginBlockLibrary::materialize($site);
         if ($needsWrite) {
             $this->site->setSite($site);
         }

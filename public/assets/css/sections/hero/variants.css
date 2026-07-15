@@ -65,7 +65,7 @@
 }
 
 .section-hero__star--filled {
-    color: #facc15;
+    color: var(--color-warning);
 }
 
 /* hero7 : preuve sociale centrée */
@@ -134,9 +134,9 @@
     align-items: center;
     justify-content: center;
     padding: 1rem;
-    border: 1px solid var(--color-border, #e2e8f0);
+    border: 1px solid var(--color-border);
     border-radius: 0.75rem;
-    background: var(--color-background, #fff);
+    background: var(--color-elevated);
 }
 
 .section-hero--hero12 .section-hero__logo {
@@ -152,7 +152,7 @@
 .section-hero--hero12 .section-hero__tech-label {
     margin: 0 0 1rem;
     font-size: 0.875rem;
-    color: var(--color-text-muted, #64748b);
+    color: var(--color-text-muted);
 }
 
 .section-hero--hero12 .section-hero__tech-row {
@@ -183,7 +183,7 @@
     gap: 2rem;
     padding: 2rem;
     border-radius: var(--radius-md, 0.5rem);
-    background: var(--color-surface, #f1f5f9);
+    background: var(--color-surface);
 }
 
 @media (min-width: 1024px) {
@@ -307,7 +307,7 @@
 .section-hero--hero67 .section-hero__trust-caption {
     margin: 0;
     font-size: 0.75rem;
-    color: var(--color-text-muted, #64748b);
+    color: var(--color-text-muted);
 }
 
 .section-hero--hero67 .section-hero__banner {
@@ -328,7 +328,11 @@
     position: absolute;
     inset: 0;
     z-index: 1;
-    background: rgb(0 0 0 / 0.35);
+    background: color-mix(in srgb, var(--color-text) 35%, transparent);
+}
+
+.section-hero--hero78:has(.section-hero__backdrop--shader) .section-hero__overlay {
+    background: color-mix(in srgb, rgb(0 0 0) 35%, transparent);
 }
 
 .section-hero--hero78 .section-hero__noise {
@@ -348,18 +352,18 @@
 
 .section-hero--hero78 .section-hero__title--light,
 .section-hero--hero78 .section-hero__subtitle--light {
-    color: #fff;
+    color: var(--color-button-primary-text);
 }
 
 .section-hero--hero78 .section-hero__button--primary {
-    background: #fff;
-    color: #0f172a;
+    background: var(--color-elevated);
+    color: var(--color-text);
 }
 
 .section-hero--hero78 .section-hero__button--secondary {
     background: transparent;
-    color: #fff;
-    border-color: rgb(255 255 255 / 0.4);
+    color: var(--color-button-primary-text);
+    border-color: color-mix(in srgb, var(--color-button-primary-text) 40%, transparent);
 }
 
 /* hero195 : onglets */
@@ -408,7 +412,7 @@
     padding: 0.5rem 1rem;
     font-size: 0.875rem;
     font-weight: 500;
-    color: var(--color-text-muted, #64748b);
+    color: var(--color-text-muted);
     background: transparent;
     border: 1px solid transparent;
     border-radius: 0.5rem;
@@ -417,21 +421,21 @@
 }
 
 .section-hero--hero195 .section-hero__tab:hover {
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
 }
 
 .section-hero--hero195 .section-hero__tab.is-active {
-    color: var(--color-text, #0f172a);
-    background: var(--color-surface, #f8fafc);
-    border-color: var(--color-border, #e2e8f0);
+    color: var(--color-text);
+    background: var(--color-surface);
+    border-color: var(--color-border);
 }
 
 .section-hero--hero195 .section-hero__tab-panels {
     position: relative;
     overflow: hidden;
-    border: 1px solid var(--color-border, #e2e8f0);
+    border: 1px solid var(--color-border);
     border-radius: 0.75rem;
-    background: var(--color-background, #fff);
+    background: var(--color-elevated);
 }
 
 .section-hero--hero195 .section-hero__tab-panel {
@@ -475,8 +479,8 @@
     position: absolute;
     inset: 0;
     background-image:
-        linear-gradient(var(--color-border, #e2e8f0) 1px, transparent 1px),
-        linear-gradient(90deg, var(--color-border, #e2e8f0) 1px, transparent 1px);
+        linear-gradient(var(--color-border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--color-border) 1px, transparent 1px);
     background-size: 48px 48px;
     opacity: 0.35;
     mask-image: radial-gradient(ellipse at center, black 20%, transparent 75%);
@@ -544,9 +548,9 @@
 
 .section-hero--hero206 .section-hero__browser {
     overflow: hidden;
-    border: 1px solid var(--color-border, #e2e8f0);
+    border: 1px solid var(--color-border);
     border-radius: 0.75rem;
-    background: var(--color-background, #fff);
+    background: var(--color-elevated);
     box-shadow: 0 8px 32px rgb(0 0 0 / 0.08);
 }
 
@@ -555,8 +559,8 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.75rem 1rem;
-    border-bottom: 1px solid var(--color-border, #e2e8f0);
-    background: var(--color-surface, #f8fafc);
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-surface);
 }
 
 .section-hero--hero206 .section-hero__browser-dot {
@@ -566,15 +570,15 @@
 }
 
 .section-hero--hero206 .section-hero__browser-dot--red {
-    background: #ef4444;
+    background: var(--color-error);
 }
 
 .section-hero--hero206 .section-hero__browser-dot--yellow {
-    background: #eab308;
+    background: var(--color-warning);
 }
 
 .section-hero--hero206 .section-hero__browser-dot--green {
-    background: #22c55e;
+    background: var(--color-success);
 }
 
 .section-hero--hero206 .section-hero__browser-url {
@@ -582,9 +586,9 @@
     margin-left: 0.5rem;
     padding: 0.25rem 0.75rem;
     font-size: 0.75rem;
-    color: var(--color-text-muted, #64748b);
-    background: var(--color-background, #fff);
-    border: 1px solid var(--color-border, #e2e8f0);
+    color: var(--color-text-muted);
+    background: var(--color-elevated);
+    border: 1px solid var(--color-border);
     border-radius: 0.375rem;
     text-align: left;
     overflow: hidden;
@@ -606,21 +610,21 @@
     inset-inline: 0;
     bottom: 0;
     height: 40%;
-    background: linear-gradient(to top, var(--color-background, #fff), transparent);
+    background: linear-gradient(to top, var(--color-background), transparent);
 }
 
 /* hero243 : titre animé */
 .section-hero--hero243 .section-hero__container--framed {
     gap: 0;
     max-width: 64rem;
-    border: 1px solid var(--color-border, #e2e8f0);
+    border: 1px solid var(--color-border);
     border-radius: 0.75rem;
     overflow: hidden;
 }
 
 .section-hero--hero243 .section-hero__frame {
     padding: 2rem;
-    border-bottom: 1px solid var(--color-border, #e2e8f0);
+    border-bottom: 1px solid var(--color-border);
 }
 
 .section-hero--hero243 .section-hero__frame:last-child {
@@ -640,7 +644,7 @@
     margin: 0 0 1rem;
     font-size: 0.875rem;
     font-weight: 500;
-    color: var(--color-text-muted, #64748b);
+    color: var(--color-text-muted);
 }
 
 .section-hero--hero243 .section-hero__eyebrow-dot {
@@ -648,7 +652,7 @@
     width: 0.5rem;
     height: 0.5rem;
     border-radius: 999px;
-    background: #22c55e;
+    background: var(--color-success);
 }
 
 .section-hero--hero243 .section-hero__flip-title {
@@ -667,7 +671,7 @@
     height: 1.15em;
     min-width: 9ch;
     vertical-align: bottom;
-    color: var(--color-primary, #2563eb);
+    color: var(--color-primary);
     text-align: left;
 }
 
@@ -707,13 +711,13 @@
     gap: 0.75rem;
     padding: 2rem;
     text-align: center;
-    border-top: 1px solid var(--color-border, #e2e8f0);
+    border-top: 1px solid var(--color-border);
 }
 
 @media (min-width: 1024px) {
     .section-hero--hero243 .section-hero__flip-feature--1,
     .section-hero--hero243 .section-hero__flip-feature--2 {
-        border-right: 1px solid var(--color-border, #e2e8f0);
+        border-right: 1px solid var(--color-border);
     }
 }
 
@@ -724,9 +728,9 @@
     width: 2.5rem;
     height: 2.5rem;
     border-radius: 0.5rem;
-    border: 1px solid var(--color-border, #e2e8f0);
+    border: 1px solid var(--color-border);
     font-size: 1.125rem;
-    color: var(--color-text-muted, #64748b);
+    color: var(--color-text-muted);
 }
 
 .section-hero--hero243 .section-hero__flip-feature-label {

@@ -1,0 +1,102 @@
+/* Apparence bloc : surcharge les CSS de variantes (typo, alignement) */
+
+section.section--title-sm :is(h1, h2, .section-head__title, [class*="__title"]:not([class*="__subtitle"])) {
+    font-size: clamp(1.25rem, 2vw, 1.5rem) !important;
+}
+
+section.section--title-md :is(h1, h2, .section-head__title, [class*="__title"]:not([class*="__subtitle"])) {
+    font-size: clamp(1.5rem, 2.5vw, 2rem) !important;
+}
+
+section.section--title-lg :is(h1, h2, .section-head__title, [class*="__title"]:not([class*="__subtitle"])) {
+    font-size: clamp(1.75rem, 3vw, 2.5rem) !important;
+}
+
+section.section--title-xl :is(h1, h2, .section-head__title, [class*="__title"]:not([class*="__subtitle"])) {
+    font-size: clamp(2rem, 3.5vw, 3rem) !important;
+}
+
+section.section--title-display :is(h1, h2, .section-head__title, [class*="__title"]:not([class*="__subtitle"])) {
+    font-size: clamp(2.5rem, 4.5vw, 3.75rem) !important;
+    letter-spacing: -0.04em !important;
+}
+
+section.section--subtitle-sm :is(.section-head__subtitle, [class*="__subtitle"]) {
+    font-size: 0.9375rem !important;
+}
+
+section.section--subtitle-md :is(.section-head__subtitle, [class*="__subtitle"]) {
+    font-size: 1.0625rem !important;
+}
+
+section.section--subtitle-lg :is(.section-head__subtitle, [class*="__subtitle"]) {
+    font-size: 1.25rem !important;
+}
+
+section.section--subtitle-hidden :is(.section-head__subtitle, [class*="__subtitle"]) {
+    display: none !important;
+}
+
+/* Alignement : en-têtes de section et blocs hero / features */
+section.section--align-left :is(.section-head, .section-hero__inner, .section-hero__copy, .section-hero__content, [class*="__copy"]) {
+    text-align: left !important;
+}
+
+section.section--align-left :is(.section-hero__copy, [class*="__copy"]) {
+    align-items: flex-start !important;
+    margin-inline: 0 !important;
+    margin-inline-start: 0 !important;
+}
+
+section.section--align-left :is(.section-buttons, .section-hero__buttons, [class*="__buttons"]) {
+    justify-content: flex-start !important;
+}
+
+section.section--align-left .section-hero__reviews {
+    align-items: flex-start !important;
+}
+
+section.section--align-center :is(.section-head, .section-hero__inner, .section-hero__copy, .section-hero__content, [class*="__copy"]) {
+    text-align: center !important;
+}
+
+section.section--align-center :is(.section-hero__copy, [class*="__copy"]) {
+    align-items: center !important;
+    margin-inline: auto !important;
+}
+
+section.section--align-center :is(.section-buttons, .section-hero__buttons, [class*="__buttons"]) {
+    justify-content: center !important;
+}
+
+section.section--align-center .section-hero__reviews {
+    align-items: center !important;
+}
+
+section.section--align-right :is(.section-head, .section-hero__inner, .section-hero__copy, .section-hero__content, [class*="__copy"]) {
+    text-align: right !important;
+}
+
+section.section--align-right :is(.section-hero__copy, [class*="__copy"]) {
+    align-items: flex-end !important;
+    margin-inline: 0 0 auto !important;
+    margin-inline-start: auto !important;
+}
+
+section.section--align-right :is(.section-buttons, .section-hero__buttons, [class*="__buttons"]) {
+    justify-content: flex-end !important;
+}
+
+section.section--align-right .section-hero__reviews {
+    align-items: flex-end !important;
+}
+
+section.section--align-left .section-head {
+    margin-left: 0 !important;
+    margin-right: auto !important;
+}
+
+section.section--align-right .section-head {
+    margin-right: 0 !important;
+    margin-left: auto !important;
+}

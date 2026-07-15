@@ -1,9 +1,5 @@
 /* Tokens et styles communs aux variantes integrations */
 
-.section-integrations {
-    background: var(--color-background, #fff);
-}
-
 .section-integrations[class*="section--pad-"] {
     padding-inline: var(--space-md, 1rem);
 }

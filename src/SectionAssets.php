@@ -46,10 +46,7 @@ final class SectionAssets
      */
     public static function heroVariantIds(): array
     {
-        return [
-            'hero1', 'hero3', 'hero7', 'hero12', 'hero34', 'hero45', 'hero47',
-            'hero67', 'hero78', 'hero115', 'hero195', 'hero206', 'hero243',
-        ];
+        return HeroStyle::VISUAL_VARIANTS;
     }
 
     /**

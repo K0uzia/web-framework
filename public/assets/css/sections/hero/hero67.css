@@ -44,7 +44,7 @@
     max-width: 36rem;
     font-size: 1rem;
     line-height: 1.6;
-    color: var(--color-text-muted, #64748b);
+    color: var(--color-text-muted);
 }
 
 .section-hero--hero67 .section-hero__cta-row--banner {
@@ -79,8 +79,8 @@
     font-weight: 500;
     text-decoration: none;
     border-radius: 0.5rem;
-    background: #171717;
-    color: #fafafa;
+    background: var(--color-button-primary-bg);
+    color: var(--color-button-primary-text);
 }
 
 @media (min-width: 640px) {
@@ -90,7 +90,7 @@
 }
 
 .section-hero--hero67 .section-hero__button--calendar:hover {
-    background: #262626;
+    background: var(--color-button-primary-hover);
 }
 
 .section-hero--hero67 .section-hero__trust {
@@ -110,10 +110,10 @@
     width: 1.75rem;
     height: 1.75rem;
     margin-left: -0.25rem;
-    border: 1px solid var(--color-border, #e2e8f0);
+    border: 1px solid var(--color-border);
     border-radius: 999px;
     object-fit: cover;
-    background: var(--color-background, #fff);
+    background: var(--color-elevated);
 }
 
 .section-hero--hero67 .section-hero__avatar--sm:first-child {
@@ -123,7 +123,7 @@
 .section-hero--hero67 .section-hero__trust-caption {
     margin: 0;
     font-size: 0.75rem;
-    color: var(--color-text-muted, #64748b);
+    color: var(--color-text-muted);
 }
 
 .section-hero--hero67 .section-hero__banner {

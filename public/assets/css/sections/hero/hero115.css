@@ -38,7 +38,7 @@
     max-width: none;
     transform: translate(-50%, -50%);
     border-radius: 999px;
-    border: 1px solid var(--color-border, #e2e8f0);
+    border: 1px solid var(--color-border);
     padding: 4rem;
     mask-image: linear-gradient(to top, transparent, transparent, white, white, white, transparent, transparent);
 }
@@ -56,7 +56,7 @@
     width: 100%;
     height: 100%;
     border-radius: 999px;
-    border: 1px solid var(--color-border, #e2e8f0);
+    border: 1px solid var(--color-border);
     padding: 4rem;
 }
 
@@ -71,7 +71,7 @@
     width: 100%;
     height: 100%;
     border-radius: 999px;
-    border: 1px solid var(--color-border, #e2e8f0);
+    border: 1px solid var(--color-border);
 }
 
 .section-hero--hero115 .section-hero__icon-badge,
@@ -88,10 +88,10 @@
     justify-content: center;
     width: 4rem;
     height: 4rem;
-    border: 1px solid var(--color-border, #e2e8f0);
+    border: 1px solid var(--color-border);
     border-radius: 999px;
     font-size: 1.5rem;
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
 }
 
 @media (min-width: 768px) {
@@ -110,7 +110,7 @@
     letter-spacing: -0.025em;
     text-align: center;
     text-wrap: pretty;
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
 }
 
 @media (min-width: 768px) {
@@ -132,7 +132,7 @@
     font-size: 1.125rem;
     line-height: 1.6;
     text-align: center;
-    color: var(--color-text-muted, #64748b);
+    color: var(--color-text-muted);
     text-wrap: balance;
 }
 
@@ -163,8 +163,8 @@
     line-height: 1.25;
     text-decoration: none;
     border-radius: 0.5rem;
-    background: #171717;
-    color: #fafafa;
+    background: var(--color-button-primary-bg);
+    color: var(--color-button-primary-text);
     border: 1px solid transparent;
 }
 
@@ -176,14 +176,14 @@
 }
 
 .section-hero--hero115 .section-hero__button--showcase:hover {
-    background: #262626;
+    background: var(--color-button-primary-hover);
 }
 
 .section-hero--hero115 .section-hero__byline--showcase {
     margin: 0;
     font-size: 0.875rem;
     text-align: center;
-    color: var(--color-text-muted, #64748b);
+    color: var(--color-text-muted);
 }
 
 .section-hero--hero115 .section-hero__showcase {
@@ -200,7 +200,7 @@
     max-height: 524px;
     margin-inline: auto;
     aspect-ratio: 3 / 4;
-    border: 1px solid var(--color-border, #e2e8f0);
+    border: 1px solid var(--color-border);
     border-radius: 0.5rem;
     object-fit: cover;
     object-position: top left;

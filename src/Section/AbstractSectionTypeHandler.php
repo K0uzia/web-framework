@@ -50,6 +50,11 @@ abstract class AbstractSectionTypeHandler implements SectionTypeHandler
         return SectionLayoutFamilies::cssFamilies($variant);
     }
 
+    public function cssModules(string $variant): array
+    {
+        return SectionCssModules::forType(static::TYPE, $variant);
+    }
+
     public function jsModules(string $variant): array
     {
         return [];

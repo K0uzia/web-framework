@@ -150,6 +150,7 @@ final class ChromeVariants
         $cta = is_array($variant['cta'] ?? null) ? $variant['cta'] : [];
         $login = is_array($variant['login'] ?? null) ? $variant['login'] : [];
         $layout = is_array($variant['layout'] ?? null) ? $variant['layout'] : [];
+        $appearance = is_array($variant['appearance'] ?? null) ? $variant['appearance'] : [];
 
         return [
             'id' => (string) ($variant['id'] ?? 'default'),
@@ -168,6 +169,10 @@ final class ChromeVariants
             'nav' => ['visible' => ($nav['visible'] ?? true) !== false],
             'cta' => self::normalizeLink($cta, '', 'primary'),
             'login' => self::normalizeLink($login, '/login', 'outline'),
+            'appearance' => [
+                'show_border' => ($appearance['show_border'] ?? true) !== false,
+                'bg' => ChromeAppearance::normalizeHeaderBg((string) ($appearance['bg'] ?? 'theme')),
+            ],
             'layout' => [
                 'brand' => self::zone($layout, 'brand', 'left', self::HEADER_ZONES),
                 'nav' => self::zone($layout, 'nav', 'right', self::HEADER_ZONES),
@@ -188,6 +193,7 @@ final class ChromeVariants
         $nav = is_array($variant['nav'] ?? null) ? $variant['nav'] : [];
         $login = is_array($variant['login'] ?? null) ? $variant['login'] : [];
         $layout = is_array($variant['layout'] ?? null) ? $variant['layout'] : [];
+        $appearance = is_array($variant['appearance'] ?? null) ? $variant['appearance'] : [];
         $template = FooterStyle::normalizeTemplate((string) ($variant['template'] ?? FooterStyle::TEMPLATE_DEFAULT));
 
         return [
@@ -206,6 +212,10 @@ final class ChromeVariants
             ],
             'nav' => ['visible' => ($nav['visible'] ?? true) !== false],
             'login' => self::normalizeLink($login, '/login', 'outline'),
+            'appearance' => [
+                'show_border' => ($appearance['show_border'] ?? true) !== false,
+                'bg' => ChromeAppearance::normalizeFooterBg((string) ($appearance['bg'] ?? 'theme')),
+            ],
             'layout' => [
                 'brand' => self::zone($layout, 'brand', 'left', self::FOOTER_ZONES),
                 'nav' => self::zone($layout, 'nav', 'right', self::FOOTER_ZONES),
@@ -294,7 +304,7 @@ final class ChromeVariants
     /**
      * @param array<string, mixed> $link
      *
-     * @return array{enabled: bool, label: string, href: string, style: string}
+     * @return array{enabled: bool, label: string, href: string, style: string, display: string, block_ref: string}
      */
     private static function normalizeLink(array $link, string $defaultHref, string $defaultStyle = 'outline'): array
     {
@@ -303,11 +313,15 @@ final class ChromeVariants
             $style = $defaultStyle;
         }
 
+        $display = (string) ($link['display'] ?? 'page');
+
         return [
             'enabled' => ($link['enabled'] ?? false) === true,
             'label' => (string) ($link['label'] ?? ''),
             'href' => trim((string) ($link['href'] ?? '')) !== '' ? trim((string) $link['href']) : $defaultHref,
             'style' => $style,
+            'display' => in_array($display, ['page', 'modal'], true) ? $display : 'page',
+            'block_ref' => trim((string) ($link['block_ref'] ?? '')),
         ];
     }
 

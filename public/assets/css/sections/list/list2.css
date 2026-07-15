@@ -37,7 +37,7 @@
 
 .section-list--list2 .section-list__separator--list2 {
     height: 1px;
-    background: var(--color-border, #e2e8f0);
+    background: var(--color-border);
 }
 
 .section-list--list2 .section-list__row--list2 {
@@ -75,8 +75,8 @@
     height: 3.5rem;
     border-radius: 0.375rem;
     font-size: 1.25rem;
-    color: var(--color-text, #0f172a);
-    background: var(--color-surface, #f1f5f9);
+    color: var(--color-text);
+    background: var(--color-surface);
 }
 
 .section-list--list2 .section-list__meta--list2 {
@@ -97,7 +97,7 @@
     margin: 0;
     font-size: 0.875rem;
     line-height: 1.4;
-    color: var(--color-muted-foreground, #64748b);
+    color: var(--color-muted-foreground);
 }
 
 .section-list--list2 .section-list__item-text--list2 {
@@ -125,11 +125,11 @@
     width: fit-content;
     margin-left: auto;
     padding: 0.5rem 1rem;
-    border: 1px solid var(--color-border, #e2e8f0);
+    border: 1px solid var(--color-border);
     border-radius: 0.375rem;
     font-size: 0.875rem;
     font-weight: 500;
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
     text-decoration: none;
     background: transparent;
 }
@@ -141,10 +141,10 @@
 }
 
 .section-list--list2 .section-list__item-link--list2:hover {
-    background: var(--color-surface, #f8fafc);
+    background: var(--color-surface);
 }
 
 .section-list--list2 .section-list__item-link--list2:focus-visible {
-    outline: 2px solid var(--color-primary, #2563eb);
+    outline: 2px solid var(--color-primary);
     outline-offset: 2px;
 }

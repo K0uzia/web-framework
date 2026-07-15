@@ -1,9 +1,5 @@
 /* Tokens communs au type cta */
 
-.section-cta {
-    background: var(--color-background, #fff);
-}
-
 .section-cta[class*="section--pad-"] {
     padding-inline: var(--space-md, 1rem);
 }
@@ -30,11 +26,11 @@
     margin: 0;
     font-weight: 600;
     line-height: 1.15;
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
 }
 
 .section-cta [class*="section-cta__subtitle"] {
     margin: 0;
-    color: var(--color-muted-foreground, #64748b);
+    color: var(--color-muted-foreground);
     line-height: 1.55;
 }

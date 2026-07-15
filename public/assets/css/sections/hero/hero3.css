@@ -2,7 +2,6 @@
 
 .section-hero--hero3 {
     overflow: hidden;
-    background: var(--color-background, #fff);
 }
 
 .section-hero--hero3[class*="section--pad-"] {
@@ -85,7 +84,7 @@
     max-width: 64rem;
     font-size: 1rem;
     line-height: 1.6;
-    color: var(--color-text-muted, #64748b);
+    color: var(--color-text-muted);
     text-wrap: balance;
 }
 
@@ -119,9 +118,9 @@
     height: 2.5rem;
     margin-left: -0.75rem;
     border-radius: 999px;
-    border: 2px solid var(--color-background, #fff);
+    border: 2px solid var(--color-background);
     object-fit: cover;
-    background: var(--color-background, #fff);
+    background: var(--color-elevated);
 }
 
 .section-hero--hero3 .section-hero__avatar:first-child {
@@ -139,25 +138,25 @@
     height: 1.25rem;
     font-size: 1.25rem;
     line-height: 1;
-    color: #f59e0b;
+    color: var(--color-warning);
 }
 
 @media (prefers-color-scheme: dark) {
     .section-hero--hero3 .section-hero__rating-row .fa-star {
-        color: #fbbf24;
+        color: var(--color-warning);
     }
 }
 
 .section-hero--hero3 .section-hero__rating-value {
     margin-left: 0.25rem;
     font-weight: 600;
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
 }
 
 .section-hero--hero3 .section-hero__reviews-caption {
     margin: 0;
     font-weight: 500;
-    color: var(--color-text-muted, #64748b);
+    color: var(--color-text-muted);
     text-align: left;
 }
 
@@ -206,38 +205,38 @@
 }
 
 .section-hero--hero3 .section-hero__button:focus-visible {
-    outline: 2px solid var(--color-focus-ring, #a3a3a3);
+    outline: 2px solid var(--color-focus-ring);
     outline-offset: 2px;
 }
 
 .section-hero--hero3 .section-hero__button--primary {
-    background: #171717;
-    color: #fafafa;
+    background: var(--color-button-primary-bg);
+    color: var(--color-button-primary-text);
 }
 
 .section-hero--hero3 .section-hero__button--primary:hover {
-    background: #262626;
+    background: var(--color-button-primary-hover);
 }
 
 @media (prefers-color-scheme: dark) {
     .section-hero--hero3 .section-hero__button--primary {
-        background: #fafafa;
-        color: #171717;
+        background: var(--color-button-primary-text);
+        color: var(--color-button-primary-bg);
     }
 
     .section-hero--hero3 .section-hero__button--primary:hover {
-        background: #e5e5e5;
+        background: var(--color-border);
     }
 }
 
 .section-hero--hero3 .section-hero__button--secondary {
-    background: var(--color-background, #fff);
-    color: var(--color-text, #0f172a);
-    border-color: var(--color-border, #e2e8f0);
+    background: var(--color-elevated);
+    color: var(--color-text);
+    border-color: var(--color-border);
 }
 
 .section-hero--hero3 .section-hero__button--secondary:hover {
-    background: var(--color-muted, #f1f5f9);
+    background: var(--color-muted);
 }
 
 .section-hero--hero3 .section-hero__visual {
@@ -250,7 +249,7 @@
     width: 100%;
     max-height: 37.5rem;
     aspect-ratio: 16 / 9;
-    border: 1px solid var(--color-border, #e2e8f0);
+    border: 1px solid var(--color-border);
     border-radius: 0.375rem;
     object-fit: cover;
     object-position: top;

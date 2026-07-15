@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\LoginPageController;
 use App\Http\Dev\ExportController;
 use App\Http\Dev\AuthController;
 use App\Http\Dev\ChromeController;
@@ -82,5 +83,6 @@ $devRoutes = [
 ];
 
 return array_merge($devRoutes, [
+    'GET /login' => [LoginPageController::class, 'show'],
     'GET /api/health' => [HealthController::class, 'health'],
 ]);

@@ -10,7 +10,7 @@
     font-size: clamp(1.875rem, 3vw, 2.25rem);
     font-weight: 600;
     line-height: 1.2;
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
 }
 
 @media (min-width: 48rem) {
@@ -25,7 +25,7 @@
 }
 
 .section-faq--faq1 .section-faq__item--faq1 {
-    border-bottom: 1px solid var(--color-border, #e2e8f0);
+    border-bottom: 1px solid var(--color-border);
 }
 
 .section-faq--faq1 .section-faq__question--faq1 {
@@ -36,7 +36,7 @@
     padding-block: 1rem;
     font-weight: 600;
     line-height: 1.4;
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
     cursor: pointer;
     list-style: none;
 }
@@ -46,7 +46,7 @@
     flex-shrink: 0;
     font-size: 1.25rem;
     font-weight: 400;
-    color: var(--color-muted-foreground, #64748b);
+    color: var(--color-muted-foreground);
 }
 
 .section-faq--faq1 .section-faq__item--faq1[open] .section-faq__question--faq1::after {
@@ -55,7 +55,7 @@
 
 .section-faq--faq1 .section-faq__answer--faq1 {
     padding-bottom: 1rem;
-    color: var(--color-muted-foreground, #64748b);
+    color: var(--color-muted-foreground);
     line-height: 1.6;
 }
 

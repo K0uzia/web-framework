@@ -26,16 +26,22 @@ final class HeaderVariantRenderer
      *
      * @return array<string, mixed>
      */
-    public static function enrich(array $data, array $variant, string $siteName, string $logoUrl, string $homeUrl = '/'): array
-    {
+    public static function enrich(
+        array $data,
+        array $variant,
+        string $siteName,
+        string $logoUrl,
+        string $homeUrl = '/',
+        array $site = [],
+    ): array {
         $template = HeaderStyle::normalizeTemplate((string) ($variant['template'] ?? HeaderStyle::TEMPLATE_DEFAULT));
         $variantId = preg_replace('/[^a-z0-9_-]/i', '', (string) ($variant['id'] ?? 'header')) ?: 'header';
         $brandHtml = self::brandHtml($siteName, $logoUrl, $homeUrl);
-        $actionsHtml = self::actionsHtml($variant);
+        $actionsHtml = self::actionsHtml($variant, $site);
 
         $data['header_blocks_html'] = match ($template) {
-            'navbar5' => self::navbar5Html($variant, $variantId, $brandHtml, $actionsHtml),
-            default => self::navbar1Html($variant, $variantId, $brandHtml, $actionsHtml),
+            'navbar5' => self::navbar5Html($variant, $variantId, $brandHtml, $actionsHtml, $site),
+            default => self::navbar1Html($variant, $variantId, $brandHtml, $actionsHtml, $site),
         };
 
         return $data;
@@ -57,10 +63,16 @@ final class HeaderVariantRenderer
 
     /**
      * @param array<string, mixed> $variant
+     * @param array<string, mixed> $site
      */
-    private static function actionsHtml(array $variant): string
+    private static function actionsHtml(array $variant, array $site = []): string
     {
-        $login = ChromeButtonRenderer::render(is_array($variant['login'] ?? null) ? $variant['login'] : [], 'outline');
+        $login = ChromeButtonRenderer::render(
+            is_array($variant['login'] ?? null) ? $variant['login'] : [],
+            'outline',
+            '/login',
+            $site,
+        );
         $cta = ChromeButtonRenderer::render(is_array($variant['cta'] ?? null) ? $variant['cta'] : [], 'primary');
         if ($login === '' && $cta === '') {
             return '';
@@ -72,7 +84,7 @@ final class HeaderVariantRenderer
     /**
      * @param array<string, mixed> $variant
      */
-    private static function navbar1Html(array $variant, string $variantId, string $brandHtml, string $actionsHtml): string
+    private static function navbar1Html(array $variant, string $variantId, string $brandHtml, string $actionsHtml, array $site = []): string
     {
         $menuItems = is_array($variant['menu_items'] ?? null) ? $variant['menu_items'] : [];
         $panelId = 'site-header-blocks-panel-' . $variantId;
@@ -94,7 +106,7 @@ final class HeaderVariantRenderer
             . '<div class="site-header__blocks-panel" id="' . $panelId . '" hidden>'
             . '<div class="site-header__blocks-panel-inner">'
             . self::navbar1MobileMenuHtml($menuItems)
-            . self::mobileActionsHtml($variant)
+            . self::mobileActionsHtml($variant, $site)
             . '</div></div>'
             . '</div>';
     }
@@ -102,7 +114,7 @@ final class HeaderVariantRenderer
     /**
      * @param array<string, mixed> $variant
      */
-    private static function navbar5Html(array $variant, string $variantId, string $brandHtml, string $actionsHtml): string
+    private static function navbar5Html(array $variant, string $variantId, string $brandHtml, string $actionsHtml, array $site = []): string
     {
         $features = is_array($variant['features'] ?? null) ? $variant['features'] : [];
         $navLinks = is_array($variant['nav_links'] ?? null) ? $variant['nav_links'] : [];
@@ -132,7 +144,7 @@ final class HeaderVariantRenderer
             . '</details>'
             . self::simpleLinksHtml($navLinks, 'site-header__blocks-link')
             . '</div>'
-            . '<div class="site-header__blocks-actions site-header__blocks-actions--navbar5">' . self::actionsButtonsHtml($variant) . '</div>'
+            . '<div class="site-header__blocks-actions site-header__blocks-actions--navbar5">' . self::actionsButtonsHtml($variant, $site) . '</div>'
             . '</nav>'
             . '<div class="site-header__blocks-bar site-header__blocks-bar--mobile site-header__blocks-bar--navbar5-mobile">'
             . $brandHtml
@@ -149,17 +161,23 @@ final class HeaderVariantRenderer
             . '<div class="site-header__blocks-accordion-panel">' . self::navbar5FeaturesGridHtml($features) . '</div>'
             . '</details>'
             . '<div class="site-header__blocks-mobile-links">' . $mobileLinksHtml . '</div>'
-            . self::mobileActionsHtml($variant)
+            . self::mobileActionsHtml($variant, $site)
             . '</div></div>'
             . '</div>';
     }
 
     /**
      * @param array<string, mixed> $variant
+     * @param array<string, mixed> $site
      */
-    private static function actionsButtonsHtml(array $variant): string
+    private static function actionsButtonsHtml(array $variant, array $site = []): string
     {
-        $login = ChromeButtonRenderer::render(is_array($variant['login'] ?? null) ? $variant['login'] : [], 'outline');
+        $login = ChromeButtonRenderer::render(
+            is_array($variant['login'] ?? null) ? $variant['login'] : [],
+            'outline',
+            '/login',
+            $site,
+        );
         $cta = ChromeButtonRenderer::render(is_array($variant['cta'] ?? null) ? $variant['cta'] : [], 'primary');
 
         return $login . $cta;
@@ -311,10 +329,16 @@ final class HeaderVariantRenderer
 
     /**
      * @param array<string, mixed> $variant
+     * @param array<string, mixed> $site
      */
-    private static function mobileActionsHtml(array $variant): string
+    private static function mobileActionsHtml(array $variant, array $site = []): string
     {
-        $login = ChromeButtonRenderer::render(is_array($variant['login'] ?? null) ? $variant['login'] : [], 'outline');
+        $login = ChromeButtonRenderer::render(
+            is_array($variant['login'] ?? null) ? $variant['login'] : [],
+            'outline',
+            '/login',
+            $site,
+        );
         $cta = ChromeButtonRenderer::render(is_array($variant['cta'] ?? null) ? $variant['cta'] : [], 'primary');
         if ($login === '' && $cta === '') {
             return '';

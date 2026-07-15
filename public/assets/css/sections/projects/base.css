@@ -1,9 +1,5 @@
 /* Tokens communs au type projects */
 
-.section-projects {
-    background: var(--color-background, #fff);
-}
-
 .section-projects[class*="section--pad-"] {
     padding-inline: var(--space-md, 1rem);
 }

@@ -61,10 +61,10 @@
 
 .section-cta--cta13 .section-cta__buttons--cta13 .section-button--secondary {
     background: transparent;
-    color: var(--color-text, #0f172a);
-    border: 1px solid var(--color-border, #e2e8f0);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
 }
 
 .section-cta--cta13 .section-cta__buttons--cta13 .section-button--secondary:hover {
-    background: var(--color-background, #fff);
+    background: var(--color-elevated);
 }

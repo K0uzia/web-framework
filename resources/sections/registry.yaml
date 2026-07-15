@@ -2,47 +2,47 @@ hero:
   label: Hero
   group: hero
   icon: fa-solid fa-panorama
-  description: 'Bibliothèque de 13 blocs hero pour pages d''accueil et landing.'
+  description: Bibliothèque de 13 blocs hero pour pages d''accueil et landing.
   variants:
     hero1:
       label: Hero 1
-      description: 'Split avec badge et image clair/sombre.'
+      description: Split avec badge et image clair/sombre.
     hero3:
       label: Hero 3
       description: 'Split avec avis, note et visuel clair/sombre.'
     hero7:
       label: Hero 7
-      description: 'Preuve sociale centrée avec avatars.'
+      description: Preuve sociale centrée avec avatars.
     hero12:
       label: Hero 12
       description: 'Logo, fond quadrillé et stack technique.'
     hero34:
       label: Hero 34
-      description: 'Split sur carte à fond atténué.'
+      description: Split sur carte à fond atténué.
     hero45:
       label: Hero 45
-      description: 'Slider d''images et fonctionnalités.'
+      description: Slider d''images et fonctionnalités.
     hero47:
       label: Hero 47
-      description: 'Titre large et mockup téléphone.'
+      description: Titre large et mockup téléphone.
     hero67:
       label: Hero 67
       description: 'Logo, CTA, avatars et bandeau image.'
     hero78:
       label: Hero 78
-      description: 'Plein écran avec photo de fond.'
+      description: Plein écran avec photo de fond.
     hero115:
       label: Hero 115
       description: 'Cercles décoratifs, icône et image.'
     hero195:
       label: Hero 195
-      description: 'Onglets produit avec visuels.'
+      description: Onglets produit avec visuels.
     hero206:
       label: Hero 206
-      description: 'Marquee de logos et mockup navigateur.'
+      description: Marquee de logos et mockup navigateur.
     hero243:
       label: Hero 243
-      description: 'Titre animé et grille de fonctionnalités.'
+      description: Titre animé et grille de fonctionnalités.
   content_fields:
     title:
       type: text
@@ -76,9 +76,31 @@ hero:
       type: text
       label: Texte alternatif image
       client_editable: true
+    background_type:
+      type: select
+      label: Type de fond
+      options: '[image,video,shader]'
+      group: background
+      client_editable: true
     background_image_url:
       type: image
       label: Image de fond
+      group: background
+      client_editable: true
+    background_video_url:
+      type: video
+      label: Vidéo de fond
+      group: background
+      client_editable: true
+    background_shader_id:
+      type: shader
+      label: Shader de fond
+      group: background
+      client_editable: true
+    background_shader_color:
+      type: text
+      label: Couleur accent shader
+      group: background
       client_editable: true
     reviews_rating:
       type: text
@@ -102,9 +124,17 @@ hero:
       type: buttons
       label: Boutons
       client_editable: true
+    mockup_url:
+      type: url
+      label: URL du mockup navigateur
+      client_editable: true
+    flip_words:
+      type: textarea
+      label: Mots animés, un par ligne
+      client_editable: true
     items:
       type: repeater
-      label: Éléments (onglets, features, logos)
+      label: 'Éléments (onglets, features, logos)'
       fields:
         title:
           type: text
@@ -119,36 +149,38 @@ hero:
           type: text
           label: Lien
   style_fields:
-    bg:
-      type: color-token
-      label: Fond
-      group: general
-    padding:
+    min_height:
       type: select
-      label: Espacement vertical
-      options: '[sm, md, lg, xl]'
-      group: general
+      label: Hauteur minimale
+      options: '[auto, large, viewport]'
+      group: layout
+    content_width:
+      type: select
+      label: Largeur du contenu
+      options: '[narrow, default, wide]'
+      group: layout
+  default_variant: hero3
 features:
   label: Fonctionnalités
   group: feature
   icon: fa-solid fa-grid-2
-  description: 'Bibliothèque de 16 blocs fonctionnalités shadcnblocks.'
+  description: Bibliothèque de 16 blocs fonctionnalités shadcnblocks.
   variants:
     feature1:
       label: Feature 1
-      description: 'Split texte et image.'
+      description: Split texte et image.
     feature2:
       label: Feature 2
-      description: 'Split image et texte.'
+      description: Split image et texte.
     feature3:
       label: Feature 3
-      description: 'Grille de cartes avec visuels.'
+      description: Grille de cartes avec visuels.
     feature13:
       label: Feature 13
-      description: 'Cartes horizontales sur fond atténué.'
+      description: Cartes horizontales sur fond atténué.
     feature15:
       label: Feature 15
-      description: 'En-tête centré et grille icônes 2x2.'
+      description: En-tête centré et grille icônes 2x2.
     feature16:
       label: Feature 16
       description: 'Label, titre et grille icônes 3 colonnes.'
@@ -157,31 +189,31 @@ features:
       description: 'Badge, liste icônes et CTA.'
     feature42:
       label: Feature 42
-      description: 'Titre ancré et grille texte asymétrique.'
+      description: Titre ancré et grille texte asymétrique.
     feature43:
       label: Feature 43
-      description: 'Grille icônes 3 colonnes et CTA.'
+      description: Grille icônes 3 colonnes et CTA.
     feature51:
       label: Feature 51
-      description: 'Onglets avec visuels.'
+      description: Onglets avec visuels.
     feature72:
       label: Feature 72
-      description: 'En-tête latéral et cartes image 2x2.'
+      description: En-tête latéral et cartes image 2x2.
     feature73:
       label: Feature 73
-      description: 'En-tête et cartes image 3 colonnes.'
+      description: En-tête et cartes image 3 colonnes.
     feature74:
       label: Feature 74
-      description: 'Rangées alternées image et texte.'
+      description: Rangées alternées image et texte.
     feature166:
       label: Feature 166
-      description: 'Grille bento asymétrique.'
+      description: Grille bento asymétrique.
     feature197:
       label: Feature 197
-      description: 'Accordéon et visuel crossfade.'
+      description: Accordéon et visuel crossfade.
     feature239:
       label: Feature 239
-      description: 'Split décoratif avec cadre pointillé.'
+      description: Split décoratif avec cadre pointillé.
   content_fields:
     title:
       type: text
@@ -264,18 +296,19 @@ features:
       label: Espacement vertical
       options: '[sm, md, lg, xl]'
       group: general
+  default_variant: feature3
 integrations:
   label: Intégrations
   group: integration
   icon: fa-solid fa-plug
-  description: 'Bibliothèque de blocs intégrations shadcnblocks.'
+  description: Bibliothèque de blocs intégrations shadcnblocks.
   variants:
     integration3:
       label: Integration 3
-      description: 'Liste centrée avec logos et descriptions.'
+      description: Liste centrée avec logos et descriptions.
     integration9:
       label: Integration 9
-      description: 'Grille de cartes avec logos.'
+      description: Grille de cartes avec logos.
   content_fields:
     title:
       type: text
@@ -308,24 +341,25 @@ integrations:
       label: Espacement vertical
       options: '[sm, md, lg, xl]'
       group: general
+  default_variant: integration3
 pricing:
   label: Tarifs
   group: pricing
   icon: fa-solid fa-tags
-  description: 'Bibliothèque de blocs tarifs shadcnblocks.'
+  description: Bibliothèque de blocs tarifs shadcnblocks.
   variants:
     pricing2:
       label: Pricing 2
-      description: 'Cartes avec bascule mensuel/annuel.'
+      description: Cartes avec bascule mensuel/annuel.
     pricing4:
       label: Pricing 4
-      description: 'Onglets et cartes avec badge.'
+      description: Onglets et cartes avec badge.
     pricing6:
       label: Pricing 6
-      description: 'Offre unique centrée avec listes groupées.'
+      description: Offre unique centrée avec listes groupées.
     pricing11:
       label: Pricing 11
-      description: 'Matrice comparative avec en-tête sticky.'
+      description: Matrice comparative avec en-tête sticky.
   content_fields:
     title:
       type: text
@@ -403,12 +437,12 @@ pricing:
       label: Espacement vertical
       options: '[sm, md, lg, xl]'
       group: general
-
+  default_variant: pricing2
 rate-card:
   label: Grille tarifaire
   group: rate-card
   icon: fa-solid fa-money-check-dollar
-  description: 'Cartes tarifaires détaillées avec liste d''avantages et bouton outline.'
+  description: Cartes tarifaires détaillées avec liste d''avantages et bouton outline.
   variants:
     rate-card2:
       label: Rate card 2
@@ -458,19 +492,19 @@ rate-card:
       label: Espacement vertical
       options: '[sm, md, lg, xl]'
       group: general
-
+  default_variant: rate-card2
 contact:
   label: Contact
   group: contact
   icon: fa-solid fa-envelope
-  description: 'Bibliothèque de blocs contact shadcnblocks.'
+  description: Bibliothèque de blocs contact shadcnblocks.
   variants:
     contact2:
       label: Contact 2
-      description: 'Coordonnées et formulaire côte à côte.'
+      description: Coordonnées et formulaire côte à côte.
     contact7:
       label: Contact 7
-      description: 'Grille de cartes avec canaux de contact.'
+      description: Grille de cartes avec canaux de contact.
   content_fields:
     title:
       type: text
@@ -574,24 +608,25 @@ contact:
       label: Espacement vertical
       options: '[sm, md, lg, xl]'
       group: general
+  default_variant: contact2
 testimonials:
   label: Témoignages
   group: testimonial
   icon: fa-solid fa-quote-left
-  description: 'Bibliothèque de blocs témoignages shadcnblocks.'
+  description: Bibliothèque de blocs témoignages shadcnblocks.
   variants:
     testimonial4:
       label: Testimonial 4
-      description: 'Témoignage mis en avant avec image et grille de cartes.'
+      description: Témoignage mis en avant avec image et grille de cartes.
     testimonial8:
       label: Testimonial 8
-      description: 'Masonry en colonnes avec dégradé de fin.'
+      description: Masonry en colonnes avec dégradé de fin.
     testimonial9:
       label: Testimonial 9
-      description: 'Grille masonry avec liens réseaux sociaux.'
+      description: Grille masonry avec liens réseaux sociaux.
     testimonial10:
       label: Testimonial 10
-      description: 'Citation unique centrée avec auteur.'
+      description: Citation unique centrée avec auteur.
   content_fields:
     title:
       type: text
@@ -638,7 +673,7 @@ testimonials:
           label: Lien
         icon:
           type: text
-          label: Réseau (x, linkedin, instagram, facebook)
+          label: 'Réseau (x, linkedin, instagram, facebook)'
   style_fields:
     bg:
       type: color-token
@@ -649,19 +684,19 @@ testimonials:
       label: Espacement vertical
       options: '[sm, md, lg, xl]'
       group: general
-
+  default_variant: testimonial4
 gallery:
   label: Galerie
   group: gallery
   icon: fa-solid fa-images
-  description: 'Bibliothèque de blocs galerie shadcnblocks.'
+  description: Bibliothèque de blocs galerie shadcnblocks.
   variants:
     gallery4:
       label: Gallery 4
-      description: 'Carousel horizontal avec cartes image et texte superposé.'
+      description: Carousel horizontal avec cartes image et texte superposé.
     gallery6:
       label: Gallery 6
-      description: 'Carousel horizontal avec image et texte sous la carte.'
+      description: Carousel horizontal avec image et texte sous la carte.
   content_fields:
     title:
       type: text
@@ -709,19 +744,19 @@ gallery:
       label: Espacement vertical
       options: '[sm, md, lg, xl]'
       group: general
-
+  default_variant: gallery4
 download:
   label: Téléchargement
   group: download
   icon: fa-solid fa-download
-  description: 'Bibliothèque de blocs téléchargement shadcnblocks.'
+  description: Bibliothèque de blocs téléchargement shadcnblocks.
   variants:
     download1:
       label: Download 1
       description: 'Cartes desktop, iOS et Android avec boutons de téléchargement.'
     download2:
       label: Download 2
-      description: 'Grille minimaliste centrée avec icônes et badges store.'
+      description: Grille minimaliste centrée avec icônes et badges store.
   content_fields:
     title:
       type: text
@@ -793,12 +828,12 @@ download:
       label: Espacement vertical
       options: '[sm, md, lg, xl]'
       group: general
-
+  default_variant: download1
 team:
   label: Équipe
   group: team
   icon: fa-solid fa-users
-  description: 'Bibliothèque de blocs équipe shadcnblocks.'
+  description: Bibliothèque de blocs équipe shadcnblocks.
   variants:
     team1:
       label: Team 1
@@ -848,12 +883,12 @@ team:
       label: Espacement vertical
       options: '[sm, md, lg, xl]'
       group: general
-
+  default_variant: team1
 projects:
   label: Projets
   group: project
   icon: fa-solid fa-folder-open
-  description: 'Bibliothèque de blocs portfolio shadcnblocks.'
+  description: Bibliothèque de blocs portfolio shadcnblocks.
   variants:
     projects5:
       label: Projects 5
@@ -893,12 +928,12 @@ projects:
       label: Espacement vertical
       options: '[sm, md, lg, xl]'
       group: general
-
+  default_variant: projects5
 changelog:
   label: Changelog
   group: changelog
   icon: fa-solid fa-code-commit
-  description: 'Journal des versions avec entrées datées et listes de changements.'
+  description: Journal des versions avec entrées datées et listes de changements.
   variants:
     changelog1:
       label: Changelog 1
@@ -951,12 +986,12 @@ changelog:
       label: Espacement vertical
       options: '[sm, md, lg, xl]'
       group: general
-
+  default_variant: changelog1
 process:
   label: Processus
   group: process
   icon: fa-solid fa-diagram-project
-  description: 'Étapes de méthode avec colonne sticky et liste numérotée.'
+  description: Étapes de méthode avec colonne sticky et liste numérotée.
   variants:
     process1:
       label: Process 1
@@ -971,7 +1006,7 @@ process:
       label: Description
       client_editable: true
     buttons:
-      type: repeater
+      type: buttons
       label: Bouton d'action
       client_editable: true
       fields:
@@ -1009,16 +1044,16 @@ process:
       label: Espacement vertical
       options: '[sm, md, lg, xl]'
       group: general
-
+  default_variant: process1
 industry:
   label: Secteurs
   group: industry
   icon: fa-solid fa-industry
-  description: 'Blocs secteurs d''activité avec cartes visuelles ou liste détaillée.'
+  description: Blocs secteurs d''activité avec cartes visuelles ou liste détaillée.
   variants:
     industries1:
       label: Industries 1
-      description: 'Grille de cartes image avec survol et libellé d''aperçu.'
+      description: Grille de cartes image avec survol et libellé d''aperçu.
     industries2:
       label: Industries 2
       description: 'Badge, titre et lignes avec icône et description.'
@@ -1065,7 +1100,7 @@ industry:
       label: Espacement vertical
       options: '[sm, md, lg, xl]'
       group: general
-
+  default_variant: industries1
 list:
   label: Liste
   group: list
@@ -1074,7 +1109,7 @@ list:
   variants:
     list2:
       label: List 2
-      description: 'Grille de lignes avec séparateurs et bouton outline par entrée.'
+      description: Grille de lignes avec séparateurs et bouton outline par entrée.
   content_fields:
     title:
       type: text
@@ -1091,7 +1126,7 @@ list:
       fields:
         icon:
           type: text
-          label: Icône (fa-*)
+          label: 'Icône (fa-*)'
         title:
           type: text
           label: Titre
@@ -1117,19 +1152,19 @@ list:
       label: Espacement vertical
       options: '[sm, md, lg, xl]'
       group: general
-
+  default_variant: list2
 timeline:
   label: Chronologie
   group: timeline
   icon: fa-solid fa-timeline
-  description: 'Bibliothèque de blocs chronologie shadcnblocks.'
+  description: Bibliothèque de blocs chronologie shadcnblocks.
   variants:
     timeline3:
       label: Timeline 3
-      description: 'Colonne sticky avec cartes illustrées et boutons d''action.'
+      description: Colonne sticky avec cartes illustrées et boutons d''action.
     timeline9:
       label: Timeline 9
-      description: 'Ligne de temps verticale avec dates et jalons.'
+      description: Ligne de temps verticale avec dates et jalons.
   content_fields:
     title:
       type: text
@@ -1140,7 +1175,7 @@ timeline:
       label: Description (timeline3)
       client_editable: true
     buttons:
-      type: repeater
+      type: buttons
       label: Boutons (timeline3)
       client_editable: true
       fields:
@@ -1181,29 +1216,29 @@ timeline:
       label: Espacement vertical
       options: '[sm, md, lg, xl]'
       group: general
-
+  default_variant: timeline3
 logos:
   label: Logos
   group: logos
   icon: fa-solid fa-building
-  description: 'Bibliothèque de blocs logos partenaires shadcnblocks.'
+  description: Bibliothèque de blocs logos partenaires shadcnblocks.
   variants:
     logos3:
       label: Logos 3
-      description: 'Titre centré et bandeau de logos en défilement.'
+      description: Titre centré et bandeau de logos en défilement.
     logos8:
       label: Logos 8
-      description: 'Titre centré et grille statique de logos (6 max).'
+      description: Titre centré et grille statique de logos (6 max).
     logos18:
       label: Logos 18
-      description: 'Grille compacte de logos sans titre (6 max).'
+      description: Grille compacte de logos sans titre (6 max).
     logos19:
       label: Logos 19
-      description: 'Bandeau de logos en défilement sans titre.'
+      description: Bandeau de logos en défilement sans titre.
   content_fields:
     title:
       type: text
-      label: Titre (logos3, logos8)
+      label: 'Titre (logos3, logos8)'
       client_editable: true
     items:
       type: repeater
@@ -1229,19 +1264,23 @@ logos:
       label: Espacement vertical
       options: '[sm, md, lg, xl]'
       group: general
-
+    logo_color:
+      type: color
+      label: Couleur des logos
+      group: typography
+  default_variant: logos3
 services:
   label: Services
   group: service
   icon: fa-solid fa-briefcase
-  description: 'Bibliothèque de blocs services shadcnblocks.'
+  description: Bibliothèque de blocs services shadcnblocks.
   variants:
     services4:
       label: Services 4
       description: 'Grille de cartes avec icône, description et points clés.'
     services12:
       label: Services 12
-      description: 'Colonne intro et cartes image en vedette.'
+      description: Colonne intro et cartes image en vedette.
   content_fields:
     title:
       type: text
@@ -1252,7 +1291,7 @@ services:
       label: Description
       client_editable: true
     buttons:
-      type: repeater
+      type: buttons
       label: Boutons (services12)
       client_editable: true
       fields:
@@ -1282,7 +1321,7 @@ services:
           label: Icône Font Awesome (services4)
         label:
           type: text
-          label: Points clés (services4, séparés par des virgules)
+          label: 'Points clés (services4, séparés par des virgules)'
         url:
           type: image
           label: Image (services12)
@@ -1299,19 +1338,19 @@ services:
       label: Espacement vertical
       options: '[sm, md, lg, xl]'
       group: general
-
+  default_variant: services4
 compare:
   label: Comparaison
   group: compare
   icon: fa-solid fa-scale-balanced
-  description: 'Bibliothèque de blocs comparaison shadcnblocks.'
+  description: Bibliothèque de blocs comparaison shadcnblocks.
   variants:
     compare7:
       label: Compare 7
-      description: 'Tableau comparatif texte avec info-bulles.'
+      description: Tableau comparatif texte avec info-bulles.
     compare8:
       label: Compare 8
-      description: 'Liste avec icônes et statuts oui/non/partiel.'
+      description: Liste avec icônes et statuts oui/non/partiel.
   content_fields:
     title:
       type: text
@@ -1348,10 +1387,10 @@ compare:
           label: Icône Font Awesome (compare8)
         primary:
           type: text
-          label: Statut principal (compare8: oui, non, partiel)
+          label: 'Statut principal (compare8: oui, non, partiel)'
         secondary:
           type: text
-          label: Statut secondaire (compare8: oui, non, partiel)
+          label: 'Statut secondaire (compare8: oui, non, partiel)'
         tooltip_title:
           type: text
           label: Titre info-bulle
@@ -1368,16 +1407,16 @@ compare:
       label: Espacement vertical
       options: '[sm, md, lg, xl]'
       group: general
-
+  default_variant: compare7
 cta:
   label: Appel à l''action
   group: cta
   icon: fa-solid fa-bullhorn
-  description: 'Bibliothèque de blocs CTA shadcnblocks.'
+  description: Bibliothèque de blocs CTA shadcnblocks.
   variants:
     cta4:
       label: CTA 4
-      description: 'Bandeau muted avec liste d''avantages et bouton principal.'
+      description: Bandeau muted avec liste d''avantages et bouton principal.
     cta10:
       label: CTA 10
       description: 'Panneau accent horizontal, texte et boutons côte à côte.'
@@ -1386,16 +1425,16 @@ cta:
       description: 'Carte avec image latérale, badge icône et bouton principal.'
     cta13:
       label: CTA 13
-      description: 'Panneau accent empilé avec boutons pleine largeur sur mobile.'
+      description: Panneau accent empilé avec boutons pleine largeur sur mobile.
     cta34:
       label: CTA 34
-      description: 'Bloc centré avec séparateur haut.'
+      description: Bloc centré avec séparateur haut.
     cta35:
       label: CTA 35
-      description: 'Bloc avec bordure gauche accent.'
+      description: Bloc avec bordure gauche accent.
     cta36:
       label: CTA 36
-      description: 'Split horizontal avec séparateur bas.'
+      description: Split horizontal avec séparateur bas.
     cta37:
       label: CTA 37
       description: 'Grille bordée, texte large et boutons empilés.'
@@ -1424,7 +1463,7 @@ cta:
       label: Icône Font Awesome (cta11)
       client_editable: true
     buttons:
-      type: repeater
+      type: buttons
       label: Boutons
       client_editable: true
       fields:
@@ -1456,19 +1495,19 @@ cta:
       label: Espacement vertical
       options: '[sm, md, lg, xl]'
       group: general
-
+  default_variant: cta4
 awards:
   label: Récompenses
   group: award
   icon: fa-solid fa-award
-  description: 'Bibliothèque de blocs récompenses shadcnblocks.'
+  description: Bibliothèque de blocs récompenses shadcnblocks.
   variants:
     awards1:
       label: Awards 1
       description: 'Tableau des distinctions avec nom, description et année.'
     awards2:
       label: Awards 2
-      description: 'Liste sticky avec marqueur et années en colonne.'
+      description: Liste sticky avec marqueur et années en colonne.
   content_fields:
     title:
       type: text
@@ -1505,19 +1544,19 @@ awards:
       label: Espacement vertical
       options: '[sm, md, lg, xl]'
       group: general
-
+  default_variant: awards1
 community:
   label: Communauté
   group: community
   icon: fa-solid fa-users
-  description: 'Bibliothèque de blocs communauté shadcnblocks.'
+  description: Bibliothèque de blocs communauté shadcnblocks.
   variants:
     community1:
       label: Community 1
       description: 'Logo, titre centré et boutons réseaux sociaux.'
     community2:
       label: Community 2
-      description: 'Grille de cartes réseaux avec titre et description.'
+      description: Grille de cartes réseaux avec titre et description.
   content_fields:
     title:
       type: text
@@ -1548,7 +1587,7 @@ community:
           label: Description (community2)
         icon:
           type: text
-          label: Icône (twitter, github, discord, linkedin ou classe FA)
+          label: 'Icône (twitter, github, discord, linkedin ou classe FA)'
         href:
           type: text
           label: Lien
@@ -1562,12 +1601,12 @@ community:
       label: Espacement vertical
       options: '[sm, md, lg, xl]'
       group: general
-
+  default_variant: community1
 stats:
   label: Chiffres clés
   group: stats
   icon: fa-solid fa-chart-simple
-  description: 'Bibliothèque de blocs statistiques shadcnblocks.'
+  description: Bibliothèque de blocs statistiques shadcnblocks.
   variants:
     stats6:
       label: Stats 6
@@ -1593,7 +1632,7 @@ stats:
       label: Lien (stats8)
       client_editable: true
     buttons:
-      type: repeater
+      type: buttons
       label: Boutons (stats6)
       client_editable: true
       fields:
@@ -1628,19 +1667,19 @@ stats:
       label: Espacement vertical
       options: '[sm, md, lg, xl]'
       group: general
-
+  default_variant: stats6
 careers:
   label: Carrières
   group: career
   icon: fa-solid fa-briefcase
-  description: 'Bibliothèque de blocs carrières shadcnblocks.'
+  description: Bibliothèque de blocs carrières shadcnblocks.
   variants:
     careers1:
       label: Careers 1
       description: 'Titre, description et postes regroupés par département.'
     careers4:
       label: Careers 4
-      description: 'Intro et liste de postes par catégorie avec flèche.'
+      description: Intro et liste de postes par catégorie avec flèche.
   content_fields:
     title:
       type: text
@@ -1681,19 +1720,19 @@ careers:
       label: Espacement vertical
       options: '[sm, md, lg, xl]'
       group: general
-
+  default_variant: careers1
 faq:
   label: FAQ
   group: faq
   icon: fa-solid fa-circle-question
-  description: 'Bibliothèque de blocs FAQ shadcnblocks.'
+  description: Bibliothèque de blocs FAQ shadcnblocks.
   variants:
     faq1:
       label: FAQ 1
-      description: 'Accordéon simple avec titre centré.'
+      description: Accordéon simple avec titre centré.
     faq3:
       label: FAQ 3
-      description: 'En-tête avec description et accordéon centré sur desktop.'
+      description: En-tête avec description et accordéon centré sur desktop.
     faq5:
       label: FAQ 5
       description: 'Badge, titre centré et liste numérotée de questions.'
@@ -1731,16 +1770,16 @@ faq:
       label: Espacement vertical
       options: '[sm, md, lg, xl]'
       group: general
-
+  default_variant: faq1
 code:
   label: Exemple de code
   group: code
   icon: fa-solid fa-code
-  description: 'Bibliothèque de blocs exemple de code shadcnblocks.'
+  description: Bibliothèque de blocs exemple de code shadcnblocks.
   variants:
     codeexample1:
       label: Code example 1
-      description: 'Split texte et bloc multi-langages avec onglets et copie.'
+      description: Split texte et bloc multi-langages avec onglets et copie.
   content_fields:
     tagline:
       type: text
@@ -1759,7 +1798,7 @@ code:
       label: Description
       client_editable: true
     buttons:
-      type: repeater
+      type: buttons
       label: Bouton
       client_editable: true
       fields:
@@ -1800,16 +1839,16 @@ code:
       label: Espacement vertical
       options: '[sm, md, lg, xl]'
       group: general
-
+  default_variant: codeexample1
 compliance:
   label: Conformité
   group: compliance
   icon: fa-solid fa-shield-halved
-  description: 'Bibliothèque de blocs conformité shadcnblocks.'
+  description: Bibliothèque de blocs conformité shadcnblocks.
   variants:
     compliance1:
       label: Compliance 1
-      description: 'Intro certifications et panneau de fonctionnalités conformité.'
+      description: Intro certifications et panneau de fonctionnalités conformité.
   content_fields:
     tagline:
       type: text
@@ -1861,19 +1900,19 @@ compliance:
       label: Espacement vertical
       options: '[sm, md, lg, xl]'
       group: general
-
+  default_variant: compliance1
 case-study:
   label: Études de cas
   group: case-study
   icon: fa-solid fa-file-lines
-  description: 'Bibliothèque de blocs études de cas shadcnblocks.'
+  description: Bibliothèque de blocs études de cas shadcnblocks.
   variants:
     casestudies2:
       label: Case Studies 2
       description: 'Témoignages clients avec portrait, citation et métriques.'
     casestudies3:
       label: Case Studies 3
-      description: 'Étude mise en avant et cartes secondaires dans un cadre bordé.'
+      description: Étude mise en avant et cartes secondaires dans un cadre bordé.
   content_fields:
     tagline:
       type: text
@@ -1978,16 +2017,16 @@ case-study:
       label: Espacement vertical
       options: '[sm, md, lg, xl]'
       group: general
-
+  default_variant: casestudies2
 waitlist:
   label: Liste d'attente
   group: waitlist
   icon: fa-solid fa-envelope-open-text
-  description: 'Bibliothèque de blocs inscription liste d''attente shadcnblocks.'
+  description: Bibliothèque de blocs inscription liste d''attente shadcnblocks.
   variants:
     waitlist1:
       label: Waitlist 1
-      description: 'Inscription email plein écran avec lignes décoratives et preuve sociale.'
+      description: Inscription email plein écran avec lignes décoratives et preuve sociale.
   content_fields:
     title:
       type: text
@@ -2035,12 +2074,148 @@ waitlist:
       label: Espacement vertical
       options: '[sm, md, lg, xl]'
       group: general
-
+  default_variant: waitlist1
+login:
+  label: Connexion
+  group: auth
+  icon: fa-solid fa-right-to-bracket
+  page_picker: false
+  description: Blocs de connexion réservés à l'en-tête du site (login1, login2 shadcnblocks).
+  variants:
+    login1:
+      label: Login 1
+      description: Formulaire compact centré avec logo et champs sans labels.
+    login2:
+      label: Login 2
+      description: Formulaire centré avec labels Email et Mot de passe.
+  content_fields:
+    heading:
+      type: text
+      label: Titre
+      client_editable: true
+    logo_url:
+      type: image
+      label: Logo
+      client_editable: true
+    logo_alt:
+      type: text
+      label: Texte alternatif du logo
+      client_editable: true
+    email_placeholder:
+      type: text
+      label: Placeholder email
+      client_editable: true
+    password_placeholder:
+      type: text
+      label: Placeholder mot de passe
+      client_editable: true
+    email_label:
+      type: text
+      label: Label email
+      client_editable: true
+    password_label:
+      type: text
+      label: Label mot de passe
+      client_editable: true
+    button_text:
+      type: text
+      label: Libellé du bouton
+      client_editable: true
+    forgot_password_label:
+      type: text
+      label: Lien mot de passe oublié
+      client_editable: true
+    forgot_password_url:
+      type: text
+      label: URL mot de passe oublié
+      client_editable: true
+    signup_text:
+      type: text
+      label: Texte inscription
+      client_editable: true
+    signup_link_label:
+      type: text
+      label: Lien inscription
+      client_editable: true
+  style_fields:
+    bg:
+      type: color-token
+      label: Fond
+      group: general
+  default_variant: login1
+signup:
+  label: Inscription
+  group: auth
+  icon: fa-solid fa-user-plus
+  page_picker: false
+  description: Blocs d'inscription appairés aux blocs de connexion (signup1, signup2 shadcnblocks).
+  variants:
+    signup1:
+      label: Signup 1
+      description: Formulaire compact centré avec logo et champs sans labels.
+    signup2:
+      label: Signup 2
+      description: Formulaire centré avec labels Email, Mot de passe et Confirmation.
+  content_fields:
+    heading:
+      type: text
+      label: Titre
+      client_editable: true
+    logo_url:
+      type: image
+      label: Logo
+      client_editable: true
+    logo_alt:
+      type: text
+      label: Texte alternatif du logo
+      client_editable: true
+    email_placeholder:
+      type: text
+      label: Placeholder email
+      client_editable: true
+    password_placeholder:
+      type: text
+      label: Placeholder mot de passe
+      client_editable: true
+    confirm_placeholder:
+      type: text
+      label: Placeholder confirmation
+      client_editable: true
+    email_label:
+      type: text
+      label: Label email
+      client_editable: true
+    password_label:
+      type: text
+      label: Label mot de passe
+      client_editable: true
+    confirm_label:
+      type: text
+      label: Label confirmation
+      client_editable: true
+    button_text:
+      type: text
+      label: Libellé du bouton
+      client_editable: true
+    login_text:
+      type: text
+      label: Texte connexion
+      client_editable: true
+    login_link_label:
+      type: text
+      label: Lien connexion
+      client_editable: true
+  style_fields:
+    bg:
+      type: color-token
+      label: Fond
+      group: general
+  default_variant: signup1
 experience:
   label: Expérience
   group: experience
   icon: fa-solid fa-briefcase
-  description: 'Bibliothèque de blocs parcours professionnel shadcnblocks.'
+  description: Bibliothèque de blocs parcours professionnel shadcnblocks.
   variants:
     experience1:
       label: Experience 1
@@ -2088,12 +2263,12 @@ experience:
       label: Espacement vertical
       options: '[sm, md, lg, xl]'
       group: general
-
+  default_variant: experience1
 demo:
   label: Démo
   group: demo
   icon: fa-solid fa-calendar-check
-  description: 'Bibliothèque de blocs réservation de démo shadcnblocks.'
+  description: Bibliothèque de blocs réservation de démo shadcnblocks.
   variants:
     bookademo1:
       label: Book a Demo 1
@@ -2164,7 +2339,7 @@ demo:
           label: Texte (avantage ou citation)
         label:
           type: text
-          label: Mots surlignés (bookademo2, séparés par des virgules)
+          label: 'Mots surlignés (bookademo2, séparés par des virgules)'
         author:
           type: text
           label: Auteur (bookademo2)
@@ -2187,19 +2362,19 @@ demo:
       label: Espacement vertical
       options: '[sm, md, lg, xl]'
       group: general
-
+  default_variant: bookademo1
 blog:
   label: Blog
   group: blog
   icon: fa-solid fa-newspaper
-  description: 'Bibliothèque de blocs blog shadcnblocks.'
+  description: Bibliothèque de blocs blog shadcnblocks.
   variants:
     blog7:
       label: Blog 7
       description: 'Grille de cartes avec badge, image et métadonnées auteur.'
     blog8:
       label: Blog 8
-      description: 'Liste d''articles en disposition horizontale avec tags.'
+      description: Liste d''articles en disposition horizontale avec tags.
   content_fields:
     tagline:
       type: text
@@ -2236,7 +2411,7 @@ blog:
           label: Date de publication
         label:
           type: text
-          label: Tags (blog8, séparés par des virgules)
+          label: 'Tags (blog8, séparés par des virgules)'
         href:
           type: text
           label: Lien
@@ -2253,3 +2428,4 @@ blog:
       label: Espacement vertical
       options: '[sm, md, lg, xl]'
       group: general
+  default_variant: blog7

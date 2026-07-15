@@ -54,8 +54,8 @@
     width: 100%;
     padding: 1.5rem;
     text-align: left;
-    background: var(--color-background, #fff);
-    border: 1px solid var(--color-border, #e2e8f0);
+    background: var(--color-elevated);
+    border: 1px solid var(--color-border);
     border-radius: 0.5rem;
 }
 
@@ -66,7 +66,7 @@
 }
 
 .section-pricing--pricing4 .section-pricing__card--muted {
-    background: var(--color-muted, #f1f5f9);
+    background: var(--color-muted);
 }
 
 .section-pricing--pricing4 .section-pricing__card-price--lg {
@@ -75,7 +75,7 @@
     font-weight: 600;
     line-height: 1;
     letter-spacing: -0.025em;
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
 }
 
 @media (min-width: 1024px) {
@@ -86,7 +86,7 @@
 
 .section-pricing--pricing4 .section-pricing__card-period {
     margin: 0;
-    color: var(--color-text-muted, #64748b);
+    color: var(--color-text-muted);
 }
 
 .section-pricing--pricing4 .section-pricing__card-period--hidden {

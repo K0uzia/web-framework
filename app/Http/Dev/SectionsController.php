@@ -4,31 +4,20 @@ declare(strict_types=1);
 
 namespace App\Http\Dev;
 
+use App\Http\Dev\Sections\SectionFormRenderer;
+use App\Http\Dev\Sections\SectionDefaults;
 use Capsule\DevDashboard;
-use Capsule\BlogStyle;
-use Capsule\ChangelogStyle;
-use Capsule\ContactStyle;
-use Capsule\IndustryStyle;
-use Capsule\ListStyle;
-use Capsule\ProcessStyle;
-use Capsule\DownloadStyle;
-use Capsule\FeatureStyle;
-use Capsule\GalleryStyle;
-use Capsule\HeroStyle;
 use Capsule\Http\Message\Request;
 use Capsule\Http\Message\Response;
 use Capsule\Http\Support\FormData;
-use Capsule\IntegrationStyle;
 use Capsule\MediaLibrary;
 use Capsule\MediaRepository;
 use Capsule\Page;
 use Capsule\PageRepository;
-use Capsule\PricingStyle;
-use Capsule\RateCardStyle;
+use Capsule\Section\SectionFieldSchema;
+use Capsule\Section\SectionVariantResolver;
 use Capsule\SectionRegistry;
-use Capsule\TeamStyle;
-use Capsule\TestimonialStyle;
-use Capsule\TimelineStyle;
+use Capsule\HeroStyle;
 
 final class SectionsController
 {
@@ -43,6 +32,8 @@ final class SectionsController
         private readonly LibraryMediaUploader $libraryUploader,
         private readonly MediaLibrary $mediaLibrary,
         private readonly MediaRepository $mediaRepository,
+        private readonly SectionVariantResolver $variantResolver,
+        private readonly SectionFieldSchema $fieldSchema,
     ) {
     }
 
@@ -72,7 +63,7 @@ final class SectionsController
         ];
 
         $this->saveSections($page, $sections);
-        $page = $this->requirePage($slug);
+        $page = $this->pageWithSections($page, $sections);
 
         return $this->respond($request, $page, 'Section ajoutée.');
     }
@@ -86,57 +77,42 @@ final class SectionsController
 
         $data = FormData::fromRequest($request);
         $sections = $page->sections;
+        $updatedSection = null;
 
         foreach ($sections as $i => $section) {
             if (!is_array($section) || ($section['id'] ?? '') !== $id) {
                 continue;
             }
 
+            $type = (string) ($section['type'] ?? '');
+            $variant = (string) ($sections[$i]['variant'] ?? '');
+
             if (isset($data['variant'])) {
-                $type = (string) ($section['type'] ?? '');
-                $sections[$i]['variant'] = $this->resolveVariant($type, (string) $data['variant']);
+                $variant = $this->resolveVariant($type, (string) $data['variant']);
+                $sections[$i]['variant'] = $variant;
             }
 
             if (array_key_exists('visible', $data)) {
                 $sections[$i]['visible'] = $data['visible'] === '1';
             }
 
-            foreach ($data as $key => $value) {
-                if (str_starts_with($key, 'content_')) {
-                    $field = substr($key, 8);
-                    if (preg_match('/^(items|buttons)_\d+_/', $field)) {
-                        continue;
-                    }
-                    if (!isset($sections[$i]['content']) || !is_array($sections[$i]['content'])) {
-                        $sections[$i]['content'] = [];
-                    }
-                    $sections[$i]['content'][$field] = $value;
-                }
-                if (str_starts_with($key, 'style_')) {
-                    $field = substr($key, 6);
-                    if (!isset($sections[$i]['style']) || !is_array($sections[$i]['style'])) {
-                        $sections[$i]['style'] = [];
-                    }
-                    $sections[$i]['style'][$field] = $value;
-                }
-            }
-
-            if ($this->hasRepeaterData($data)) {
-                if (!isset($sections[$i]['content']) || !is_array($sections[$i]['content'])) {
-                    $sections[$i]['content'] = [];
-                }
-                $sections[$i]['content']['items'] = $this->parseRepeaterItems($data);
-            }
-
-            if (array_key_exists('content_buttons_count', $data)) {
-                if (!isset($sections[$i]['content']) || !is_array($sections[$i]['content'])) {
-                    $sections[$i]['content'] = [];
-                }
-                $sections[$i]['content']['buttons'] = $this->parseButtonsRepeater($data);
-            }
+            $content = is_array($sections[$i]['content'] ?? null) ? $sections[$i]['content'] : [];
+            $style = is_array($sections[$i]['style'] ?? null) ? $sections[$i]['style'] : [];
+            $sections[$i]['content'] = $this->fieldSchema->unflattenForm($data, $content, $type, $variant);
+            $sections[$i]['style'] = $this->fieldSchema->unflattenStyleForm($data, $style, $type);
+            $updatedSection = $sections[$i];
         }
 
         $this->saveSections($page, $sections);
+
+        if ($this->isHx($request) && ($data['variant_refresh'] ?? '') === '1' && is_array($updatedSection)) {
+            $html = $this->sectionForms->renderSectionBody($slug, $updatedSection);
+            $type = (string) ($updatedSection['type'] ?? '');
+            $variant = (string) ($updatedSection['variant'] ?? '');
+
+            return $this->ui->fragment($html)
+                ->withHeader('X-Dev-Variant-Label', $this->sectionForms->resolvedVariantLabel($type, $variant));
+        }
 
         if ($this->isHx($request)) {
             return $this->ui->partial('section-saved.html', ['id' => $id]);
@@ -167,9 +143,8 @@ final class SectionsController
 
         [$sections[$index], $sections[$swap]] = [$sections[$swap], $sections[$index]];
         $this->saveSections($page, $sections);
-        $page = $this->requirePage($slug);
 
-        return $this->respond($request, $page, '');
+        return $this->respondLightweight($request, $page);
     }
 
     public function reorder(Request $request, string $slug): Response
@@ -206,9 +181,8 @@ final class SectionsController
         }
 
         $this->saveSections($page, $sections);
-        $page = $this->requirePage($slug);
 
-        return $this->respond($request, $page, '');
+        return $this->respondLightweight($request, $page);
     }
 
     /**
@@ -239,7 +213,7 @@ final class SectionsController
         ));
 
         $this->saveSections($page, $sections);
-        $page = $this->requirePage($slug);
+        $page = $this->pageWithSections($page, $sections);
 
         return $this->respond($request, $page, '');
     }
@@ -267,7 +241,7 @@ final class SectionsController
         array_splice($sections, $index, 0, [$section]);
 
         $this->saveSections($page, $sections);
-        $page = $this->requirePage($slug);
+        $page = $this->pageWithSections($page, $sections);
 
         return $this->respond($request, $page, '');
     }
@@ -300,8 +274,7 @@ final class SectionsController
                     (int) ($file['size'] ?? 0),
                 );
             }
-            $this->setSectionFieldValue($page, $id, $field, $url);
-            $page = $this->requirePage($slug);
+            $page = $this->setSectionFieldValue($page, $id, $field, $url);
         } catch (MediaUploadException $e) {
             $error = $e->getMessage();
         }
@@ -317,8 +290,7 @@ final class SectionsController
         }
 
         $field = $this->normalizeMediaField($field);
-        $this->clearSectionFieldValue($page, $id, $field);
-        $page = $this->requirePage($slug);
+        $page = $this->clearSectionFieldValue($page, $id, $field);
 
         return $this->respondMediaField($request, $page, $id, $field, '');
     }
@@ -338,8 +310,7 @@ final class SectionsController
         if ($url === '' || !$this->mediaLibrary->isAllowedUrl($url, $kind)) {
             $error = 'URL de média non autorisée.';
         } else {
-            $this->setSectionFieldValue($page, $id, $field, $url);
-            $page = $this->requirePage($slug);
+            $page = $this->setSectionFieldValue($page, $id, $field, $url);
         }
 
         return $this->respondMediaField($request, $page, $id, $field, $error);
@@ -412,7 +383,7 @@ final class SectionsController
         );
     }
 
-    private function setSectionFieldValue(Page $page, string $sectionId, string $field, string $url): void
+    private function setSectionFieldValue(Page $page, string $sectionId, string $field, string $url): Page
     {
         $sections = $page->sections;
         foreach ($sections as $i => $section) {
@@ -425,11 +396,13 @@ final class SectionsController
             $sections[$i]['content'][$field] = $url;
             $this->saveSections($page, $sections);
 
-            return;
+            return $this->pageWithSections($page, $sections);
         }
+
+        return $page;
     }
 
-    private function clearSectionFieldValue(Page $page, string $sectionId, string $field): void
+    private function clearSectionFieldValue(Page $page, string $sectionId, string $field): Page
     {
         $sections = $page->sections;
         foreach ($sections as $i => $section) {
@@ -442,20 +415,23 @@ final class SectionsController
             $sections[$i]['content'][$field] = '';
             $this->saveSections($page, $sections);
 
-            return;
+            return $this->pageWithSections($page, $sections);
         }
+
+        return $page;
     }
 
     private function normalizeMediaField(string $field): string
     {
         $field = preg_replace('/[^a-zA-Z0-9_]/', '', $field) ?? $field;
+        $allowed = ['image_url', 'video_url', 'background_image_url', 'background_video_url', 'url'];
 
-        return in_array($field, ['image_url', 'video_url', 'url'], true) ? $field : 'image_url';
+        return in_array($field, $allowed, true) ? $field : 'image_url';
     }
 
     private function mediaKindForField(string $field): string
     {
-        return $field === 'video_url' ? 'video' : 'image';
+        return in_array($field, ['video_url', 'background_video_url'], true) ? 'video' : 'image';
     }
 
     private function respond(Request $request, ?Page $page, string $flash): Response
@@ -478,6 +454,36 @@ final class SectionsController
         }
 
         return $this->ui->redirect('/dev/pages/' . SlugCodec::encode($page->slug));
+    }
+
+    private function respondLightweight(Request $request, ?Page $page): Response
+    {
+        if ($page === null) {
+            return $this->ui->redirect('/dev/pages');
+        }
+
+        if ($this->isHx($request)) {
+            return $this->ui->fragment('');
+        }
+
+        return $this->ui->redirect('/dev/pages/' . SlugCodec::encode($page->slug));
+    }
+
+    /**
+     * @param list<array<string, mixed>> $sections
+     */
+    private function pageWithSections(Page $page, array $sections): Page
+    {
+        return new Page(
+            slug: $page->slug,
+            title: $page->title,
+            layout: $page->layout,
+            description: $page->description,
+            sections: $sections,
+            meta: $page->meta,
+            published: $page->published,
+            updatedAt: $page->updatedAt,
+        );
     }
 
     private function requirePage(string $slug): ?Page
@@ -517,79 +523,6 @@ final class SectionsController
     }
 
     /**
-     * @param array<string, string> $data
-     */
-    private function hasRepeaterData(array $data): bool
-    {
-        foreach ($data as $key => $_) {
-            if (preg_match('/^content_items_\d+_/', $key)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Regroupe les champs content_items_{i}_{champ} en éléments, avec champs
-     * arbitraires selon le type de bloc. Les éléments entièrement vides sont retirés.
-     *
-     * @param array<string, string> $data
-     *
-     * @return list<array<string, string>>
-     */
-    private function parseRepeaterItems(array $data): array
-    {
-        $grouped = [];
-        foreach ($data as $key => $value) {
-            if (!preg_match('/^content_items_(\d+)_([a-zA-Z0-9_]+)$/', $key, $m)) {
-                continue;
-            }
-            $grouped[(int) $m[1]][$m[2]] = $value;
-        }
-
-        ksort($grouped);
-
-        $items = [];
-        foreach ($grouped as $item) {
-            $hasContent = false;
-            foreach ($item as $value) {
-                if (trim($value) !== '') {
-                    $hasContent = true;
-                    break;
-                }
-            }
-            if ($hasContent) {
-                $items[] = $item;
-            }
-        }
-
-        return $items;
-    }
-
-    /**
-     * @param array<string, string> $data
-     *
-     * @return list<array{label: string, href: string, style: string}>
-     */
-    private function parseButtonsRepeater(array $data): array
-    {
-        $buttons = [];
-        $i = 0;
-        while (array_key_exists('content_buttons_' . $i . '_label', $data) || array_key_exists('content_buttons_' . $i . '_href', $data)) {
-            $label = trim($data['content_buttons_' . $i . '_label'] ?? '');
-            $href = trim($data['content_buttons_' . $i . '_href'] ?? '');
-            $style = ($data['content_buttons_' . $i . '_style'] ?? 'primary') === 'secondary' ? 'secondary' : 'primary';
-            if ($label !== '' || $href !== '') {
-                $buttons[] = ['label' => $label, 'href' => $href, 'style' => $style];
-            }
-            $i++;
-        }
-
-        return $buttons;
-    }
-
-    /**
      * @return array<string, mixed>
      */
     private function defaultContent(string $type, string $variant = ''): array
@@ -599,59 +532,7 @@ final class SectionsController
 
     private function resolveVariant(string $type, string $requested): string
     {
-        $variants = $this->registry->getVariants($type);
-        $keys = array_map('strval', array_keys($variants));
-        if ($requested !== '' && in_array($requested, $keys, true)) {
-            return $requested;
-        }
-
-        if ($requested === '') {
-            $fallback = match ($type) {
-                'hero' => 'hero3',
-                'features' => 'feature3',
-                'integrations' => 'integration3',
-                'pricing' => 'pricing2',
-                'rate-card' => 'rate-card2',
-                'contact' => 'contact2',
-                'testimonials' => 'testimonial4',
-                'gallery' => 'gallery4',
-                'blog' => 'blog7',
-                'changelog' => 'changelog1',
-                'process' => 'process1',
-                'list' => 'list2',
-                'industry' => 'industries1',
-                'download' => 'download1',
-                'team' => 'team1',
-                'projects' => 'projects5',
-                'timeline' => 'timeline3',
-                default => $keys[0] ?? 'default',
-            };
-            $normalized = match ($type) {
-                'hero' => HeroStyle::normalizeVariant($fallback),
-                'features' => FeatureStyle::normalizeVariant($fallback),
-                'integrations' => IntegrationStyle::normalizeVariant($fallback),
-                'pricing' => PricingStyle::normalizeVariant($fallback),
-                'rate-card' => RateCardStyle::normalizeVariant($fallback),
-                'contact' => ContactStyle::normalizeVariant($fallback),
-                'testimonials' => TestimonialStyle::normalizeVariant($fallback),
-                'gallery' => GalleryStyle::normalizeVariant($fallback),
-                'blog' => BlogStyle::normalizeVariant($fallback),
-                'changelog' => ChangelogStyle::normalizeVariant($fallback),
-                'process' => ProcessStyle::normalizeVariant($fallback),
-                'list' => ListStyle::normalizeVariant($fallback),
-                'industry' => IndustryStyle::normalizeVariant($fallback),
-                'download' => DownloadStyle::normalizeVariant($fallback),
-                'team' => TeamStyle::normalizeVariant($fallback),
-                'projects' => ProjectsStyle::normalizeVariant($fallback),
-                'timeline' => TimelineStyle::normalizeVariant($fallback),
-                default => $fallback,
-            };
-            if (in_array($normalized, $keys, true)) {
-                return $normalized;
-            }
-        }
-
-        return $keys[0] ?? 'default';
+        return $this->variantResolver->resolve($type, $requested);
     }
 
     /**

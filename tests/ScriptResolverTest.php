@@ -23,6 +23,8 @@ final class ScriptResolverTest extends TestCase
             'sections/gallery.js',
             'sections/pricing.js',
             'sections/hero-video.js',
+            'sections/auth-switch.js',
+            'site-login-modal.js',
         ] as $file) {
             file_put_contents($this->jsDir . '/' . $file, '/* js */');
         }
@@ -61,6 +63,26 @@ final class ScriptResolverTest extends TestCase
         $srcs = $resolver->resolve('<div data-hero-video></div>', []);
 
         $this->assertContains('/assets/js/sections/hero-video.js', $srcs);
+    }
+
+    public function testLoadsAuthSwitchWhenMarkupContainsAuthRoot(): void
+    {
+        $resolver = new ScriptResolver($this->jsDir);
+        $srcs = $resolver->resolve('<div class="site-auth" data-auth-root data-auth-mode="login"></div>', []);
+
+        $this->assertContains('/assets/js/sections/auth-switch.js', $srcs);
+    }
+
+    public function testLoadsLoginModalAndAuthSwitchForModalMarkup(): void
+    {
+        $resolver = new ScriptResolver($this->jsDir);
+        $srcs = $resolver->resolve(
+            '<div id="site-login-modal"><div data-auth-root><button data-auth-switch="signup"></button></div></div>',
+            [],
+        );
+
+        $this->assertContains('/assets/js/site-login-modal.js', $srcs);
+        $this->assertContains('/assets/js/sections/auth-switch.js', $srcs);
     }
 
     public function testToHtmlEscapesSrc(): void

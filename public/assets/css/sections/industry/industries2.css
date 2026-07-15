@@ -21,8 +21,8 @@
     line-height: 1;
     letter-spacing: 0.05em;
     text-transform: uppercase;
-    color: var(--color-primary, #2563eb);
-    background: var(--color-surface, #f1f5f9);
+    color: var(--color-primary);
+    background: var(--color-surface);
 }
 
 .section-industry--industries2 .section-industry__title--industries2 {
@@ -48,12 +48,12 @@
 
 .section-industry--industries2 .section-industry__row--industries2 {
     padding-bottom: 2rem;
-    border-bottom: 1px solid var(--color-border, #e2e8f0);
+    border-bottom: 1px solid var(--color-border);
 }
 
 .section-industry--industries2 .section-industry__row--industries2:first-child {
     padding-top: 2rem;
-    border-top: 1px solid var(--color-border, #e2e8f0);
+    border-top: 1px solid var(--color-border);
 }
 
 .section-industry--industries2 .section-industry__row--industries2:last-child {
@@ -142,5 +142,5 @@
     margin: 0;
     font-size: 0.875rem;
     line-height: 1.7;
-    color: var(--color-muted-foreground, #64748b);
+    color: var(--color-muted-foreground);
 }

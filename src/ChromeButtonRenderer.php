@@ -19,22 +19,38 @@ final class ChromeButtonRenderer
 
     /**
      * @param array<string, mixed> $button
+     * @param array<string, mixed> $site
      */
-    public static function render(array $button, string $defaultStyle = 'outline'): string
-    {
+    public static function render(
+        array $button,
+        string $defaultStyle = 'outline',
+        string $defaultHref = '/login',
+        array $site = [],
+    ): string {
         if (($button['enabled'] ?? false) !== true) {
             return '';
         }
 
         $label = trim((string) ($button['label'] ?? ''));
-        $href = trim((string) ($button['href'] ?? ''));
-        if ($label === '' || $href === '') {
-            return '';
+        if ($label === '') {
+            $label = 'Connexion';
         }
 
         $style = (string) ($button['style'] ?? $defaultStyle);
         if (!isset(self::STYLES[$style])) {
             $style = $defaultStyle;
+        }
+
+        $display = (string) ($button['display'] ?? 'page');
+        if ($display === 'modal') {
+            return '<button type="button" class="' . self::classFor($style)
+                . '" data-login-modal-open aria-haspopup="dialog" aria-controls="site-login-modal">'
+                . htmlspecialchars($label, ENT_QUOTES) . '</button>';
+        }
+
+        $href = LoginBlockResolver::effectiveHref($button, $site, $defaultHref);
+        if ($href === '') {
+            return '';
         }
 
         return '<a class="' . self::classFor($style) . '" href="'

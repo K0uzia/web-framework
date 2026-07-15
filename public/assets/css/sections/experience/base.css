@@ -1,9 +1,5 @@
 /* Tokens communs au type experience */
 
-.section-experience {
-    background: var(--color-background, #fff);
-}
-
 .section-experience[class*="section--pad-"] {
     padding-inline: var(--space-md, 1rem);
 }

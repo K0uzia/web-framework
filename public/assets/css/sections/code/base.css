@@ -1,9 +1,5 @@
 /* Tokens communs au type code */
 
-.section-code {
-    background: var(--color-background, #fff);
-}
-
 .section-code[class*="section--pad-"] {
     padding-inline: var(--space-md, 1rem);
 }

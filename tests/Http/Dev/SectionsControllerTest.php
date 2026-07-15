@@ -6,7 +6,7 @@ namespace Tests\Http\Dev;
 
 use App\Http\Dev\LibraryMediaUploader;
 use App\Http\Dev\MediasController;
-use App\Http\Dev\SectionFormRenderer;
+use App\Http\Dev\Sections\SectionFormRenderer;
 use App\Http\Dev\SectionsController;
 use Capsule\DevDashboard;
 use Capsule\Http\Factory\ResponseFactory;
@@ -16,6 +16,9 @@ use Capsule\MediaRepository;
 use Capsule\MediaUsageScanner;
 use Capsule\Page;
 use Capsule\PageRepository;
+use Capsule\Section\SectionFieldSchema;
+use Capsule\Section\SectionHandlerRegistry;
+use Capsule\Section\SectionVariantResolver;
 use Capsule\SectionRegistry;
 use Capsule\SiteRepository;
 use PHPUnit\Framework\TestCase;
@@ -37,7 +40,10 @@ final class SectionsControllerTest extends TestCase
 
         $root = dirname(__DIR__, 3);
         $ui = new DevDashboard($root . '/resources/dev', new ResponseFactory());
-        $registry = new SectionRegistry($root . '/resources/sections/registry.yaml');
+        $registry = new SectionRegistry(
+            $root . '/resources/sections/registry.yaml',
+            $root . '/resources/sections/_shared/style-fields.yaml',
+        );
         $site = new SiteRepository($pdo);
         $this->mediaRepo = new MediaRepository($pdo);
         $this->uploadsDir = sys_get_temp_dir() . '/capsule-section-media-' . bin2hex(random_bytes(4));
@@ -46,9 +52,26 @@ final class SectionsControllerTest extends TestCase
         $uploader = new MediaUploader($this->uploadsDir);
         $libraryUploader = new LibraryMediaUploader($this->libraryDir);
         $library = new MediaLibrary($this->mediaRepo, $this->uploadsDir, '/uploads/site', $this->pages, $site);
-        $forms = new SectionFormRenderer($registry, $this->pages, $library, $libraryUploader);
+        $fieldSchema = new SectionFieldSchema(
+            $registry,
+            $root . '/resources/sections/_shared/variant-content-overrides.yaml',
+        );
+        $handlers = new SectionHandlerRegistry();
+        $variantResolver = new SectionVariantResolver($registry, $handlers);
+        $forms = new SectionFormRenderer($registry, $this->pages, $library, $libraryUploader, $fieldSchema, $variantResolver);
 
-        $this->controller = new SectionsController($ui, $this->pages, $registry, $forms, $uploader, $libraryUploader, $library, $this->mediaRepo);
+        $this->controller = new SectionsController(
+            $ui,
+            $this->pages,
+            $registry,
+            $forms,
+            $uploader,
+            $libraryUploader,
+            $library,
+            $this->mediaRepo,
+            $variantResolver,
+            $fieldSchema,
+        );
 
         $this->pages->save(new Page(
             slug: 'about',

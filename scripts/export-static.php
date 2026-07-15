@@ -88,7 +88,7 @@ copyPublicAssets($root . '/public', $outputDir);
 $phpAppUrl = getenv('PHP_APP_URL') ?: getenv('RENDER_APP_URL');
 $phpAppUrl = is_string($phpAppUrl) && $phpAppUrl !== '' ? rtrim($phpAppUrl, '/') : null;
 
-writeNetlifyFiles($outputDir, $isNetlify, $phpAppUrl);
+writeNetlifyFiles($outputDir, $isNetlify, $phpAppUrl, $basePath);
 
 require __DIR__ . '/export-dev-static.php';
 
@@ -201,10 +201,11 @@ function copyTree(string $src, string $dest): void
     }
 }
 
-function writeNetlifyFiles(string $outputDir, bool $isNetlify, ?string $phpAppUrl = null): void
+function writeNetlifyFiles(string $outputDir, bool $isNetlify, ?string $phpAppUrl = null, string $basePath = ''): void
 {
     if (!$isNetlify) {
         file_put_contents($outputDir . '/.nojekyll', '');
+        file_put_contents($outputDir . '/.htaccess', \Capsule\StaticExportHtaccess::content($basePath));
 
         return;
     }

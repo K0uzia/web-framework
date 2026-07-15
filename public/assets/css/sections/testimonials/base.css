@@ -1,9 +1,5 @@
 /* Tokens et styles communs aux variantes testimonials */
 
-.section-testimonials {
-    background: var(--color-background, #fff);
-}
-
 .section-testimonials[class*="section--pad-"] {
     padding-inline: var(--space-md, 1rem);
 }
@@ -33,7 +29,7 @@
     font-weight: 600;
     line-height: 1.15;
     letter-spacing: -0.025em;
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
 }
 
 @media (min-width: 1024px) {
@@ -46,7 +42,7 @@
     margin: 0;
     font-size: 1rem;
     line-height: 1.5;
-    color: var(--color-text-muted, #64748b);
+    color: var(--color-text-muted);
 }
 
 @media (min-width: 1024px) {
@@ -79,7 +75,7 @@
     flex-shrink: 0;
     border-radius: 999px;
     object-fit: cover;
-    box-shadow: 0 0 0 1px var(--color-border, #e2e8f0);
+    box-shadow: 0 0 0 1px var(--color-border);
 }
 
 .section-testimonials .section-testimonials__meta {
@@ -92,29 +88,29 @@
     margin: 0;
     font-size: 0.875rem;
     font-weight: 500;
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
 }
 
 .section-testimonials .section-testimonials__role {
     margin: 0;
     font-size: 0.875rem;
-    color: var(--color-text-muted, #64748b);
+    color: var(--color-text-muted);
 }
 
 .section-testimonials .section-testimonials__card {
     display: flex;
     flex-direction: column;
     height: 100%;
-    border: 1px solid var(--color-border, #e2e8f0);
+    border: 1px solid var(--color-border);
     border-radius: var(--radius-lg, 0.75rem);
-    background: var(--color-elevated, #fff);
+    background: var(--color-elevated);
 }
 
 .section-testimonials .section-testimonials__card-body {
     flex: 1;
     padding: 1.5rem 1.5rem 0;
     line-height: 1.75;
-    color: color-mix(in srgb, var(--color-text, #0f172a) 70%, transparent);
+    color: color-mix(in srgb, var(--color-text) 70%, transparent);
 }
 
 .section-testimonials .section-testimonials__card-footer {
@@ -134,7 +130,7 @@
     bottom: -0.5rem;
     height: 24rem;
     pointer-events: none;
-    background: linear-gradient(to top, var(--color-background, #fff), transparent);
+    background: linear-gradient(to top, var(--color-background), transparent);
 }
 
 .section-testimonials .section-testimonials__masonry {
@@ -187,9 +183,9 @@
     break-inside: avoid;
     margin-bottom: 1.25rem;
     padding: 1.25rem;
-    border: 1px solid var(--color-border, #e2e8f0);
+    border: 1px solid var(--color-border);
     border-radius: var(--radius-lg, 0.75rem);
-    background: var(--color-elevated, #fff);
+    background: var(--color-elevated);
 }
 
 .section-testimonials .section-testimonials__masonry-head {
@@ -212,17 +208,17 @@
     justify-content: center;
     width: 1rem;
     height: 1rem;
-    color: var(--color-text-muted, #64748b);
+    color: var(--color-text-muted);
     text-decoration: none;
 }
 
 .section-testimonials .section-testimonials__social-link:hover {
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
 }
 
 .section-testimonials .section-testimonials__quote--muted {
     line-height: 1.75;
-    color: color-mix(in srgb, var(--color-text, #0f172a) 60%, transparent);
+    color: color-mix(in srgb, var(--color-text) 60%, transparent);
 }
 
 .section-testimonials .section-testimonials__quote--clamp-2 q {

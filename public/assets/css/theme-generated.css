@@ -4,18 +4,44 @@
     --color-secondary: #64748b;
     --color-secondary-hover: #475569;
     --color-background: #ffffff;
-    --color-surface: #f1f5f9;
+    --color-surface: #f8fafc;
     --color-border: #e2e8f0;
     --color-text: #0f172a;
     --color-text-muted: #64748b;
     --color-button-primary-bg: #3b82f6;
-    --color-button-primary-hover: #2563eb;
+    --color-button-primary-border: #3b82f6;
     --color-button-primary-text: #ffffff;
-    --color-button-secondary-bg: #000000;
-    --color-button-secondary-hover: #000000;
+    --color-button-primary-hover: #2563eb;
+    --color-button-primary-border-hover: #2563eb;
+    --color-button-primary-text-hover: #ffffff;
+    --color-button-secondary-bg: transparent;
+    --color-button-secondary-border: #e2e8f0;
     --color-button-secondary-text: #0f172a;
+    --color-button-secondary-hover: #f1f5f9;
+    --color-button-secondary-border-hover: #cbd5e1;
+    --color-button-secondary-text-hover: #0f172a;
+    --color-button-outline-border: #cbd5e1;
+    --color-button-outline-text: #0f172a;
+    --color-button-outline-border-hover: #94a3b8;
+    --color-button-outline-text-hover: #0f172a;
+    --color-nav-link-text: #64748b;
+    --color-nav-link-bg: transparent;
+    --color-nav-link-text-hover: #2563eb;
+    --color-nav-link-bg-hover: #eff6ff;
+    --color-nav-link-text-active: #3b82f6;
+    --color-nav-link-bg-active: #dbeafe;
     --color-link: #3b82f6;
     --color-link-hover: #2563eb;
+    --color-header-background: #ffffff;
+    --color-header-text: #0f172a;
+    --color-header-text-muted: #64748b;
+    --color-header-link: #64748b;
+    --color-header-link-hover: #2563eb;
+    --color-footer-background: #f8fafc;
+    --color-footer-text: #0f172a;
+    --color-footer-text-muted: #64748b;
+    --color-footer-link: #64748b;
+    --color-footer-link-hover: #2563eb;
     --color-success: #16a34a;
     --color-warning: #d97706;
     --color-error: #dc2626;
@@ -24,9 +50,801 @@
     --color-disabled: #94a3b8;
     --color-muted: var(--color-surface);
     --color-elevated: var(--color-surface);
+    --color-foreground: var(--color-text);
+    --color-muted-foreground: var(--color-text-muted);
+    --color-primary-foreground: var(--color-button-primary-text);
+    --color-accent: var(--color-surface);
+    --color-destructive: var(--color-error);
+    --color-ring: var(--color-focus-ring);
     --font-heading: Inter, system-ui, sans-serif;
     --font-body: system-ui, sans-serif;
     --spacing-section: 4rem;
     --radius-md: 10px;
     --container: 72rem;
+}
+
+/**
+ * Liaison tokens thème → composants site public.
+ * Chargé après theme_css (:root variables).
+ */
+
+/* ==========================================================================
+   Fonds : page vs surfaces
+   ========================================================================== */
+
+.site-body,
+.site-main {
+    background: var(--color-background);
+}
+
+.site-header {
+    background: var(--color-header-background, color-mix(in srgb, var(--color-background) 92%, transparent));
+    color: var(--color-header-text, var(--color-text));
+}
+
+.site-header.site-header--bg-background {
+    background: var(--color-background) !important;
+}
+
+.site-header.site-header--bg-surface {
+    background: var(--color-surface) !important;
+}
+
+.site-header.site-header--bg-muted {
+    background: var(--color-surface) !important;
+}
+
+.site-header.site-header--bg-primary {
+    background: var(--color-primary) !important;
+    color: var(--color-button-primary-text);
+    --color-header-text: var(--color-button-primary-text);
+    --color-header-text-muted: color-mix(in srgb, var(--color-button-primary-text) 82%, transparent);
+    --color-header-link: color-mix(in srgb, var(--color-button-primary-text) 88%, transparent);
+    --color-header-link-hover: var(--color-button-primary-text);
+}
+
+.site-footer {
+    background: var(--color-footer-background, var(--color-surface));
+    color: var(--color-footer-text, var(--color-text));
+}
+
+.site-footer.site-footer--bg-background {
+    background: var(--color-background) !important;
+}
+
+.site-footer.site-footer--bg-surface {
+    background: var(--color-surface) !important;
+}
+
+.site-footer.site-footer--bg-muted {
+    background: var(--color-surface) !important;
+}
+
+.site-footer.site-footer--bg-primary {
+    background: var(--color-primary) !important;
+    color: var(--color-button-primary-text);
+    --color-footer-text: var(--color-button-primary-text);
+    --color-footer-text-muted: color-mix(in srgb, var(--color-button-primary-text) 82%, transparent);
+    --color-footer-link: color-mix(in srgb, var(--color-button-primary-text) 88%, transparent);
+    --color-footer-link-hover: var(--color-button-primary-text);
+}
+
+/* Fonds de section : priorité sur les racines .section-{type} */
+section.section--bg-background {
+    background: var(--color-background) !important;
+    --color-elevated: var(--color-surface);
+}
+
+section.section--bg-muted {
+    background: var(--color-surface) !important;
+    --color-elevated: var(--color-background);
+}
+
+/* Shader hero : le fond animé remplace le token de section */
+section.section-hero:has(.section-hero__backdrop--shader).section--bg-background,
+section.section-hero:has(.section-hero__backdrop--shader).section--bg-muted,
+section.section-hero:has(.section-hero__backdrop--shader).section--bg-primary {
+    background: transparent !important;
+}
+
+section.section--bg-primary {
+    background: var(--color-primary) !important;
+    color: var(--color-button-primary-text);
+    --color-text: var(--color-button-primary-text);
+    --color-foreground: var(--color-button-primary-text);
+    --color-text-muted: color-mix(in srgb, var(--color-button-primary-text) 82%, transparent);
+    --color-muted-foreground: color-mix(in srgb, var(--color-button-primary-text) 82%, transparent);
+    --color-link: color-mix(in srgb, var(--color-button-primary-text) 92%, transparent);
+    --color-link-hover: var(--color-button-primary-text);
+    --color-border: color-mix(in srgb, var(--color-button-primary-text) 35%, transparent);
+    --color-elevated: color-mix(in srgb, var(--color-button-primary-text) 12%, transparent);
+    --color-button-secondary-bg: transparent;
+    --color-button-secondary-text: var(--color-button-primary-text);
+    --color-button-secondary-hover: color-mix(in srgb, var(--color-button-primary-text) 12%, transparent);
+    --color-focus-ring: color-mix(in srgb, var(--color-button-primary-text) 65%, transparent);
+}
+
+section.section--bg-primary .section-hero__subtitle,
+section.section--bg-primary p {
+    color: color-mix(in srgb, var(--color-button-primary-text) 82%, transparent);
+}
+
+.site-header__toggle {
+    background: var(--color-surface);
+}
+
+/* Typographie de base dans les blocs (sauf fond primaire : tokens locaux) */
+.site-main section[class*="section-"]:not(.section--bg-primary) {
+    color: var(--color-text);
+}
+
+.site-main section[class*="section-"] [class*="__title"],
+.site-main section[class*="section-"] [class*="__heading"],
+.site-main section[class*="section-"] [class*="__name"],
+.site-main section[class*="section-"] [class*="__label"]:not([class*="__label--"]),
+.section-head__title {
+    color: var(--color-text);
+}
+
+.site-main section[class*="section-"] [class*="__price"],
+.site-main section[class*="section-"] [class*="__value"],
+.site-main section[class*="section-"] [class*="__stat"] {
+    color: var(--color-text);
+}
+
+/* Section fond primaire : priorité sur les styles de variante */
+section.section--bg-primary :is(
+    [class*="__title"],
+    [class*="__heading"],
+    [class*="__name"],
+    [class*="__price"],
+    [class*="__value"],
+    [class*="__stat"],
+    .section-head__title,
+    h1,
+    h2,
+    h3,
+    h4
+) {
+    color: var(--color-button-primary-text) !important;
+}
+
+section.section--bg-primary :is(
+    [class*="__subtitle"],
+    [class*="__description"],
+    [class*="__excerpt"],
+    [class*="__quote"],
+    [class*="__author-role"],
+    [class*="__author-name"],
+    [class*="__billing"],
+    [class*="__feature-text"],
+    [class*="__label"],
+    [class*="__link"],
+    [class*="__meta"],
+    [class*="__caption"],
+    [class*="__text"],
+    p,
+    li,
+    dt,
+    dd
+) {
+    color: color-mix(in srgb, var(--color-button-primary-text) 82%, transparent) !important;
+}
+
+section.section--bg-primary :is(
+    .section-button--secondary,
+    [class*="__btn--secondary"],
+    [class*="__btn--outline"],
+    [class*="__button--secondary"],
+    [class*="__button--outline"],
+    [class*="__button--ghost"]
+) {
+    background: transparent !important;
+    color: var(--color-button-primary-text) !important;
+    border-color: color-mix(in srgb, var(--color-button-primary-text) 35%, transparent) !important;
+}
+
+section.section--bg-primary :is(
+    .section-button--secondary,
+    [class*="__btn--secondary"],
+    [class*="__btn--outline"],
+    [class*="__button--secondary"],
+    [class*="__button--outline"],
+    [class*="__button--ghost"]
+):hover {
+    background: color-mix(in srgb, var(--color-button-primary-text) 12%, transparent) !important;
+    color: var(--color-button-primary-text) !important;
+}
+
+section.section--bg-primary a:not(.section-button):not([class*="__btn"]):not([class*="__button"]) {
+    color: color-mix(in srgb, var(--color-button-primary-text) 92%, transparent) !important;
+}
+
+section.section--bg-primary a:not(.section-button):not([class*="__btn"]):not([class*="__button"]):hover {
+    color: var(--color-button-primary-text) !important;
+}
+
+/* Cartes, panneaux et surfaces surélevées (conteneurs BEM, pas __card-title ni __panel-head) */
+.site-main section[class*="section-"] :is(
+    [class*="__card--"],
+    [class$="__card"],
+    [class*="__panel--"],
+    [class*="__plan--"],
+    [class*="__tier--"],
+    [class*="__box--"]:not([class*="alert"]),
+    [class$="__box"]:not([class*="alert"]),
+    [class*="__shell--"],
+    [class*="__form-card--"],
+    [class*="__quote-card--"],
+    [class*="__item-card--"],
+    [class*="__table-wrap"],
+    [class*="__billing-tab"].is-active
+) {
+    background: var(--color-elevated);
+    border-color: var(--color-border);
+}
+
+.site-main section[class*="section-"] :is(
+    [class*="__card--"],
+    [class$="__card"],
+    [class*="__panel--"],
+    [class*="__plan--"],
+    [class*="__tier--"],
+    [class*="__box--"]:not([class*="alert"]),
+    [class$="__box"]:not([class*="alert"])
+) {
+    color: var(--color-text);
+}
+
+/* Champs de formulaire dans les blocs */
+.site-main section[class*="section-"] input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]):not([type="range"]),
+.site-main section[class*="section-"] textarea,
+.site-main section[class*="section-"] select {
+    background: var(--color-elevated);
+    color: var(--color-text);
+    border-color: var(--color-border);
+}
+
+.site-main section[class*="section-"] input::placeholder,
+.site-main section[class*="section-"] textarea::placeholder {
+    color: var(--color-text-muted);
+}
+
+/* Boutons secondaires / contour dans tous les blocs */
+[class*="section-"] [class*="__btn--secondary"],
+[class*="section-"] [class*="__btn--outline"],
+[class*="section-"] [class*="__button--secondary"],
+[class*="section-"] [class*="__button--outline"],
+[class*="section-"] [class*="__button--ghost"],
+.section-hero .section-hero__button--secondary,
+.section-features .section-features__btn--outline,
+.section-features .section-features__btn--pill,
+.section-pricing .section-pricing__btn--outline {
+    background: var(--color-button-secondary-bg);
+    color: var(--color-button-secondary-text);
+    border-color: var(--color-button-secondary-border, var(--color-border));
+}
+
+[class*="section-"] [class*="__btn--outline"],
+[class*="section-"] [class*="__button--outline"],
+.section-features .section-features__btn--outline,
+.section-pricing .section-pricing__btn--outline {
+    background: transparent;
+    color: var(--color-button-outline-text, var(--color-button-secondary-text));
+    border-color: var(--color-button-outline-border, var(--color-button-secondary-border, var(--color-border)));
+}
+
+[class*="section-"] [class*="__btn--secondary"]:hover,
+[class*="section-"] [class*="__btn--outline"]:hover,
+[class*="section-"] [class*="__button--secondary"]:hover,
+[class*="section-"] [class*="__button--outline"]:hover,
+[class*="section-"] [class*="__button--ghost"]:hover,
+.section-hero .section-hero__button--secondary:hover,
+.section-features .section-features__btn--outline:hover,
+.section-features .section-features__btn--pill:hover,
+.section-pricing .section-pricing__btn--outline:hover {
+    background: var(--color-button-secondary-hover);
+    color: var(--color-button-secondary-text-hover, var(--color-button-secondary-text));
+    border-color: var(--color-button-secondary-border-hover, var(--color-button-secondary-border, var(--color-border)));
+}
+
+[class*="section-"] [class*="__btn--outline"]:hover,
+[class*="section-"] [class*="__button--outline"]:hover,
+.section-features .section-features__btn--outline:hover,
+.section-pricing .section-pricing__btn--outline:hover {
+    background: transparent;
+    color: var(--color-button-outline-text-hover, var(--color-button-outline-text, var(--color-button-secondary-text)));
+    border-color: var(--color-button-outline-border-hover, var(--color-button-outline-border, var(--color-button-secondary-border, var(--color-border))));
+}
+
+section.section--bg-primary [class*="__btn--secondary"],
+section.section--bg-primary [class*="__btn--outline"],
+section.section--bg-primary [class*="__button--secondary"],
+section.section--bg-primary [class*="__button--outline"],
+section.section--bg-primary .section-hero__button--secondary,
+section.section--bg-primary .section-features__btn--outline,
+section.section--bg-primary .section-pricing__btn--outline {
+    background: transparent;
+    color: var(--color-button-primary-text);
+    border-color: color-mix(in srgb, var(--color-button-primary-text) 35%, transparent);
+}
+
+section.section--bg-primary [class*="__btn--secondary"]:hover,
+section.section--bg-primary [class*="__btn--outline"]:hover,
+section.section--bg-primary [class*="__button--secondary"]:hover,
+section.section--bg-primary [class*="__button--outline"]:hover,
+section.section--bg-primary .section-hero__button--secondary:hover,
+section.section--bg-primary .section-features__btn--outline:hover,
+section.section--bg-primary .section-pricing__btn--outline:hover {
+    background: color-mix(in srgb, var(--color-button-primary-text) 12%, transparent);
+    color: var(--color-button-primary-text);
+}
+
+/* Onglets, badges et séparateurs */
+.site-main section[class*="section-"] [class*="__billing--tabs"],
+.site-main section[class*="section-"] [class*="__tabs"],
+.site-main section[class*="section-"] [class*="__toggle-group"] {
+    background: var(--color-muted);
+}
+
+.site-main section[class*="section-"] [class*="__separator"],
+.site-main section[class*="section-"] hr[class*="section-"] {
+    border-color: var(--color-border);
+}
+
+.site-main section[class*="section-"] [class*="__badge"],
+.site-main section[class*="section-"] [class*="__tag"]:not([class*="dev-"]) {
+    background: var(--color-muted);
+    color: var(--color-text);
+    border-color: var(--color-border);
+}
+
+/* ==========================================================================
+   Texte atténué
+   ========================================================================== */
+
+.section-head__subtitle,
+.section-hero__subtitle,
+.site-header__tagline {
+    color: var(--color-header-text-muted, var(--color-text-muted));
+}
+
+.site-header__name {
+    color: var(--color-header-text, var(--color-text));
+}
+
+.site-footer__tagline,
+.site-footer__legal,
+.site-footer__description,
+.site-footer__bar {
+    color: var(--color-footer-text-muted, var(--color-text-muted));
+}
+
+.section-ui-counter__label,
+.section-ui-card__text,
+.section-ui-alert__text {
+    color: var(--color-text-muted);
+}
+
+[class*="__caption"]:not([class*="dev-"]),
+[class*="__meta"]:not([class*="dev-"]),
+[class*="__excerpt"]:not([class*="dev-"]),
+[class*="__date"]:not([class*="dev-"]),
+[class*="__role"]:not([class*="dev-"]),
+[class*="__eyebrow"]:not([class*="dev-"]),
+[class*="__text"]:not([class*="dev-"]):not(.section-ui-alert__text) {
+    color: var(--color-text-muted);
+}
+
+[class*="__placeholder"]:not([class*="dev-"]) {
+    background: var(--color-surface);
+    color: var(--color-secondary);
+}
+
+/* ==========================================================================
+   Liens
+   ========================================================================== */
+
+.site-main a:not(.section-button):not(.btn):not(.site-chrome-btn):not(.site-nav__link):not(.site-header__cta):not(.site-header__login):not(.site-header__brand):not(.site-footer__name):not([class*="section-hero__button"]):not([class*="section-features__btn"]):not([class*="section-pricing__btn"]):not([class*="section-contact__"]):not([class*="section-testimonials__"]):not([class*="site-footer__column-link"]):not([class*="site-footer__social-link"]):not([class*="site-footer__brand-link"]):not(.section-features__overlay-link):not([class*="__link"]),
+.section-banner__link,
+.section-ui-announcement__link {
+    color: var(--color-link);
+}
+
+.site-main section[class*="section-"] [class*="__link"] {
+    color: var(--color-link);
+}
+
+.site-main section[class*="section-"] [class*="__link"]:hover {
+    color: var(--color-link-hover);
+}
+
+.site-main a:not(.section-button):not(.btn):not(.site-chrome-btn):not(.site-nav__link):not(.site-header__cta):not(.site-header__login):not(.site-header__brand):not(.site-footer__name):not([class*="section-hero__button"]):not([class*="section-features__btn"]):not([class*="section-pricing__btn"]):not([class*="section-contact__"]):not([class*="section-testimonials__"]):not([class*="site-footer__column-link"]):not([class*="site-footer__social-link"]):not([class*="site-footer__brand-link"]):not(.section-features__overlay-link):not([class*="__link"]):hover,
+.section-banner__link:hover,
+.section-ui-announcement__link:hover {
+    color: var(--color-link-hover);
+}
+
+.site-footer__name {
+    color: var(--color-footer-text, var(--color-text));
+}
+
+.site-footer__name:hover {
+    color: var(--color-footer-link-hover, var(--color-link-hover));
+}
+
+.site-footer__column-title {
+    color: var(--color-footer-text, var(--color-text));
+}
+
+.site-footer__column-link,
+.site-footer__social-link {
+    color: var(--color-footer-link, var(--color-text-muted));
+}
+
+.site-footer__column-link:hover,
+.site-footer__social-link:hover {
+    color: var(--color-footer-link-hover, var(--color-link-hover));
+}
+
+.site-footer__nav .site-nav__link,
+.site-footer__nav .site-nav__trigger {
+    color: var(--color-footer-link, var(--color-nav-link-text, var(--color-text-muted)));
+}
+
+.site-footer__nav .site-nav__link:hover,
+.site-footer__nav .site-nav__trigger:hover {
+    color: var(--color-footer-link-hover, var(--color-nav-link-text-hover, var(--color-link-hover)));
+}
+
+.site-header .site-nav__link {
+    color: var(--color-header-link, var(--color-nav-link-text, var(--color-text-muted)));
+    background: var(--color-nav-link-bg, transparent);
+}
+
+.site-header .site-nav__link:hover {
+    color: var(--color-header-link-hover, var(--color-nav-link-text-hover, var(--color-link-hover)));
+    background: var(--color-nav-link-bg-hover, color-mix(in srgb, var(--color-link) 8%, transparent));
+}
+
+.site-header .site-nav__link.is-active {
+    color: var(--color-header-link-hover, var(--color-nav-link-text-active, var(--color-link)));
+    background: var(--color-nav-link-bg-active, color-mix(in srgb, var(--color-link) 12%, transparent));
+}
+
+.site-header .site-nav__trigger {
+    color: var(--color-header-link, var(--color-nav-link-text, var(--color-text-muted)));
+    background: var(--color-nav-link-bg, transparent);
+}
+
+.site-header .site-nav__item--active > .site-nav__details > .site-nav__trigger,
+.site-header .site-nav__trigger:hover {
+    color: var(--color-header-link-hover, var(--color-nav-link-text-hover, var(--color-link-hover)));
+    background: var(--color-nav-link-bg-hover, color-mix(in srgb, var(--color-link) 8%, transparent));
+}
+
+.site-header .site-nav__sublink {
+    color: var(--color-header-link, var(--color-nav-link-text, var(--color-text)));
+    background: var(--color-nav-link-bg, transparent);
+}
+
+.site-header .site-nav__sublink:hover {
+    color: var(--color-header-link-hover, var(--color-nav-link-text-hover, var(--color-link-hover)));
+    background: var(--color-nav-link-bg-hover, color-mix(in srgb, var(--color-link) 8%, transparent));
+}
+
+.site-header .site-nav__sublink.is-active {
+    color: var(--color-header-link-hover, var(--color-nav-link-text-active, var(--color-link)));
+    background: var(--color-nav-link-bg-active, color-mix(in srgb, var(--color-link) 12%, transparent));
+}
+
+/* Navigation */
+.site-nav__link {
+    color: var(--color-nav-link-text, var(--color-text-muted));
+    background: var(--color-nav-link-bg, transparent);
+}
+
+.site-nav__link:hover {
+    color: var(--color-nav-link-text-hover, var(--color-link-hover));
+    background: var(--color-nav-link-bg-hover, color-mix(in srgb, var(--color-link) 8%, transparent));
+}
+
+.site-nav__link.is-active {
+    color: var(--color-nav-link-text-active, var(--color-link));
+    background: var(--color-nav-link-bg-active, color-mix(in srgb, var(--color-link) 12%, transparent));
+}
+
+.site-nav__trigger {
+    color: var(--color-nav-link-text, var(--color-text-muted));
+    background: var(--color-nav-link-bg, transparent);
+}
+
+.site-nav__item--active > .site-nav__details > .site-nav__trigger,
+.site-nav__trigger:hover {
+    color: var(--color-nav-link-text-hover, var(--color-link-hover));
+    background: var(--color-nav-link-bg-hover, color-mix(in srgb, var(--color-link) 8%, transparent));
+}
+
+.site-nav__sublink {
+    color: var(--color-nav-link-text, var(--color-text));
+    background: var(--color-nav-link-bg, transparent);
+}
+
+.site-nav__sublink:hover {
+    color: var(--color-nav-link-text-hover, var(--color-link-hover));
+    background: var(--color-nav-link-bg-hover, color-mix(in srgb, var(--color-link) 8%, transparent));
+}
+
+.site-nav__sublink.is-active {
+    color: var(--color-nav-link-text-active, var(--color-link));
+    background: var(--color-nav-link-bg-active, color-mix(in srgb, var(--color-link) 12%, transparent));
+}
+
+.site-header__blocks-mobile-link,
+.site-header__blocks-accordion-trigger {
+    color: var(--color-nav-link-text, var(--color-text));
+    background: var(--color-nav-link-bg, transparent);
+}
+
+.site-header__blocks-mobile-link:hover,
+.site-header__blocks-accordion-trigger:hover {
+    color: var(--color-nav-link-text-hover, var(--color-link-hover));
+    background: var(--color-nav-link-bg-hover, color-mix(in srgb, var(--color-link) 8%, transparent));
+}
+
+.site-header__blocks-submenu-link,
+.site-header__blocks-feature-link {
+    color: var(--color-nav-link-text, inherit);
+    background: var(--color-nav-link-bg, transparent);
+}
+
+.site-header__blocks-submenu-link:hover,
+.site-header__blocks-feature-link:hover {
+    color: var(--color-nav-link-text-hover, inherit);
+    background: var(--color-nav-link-bg-hover, color-mix(in srgb, var(--color-text) 6%, transparent));
+}
+
+/* ==========================================================================
+   Boutons : blocs, chrome, en-tête
+   ========================================================================== */
+
+.section-button--primary,
+.btn--primary,
+.site-header__cta,
+.site-chrome-btn--primary {
+    background: var(--color-button-primary-bg);
+    color: var(--color-button-primary-text);
+    border: 1px solid var(--color-button-primary-border, var(--color-button-primary-bg));
+}
+
+.section-button--primary:hover,
+.btn--primary:hover,
+.site-header__cta:hover,
+.site-chrome-btn--primary:hover {
+    background: var(--color-button-primary-hover);
+    color: var(--color-button-primary-text-hover, var(--color-button-primary-text));
+    border-color: var(--color-button-primary-border-hover, var(--color-button-primary-hover));
+    opacity: 1;
+}
+
+/* Boutons primaires des blocs hero, features et pricing */
+.section-hero [class*="section-hero__button--primary"],
+.section-hero [class*="section-hero__button--phone"],
+.section-features [class*="section-features__btn--primary"],
+.section-features [class*="section-features__button--primary"],
+.section-pricing [class*="section-pricing__btn--primary"] {
+    background: var(--color-button-primary-bg);
+    color: var(--color-button-primary-text);
+    border: 1px solid var(--color-button-primary-border, var(--color-button-primary-bg));
+}
+
+.section-hero [class*="section-hero__button--primary"]:hover,
+.section-hero [class*="section-hero__button--phone"]:hover,
+.section-features [class*="section-features__btn--primary"]:hover,
+.section-features [class*="section-features__button--primary"]:hover,
+.section-pricing [class*="section-pricing__btn--primary"]:hover {
+    background: var(--color-button-primary-hover);
+    color: var(--color-button-primary-text-hover, var(--color-button-primary-text));
+    border-color: var(--color-button-primary-border-hover, var(--color-button-primary-hover));
+}
+
+.section-button--secondary,
+.btn--ghost,
+.site-nav__link--button {
+    background: var(--color-button-secondary-bg);
+    color: var(--color-button-secondary-text);
+    border: 1px solid var(--color-button-secondary-border, var(--color-border));
+}
+
+.section-button--outline {
+    background: transparent;
+    color: var(--color-button-outline-text, var(--color-button-secondary-text));
+    border: 1px solid var(--color-button-outline-border, var(--color-border));
+}
+
+.section-button--outline:hover {
+    background: transparent;
+    color: var(--color-button-outline-text-hover, var(--color-button-outline-text, var(--color-button-secondary-text)));
+    border-color: var(--color-button-outline-border-hover, var(--color-button-outline-border, var(--color-border)));
+}
+
+.site-chrome-btn--outline {
+    background: transparent;
+    color: var(--color-button-outline-text, var(--color-button-secondary-text));
+    border: 1px solid var(--color-button-outline-border, color-mix(in srgb, var(--color-border) 85%, var(--color-text)));
+    font-weight: 500;
+}
+
+.site-chrome-btn--outline:hover {
+    background: transparent;
+    color: var(--color-button-outline-text-hover, var(--color-button-outline-text, var(--color-button-secondary-text)));
+    border-color: var(--color-button-outline-border-hover, var(--color-button-outline-border, color-mix(in srgb, var(--color-border) 70%, var(--color-text))));
+}
+
+.section-button--secondary:hover,
+.btn--ghost:hover,
+.site-nav__link--button:hover,
+.site-header__login:hover,
+.site-nav__link--button.is-active {
+    background: var(--color-button-secondary-hover);
+    color: var(--color-button-secondary-text-hover, var(--color-button-secondary-text));
+    border-color: var(--color-button-secondary-border-hover, var(--color-button-secondary-border, var(--color-border)));
+}
+
+.site-chrome-btn--ghost {
+    background: var(--color-button-secondary-bg);
+    color: var(--color-button-secondary-text);
+    border: 1px solid var(--color-button-secondary-border, transparent);
+}
+
+.site-chrome-btn--ghost:hover {
+    background: var(--color-button-secondary-hover);
+    color: var(--color-button-secondary-text-hover, var(--color-button-secondary-text));
+    border-color: var(--color-button-secondary-border-hover, var(--color-button-secondary-border, transparent));
+}
+
+.site-chrome-btn--link {
+    color: var(--color-link);
+    background: transparent;
+    border: none;
+}
+
+.site-chrome-btn--link:hover {
+    color: var(--color-link-hover);
+    background: color-mix(in srgb, var(--color-link) 8%, transparent);
+}
+
+/* Boutons sur section fond primaire */
+.section--bg-primary .section-button--primary,
+.section--bg-primary .btn--primary {
+    background: var(--color-button-primary-text);
+    color: var(--color-button-primary-bg);
+}
+
+.section--bg-primary .section-button--primary:hover,
+.section--bg-primary .btn--primary:hover {
+    background: color-mix(in srgb, var(--color-button-primary-text) 92%, transparent);
+}
+
+.section--bg-primary .section-button--secondary,
+.section--bg-primary .btn--ghost {
+    background: transparent;
+    color: var(--color-button-primary-text);
+    border-color: color-mix(in srgb, var(--color-button-primary-text) 35%, transparent);
+}
+
+.section--bg-primary .section-button--secondary:hover,
+.section--bg-primary .btn--ghost:hover {
+    background: color-mix(in srgb, var(--color-button-primary-text) 12%, transparent);
+}
+
+/* ==========================================================================
+   États UI
+   ========================================================================== */
+
+.section-ui-alert--success .section-ui-alert__box {
+    border-color: color-mix(in srgb, var(--color-success) 50%, var(--color-border));
+    background: color-mix(in srgb, var(--color-success) 14%, var(--color-background));
+}
+
+.section-ui-alert--warning .section-ui-alert__box {
+    border-color: color-mix(in srgb, var(--color-warning) 50%, var(--color-border));
+    background: color-mix(in srgb, var(--color-warning) 14%, var(--color-background));
+}
+
+.section-ui-alert--info .section-ui-alert__box {
+    border-color: color-mix(in srgb, var(--color-info) 50%, var(--color-border));
+    background: color-mix(in srgb, var(--color-info) 14%, var(--color-background));
+}
+
+.section-ui-alert--error .section-ui-alert__box {
+    border-color: color-mix(in srgb, var(--color-error) 50%, var(--color-border));
+    background: color-mix(in srgb, var(--color-error) 14%, var(--color-background));
+}
+
+.section-ui-alert--success .section-ui-alert__title {
+    color: var(--color-success);
+}
+
+.section-ui-alert--warning .section-ui-alert__title {
+    color: var(--color-warning);
+}
+
+.section-ui-alert--info .section-ui-alert__title {
+    color: var(--color-info);
+}
+
+.section-ui-alert--error .section-ui-alert__title {
+    color: var(--color-error);
+}
+
+.section-ui-tabs__tab.is-active {
+    background: var(--color-button-primary-bg);
+    color: var(--color-button-primary-text);
+    border-color: transparent;
+}
+
+.section-ui-progress__bar {
+    background: color-mix(in srgb, var(--color-border) 65%, var(--color-surface));
+}
+
+.section-ui-progress__bar > span {
+    background: var(--color-primary);
+}
+
+/* ==========================================================================
+   Stats6 : bandeau accent (réglage Atténué par défaut)
+   ========================================================================== */
+
+section.section-stats.section-stats--stats6.section--bg-muted {
+    background: color-mix(in srgb, var(--color-primary) 6%, var(--color-surface)) !important;
+}
+
+section.section-stats.section-stats--stats6.section--bg-background {
+    background: var(--color-background) !important;
+}
+
+section.section-stats.section-stats--stats6.section--bg-primary {
+    background: var(--color-primary) !important;
+}
+
+/* ==========================================================================
+   Accessibilité
+   ========================================================================== */
+
+a:focus-visible,
+button:focus-visible,
+.section-button:focus-visible,
+.site-chrome-btn:focus-visible,
+.site-header__login:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 2px;
+}
+
+button:disabled,
+.btn:disabled,
+.section-button:disabled,
+.site-chrome-btn:disabled,
+input:disabled,
+select:disabled,
+textarea:disabled {
+    color: var(--color-disabled);
+    cursor: not-allowed;
+    opacity: 0.65;
+}
+
+/* Couleur texte bloc : priorité sur le thème (réglage Apparence > Typographie) */
+section[style*="--section-text-override"] {
+    color: var(--section-text-override) !important;
+}
+
+section[style*="--section-text-override"] :is(h1, h2, h3, .section-head__title, [class*="__title"]) {
+    color: var(--section-text-override) !important;
+}
+
+section[style*="--section-text-override"] :is(.section-head__subtitle, [class*="__subtitle"], p, li) {
+    color: color-mix(in srgb, var(--section-text-override) 82%, transparent) !important;
 }

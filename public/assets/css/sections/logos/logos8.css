@@ -23,7 +23,7 @@
     font-weight: 600;
     line-height: 1.25;
     letter-spacing: -0.025em;
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
 }
 
 .section-logos--logos8 .section-logos__grid--logos8 {

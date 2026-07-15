@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\LoginPageController;
 use App\Http\Dev\ExportController;
 use App\Http\Dev\AuthController;
 use App\Http\Dev\ChromeController;
@@ -13,9 +14,10 @@ use App\Http\Dev\MediasController;
 use App\Http\Dev\OverviewController;
 use App\Http\Dev\PagesController;
 use App\Http\Dev\PreviewController;
-use App\Http\Dev\SectionFormRenderer;
+use App\Http\Dev\Sections\SectionFormRenderer;
 use App\Http\Dev\SectionsController;
 use App\Http\Dev\SiteController;
+use App\Http\Dev\SiteNavFormRenderer;
 use App\Http\Dev\ThemeController;
 use App\Http\Dev\VideoImportController;
 use App\Http\HealthController;
@@ -34,13 +36,18 @@ use Capsule\MediaLibrary;
 use Capsule\MediaRepository;
 use Capsule\MediaUsageScanner;
 use Capsule\PageRegistry;
+use Capsule\LoginPageRenderer;
 use Capsule\PageRenderer;
 use Capsule\PageRepository;
 use Capsule\Router;
 use Capsule\SectionRegistry;
 use Capsule\SectionRenderer;
+use Capsule\Section\SectionFieldSchema;
 use Capsule\Section\SectionHandlerRegistry;
+use Capsule\Section\SectionVariantResolver;
 use Capsule\ProcessRunner;
+use Capsule\ChromeLoginModalRenderer;
+use Capsule\AuthBlockRenderer;
 use Capsule\SiteChrome;
 use Capsule\ExportPathPicker;
 use Capsule\SiteExportPath;
@@ -89,6 +96,7 @@ return (function (): Container {
     ));
     $c->set(SectionRegistry::class, static fn () => new SectionRegistry(
         $resources . '/sections/registry.yaml',
+        $resources . '/sections/_shared/style-fields.yaml',
     ));
     $c->set(View::class, static fn () => new View(
         $resources . '/layouts',
@@ -115,20 +123,51 @@ return (function (): Container {
         );
     });
     $c->set(SectionHandlerRegistry::class, static fn () => new SectionHandlerRegistry());
+    $c->set(SectionVariantResolver::class, static fn (Container $c) => new SectionVariantResolver(
+        $c->get(SectionRegistry::class),
+        $c->get(SectionHandlerRegistry::class),
+    ));
+    $c->set(SectionFieldSchema::class, static fn (Container $c) => new SectionFieldSchema(
+        $c->get(SectionRegistry::class),
+        $resources . '/sections/_shared/variant-content-overrides.yaml',
+    ));
     $c->set(SectionRenderer::class, static fn (Container $c) => new SectionRenderer(
         $c->get(View::class),
         $resources . '/sections',
         $appConfig['is_dev'],
         $c->get(SectionHandlerRegistry::class),
     ));
+    $c->set(AuthBlockRenderer::class, static fn (Container $c) => new AuthBlockRenderer(
+        $c->get(SectionRenderer::class),
+    ));
+    $c->set(ChromeLoginModalRenderer::class, static fn (Container $c) => new ChromeLoginModalRenderer(
+        $c->get(PageRepository::class),
+        $c->get(AuthBlockRenderer::class),
+    ));
     $c->set(SiteChrome::class, static fn (Container $c) => new SiteChrome(
         $c->get(PageRepository::class),
         $c->get(SiteRepository::class),
         $c->get(View::class),
         $appConfig['app_name'],
+        $c->get(ChromeLoginModalRenderer::class),
     ));
     $c->set(LayoutRegistry::class, static fn () => new LayoutRegistry(
         $resources . '/layouts',
+    ));
+    $c->set(LoginPageRenderer::class, static fn (Container $c) => new LoginPageRenderer(
+        $c->get(ResponseFactory::class),
+        $c->get(View::class),
+        $c->get(SiteRepository::class),
+        $c->get(AuthBlockRenderer::class),
+        $c->get(SiteChrome::class),
+        $appConfig['base_url'],
+        $c->get(StylesheetResolver::class),
+        $c->get(ScriptResolver::class),
+        $root . '/public/assets/css',
+        $c->get(BasePath::class),
+    ));
+    $c->set(LoginPageController::class, static fn (Container $c) => new LoginPageController(
+        $c->get(LoginPageRenderer::class),
     ));
     $c->set(PageRenderer::class, static fn (Container $c) => new PageRenderer(
         $c->get(ResponseFactory::class),
@@ -155,6 +194,7 @@ return (function (): Container {
         $c->get(ResponseFactory::class),
         $c->get(SiteRepository::class),
         $c->get(BasePath::class),
+        $root . '/public/assets/css',
     ));
     $c->set(AuthController::class, static fn (Container $c) => new AuthController(
         $c->get(DevDashboard::class),
@@ -240,6 +280,8 @@ return (function (): Container {
         $c->get(PageRepository::class),
         $c->get(MediaLibrary::class),
         $c->get(LibraryMediaUploader::class),
+        $c->get(SectionFieldSchema::class),
+        $c->get(SectionVariantResolver::class),
     ));
     $c->set(PagesController::class, static fn (Container $c) => new PagesController(
         $c->get(DevDashboard::class),
@@ -258,6 +300,8 @@ return (function (): Container {
         $c->get(LibraryMediaUploader::class),
         $c->get(MediaLibrary::class),
         $c->get(MediaRepository::class),
+        $c->get(SectionVariantResolver::class),
+        $c->get(SectionFieldSchema::class),
     ));
     $c->set(MediasController::class, static fn (Container $c) => new MediasController(
         $c->get(DevDashboard::class),
@@ -280,10 +324,14 @@ return (function (): Container {
         $c->get(MediaLibrary::class),
         $c->get(ResponseFactory::class),
     ));
+    $c->set(SiteNavFormRenderer::class, static fn (Container $c) => new SiteNavFormRenderer(
+        $c->get(PageRepository::class),
+    ));
     $c->set(ChromeController::class, static fn (Container $c) => new ChromeController(
         $c->get(DevDashboard::class),
         $c->get(SiteRepository::class),
         $c->get(PageRepository::class),
+        $c->get(SiteNavFormRenderer::class),
     ));
     $c->set(SiteController::class, static fn (Container $c) => new SiteController(
         $c->get(DevDashboard::class),
@@ -291,6 +339,7 @@ return (function (): Container {
         $c->get(PageRepository::class),
         $c->get(MediaUploader::class),
         $c->get(MediaLibrary::class),
+        $c->get(SiteNavFormRenderer::class),
     ));
     $c->set(ThemeController::class, static fn (Container $c) => new ThemeController(
         $c->get(DevDashboard::class),

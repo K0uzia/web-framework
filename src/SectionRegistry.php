@@ -6,11 +6,34 @@ namespace Capsule;
 
 final class SectionRegistry
 {
+    /** @var array<string, string> */
+    private const FALLBACK_DEFAULT_VARIANTS = [
+        'hero' => 'hero3',
+        'features' => 'feature3',
+        'integrations' => 'integration3',
+        'pricing' => 'pricing2',
+        'rate-card' => 'rate-card2',
+        'contact' => 'contact2',
+        'testimonials' => 'testimonial4',
+        'gallery' => 'gallery4',
+        'blog' => 'blog7',
+        'changelog' => 'changelog1',
+        'process' => 'process1',
+        'list' => 'list2',
+        'industry' => 'industries1',
+        'download' => 'download1',
+        'team' => 'team1',
+        'projects' => 'projects5',
+        'timeline' => 'timeline3',
+    ];
+
     /** @var array<string, mixed>|null */
     private ?array $registry = null;
 
-    public function __construct(private readonly string $registryFile)
-    {
+    public function __construct(
+        private readonly string $registryFile,
+        private readonly string $sharedStyleFieldsFile = '',
+    ) {
     }
 
     /**
@@ -75,6 +98,25 @@ final class SectionRegistry
         $fields = $def['style_fields'] ?? [];
 
         return is_array($fields) ? $fields : [];
+    }
+
+    public function getDefaultVariant(string $type): ?string
+    {
+        $def = $this->getTypeDefinition($type);
+        $default = $def['default_variant'] ?? null;
+
+        if (is_string($default) && $default !== '') {
+            return $default;
+        }
+
+        return self::FALLBACK_DEFAULT_VARIANTS[$type] ?? null;
+    }
+
+    public function isVisibleInPagePicker(string $type): bool
+    {
+        $def = $this->getTypeDefinition($type);
+
+        return ($def['page_picker'] ?? true) !== false;
     }
 
     /**
@@ -194,8 +236,44 @@ final class SectionRegistry
         }
 
         $parsed = YamlData::parse($raw);
-        $this->registry = $parsed;
+        $this->registry = $this->applySharedStyleFields($parsed);
 
         return $this->registry;
+    }
+
+    /**
+     * @param array<string, mixed> $registry
+     *
+     * @return array<string, mixed>
+     */
+    private function applySharedStyleFields(array $registry): array
+    {
+        $shared = $this->loadSharedStyleFields();
+        if ($shared === []) {
+            return $registry;
+        }
+
+        foreach ($registry as $type => &$def) {
+            if (!is_array($def)) {
+                continue;
+            }
+            $typeFields = is_array($def['style_fields'] ?? null) ? $def['style_fields'] : [];
+            $def['style_fields'] = array_merge($shared, $typeFields);
+        }
+        unset($def);
+
+        return $registry;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function loadSharedStyleFields(): array
+    {
+        if ($this->sharedStyleFieldsFile === '' || !is_file($this->sharedStyleFieldsFile)) {
+            return [];
+        }
+
+        return YamlData::loadFile($this->sharedStyleFieldsFile);
     }
 }

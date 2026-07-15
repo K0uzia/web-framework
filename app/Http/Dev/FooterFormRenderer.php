@@ -22,7 +22,7 @@ final class FooterFormRenderer
         $legalLinks = is_array($variant['legal_links'] ?? null) ? $variant['legal_links'] : [];
         $socialLinks = is_array($variant['social_links'] ?? null) ? $variant['social_links'] : [];
 
-        $html = '<div class="dev-panel">'
+        $html = '<div class="dev-panel dev-panel--compact">'
             . '<h2 class="dev-panel__title">Contenu du pied de page</h2>'
             . '<div class="dev-field">'
             . '<label class="dev-label" for="footer_description">Description sous le logo</label>'
@@ -35,7 +35,7 @@ final class FooterFormRenderer
             $html .= $this->sectionFields($i, $section);
         }
 
-        $html .= '<div class="dev-panel"><h2 class="dev-panel__title">Liens légaux</h2><div class="dev-form--grid dev-form--grid-2">';
+        $html .= '<div class="dev-panel dev-panel--compact"><h2 class="dev-panel__title">Liens légaux</h2><div class="dev-form--grid dev-form--grid-2">';
         for ($i = 0; $i < 2; $i++) {
             $link = is_array($legalLinks[$i] ?? null) ? $legalLinks[$i] : [];
             $html .= $this->linkPairFields('legal_' . $i, (string) ($link['label'] ?? ''), (string) ($link['href'] ?? ''));
@@ -43,7 +43,7 @@ final class FooterFormRenderer
         $html .= '</div></div>';
 
         if ($template === 'footer7') {
-            $html .= '<div class="dev-panel"><h2 class="dev-panel__title">Réseaux sociaux</h2><div class="dev-form--grid dev-form--grid-2">';
+            $html .= '<div class="dev-panel dev-panel--compact"><h2 class="dev-panel__title">Réseaux sociaux</h2><div class="dev-form--grid dev-form--grid-2">';
             $networks = ['instagram', 'facebook', 'x', 'linkedin', 'github'];
             foreach ($networks as $i => $network) {
                 $link = is_array($socialLinks[$i] ?? null) ? $socialLinks[$i] : ['network' => $network, 'href' => ''];
@@ -78,7 +78,7 @@ final class FooterFormRenderer
             }
         }
 
-        return '<div class="dev-panel">'
+        return '<div class="dev-panel dev-panel--compact">'
             . '<h2 class="dev-panel__title">Colonne ' . ($index + 1) . '</h2>'
             . '<div class="dev-field">'
             . '<label class="dev-label" for="section_' . $index . '_title">Titre</label>'
@@ -173,5 +173,40 @@ final class FooterFormRenderer
         }
 
         return $links;
+    }
+
+    /**
+     * @param array<string, mixed> $variant
+     */
+    public function renderDefaultLegalLinks(array $variant): string
+    {
+        $legalLinks = is_array($variant['legal_links'] ?? null) ? $variant['legal_links'] : [];
+        $html = '<div class="dev-form--grid dev-form--grid-2 dev-chrome-fields">';
+        for ($i = 0; $i < 2; $i++) {
+            $link = is_array($legalLinks[$i] ?? null) ? $legalLinks[$i] : [];
+            $html .= $this->linkPairFields('legal_' . $i, (string) ($link['label'] ?? ''), (string) ($link['href'] ?? ''));
+        }
+        $html .= '</div>';
+
+        return $html;
+    }
+
+    /**
+     * @param array<string, string> $data
+     *
+     * @return list<array{label: string, href: string}>
+     */
+    public function parseDefaultLegalLinks(array $data): array
+    {
+        $legalLinks = [];
+        for ($i = 0; $i < 2; $i++) {
+            $label = trim($data['legal_' . $i . '_label'] ?? '');
+            $href = trim($data['legal_' . $i . '_href'] ?? '');
+            if ($label !== '') {
+                $legalLinks[] = ['label' => $label, 'href' => $href !== '' ? $href : '#'];
+            }
+        }
+
+        return $legalLinks;
     }
 }

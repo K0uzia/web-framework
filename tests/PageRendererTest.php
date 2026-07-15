@@ -59,6 +59,10 @@ final class PageRendererTest extends TestCase
         $view = new View($root . '/resources/layouts', $root . '/resources/partials');
         $cssDir = sys_get_temp_dir() . '/capsule-page-css-' . uniqid('', true);
         mkdir($cssDir);
+        copy(
+            $root . '/public/assets/css/theme-bindings.css',
+            $cssDir . '/theme-bindings.css',
+        );
 
         $this->renderer = new PageRenderer(
             new ResponseFactory(),
@@ -79,7 +83,9 @@ final class PageRendererTest extends TestCase
         $body = (string) $this->renderer->renderBySlug('home', [], '/home')->getBody();
 
         $this->assertStringContainsString('Safe title', $body);
-        $this->assertStringContainsString('theme-generated.css', $body);
+        $this->assertStringContainsString('<style>', $body);
+        $this->assertStringContainsString('--color-primary:', $body);
+        $this->assertStringContainsString('href="/assets/css/theme-bindings.css?v=', $body);
         $this->assertStringContainsString('<meta name="description" content="Meta desc"', $body);
         $this->assertStringContainsString('sections/hero.js', $body);
         $this->assertStringNotContainsString('sections/gallery.js', $body);

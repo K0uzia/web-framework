@@ -45,6 +45,10 @@ final class ThemeCascadeTest extends TestCase
 
         $cssDir = sys_get_temp_dir() . '/capsule-theme-css-' . uniqid('', true);
         mkdir($cssDir);
+        copy(
+            $root . '/public/assets/css/theme-bindings.css',
+            $cssDir . '/theme-bindings.css',
+        );
 
         $renderer = new PageRenderer(
             new ResponseFactory(),
@@ -60,12 +64,27 @@ final class ThemeCascadeTest extends TestCase
         );
 
         $body = (string) $renderer->renderBySlug('demo', [], '/demo')->getBody();
-        $themeLinkPos = strpos($body, 'theme-generated.css');
-        $bindingsPos = strpos($body, 'href="/assets/css/theme-bindings.css"');
+        $stylesheetPos = strpos($body, '<link rel="stylesheet"');
+        $themeStylePos = strpos($body, '<style>');
+        $themePrimaryPos = strpos($body, '--color-primary: #aabbcc');
+        $bindingsLinkPos = strpos($body, 'href="/assets/css/theme-bindings.css?v=');
+        $themeLinkPos = strpos($body, 'theme-generated.css?v=');
 
-        $this->assertNotFalse($themeLinkPos);
-        $this->assertNotFalse($bindingsPos);
-        $this->assertLessThan($bindingsPos, $themeLinkPos);
-        $this->assertStringContainsString('--color-primary: #aabbcc', file_get_contents($cssDir . '/theme-generated.css') ?: '');
+        $this->assertNotFalse($stylesheetPos);
+        $this->assertNotFalse($themeStylePos);
+        $this->assertNotFalse($themePrimaryPos);
+        $this->assertNotFalse($bindingsLinkPos);
+        $this->assertFalse($themeLinkPos);
+        $this->assertLessThan($themeStylePos, $stylesheetPos);
+        $this->assertLessThan($bindingsLinkPos, $themeStylePos);
+
+        preg_match('/<style>(.*?)<\/style>/s', $body, $styleMatch);
+        $inlineCss = $styleMatch[1] ?? '';
+        $this->assertStringContainsString('--color-primary: #aabbcc', $inlineCss);
+        $this->assertStringNotContainsString('section.section--bg-muted', $inlineCss);
+
+        $bindingsFile = file_get_contents($cssDir . '/theme-bindings.css') ?: '';
+        $this->assertStringContainsString('section.section--bg-muted', $bindingsFile);
+        $this->assertStringContainsString('background: var(--color-surface) !important', $bindingsFile);
     }
 }

@@ -9,6 +9,12 @@ namespace Capsule;
  */
 final class MediaLibrary
 {
+    /** @var list<string>|null */
+    private ?array $imageUrlsCache = null;
+
+    /** @var list<string>|null */
+    private ?array $videoUrlsCache = null;
+
     public function __construct(
         private readonly MediaRepository $media,
         private readonly string $uploadsDir,
@@ -25,10 +31,16 @@ final class MediaLibrary
      */
     public function availableImageUrls(): array
     {
-        return $this->mergeUrls(
+        if ($this->imageUrlsCache !== null) {
+            return $this->imageUrlsCache;
+        }
+
+        $this->imageUrlsCache = $this->mergeUrls(
             $this->media->urlsByKind('image'),
             [],
         );
+
+        return $this->imageUrlsCache;
     }
 
     /**
@@ -36,7 +48,13 @@ final class MediaLibrary
      */
     public function availableVideoUrls(): array
     {
-        return $this->media->urlsByKind('video');
+        if ($this->videoUrlsCache !== null) {
+            return $this->videoUrlsCache;
+        }
+
+        $this->videoUrlsCache = $this->media->urlsByKind('video');
+
+        return $this->videoUrlsCache;
     }
 
     /**

@@ -1,0 +1,169 @@
+/* Variante login2 : champs avec labels */
+
+.section-login.section-login--login2 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100svh;
+}
+
+.section-login__shell--login2 {
+    width: 100%;
+    padding: 2rem var(--space-md, 1.5rem);
+}
+
+.section-login__stack--login2 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    width: 100%;
+    max-width: 24rem;
+    margin-inline: auto;
+}
+
+.section-login__logo--login2 {
+    height: 2.5rem;
+    width: auto;
+}
+
+.section-login__intro--login2 {
+    width: 100%;
+    text-align: center;
+}
+
+.section-login__heading--login2 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.section-login__form--login2 {
+    width: 100%;
+}
+
+.section-login__card--login2 {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+    padding: 2rem 1.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md, 10px);
+    background: var(--color-elevated);
+    box-shadow: var(--shadow-md, 0 8px 24px rgb(15 23 42 / 0.06));
+}
+
+.section-login__field--login2 {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    width: 100%;
+}
+
+.section-login__label--login2 {
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.section-login__signup--login2 {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    font-size: 0.875rem;
+    line-height: 1.25;
+    color: var(--color-muted-foreground);
+}
+
+.section-login__signup-text--login2 {
+    margin: 0;
+}
+
+.section-login__signup-link--login2 {
+    display: inline-flex;
+    align-items: center;
+    padding: 0;
+    border: none;
+    background: transparent;
+    font: inherit;
+    line-height: inherit;
+    font-weight: 600;
+    color: var(--color-primary);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.section-login__signup-link--login2:hover {
+    text-decoration: underline;
+}
+
+.section-login__forgot--login2 {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+}
+
+.section-login__forgot-link--login2 {
+    padding: 0;
+    border: none;
+    background: transparent;
+    font: inherit;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--color-muted-foreground);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.section-login__forgot-link--login2:hover {
+    color: var(--color-primary);
+    text-decoration: underline;
+}
+
+.section-login__forgot-panel--login2 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    max-width: 24rem;
+    margin-inline: auto;
+    text-align: center;
+}
+
+.section-login__forgot-intro--login2 {
+    width: 100%;
+}
+
+.section-login__forgot-heading--login2 {
+    margin: 0 0 0.5rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.section-login__forgot-text--login2 {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--color-muted-foreground);
+}
+
+.section-login__forgot-form--login2 {
+    width: 100%;
+}
+
+.section-login__forgot-back--login2 {
+    padding: 0;
+    border: none;
+    background: transparent;
+    font: inherit;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    cursor: pointer;
+}
+
+.section-login__forgot-back--login2:hover {
+    text-decoration: underline;
+}

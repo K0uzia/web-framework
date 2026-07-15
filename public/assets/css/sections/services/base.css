@@ -1,9 +1,5 @@
 /* Tokens communs au type services */
 
-.section-services {
-    background: var(--color-background, #fff);
-}
-
 .section-services[class*="section--pad-"] {
     padding-inline: var(--space-md, 1rem);
 }

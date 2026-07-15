@@ -1,0 +1,35 @@
+hero:
+  badge:
+    show_for_variants: [hero1, hero34, hero45, hero243]
+  subheading:
+    show_for_variants: [hero47, hero243]
+  byline:
+    show_for_variants: [hero12]
+  image_url:
+    show_for_variants: [hero1, hero3, hero34, hero47, hero67, hero115, hero206]
+  image_url_dark:
+    show_for_variants: [hero1, hero3, hero34, hero115]
+  image_alt:
+    show_for_variants: [hero1, hero3, hero34, hero47, hero67, hero115, hero206]
+  background_type:
+    show_for_variants: [hero78]
+  background_image_url:
+    show_for_variants: [hero78]
+  background_video_url:
+    show_for_variants: [hero78]
+  background_shader_id:
+    show_for_variants: [hero78]
+  background_shader_color:
+    show_for_variants: [hero78]
+  reviews_rating:
+    show_for_variants: [hero3, hero7]
+  reviews_count:
+    show_for_variants: [hero3, hero7]
+  review_avatars:
+    show_for_variants: [hero3, hero7, hero67]
+  items:
+    show_for_variants: [hero45, hero195, hero206, hero243]
+  mockup_url:
+    show_for_variants: [hero206]
+  flip_words:
+    show_for_variants: [hero243]

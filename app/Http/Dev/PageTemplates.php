@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Dev;
 
+use App\Http\Dev\Sections\SectionDefaults;
+
 /**
  * Modèles de pages préassemblés (compositions de sections).
  */

@@ -1,0 +1,59 @@
+/* Tokens partagés du type login */
+
+.section-login {
+    color: var(--color-text);
+}
+
+.section-login__input--login1,
+.section-login__input--login2 {
+    width: 100%;
+    padding: 0.625rem 0.75rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md, 10px);
+    background: var(--color-elevated);
+    color: var(--color-text);
+    font-size: 0.875rem;
+}
+
+.section-login__submit--login1,
+.section-login__submit--login2 {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 2.5rem;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: var(--radius-md, 10px);
+    background: var(--color-primary);
+    color: var(--color-primary-foreground);
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.section-login__submit--login1:hover,
+.section-login__submit--login2:hover {
+    opacity: 0.92;
+}
+
+.site-login-modal__content .section-login.section-login--login1,
+.site-login-modal__content .section-login.section-login--login2 {
+    display: block;
+    min-height: auto;
+    background: transparent;
+}
+
+.site-login-modal__content .section-login__shell--login1,
+.site-login-modal__content .section-login__shell--login2 {
+    min-height: auto;
+    padding: 0;
+}
+
+.site-login-modal__content .section-login__card--login1,
+.site-login-modal__content .section-login__card--login2 {
+    padding: 0;
+    border: none;
+    box-shadow: none;
+    background: transparent;
+}

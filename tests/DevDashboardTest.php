@@ -21,15 +21,25 @@ final class DevDashboardTest extends TestCase
         $theme['colors']['success'] = '#112233';
         $site->setTheme($theme);
 
-        $ui = new DevDashboard(dirname(__DIR__) . '/resources/dev', new ResponseFactory(), $site);
+        $ui = new DevDashboard(
+            dirname(__DIR__) . '/resources/dev',
+            new ResponseFactory(),
+            $site,
+            null,
+            dirname(__DIR__) . '/public/assets/css',
+        );
         $body = (string) $ui->render('overview.html', ['title' => 'Test', 'flash' => ''])->getBody();
 
         $this->assertStringContainsString('--color-success: #112233', $body);
+        $this->assertStringContainsString('href="/assets/css/theme-bindings.css?v=', $body);
         $this->assertStringContainsString('href="/assets/css/dev-theme-bindings.css"', $body);
-        $bindingsPos = strpos($body, 'dev-theme-bindings.css');
+        $bindingsPos = strpos($body, 'theme-bindings.css?v=');
+        $devBindingsPos = strpos($body, 'dev-theme-bindings.css');
         $themePos = strpos($body, '--color-success: #112233');
         $this->assertNotFalse($bindingsPos);
+        $this->assertNotFalse($devBindingsPos);
         $this->assertNotFalse($themePos);
-        $this->assertLessThan($bindingsPos, $themePos);
+        $this->assertLessThan($devBindingsPos, $bindingsPos);
+        $this->assertLessThan($devBindingsPos, $themePos);
     }
 }

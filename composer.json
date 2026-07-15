@@ -5,7 +5,8 @@
     "autoload": {
         "psr-4": {
             "Capsule\\": "src/",
-            "App\\": "app/"
+            "App\\": "app/",
+            "App\\Http\\Dev\\Sections\\": "app/Http/Dev/Sections/"
         }
     },
     "autoload-dev": {

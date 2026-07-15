@@ -50,7 +50,7 @@ final class PageRenderer
         $data['theme'] = $theme;
         $data['asset_root'] = $this->basePath?->value() ?? '';
         $this->site->ensureThemeCssFile($this->publicCssDir);
-        $data['theme_css'] = $this->site->themeCssLinkHtml($data['asset_root']);
+        $data['theme_css'] = $this->site->themeHeadHtml($data['asset_root'], $theme, $this->publicCssDir);
 
         $body = $this->sections->renderAll($page->sections);
         $data = Seo::apply($data, $path, $this->baseUrl);
@@ -58,17 +58,27 @@ final class PageRenderer
 
         $pageSlugForCss = $slug === '' ? 'index' : $slug;
         $sectionRefs = $this->sections->extractSectionRefs($page->sections);
+        $authRefs = is_array($data['login_modal_auth_refs'] ?? null) ? $data['login_modal_auth_refs'] : [];
+        foreach ($authRefs as $ref) {
+            if (is_array($ref)) {
+                $sectionRefs[] = $ref;
+            }
+        }
+        $bodyForAssets = $body . ($data['header_html'] ?? '') . ($data['login_modal_html'] ?? '');
         $hrefs = $this->stylesheets->resolve(
             $layout,
             $pageSlugForCss,
-            $body,
+            $bodyForAssets,
             $data,
             $sectionRefs,
             $page->sections,
         );
-        $data['stylesheets'] = $this->stylesheets->toHtml($hrefs);
+        $data['stylesheets'] = $this->stylesheets->toHtml($hrefs, $data['asset_root']);
 
-        $scriptSrcs = $this->scripts->resolve($body, $sectionRefs);
+        $scriptSrcs = $this->scripts->resolve(
+            $body . ($data['header_html'] ?? '') . ($data['login_modal_html'] ?? ''),
+            $sectionRefs,
+        );
         $data['scripts'] = $this->scripts->toHtml($scriptSrcs, $data['asset_root']);
 
         $html = $this->view->pageFromString($body, $data, $layout . '.html');

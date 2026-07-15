@@ -1,9 +1,5 @@
 /* Tokens communs au type faq */
 
-.section-faq {
-    background: var(--color-background, #fff);
-}
-
 .section-faq[class*="section--pad-"] {
     padding-inline: var(--space-md, 1rem);
 }
@@ -23,6 +19,6 @@
 }
 
 .section-faq .section-faq__question:focus-visible {
-    outline: 2px solid var(--color-primary, #0f172a);
+    outline: 2px solid var(--color-primary);
     outline-offset: 2px;
 }

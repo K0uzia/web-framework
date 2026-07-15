@@ -26,6 +26,17 @@ trait SectionItemsTrait
         return $items;
     }
 
+    /**
+     * @param array<string, mixed> $content
+     * @param array<string, int> $maxByVariant
+     *
+     * @return list<array<string, mixed>>
+     */
+    protected static function itemsForVariant(array $content, string $variant, array $maxByVariant, int $defaultMax = 12): array
+    {
+        return self::itemsFromContent($content, $maxByVariant[$variant] ?? $defaultMax);
+    }
+
     protected static function hrefFromItem(string $href): string
     {
         $trimmed = trim($href);

@@ -1,9 +1,5 @@
 /* Tokens communs au type awards */
 
-.section-awards {
-    background: var(--color-background, #fff);
-}
-
 .section-awards[class*="section--pad-"] {
     padding-inline: var(--space-md, 1rem);
 }

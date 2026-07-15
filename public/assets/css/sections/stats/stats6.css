@@ -1,9 +1,5 @@
 /* Variante stats6 : fond accent, titre, boutons et grille de métriques */
 
-.section-stats--stats6 {
-    background: var(--color-accent, #f1f5f9);
-}
-
 .section-stats--stats6 .section-stats__container--stats6 {
     display: flex;
     flex-direction: column;
@@ -29,7 +25,6 @@
     font-weight: 700;
     line-height: 1.15;
     text-wrap: pretty;
-    color: var(--color-text, #0f172a);
 }
 
 .section-stats--stats6 .section-stats__buttons--stats6 {
@@ -55,16 +50,6 @@
     .section-stats--stats6 .section-stats__buttons--stats6 .section-button {
         width: auto;
     }
-}
-
-.section-stats--stats6 .section-stats__buttons--stats6 .section-button--secondary {
-    background: transparent;
-    color: var(--color-text, #0f172a);
-    border: 1px solid var(--color-border, #e2e8f0);
-}
-
-.section-stats--stats6 .section-stats__buttons--stats6 .section-button--secondary:hover {
-    background: var(--color-background, #fff);
 }
 
 .section-stats--stats6 .section-stats__grid--stats6 {

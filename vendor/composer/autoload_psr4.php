@@ -44,5 +44,6 @@ return array(
     'Composer\\Pcre\\' => array($vendorDir . '/composer/pcre/src'),
     'Clue\\React\\NDJson\\' => array($vendorDir . '/clue/ndjson-react/src'),
     'Capsule\\' => array($baseDir . '/src'),
+    'App\\Http\\Dev\\Sections\\' => array($baseDir . '/app/Http/Dev/Sections'),
     'App\\' => array($baseDir . '/app'),
 );

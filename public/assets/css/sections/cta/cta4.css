@@ -10,7 +10,7 @@
     margin-inline: auto;
     padding: 2.5rem 1.5rem;
     border-radius: var(--radius-lg, 0.5rem);
-    background: var(--color-muted, #f1f5f9);
+    background: var(--color-muted);
 }
 
 @media (min-width: 48rem) {
@@ -62,5 +62,5 @@
 .section-cta--cta4 .section-cta__feature-icon--cta4 {
     flex-shrink: 0;
     font-size: 1rem;
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
 }

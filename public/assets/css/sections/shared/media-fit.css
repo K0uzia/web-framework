@@ -61,7 +61,7 @@
 .section-hero__video--embed {
     position: relative;
     overflow: hidden;
-    background: var(--color-surface, #0f172a);
+    background: var(--color-surface);
 }
 
 .section-hero__video-frame--backdrop {
@@ -134,13 +134,13 @@
     inset: 0;
     z-index: 4;
     pointer-events: none;
-    background: var(--color-surface, #0f172a);
+    background: var(--color-surface);
     opacity: 1;
 }
 
 .section-hero__video-chrome-mask--backdrop {
     z-index: 3;
-    background: rgb(15 23 42);
+    background: var(--shader-fallback, var(--color-background));
 }
 
 [data-hero-video-chromeless="1"] .section-hero__video-chrome-mask,

@@ -42,17 +42,33 @@ final class ThemePreviewRenderer
         ];
         $data['theme'] = $this->site->getTheme();
         $this->site->ensureThemeCssFile($this->publicCssDir);
-        $data['theme_css'] = $this->site->themeCssLinkHtml('');
+        $data['asset_root'] = '';
+        $data['theme_css'] = $this->site->themeHeadHtml('', $data['theme'], $this->publicCssDir);
         $data = Seo::apply($data, $path, $this->baseUrl);
         $data = $this->chrome->enrich($data, $path, false);
 
         $body = $this->view->render('theme-preview.html', []);
 
-        $hrefs = $this->stylesheets->resolve('default', 'theme-preview', $body, $data, self::SECTION_REFS);
+        $hrefs = $this->stylesheets->resolve(
+            'default',
+            'theme-preview',
+            $body,
+            $data,
+            array_merge(
+                self::SECTION_REFS,
+                is_array($data['login_modal_auth_refs'] ?? null) ? $data['login_modal_auth_refs'] : [],
+            ),
+        );
         $hrefs[] = '/assets/css/theme-preview.css';
         $data['stylesheets'] = $this->stylesheets->toHtml($hrefs);
 
-        $scriptSrcs = $this->scripts->resolve($body, self::SECTION_REFS);
+        $scriptSrcs = $this->scripts->resolve(
+            $body . ($data['header_html'] ?? '') . ($data['login_modal_html'] ?? ''),
+            array_merge(
+                self::SECTION_REFS,
+                is_array($data['login_modal_auth_refs'] ?? null) ? $data['login_modal_auth_refs'] : [],
+            ),
+        );
         $data['scripts'] = $this->scripts->toHtml($scriptSrcs);
 
         $html = $this->view->pageFromString($body, $data, 'default.html');

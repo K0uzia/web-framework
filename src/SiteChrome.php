@@ -11,6 +11,7 @@ final class SiteChrome
         private readonly SiteRepository $site,
         private readonly View $view,
         private readonly string $appName,
+        private readonly ?ChromeLoginModalRenderer $loginModal = null,
     ) {
     }
 
@@ -21,7 +22,7 @@ final class SiteChrome
      */
     public function enrich(array $data, string $currentPath, bool $publishedOnly = true): array
     {
-        $siteInfo = $this->site->getSite();
+        $siteInfo = LoginBlockLibrary::materialize($this->site->getSite());
         $name = trim((string) ($siteInfo['name'] ?? ''));
         if ($name === '') {
             $name = $this->appName;
@@ -49,6 +50,8 @@ final class SiteChrome
         $headerVariant = ChromeVariants::resolveHeader($siteInfo, (string) ($data['preview_header_variant'] ?? ''));
         $footerVariant = ChromeVariants::resolveFooter($siteInfo, (string) ($data['preview_footer_variant'] ?? ''));
         unset($data['preview_header_variant'], $data['preview_footer_variant']);
+        $data['header_class_modifiers'] = ChromeAppearance::headerClassModifiers($headerVariant);
+        $data['footer_class_modifiers'] = ChromeAppearance::footerClassModifiers($footerVariant);
 
         $showTagline = ($headerVariant['brand']['show_tagline'] ?? false) === true;
         $taglineHtml = ($showTagline && $tagline !== '')
@@ -69,8 +72,8 @@ final class SiteChrome
         $data['favicon_html'] = $this->faviconHtml((string) ($siteInfo['favicon_url'] ?? ''));
         $data['og_image_html'] = $this->ogImageHtml((string) ($siteInfo['og_image_url'] ?? ''));
 
-        $data = $this->buildHeaderZones($data, $headerVariant, $name, $logoUrl, $taglineHtml);
-        $data = $this->buildFooterZones($data, $footerVariant, $name, $logoUrl, $tagline);
+        $data = $this->buildHeaderZones($data, $headerVariant, $siteInfo, $name, $logoUrl, $taglineHtml);
+        $data = $this->buildFooterZones($data, $footerVariant, $siteInfo, $name, $logoUrl, $tagline);
 
         $partials = is_array($siteInfo['partials'] ?? null) ? $siteInfo['partials'] : [];
         $showHeader = ($partials['header'] ?? true) !== false;
@@ -81,10 +84,21 @@ final class SiteChrome
         unset($data['show_header'], $data['show_footer']);
 
         $data['header_html'] = $showHeader
-            ? $this->renderHeaderHtml($data, $headerVariant, $name, $logoUrl)
+            ? $this->renderHeaderHtml($data, $headerVariant, $siteInfo, $name, $logoUrl)
             : '';
         $data['footer_html'] = $showFooter
             ? $this->renderFooterHtml($data, $footerVariant, $siteInfo, $name, $logoUrl)
+            : '';
+        $loginConfig = is_array($headerVariant['login'] ?? null) ? $headerVariant['login'] : [];
+        $modalBlock = $this->loginModal?->resolveLoginBlock($loginConfig, $siteInfo, $publishedOnly);
+        $data['login_modal_section'] = $modalBlock !== null
+            ? LoginBlockLibrary::toSection($modalBlock, $siteInfo)
+            : null;
+        $data['login_modal_auth_refs'] = $modalBlock !== null
+            ? LoginBlockLibrary::authSectionRefs($modalBlock)
+            : [];
+        $data['login_modal_html'] = $modalBlock !== null && $this->loginModal !== null
+            ? $this->loginModal->renderHtml($modalBlock, $siteInfo)
             : '';
 
         return $data;
@@ -93,15 +107,16 @@ final class SiteChrome
     /**
      * @param array<string, mixed> $data
      * @param array<string, mixed> $variant
+     * @param array<string, mixed> $siteInfo
      */
-    private function renderHeaderHtml(array $data, array $variant, string $name, string $logoUrl): string
+    private function renderHeaderHtml(array $data, array $variant, array $siteInfo, string $name, string $logoUrl): string
     {
         $template = HeaderStyle::normalizeTemplate((string) ($variant['template'] ?? HeaderStyle::TEMPLATE_DEFAULT));
         if (!HeaderStyle::isBlocksTemplate($template)) {
             return $this->view->render('site-header.html', $data);
         }
 
-        $data = HeaderVariantRenderer::enrich($data, $variant, $name, $logoUrl);
+        $data = HeaderVariantRenderer::enrich($data, $variant, $name, $logoUrl, '/', $siteInfo);
 
         return $this->view->render('site-header-' . $template . '.html', $data);
     }
@@ -115,6 +130,13 @@ final class SiteChrome
     {
         $template = FooterStyle::normalizeTemplate((string) ($variant['template'] ?? FooterStyle::TEMPLATE_DEFAULT));
         if (!FooterStyle::isBlocksTemplate($template)) {
+            $legalLinks = is_array($variant['legal_links'] ?? null) ? $variant['legal_links'] : [];
+            $data['footer_legal_html'] = FooterVariantRenderer::linksListHtml(
+                $legalLinks,
+                'site-footer__legal-links',
+                'site-footer__legal-link',
+            );
+
             return $this->view->render('site-footer.html', $data);
         }
 
@@ -129,16 +151,22 @@ final class SiteChrome
      *
      * @param array<string, mixed> $data
      * @param array<string, mixed> $variant
+     * @param array<string, mixed> $siteInfo
      *
      * @return array<string, mixed>
      */
-    private function buildHeaderZones(array $data, array $variant, string $name, string $logoUrl, string $taglineHtml): array
+    private function buildHeaderZones(array $data, array $variant, array $siteInfo, string $name, string $logoUrl, string $taglineHtml): array
     {
         $layout = $variant['layout'];
         $showNav = ($variant['nav']['visible'] ?? true) !== false;
 
         $ctaHtml = (string) $data['header_cta_html'];
-        $loginHtml = ChromeButtonRenderer::render($variant['login'], 'outline');
+        $loginHtml = ChromeButtonRenderer::render(
+            is_array($variant['login'] ?? null) ? $variant['login'] : [],
+            'outline',
+            '/login',
+            $siteInfo,
+        );
 
         // Sur mobile, les boutons d'action rejoignent le menu déroulant : on en
         // duplique une copie dans le <nav> (masquée sur desktop via CSS).
@@ -199,10 +227,11 @@ final class SiteChrome
     /**
      * @param array<string, mixed> $data
      * @param array<string, mixed> $variant
+     * @param array<string, mixed> $siteInfo
      *
      * @return array<string, mixed>
      */
-    private function buildFooterZones(array $data, array $variant, string $name, string $logoUrl, string $tagline): array
+    private function buildFooterZones(array $data, array $variant, array $siteInfo, string $name, string $logoUrl, string $tagline): array
     {
         $layout = $variant['layout'];
         $showNav = ($variant['nav']['visible'] ?? true) !== false;
@@ -240,7 +269,12 @@ final class SiteChrome
             'nav' => $showNav
                 ? '<nav class="site-footer__nav site-nav" aria-label="Navigation pied de page">' . $data['nav_html'] . '</nav>'
                 : '',
-            'login' => ChromeButtonRenderer::render($variant['login'], 'outline'),
+            'login' => ChromeButtonRenderer::render(
+                is_array($variant['login'] ?? null) ? $variant['login'] : [],
+                'outline',
+                '/login',
+                $siteInfo,
+            ),
         ];
 
         foreach (ChromeVariants::FOOTER_ZONES as $zone) {

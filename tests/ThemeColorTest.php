@@ -24,8 +24,19 @@ final class ThemeColorTest extends TestCase
         $this->assertSame('#0f172a', ThemeColor::normalize('rgb(15, 23, 42)', '#ffffff'));
     }
 
-    public function testTransparentRgbaFallsBackToDefault(): void
+    public function testTransparentKeywordIsPreserved(): void
     {
-        $this->assertSame('#ffffff', ThemeColor::normalize('rgba(0, 0, 0, 0)', '#ffffff'));
+        $this->assertSame('transparent', ThemeColor::normalize('transparent', '#ffffff'));
+        $this->assertSame('transparent', ThemeColor::normalize('Transparent', '#ffffff'));
+    }
+
+    public function testTransparentRgbaNormalizesToTransparent(): void
+    {
+        $this->assertSame('transparent', ThemeColor::normalize('rgba(0, 0, 0, 0)', '#ffffff'));
+    }
+
+    public function testPickerHexUsesFallbackWhenValueIsTransparent(): void
+    {
+        $this->assertSame('#f8fafc', ThemeColor::pickerHex('transparent', '#f8fafc'));
     }
 }

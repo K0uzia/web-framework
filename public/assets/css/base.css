@@ -85,20 +85,25 @@ img {
 .btn--primary {
     background: var(--color-button-primary-bg, var(--color-primary, #3b82f6));
     color: var(--color-button-primary-text, #ffffff);
+    border: 1px solid var(--color-button-primary-border, var(--color-button-primary-bg, var(--color-primary, #3b82f6)));
 }
 
 .btn--primary:hover {
     background: var(--color-button-primary-hover, var(--color-primary-hover, #2563eb));
+    color: var(--color-button-primary-text-hover, var(--color-button-primary-text, #ffffff));
+    border-color: var(--color-button-primary-border-hover, var(--color-button-primary-hover, var(--color-primary-hover, #2563eb)));
 }
 
 .btn--ghost {
     background: var(--color-button-secondary-bg, transparent);
-    border-color: var(--color-border);
+    border: 1px solid var(--color-button-secondary-border, var(--color-border));
     color: var(--color-button-secondary-text, var(--color-text, #0f172a));
 }
 
 .btn--ghost:hover {
     background: var(--color-button-secondary-hover, color-mix(in srgb, var(--color-text, #0f172a) 6%, transparent));
+    color: var(--color-button-secondary-text-hover, var(--color-button-secondary-text, var(--color-text, #0f172a)));
+    border-color: var(--color-button-secondary-border-hover, var(--color-button-secondary-border, var(--color-border)));
 }
 
 .section--bg-primary .btn--primary,
@@ -120,8 +125,17 @@ html.is-preview-embed body {
     scrollbar-width: none;
     -ms-overflow-style: none;
     overflow-x: hidden;
+    overflow-y: auto;
     min-height: 0;
     height: auto;
+}
+
+html.is-preview-embed .site-header {
+    overflow: visible;
+}
+
+html.is-preview-embed .site-header__inner {
+    overflow: visible;
 }
 
 html.is-preview-embed::-webkit-scrollbar,

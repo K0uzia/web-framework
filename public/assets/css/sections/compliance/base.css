@@ -1,9 +1,5 @@
 /* Tokens communs au type compliance */
 
-.section-compliance {
-    background: var(--color-background, #fff);
-}
-
 .section-compliance[class*="section--pad-"] {
     padding-inline: var(--space-md, 1rem);
 }

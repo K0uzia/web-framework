@@ -1,9 +1,9 @@
 /* Variante download1 : cartes desktop, iOS et Android (shadcnblocks download1) */
 
 .section-download--download1.section--bg-muted {
-    background: color-mix(in srgb, var(--color-surface, #f1f5f9) 70%, transparent);
+    background: color-mix(in srgb, var(--color-surface) 70%, transparent);
 }
 
 .section-download--download1 .section-download__card--featured .section-download__card-text {
-    color: color-mix(in srgb, var(--color-text, #0f172a) 90%, transparent);
+    color: color-mix(in srgb, var(--color-text) 90%, transparent);
 }

@@ -1,0 +1,100 @@
+/* Variante signup2 : champs avec labels */
+
+.section-signup.section-signup--signup2 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100svh;
+}
+
+.section-signup__shell--signup2 {
+    width: 100%;
+    padding: 2rem var(--space-md, 1.5rem);
+}
+
+.section-signup__stack--signup2 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    width: 100%;
+    max-width: 24rem;
+    margin-inline: auto;
+}
+
+.section-signup__logo--signup2 {
+    height: 2.5rem;
+    width: auto;
+}
+
+.section-signup__intro--signup2 {
+    width: 100%;
+    text-align: center;
+}
+
+.section-signup__heading--signup2 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.section-signup__form--signup2 {
+    width: 100%;
+}
+
+.section-signup__card--signup2 {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+    padding: 2rem 1.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md, 10px);
+    background: var(--color-elevated);
+    box-shadow: var(--shadow-md, 0 8px 24px rgb(15 23 42 / 0.06));
+}
+
+.section-signup__field--signup2 {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    width: 100%;
+}
+
+.section-signup__label--signup2 {
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.section-signup__login-switch--signup2 {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    font-size: 0.875rem;
+    line-height: 1.25;
+    color: var(--color-muted-foreground);
+}
+
+.section-signup__login-text--signup2 {
+    margin: 0;
+}
+
+.section-signup__login-link--signup2 {
+    display: inline-flex;
+    align-items: center;
+    padding: 0;
+    border: none;
+    background: transparent;
+    font: inherit;
+    line-height: inherit;
+    font-weight: 600;
+    color: var(--color-primary);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.section-signup__login-link--signup2:hover {
+    text-decoration: underline;
+}

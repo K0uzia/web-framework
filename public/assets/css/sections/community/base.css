@@ -1,9 +1,5 @@
 /* Tokens communs au type community */
 
-.section-community {
-    background: var(--color-background, #fff);
-}
-
 .section-community[class*="section--pad-"] {
     padding-inline: var(--space-md, 1rem);
 }

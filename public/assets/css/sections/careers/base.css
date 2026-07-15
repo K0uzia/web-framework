@@ -1,9 +1,5 @@
 /* Tokens communs au type careers */
 
-.section-careers {
-    background: var(--color-background, #fff);
-}
-
 .section-careers[class*="section--pad-"] {
     padding-inline: var(--space-md, 1rem);
 }
@@ -15,6 +11,6 @@
 }
 
 .section-careers a:focus-visible {
-    outline: 2px solid var(--color-primary, #0f172a);
+    outline: 2px solid var(--color-primary);
     outline-offset: 2px;
 }

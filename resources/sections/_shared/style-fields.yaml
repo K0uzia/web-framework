@@ -1,0 +1,33 @@
+bg:
+  type: color-token
+  label: Fond
+  group: general
+padding:
+  type: select
+  label: Espacement vertical
+  options: '[sm, md, lg, xl]'
+  group: general
+text_align:
+  type: select
+  label: Alignement du texte
+  options: '[left, center, right]'
+  group: typography
+title_size:
+  type: select
+  label: Taille du titre
+  options: '[inherit, sm, md, lg, xl, display]'
+  group: typography
+subtitle_size:
+  type: select
+  label: Taille du sous-titre
+  options: '[inherit, sm, md, lg, hidden]'
+  group: typography
+text_color:
+  type: color
+  label: Couleur du texte
+  group: typography
+border:
+  type: select
+  label: Bordure de section
+  options: '[none, yes]'
+  group: general

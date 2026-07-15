@@ -1,5 +1,5 @@
 /* Tokens partagés rate-card (variantes autonomes dans rate-card2.css, etc.) */
 
 .section-rate-card {
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
 }

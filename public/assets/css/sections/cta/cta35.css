@@ -6,7 +6,7 @@
     gap: 1rem;
     max-width: 64rem;
     padding-left: 2rem;
-    border-left: 4px solid var(--color-primary, #0f172a);
+    border-left: 4px solid var(--color-primary);
 }
 
 @media (min-width: 64rem) {
@@ -48,10 +48,10 @@
 
 .section-cta--cta35 .section-cta__buttons--cta35 .section-button--secondary {
     background: transparent;
-    color: var(--color-text, #0f172a);
-    border: 1px solid var(--color-border, #e2e8f0);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
 }
 
 .section-cta--cta35 .section-cta__buttons--cta35 .section-button--secondary:hover {
-    background: var(--color-muted, #f1f5f9);
+    background: var(--color-muted);
 }

@@ -5,7 +5,7 @@
     font-size: clamp(1.875rem, 3vw, 2.25rem);
     font-weight: 500;
     line-height: 1.15;
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
 }
 
 .section-careers--careers4 .section-careers__intro--careers4 {
@@ -20,7 +20,7 @@
     margin: 0;
     font-size: 1rem;
     line-height: 1.55;
-    color: var(--color-muted-foreground, #64748b);
+    color: var(--color-muted-foreground);
 }
 
 .section-careers--careers4 .section-careers__categories--careers4 {
@@ -39,11 +39,11 @@
 .section-careers--careers4 .section-careers__category-title--careers4 {
     margin: 0;
     padding-bottom: 1rem;
-    border-bottom: 1px solid var(--color-border, #e2e8f0);
+    border-bottom: 1px solid var(--color-border);
     font-size: 1.25rem;
     font-weight: 700;
     line-height: 1.3;
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
 }
 
 .section-careers--careers4 .section-careers__opening--careers4 {
@@ -52,7 +52,7 @@
     justify-content: space-between;
     gap: 1rem;
     padding-block: 1rem;
-    border-bottom: 1px solid var(--color-border, #e2e8f0);
+    border-bottom: 1px solid var(--color-border);
 }
 
 .section-careers--careers4 .section-careers__opening-main--careers4 {
@@ -61,7 +61,7 @@
 
 .section-careers--careers4 .section-careers__opening-title--careers4 {
     font-weight: 600;
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
     text-decoration: none;
 }
 
@@ -72,7 +72,7 @@
 .section-careers--careers4 .section-careers__opening-location--careers4 {
     margin: 0.25rem 0 0;
     font-size: 0.875rem;
-    color: var(--color-muted-foreground, #64748b);
+    color: var(--color-muted-foreground);
 }
 
 .section-careers--careers4 .section-careers__opening-arrow-link--careers4 {
@@ -80,10 +80,10 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
     text-decoration: none;
 }
 
 .section-careers--careers4 .section-careers__opening-arrow-link--careers4:hover {
-    color: var(--color-muted-foreground, #64748b);
+    color: var(--color-muted-foreground);
 }

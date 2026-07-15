@@ -1,5 +1,5 @@
 /* Tokens partagés changelog (variantes autonomes dans changelog1.css, etc.) */
 
 .section-changelog {
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
 }

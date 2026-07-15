@@ -64,6 +64,18 @@ final class ScriptResolver
             $this->push($candidates, 'sections/hero-video.js');
         }
 
+        if (str_contains($pageBody, 'data-hero-shader')) {
+            $this->push($candidates, 'sections/hero-shader.js');
+        }
+
+        if (str_contains($pageBody, 'data-login-modal-open') || str_contains($pageBody, 'site-login-modal')) {
+            $this->push($candidates, 'site-login-modal.js');
+        }
+
+        if (str_contains($pageBody, 'data-auth-root') || str_contains($pageBody, 'data-auth-switch')) {
+            $this->push($candidates, 'sections/auth-switch.js');
+        }
+
         $existing = [];
         foreach ($candidates as $relative) {
             $file = $this->publicJsDir . '/' . $relative;

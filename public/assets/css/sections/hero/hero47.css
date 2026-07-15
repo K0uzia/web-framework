@@ -47,7 +47,7 @@
     font-weight: 600;
     line-height: 1.05;
     letter-spacing: -0.025em;
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
 }
 
 @media (min-width: 1024px) {
@@ -58,7 +58,7 @@
 
 .section-hero--hero47 .section-hero__subheading--phone {
     display: inline;
-    color: var(--color-text-muted, #64748b);
+    color: var(--color-text-muted);
     font-weight: inherit;
 }
 
@@ -67,7 +67,7 @@
     max-width: none;
     font-size: 1rem;
     line-height: 1.6;
-    color: var(--color-text-muted, #64748b);
+    color: var(--color-text-muted);
     text-wrap: balance;
 }
 
@@ -110,8 +110,8 @@
     text-decoration: none;
     border: 1px solid transparent;
     border-radius: 0.5rem;
-    background: #171717;
-    color: #fafafa;
+    background: var(--color-button-primary-bg);
+    color: var(--color-button-primary-text);
 }
 
 @media (min-width: 1024px) {
@@ -122,7 +122,7 @@
 }
 
 .section-hero--hero47 .section-hero__button--phone:hover {
-    background: #262626;
+    background: var(--color-button-primary-hover);
 }
 
 .section-hero--hero47 .section-hero__button--phone i {
@@ -138,7 +138,7 @@
     font-size: 0.875rem;
     font-weight: 500;
     line-height: 1.5;
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
     text-decoration: underline;
     text-underline-offset: 4px;
     background: transparent;
@@ -147,7 +147,7 @@
 }
 
 .section-hero--hero47 .section-hero__button--link:hover {
-    color: var(--color-text-muted, #64748b);
+    color: var(--color-text-muted);
 }
 
 .section-hero--hero47 .section-hero__phone {

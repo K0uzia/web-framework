@@ -24,27 +24,27 @@
 }
 
 .section--bg-primary {
-    background: var(--color-primary, #0f172a);
-    color: #fff;
+    background: var(--color-primary);
+    color: var(--color-button-primary-text);
 }
 
 .section--bg-primary .section-hero__subtitle,
 .section--bg-primary p {
-    color: rgb(255 255 255 / 0.82);
+    color: color-mix(in srgb, var(--color-button-primary-text) 82%, transparent);
 }
 
 .section--bg-muted {
-    background: var(--color-surface, #f8fafc);
+    background: var(--color-surface);
     --color-elevated: var(--color-background);
 }
 
 .section--bg-background {
-    background: var(--color-background, #ffffff);
+    background: var(--color-background);
     --color-elevated: var(--color-surface);
 }
 
 .section--bg-primary {
-    --color-elevated: color-mix(in srgb, var(--color-button-primary-text, #fff) 92%, transparent);
+    --color-elevated: color-mix(in srgb, var(--color-button-primary-text) 92%, transparent);
 }
 
 .section-inner {
@@ -73,7 +73,7 @@
 .section-head__subtitle {
     margin: 0;
     font-size: 1.0625rem;
-    color: var(--color-text-muted, #64748b);
+    color: var(--color-text-muted);
     line-height: 1.55;
 }
 
@@ -110,38 +110,98 @@
 .site-nav__link:focus-visible,
 .site-nav__sublink:focus-visible,
 .site-nav__trigger:focus-visible {
-    outline: 2px solid var(--color-focus-ring, #3b82f6);
+    outline: 2px solid var(--color-focus-ring);
     outline-offset: 2px;
 }
 
 .section-button--primary {
     background: var(--color-button-primary-bg, var(--color-primary));
-    color: var(--color-button-primary-text, #fff);
+    color: var(--color-button-primary-text);
+    border: 1px solid var(--color-button-primary-border, var(--color-button-primary-bg, var(--color-primary)));
 }
 
 .section-button--primary:hover {
     background: var(--color-button-primary-hover, var(--color-primary-hover));
+    color: var(--color-button-primary-text-hover, var(--color-button-primary-text));
+    border-color: var(--color-button-primary-border-hover, var(--color-button-primary-hover, var(--color-primary-hover)));
     opacity: 1;
 }
 
 .section-button--secondary {
     background: var(--color-button-secondary-bg, transparent);
     color: var(--color-button-secondary-text, var(--color-text));
-    border: 1px solid var(--color-border);
+    border: 1px solid var(--color-button-secondary-border, var(--color-border));
 }
 
 .section-button--secondary:hover {
     background: var(--color-button-secondary-hover, color-mix(in srgb, var(--color-text) 8%, transparent));
+    color: var(--color-button-secondary-text-hover, var(--color-button-secondary-text, var(--color-text)));
+    border-color: var(--color-button-secondary-border-hover, var(--color-button-secondary-border, var(--color-border)));
 }
 
 .section-button--outline {
     background: transparent;
-    color: var(--color-button-secondary-text, var(--color-text));
-    border: 1px solid color-mix(in srgb, var(--color-border, #e2e8f0) 85%, var(--color-text, #0f172a));
+    color: var(--color-button-outline-text, var(--color-button-secondary-text, var(--color-text)));
+    border: 1px solid var(--color-button-outline-border, color-mix(in srgb, var(--color-border) 85%, var(--color-text)));
     font-weight: 500;
 }
 
 .section-button--outline:hover {
-    background: color-mix(in srgb, var(--color-button-secondary-hover, var(--color-text)) 55%, transparent);
+    background: transparent;
+    color: var(--color-button-outline-text-hover, var(--color-button-outline-text, var(--color-button-secondary-text, var(--color-text))));
+    border-color: var(--color-button-outline-border-hover, var(--color-button-outline-border, color-mix(in srgb, var(--color-border) 85%, var(--color-text))));
     transform: translateY(-1px);
+}
+
+section.section--border {
+    border-block: 1px solid var(--color-border);
+}
+
+/* Typographie bloc : priorité sur le thème quand défini dans Apparence */
+section[style*="--section-text-override"] {
+    color: var(--section-text-override);
+}
+
+section[style*="--section-text-override"] :where(h1, h2, h3, [class*="__title"], .section-head__title) {
+    color: var(--section-text-override);
+}
+
+section[style*="--section-text-override"] :where(.section-head__subtitle, [class*="__subtitle"], p, li) {
+    color: color-mix(in srgb, var(--section-text-override) 82%, transparent);
+}
+
+section.section--title-sm :where(h1, h2, [class*="__title"]:not([class*="__subtitle"]), .section-head__title) {
+    font-size: clamp(1.25rem, 2vw, 1.5rem);
+}
+
+section.section--title-md :where(h1, h2, [class*="__title"]:not([class*="__subtitle"]), .section-head__title) {
+    font-size: clamp(1.5rem, 2.5vw, 2rem);
+}
+
+section.section--title-lg :where(h1, h2, [class*="__title"]:not([class*="__subtitle"]), .section-head__title) {
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+}
+
+section.section--title-xl :where(h1, h2, [class*="__title"]:not([class*="__subtitle"]), .section-head__title) {
+    font-size: clamp(2rem, 3.5vw, 3rem);
+}
+
+section.section--title-display :where(h1, h2, [class*="__title"]:not([class*="__subtitle"]), .section-head__title) {
+    font-size: clamp(2.5rem, 4.5vw, 3.75rem);
+}
+
+section.section--subtitle-sm :where(.section-head__subtitle, [class*="__subtitle"]) {
+    font-size: 0.9375rem;
+}
+
+section.section--subtitle-md :where(.section-head__subtitle, [class*="__subtitle"]) {
+    font-size: 1.0625rem;
+}
+
+section.section--subtitle-lg :where(.section-head__subtitle, [class*="__subtitle"]) {
+    font-size: 1.25rem;
+}
+
+section.section--subtitle-hidden :where(.section-head__subtitle, [class*="__subtitle"]) {
+    display: none;
 }

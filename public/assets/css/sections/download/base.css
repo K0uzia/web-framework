@@ -1,9 +1,5 @@
 /* Tokens et styles communs aux variantes download */
 
-.section-download {
-    background: var(--color-background, #fff);
-}
-
 .section-download[class*="section--pad-"] {
     padding-inline: var(--space-md, 1rem);
 }
@@ -29,7 +25,7 @@
     font-weight: 700;
     line-height: 1.1;
     letter-spacing: -0.025em;
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
     text-wrap: pretty;
 }
 
@@ -50,7 +46,7 @@
     margin: 0 auto 2rem;
     font-size: 1.125rem;
     line-height: 1.6;
-    color: var(--color-muted-foreground, #64748b);
+    color: var(--color-muted-foreground);
 }
 
 .section-download .section-download__grid {
@@ -70,15 +66,15 @@
     display: flex;
     flex-direction: column;
     padding: 1.5rem;
-    border: 1px solid var(--color-border, #e2e8f0);
+    border: 1px solid var(--color-border);
     border-radius: var(--radius-lg, 0.5rem);
-    background: var(--color-background, #fff);
+    background: var(--color-elevated);
 }
 
 .section-download .section-download__card--featured {
     border: 0;
-    background: color-mix(in srgb, var(--color-surface, #f1f5f9) 85%, var(--color-text, #0f172a) 15%);
-    color: var(--color-text, #0f172a);
+    background: color-mix(in srgb, var(--color-surface) 85%, var(--color-text) 15%);
+    color: var(--color-text);
 }
 
 .section-download .section-download__icon-wrap {
@@ -89,8 +85,8 @@
     height: 3rem;
     margin-bottom: 1rem;
     border-radius: 999px;
-    background: var(--color-surface, #f1f5f9);
-    color: var(--color-text, #0f172a);
+    background: var(--color-surface);
+    color: var(--color-text);
 }
 
 .section-download .section-download__icon-wrap i {
@@ -99,7 +95,7 @@
 }
 
 .section-download .section-download__icon-wrap--featured {
-    background: color-mix(in srgb, var(--color-text, #0f172a) 10%, transparent);
+    background: color-mix(in srgb, var(--color-text) 10%, transparent);
 }
 
 .section-download .section-download__card-body {
@@ -119,7 +115,7 @@
 }
 
 .section-download .section-download__card-heading--muted {
-    color: var(--color-muted-foreground, #64748b);
+    color: var(--color-muted-foreground);
 }
 
 .section-download .section-download__card-title {
@@ -136,7 +132,7 @@
 }
 
 .section-download .section-download__card-text--muted {
-    color: var(--color-muted-foreground, #64748b);
+    color: var(--color-muted-foreground);
 }
 
 .section-download .section-download__card-action {
@@ -157,8 +153,8 @@
     min-height: 2.5rem;
     padding: 0.375rem 0.875rem;
     border-radius: 0.375rem;
-    background: #0f172a;
-    color: #fff;
+    background: var(--color-primary);
+    color: var(--color-button-primary-text);
     text-decoration: none;
     transition: opacity 0.2s ease;
 }
@@ -168,7 +164,7 @@
 }
 
 .section-download .section-download__store-btn:focus-visible {
-    outline: 2px solid var(--color-focus-ring, #3b82f6);
+    outline: 2px solid var(--color-focus-ring);
     outline-offset: 2px;
 }
 

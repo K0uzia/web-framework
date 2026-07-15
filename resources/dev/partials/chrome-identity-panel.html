@@ -1,0 +1,19 @@
+<div class="dev-chrome-block">
+    <div class="dev-chrome-block__head">
+        <h3 class="dev-chrome-block__title">Identité</h3>
+        <p class="dev-chrome-block__desc">Nom et accroche. Logo dans <a href="/dev/site">Site</a>.</p>
+        <p class="dev-section-form__status dev-chrome-block__status" id="chrome-identity-status" aria-live="polite"></p>
+    </div>
+    <form method="post" action="/dev/site" id="chrome-identity-form" hx-post="/dev/site" hx-trigger="change, input delay:400ms" hx-target="#chrome-identity-status" hx-swap="innerHTML" data-dev-toast-form="Identité enregistrée">
+        <div class="dev-form--grid dev-form--grid-2 dev-chrome-fields">
+            <div class="dev-field">
+                <label class="dev-label" for="chrome_site_name">Nom du site</label>
+                <input class="dev-input" id="chrome_site_name" type="text" name="site_name" value="{{site_name}}" />
+            </div>
+            <div class="dev-field">
+                <label class="dev-label" for="chrome_site_tagline">Accroche</label>
+                <input class="dev-input" id="chrome_site_tagline" type="text" name="site_tagline" value="{{site_tagline}}" />
+            </div>
+        </div>
+    </form>
+</div>

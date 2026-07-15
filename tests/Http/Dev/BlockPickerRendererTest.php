@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Http\Dev;
 
-use App\Http\Dev\BlockPickerRenderer;
+use App\Http\Dev\Sections\BlockPickerRenderer;
 use Capsule\SectionRegistry;
 use PHPUnit\Framework\TestCase;
 
@@ -22,5 +22,8 @@ final class BlockPickerRendererTest extends TestCase
         $this->assertStringContainsString('data-block-variant="hero3"', $html);
         $this->assertStringContainsString('Hero 3', $html);
         $this->assertStringContainsString('data-block-filter="hero"', $html);
+        $this->assertStringContainsString('id="dev-block-picker-search"', $html);
+        $this->assertStringContainsString('dev-block-picker__layout', $html);
+        $this->assertStringContainsString('dev-block-nav-item', $html);
     }
 }

@@ -1,9 +1,5 @@
 /* Tokens communs au type logos */
 
-.section-logos {
-    background: var(--color-background, #fff);
-}
-
 .section-logos[class*="section--pad-"] {
     padding-inline: var(--space-md, 1rem);
 }
@@ -59,7 +55,31 @@
 .section-logos__link--logos8:focus-visible,
 .section-logos__link--logos18:focus-visible,
 .section-logos__link--logos19:focus-visible {
-    outline: 2px solid var(--color-focus-ring, #3b82f6);
+    outline: 2px solid var(--color-focus-ring);
     outline-offset: 2px;
     border-radius: var(--radius-sm, 0.25rem);
+}
+
+.section-logos__logo-tint {
+    display: block;
+    width: 100%;
+    max-height: 1.75rem;
+    height: 1.75rem;
+    background-color: var(--section-logos-color, var(--color-text));
+    mask-image: var(--logo-mask);
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    mask-position: center;
+    -webkit-mask-image: var(--logo-mask);
+    -webkit-mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+}
+
+.section-logos__logo-tint--logos3.section-logos__logo-tint--compact--logos3,
+.section-logos__logo-tint--logos8.section-logos__logo-tint--compact--logos8,
+.section-logos__logo-tint--logos18.section-logos__logo-tint--compact--logos18,
+.section-logos__logo-tint--logos19.section-logos__logo-tint--compact--logos19 {
+    max-height: 1.25rem;
+    height: 1.25rem;
 }

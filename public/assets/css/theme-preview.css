@@ -88,6 +88,11 @@
     gap: 0.5rem;
 }
 
+.theme-preview__nav .site-nav__list {
+    flex-wrap: wrap;
+    gap: 0.25rem;
+}
+
 .theme-preview__alerts {
     display: grid;
     gap: 0.5rem;

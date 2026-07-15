@@ -17,7 +17,7 @@
     line-height: 1.05;
     letter-spacing: -0.025em;
     text-transform: uppercase;
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
 }
 
 .section-projects--projects5 .section-projects__grid--projects5 {
@@ -34,9 +34,9 @@
 
 .section-projects--projects5 .section-projects__card--projects5 {
     overflow: hidden;
-    border: 1px solid var(--color-border, #e2e8f0);
+    border: 1px solid var(--color-border);
     border-radius: var(--radius-lg, 0.5rem);
-    background: var(--color-background, #fff);
+    background: var(--color-elevated);
 }
 
 .section-projects--projects5 .section-projects__media--projects5 {
@@ -73,28 +73,28 @@
     font-size: 1.125rem;
     font-weight: 600;
     line-height: 1.4;
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
 }
 
 .section-projects--projects5 .section-projects__card-type--projects5 {
     margin: 0.25rem 0 0;
     font-size: 0.875rem;
     line-height: 1.4;
-    color: var(--color-muted-foreground, #64748b);
+    color: var(--color-muted-foreground);
 }
 
 .section-projects--projects5 .section-projects__year--projects5 {
     flex-shrink: 0;
     padding: 0.5rem 1.25rem;
-    border: 1px solid var(--color-border, #e2e8f0);
+    border: 1px solid var(--color-border);
     border-radius: 1rem;
     font-size: 0.875rem;
     font-weight: 600;
     line-height: 1.25rem;
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
 }
 
 .section-projects--projects5 .section-projects__media--projects5:focus-visible {
-    outline: 2px solid var(--color-focus-ring, #3b82f6);
+    outline: 2px solid var(--color-focus-ring);
     outline-offset: -2px;
 }

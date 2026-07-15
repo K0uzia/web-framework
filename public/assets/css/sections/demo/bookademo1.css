@@ -59,11 +59,11 @@
     display: inline-flex;
     margin: 0;
     padding: 0.25rem 0.625rem;
-    border: 1px solid var(--color-border, #e2e8f0);
+    border: 1px solid var(--color-border);
     border-radius: 999px;
     font-size: 0.875rem;
     font-weight: 500;
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
 }
 
 .section-demo--bookademo1 .section-demo__title--bookademo1 {
@@ -74,7 +74,7 @@
     line-height: 1.1;
     text-align: center;
     text-wrap: balance;
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
 }
 
 @media (min-width: 64rem) {
@@ -115,7 +115,7 @@
     .section-demo--bookademo1 .section-demo__benefit--bookademo1 {
         padding-inline: 1rem;
         padding-block: 1.5rem;
-        border-bottom: 1px solid var(--color-border, #e2e8f0);
+        border-bottom: 1px solid var(--color-border);
     }
 
     .section-demo--bookademo1 .section-demo__benefit--last--bookademo1 {
@@ -131,7 +131,7 @@
     margin-top: 0.125rem;
     font-size: 1.5rem;
     font-weight: 300;
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
 }
 
 @media (min-width: 64rem) {
@@ -147,7 +147,7 @@
     line-height: 1.5;
     text-align: center;
     overflow-wrap: anywhere;
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
 }
 
 @media (min-width: 64rem) {
@@ -238,7 +238,7 @@
     margin-inline: auto;
     padding: 2.5rem 1rem 1rem;
     border-radius: var(--radius-lg, 0.5rem);
-    background: color-mix(in srgb, var(--color-surface, #f1f5f9) 70%, var(--color-background, #fff));
+    background: color-mix(in srgb, var(--color-surface) 70%, var(--color-background));
 }
 
 @media (min-width: 64rem) {
@@ -296,19 +296,19 @@
     padding: 0.625rem 1rem;
     border: 0;
     border-radius: var(--radius-md, 0.375rem);
-    background: var(--color-primary, #3b82f6);
-    color: var(--color-button-primary-text, #fff);
+    background: var(--color-primary);
+    color: var(--color-button-primary-text);
     font: inherit;
     font-weight: 500;
     cursor: pointer;
 }
 
 .section-demo--bookademo1 .section-demo__submit--bookademo1:hover {
-    background: var(--color-primary-hover, #2563eb);
+    background: var(--color-primary-hover);
 }
 
 .section-demo--bookademo1 .section-demo__submit--bookademo1:focus-visible {
-    outline: 2px solid var(--color-primary, #3b82f6);
+    outline: 2px solid var(--color-primary);
     outline-offset: 2px;
 }
 

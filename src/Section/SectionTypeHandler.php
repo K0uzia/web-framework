@@ -33,5 +33,10 @@ interface SectionTypeHandler
     /**
      * @return list<string>
      */
+    public function cssModules(string $variant): array;
+
+    /**
+     * @return list<string>
+     */
     public function jsModules(string $variant): array;
 }

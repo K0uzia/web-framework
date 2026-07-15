@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Dev;
 
+use App\Http\Dev\Sections\BlockPickerRenderer;
+use App\Http\Dev\Sections\SectionFormRenderer;
 use Capsule\DevDashboard;
 use Capsule\Http\Message\Request;
 use Capsule\Http\Message\Response;

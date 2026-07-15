@@ -1,9 +1,5 @@
 /* Feature 3 : grille de cartes avec visuels */
 
-.section-features--feature3 {
-    background: var(--color-background, #fff);
-}
-
 .section-features--feature3 .section-features__stack--center {
     display: flex;
     flex-direction: column;
@@ -24,7 +20,7 @@
     line-height: 1.1;
     letter-spacing: -0.025em;
     text-align: center;
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
     text-wrap: balance;
 }
 
@@ -61,17 +57,17 @@
     gap: 1rem;
     width: 100%;
     padding-block: 1rem;
-    background: var(--color-background, #fff);
-    border: 1px solid color-mix(in srgb, var(--color-text, #0f172a) 10%, transparent);
+    background: var(--color-elevated);
+    border: 1px solid color-mix(in srgb, var(--color-text) 10%, transparent);
     border-radius: 0.75rem;
-    box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-text, #0f172a) 5%, transparent);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-text) 5%, transparent);
     overflow: hidden;
 }
 
 .section-features--feature3 .section-features__card-header {
     padding-inline: 1rem;
     padding-bottom: 0.25rem;
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
 }
 
 .section-features--feature3 .section-features__card-header i {
@@ -88,14 +84,14 @@
     margin: 0 0 0.5rem;
     font-size: 1.125rem;
     font-weight: 600;
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
 }
 
 .section-features--feature3 .section-features__card-content p {
     margin: 0;
     font-size: 0.875rem;
     line-height: 1.375;
-    color: var(--color-text-muted, #64748b);
+    color: var(--color-text-muted);
 }
 
 .section-features--feature3 .section-features__card-footer {

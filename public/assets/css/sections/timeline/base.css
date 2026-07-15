@@ -1,9 +1,5 @@
 /* Tokens communs au type timeline */
 
-.section-timeline {
-    background: var(--color-background, #fff);
-}
-
 .section-timeline[class*="section--pad-"] {
     padding-inline: var(--space-md, 1rem);
 }

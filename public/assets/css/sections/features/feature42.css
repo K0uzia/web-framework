@@ -1,9 +1,5 @@
 /* Feature 42 : grille asymetrique avec titre ancre */
 
-.section-features--feature42 {
-    background: var(--color-background, #fff);
-}
-
 .section-features--feature42 .section-features__grid--asymmetric {
     display: grid;
     gap: 2rem;
@@ -23,7 +19,7 @@
     font-weight: 500;
     line-height: 1.2;
     letter-spacing: -0.025em;
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
 }
 
 @media (min-width: 1024px) {
@@ -37,12 +33,12 @@
     margin: 0 0 0.5rem;
     font-size: 1.125rem;
     font-weight: 500;
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
 }
 
 .section-features--feature42 .section-features__text-cell p {
     margin: 0;
     font-size: 0.875rem;
     line-height: 1.6;
-    color: var(--color-text-muted, #64748b);
+    color: var(--color-text-muted);
 }

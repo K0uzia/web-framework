@@ -63,7 +63,7 @@
     top: -0.5rem;
     right: -0.5rem;
     font-size: 1.25rem;
-    color: #f97316;
+    color: var(--color-warning);
 }
 
 @media (min-width: 768px) {
@@ -82,7 +82,7 @@
     margin: 0;
     font-size: 1rem;
     line-height: 1.6;
-    color: color-mix(in srgb, var(--color-text, #0f172a) 50%, transparent);
+    color: color-mix(in srgb, var(--color-text) 50%, transparent);
 }
 
 .section-process--process1 .section-process__cta--process1 {
@@ -95,22 +95,22 @@
     border-radius: 0.375rem;
     font-size: 0.875rem;
     font-weight: 500;
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
     text-decoration: none;
     background: transparent;
 }
 
 .section-process--process1 .section-process__cta--process1:hover {
-    background: var(--color-surface, #f1f5f9);
+    background: var(--color-surface);
 }
 
 .section-process--process1 .section-process__cta--process1:focus-visible {
-    outline: 2px solid var(--color-primary, #2563eb);
+    outline: 2px solid var(--color-primary);
     outline-offset: 2px;
 }
 
 .section-process--process1 .section-process__cta-icon--process1 {
-    color: #f97316;
+    color: var(--color-warning);
 }
 
 .section-process--process1 .section-process__steps--process1 {
@@ -135,7 +135,7 @@
     justify-content: space-between;
     gap: 2.5rem;
     padding-block: 2rem;
-    border-top: 1px solid var(--color-border, #e2e8f0);
+    border-top: 1px solid var(--color-border);
 }
 
 @media (min-width: 768px) {
@@ -154,7 +154,7 @@
     position: absolute;
     top: 1rem;
     right: 0;
-    color: #ef4444;
+    color: var(--color-error);
 }
 
 .section-process--process1 .section-process__step-index--process1 {
@@ -168,7 +168,7 @@
     font-size: 1rem;
     font-weight: 600;
     letter-spacing: -0.05em;
-    background: var(--color-surface, #f1f5f9);
+    background: var(--color-surface);
 }
 
 .section-process--process1 .section-process__step-body--process1 {
@@ -193,5 +193,5 @@
 .section-process--process1 .section-process__step-text--process1 {
     margin: 0;
     line-height: 1.6;
-    color: color-mix(in srgb, var(--color-text, #0f172a) 50%, transparent);
+    color: color-mix(in srgb, var(--color-text) 50%, transparent);
 }

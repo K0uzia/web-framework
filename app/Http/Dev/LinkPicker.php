@@ -29,12 +29,29 @@ final class LinkPicker
         PageRepository $pages,
         string $formAttr = '',
         bool $compact = false,
+        ?string $selectOptionsHtml = null,
     ): string {
         $safeId = htmlspecialchars($inputId, ENT_QUOTES);
         $safeName = htmlspecialchars($inputName, ENT_QUOTES);
         $formAttribute = $formAttr !== '' ? ' form="' . htmlspecialchars($formAttr, ENT_QUOTES) . '"' : '';
         $sizeClass = $compact ? ' dev-input--sm' : '';
 
+        $options = $selectOptionsHtml ?? self::buildSelectOptions($pages);
+
+        return '<div class="dev-link-picker" data-link-picker>'
+            . '<select class="dev-input dev-select' . $sizeClass . '" aria-label="Choisir une page ou une section du site" data-link-picker-select'
+            . $formAttribute
+            . '>'
+            . $options
+            . '</select>'
+            . '<input class="dev-input' . $sizeClass . '" type="text" id="' . $safeId . '" name="' . $safeName . '" value="'
+            . htmlspecialchars($currentValue, ENT_QUOTES) . '" placeholder="https://exemple.fr ou /page"'
+            . $formAttribute . ' data-link-picker-input />'
+            . '</div>';
+    }
+
+    public static function buildSelectOptions(PageRepository $pages): string
+    {
         $options = ['<option value="">URL personnalisée…</option>'];
         foreach ($pages->allPublished() as $page) {
             $path = $page->routePath();
@@ -49,16 +66,7 @@ final class LinkPicker
             }
         }
 
-        return '<div class="dev-link-picker" data-link-picker>'
-            . '<select class="dev-input dev-select' . $sizeClass . '" aria-label="Choisir une page ou une section du site" data-link-picker-select'
-            . $formAttribute
-            . '>'
-            . implode('', $options)
-            . '</select>'
-            . '<input class="dev-input' . $sizeClass . '" type="text" id="' . $safeId . '" name="' . $safeName . '" value="'
-            . htmlspecialchars($currentValue, ENT_QUOTES) . '" placeholder="https://exemple.fr ou /page"'
-            . $formAttribute . ' data-link-picker-input />'
-            . '</div>';
+        return implode('', $options);
     }
 
     private static function sectionOptions(Page $page): string

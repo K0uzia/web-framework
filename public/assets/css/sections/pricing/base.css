@@ -1,9 +1,5 @@
 /* Tokens et boutons communs aux variantes pricing */
 
-.section-pricing {
-    background: var(--color-background, #fff);
-}
-
 .section-pricing[class*="section--pad-"] {
     padding-inline: var(--space-md, 1rem);
 }
@@ -39,7 +35,7 @@
     font-weight: 600;
     line-height: 1.1;
     letter-spacing: -0.025em;
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
     text-wrap: pretty;
 }
 
@@ -53,7 +49,7 @@
     margin: 0;
     font-size: 1rem;
     line-height: 1.5;
-    color: var(--color-text-muted, #64748b);
+    color: var(--color-text-muted);
 }
 
 @media (min-width: 1024px) {
@@ -68,7 +64,7 @@
     height: 0;
     margin: 0;
     border: 0;
-    border-top: 1px solid var(--color-border, #e2e8f0);
+    border-top: 1px solid var(--color-border);
 }
 
 .section-pricing .section-pricing__btn {
@@ -88,22 +84,22 @@
 }
 
 .section-pricing .section-pricing__btn--primary {
-    background: var(--color-button-primary-bg, #171717);
-    color: var(--color-button-primary-text, #fafafa);
+    background: var(--color-button-primary-bg);
+    color: var(--color-button-primary-text);
 }
 
 .section-pricing .section-pricing__btn--primary:hover {
-    background: var(--color-button-primary-hover, #262626);
+    background: var(--color-button-primary-hover);
 }
 
 .section-pricing .section-pricing__btn--outline {
-    background: var(--color-background, #fff);
-    color: var(--color-text, #0f172a);
-    border-color: var(--color-border, #e2e8f0);
+    background: var(--color-elevated);
+    color: var(--color-text);
+    border-color: var(--color-border);
 }
 
 .section-pricing .section-pricing__btn--outline:hover {
-    background: color-mix(in srgb, var(--color-muted, #f1f5f9) 80%, var(--color-background, #fff));
+    background: color-mix(in srgb, var(--color-muted) 80%, var(--color-background));
 }
 
 .section-pricing .section-pricing__btn--sm {
@@ -123,13 +119,13 @@
     gap: 1.25rem;
     font-size: 1rem;
     font-weight: 600;
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
 }
 
 .section-pricing .section-pricing__billing--tabs {
     gap: 0.25rem;
     padding: 0.25rem;
-    background: var(--color-muted, #f1f5f9);
+    background: var(--color-muted);
     border-radius: 0.5rem;
 }
 
@@ -138,7 +134,7 @@
     padding: 0 1.75rem;
     font-size: 1rem;
     font-weight: 600;
-    color: var(--color-text-muted, #64748b);
+    color: var(--color-text-muted);
     background: transparent;
     border: 0;
     border-radius: 0.375rem;
@@ -146,13 +142,13 @@
 }
 
 .section-pricing .section-pricing__billing-tab.is-active {
-    color: var(--color-text, #0f172a);
-    background: var(--color-background, #fff);
+    color: var(--color-text);
+    background: var(--color-elevated);
     box-shadow: 0 1px 2px rgb(15 23 42 / 0.06);
 }
 
 .section-pricing .section-pricing__billing-tab:focus-visible {
-    outline: 2px solid var(--color-focus-ring, #3b82f6);
+    outline: 2px solid var(--color-focus-ring);
     outline-offset: 2px;
 }
 
@@ -179,7 +175,7 @@
     display: block;
     width: 2.75rem;
     height: 1.5rem;
-    background: var(--color-border, #e2e8f0);
+    background: var(--color-border);
     border-radius: 999px;
     transition: background-color 0.2s ease;
 }
@@ -191,13 +187,13 @@
     left: 0.125rem;
     width: 1.25rem;
     height: 1.25rem;
-    background: var(--color-background, #fff);
+    background: var(--color-elevated);
     border-radius: 999px;
     transition: transform 0.2s ease;
 }
 
 .section-pricing .section-pricing__switch-input:checked + .section-pricing__switch-track {
-    background: var(--color-primary, #3b82f6);
+    background: var(--color-primary);
 }
 
 .section-pricing .section-pricing__switch-input:checked + .section-pricing__switch-track::after {
@@ -205,7 +201,7 @@
 }
 
 .section-pricing .section-pricing__switch-input:focus-visible + .section-pricing__switch-track {
-    outline: 2px solid var(--color-focus-ring, #3b82f6);
+    outline: 2px solid var(--color-focus-ring);
     outline-offset: 2px;
 }
 
@@ -236,7 +232,7 @@
     gap: 0.5rem;
     font-size: 0.875rem;
     line-height: 1.4;
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
 }
 
 .section-pricing .section-pricing__feature-list i {
@@ -247,7 +243,7 @@
 }
 
 .section-pricing .section-pricing__feature-list--muted li {
-    color: var(--color-text-muted, #64748b);
+    color: var(--color-text-muted);
 }
 
 .section-pricing .section-pricing__feature-list--split li {
@@ -268,12 +264,12 @@
 }
 
 .section-pricing .section-pricing__badge--solid {
-    color: var(--color-button-primary-text, #fafafa);
-    background: var(--color-button-primary-bg, #171717);
+    color: var(--color-button-primary-text);
+    background: var(--color-button-primary-bg);
 }
 
 .section-pricing .section-pricing__badge--outline {
-    color: var(--color-text, #0f172a);
-    background: var(--color-background, #fff);
-    border: 1px solid var(--color-border, #e2e8f0);
+    color: var(--color-text);
+    background: var(--color-elevated);
+    border: 1px solid var(--color-border);
 }

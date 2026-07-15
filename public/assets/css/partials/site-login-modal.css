@@ -1,0 +1,83 @@
+.site-login-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 120;
+    display: grid;
+    place-items: center;
+    padding: 1rem;
+}
+
+.site-login-modal[hidden] {
+    display: none;
+}
+
+.site-login-modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgb(15 23 42 / 0.55);
+}
+
+.site-login-modal__panel {
+    position: relative;
+    z-index: 1;
+    width: min(100%, 42rem);
+    max-height: min(90vh, 48rem);
+    overflow: auto;
+    border-radius: var(--radius-lg, 12px);
+    background: var(--color-background, #fff);
+    box-shadow: var(--shadow-lg, 0 24px 48px rgb(15 23 42 / 0.18));
+}
+
+.site-login-modal__close {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: var(--radius-md, 10px);
+    background: var(--color-surface, #fff);
+    color: var(--color-text, #0f172a);
+    cursor: pointer;
+}
+
+.site-login-modal__close:hover {
+    background: var(--color-muted, #f8fafc);
+}
+
+.site-login-modal__content {
+    padding: 1.5rem 1.5rem 1.25rem;
+}
+
+.site-login-modal__content .section-login__heading--login1,
+.site-login-modal__content .section-login__heading--login2,
+.site-login-modal__content .section-login__forgot-heading--login1,
+.site-login-modal__content .section-login__forgot-heading--login2 {
+    padding-inline-end: 2.5rem;
+}
+
+.site-login-modal__content > section {
+    margin: 0;
+}
+
+body.site-login-modal-open {
+    overflow: hidden;
+}
+
+@media (max-width: 640px) {
+    .site-login-modal {
+        padding: 0;
+        place-items: stretch;
+    }
+
+    .site-login-modal__panel {
+        width: 100%;
+        max-height: none;
+        min-height: 100%;
+        border-radius: 0;
+    }
+}

@@ -1,9 +1,5 @@
 /* Tokens et styles communs aux variantes team */
 
-.section-team {
-    background: var(--color-background, #fff);
-}
-
 .section-team[class*="section--pad-"] {
     padding-inline: var(--space-md, 1rem);
 }
@@ -20,13 +16,13 @@
 
 .section-team .section-team__title {
     margin: 0;
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
     text-wrap: pretty;
 }
 
 .section-team .section-team__subtitle {
     margin: 0;
-    color: var(--color-muted-foreground, #64748b);
+    color: var(--color-muted-foreground);
 }
 
 .section-team .section-team__grid {
@@ -46,7 +42,7 @@
     justify-content: center;
     overflow: hidden;
     border-radius: 999px;
-    background: var(--color-surface, #f1f5f9);
+    background: var(--color-surface);
 }
 
 .section-team .section-team__avatar-img {
@@ -64,7 +60,7 @@
     height: 100%;
     font-size: 1.125rem;
     font-weight: 600;
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
 }
 
 .section-team .section-team__avatar:not(:has(.section-team__avatar-img[src])) .section-team__avatar-fallback,
@@ -75,12 +71,12 @@
 .section-team .section-team__name {
     margin: 0;
     font-weight: 500;
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
 }
 
 .section-team .section-team__role {
     margin: 0;
-    color: var(--color-muted-foreground, #64748b);
+    color: var(--color-muted-foreground);
 }
 
 .section-team .section-team__social {
@@ -94,18 +90,18 @@
     justify-content: center;
     padding: 0.5rem;
     border-radius: 0.5rem;
-    background: color-mix(in srgb, var(--color-surface, #f1f5f9) 70%, transparent);
-    color: var(--color-muted-foreground, #64748b);
+    background: color-mix(in srgb, var(--color-surface) 70%, transparent);
+    color: var(--color-muted-foreground);
     text-decoration: none;
     transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .section-team .section-team__social-link:hover {
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
 }
 
 .section-team .section-team__social-link:focus-visible {
-    outline: 2px solid var(--color-focus-ring, #3b82f6);
+    outline: 2px solid var(--color-focus-ring);
     outline-offset: 2px;
 }
 

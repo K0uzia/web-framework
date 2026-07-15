@@ -279,6 +279,6 @@ final class VideoImportController
         $accept = $request->headers['accept'] ?? $request->headers['Accept'] ?? '';
 
         return str_contains((string) $accept, 'application/json')
-            || ($request->headers['HX-Request'] ?? '') === 'true';
+            || $this->isHx($request);
     }
 }

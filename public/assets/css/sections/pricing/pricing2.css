@@ -25,8 +25,8 @@
     min-width: 0;
     padding: 1.5rem;
     text-align: left;
-    background: var(--color-background, #fff);
-    border: 1px solid var(--color-border, #e2e8f0);
+    background: var(--color-elevated);
+    border: 1px solid var(--color-border);
     border-radius: 0.75rem;
     box-shadow: none;
 }
@@ -39,14 +39,14 @@
 
 .section-pricing--pricing2 .section-pricing__card--highlighted {
     border-width: 2px;
-    border-color: var(--color-primary, #3b82f6);
+    border-color: var(--color-primary);
 }
 
 .section-pricing--pricing2 .section-pricing__card-name {
     margin: 0;
     font-size: 1.125rem;
     font-weight: 600;
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
 }
 
 .section-pricing--pricing2 .section-pricing__card-price {
@@ -62,18 +62,18 @@
     font-weight: 500;
     line-height: 1;
     letter-spacing: -0.025em;
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
 }
 
 .section-pricing--pricing2 .section-pricing__price-period {
     font-size: 1.25rem;
     font-weight: 400;
-    color: var(--color-text-muted, #64748b);
+    color: var(--color-text-muted);
 }
 
 .section-pricing--pricing2 .section-pricing__card-desc {
     margin: 0;
-    color: var(--color-text-muted, #64748b);
+    color: var(--color-text-muted);
 }
 
 .section-pricing--pricing2 .section-pricing__card-body {

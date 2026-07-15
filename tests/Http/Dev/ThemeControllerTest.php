@@ -88,7 +88,8 @@ final class ThemeControllerTest extends TestCase
 
         $body = (string) $this->controller->edit(new Request('GET', '/dev/theme', [], [], [], []))->getBody();
 
-        $this->assertStringContainsString('id="color_background" name="color_background" value="#ffffff"', $body);
+        $this->assertStringContainsString('id="color_background" value="#ffffff"', $body);
+        $this->assertStringContainsString('name="color_background" data-color-text value="transparent"', $body);
         $this->assertStringContainsString('Palette de base', $body);
         $this->assertStringContainsString('dev-color-accordion', $body);
         $this->assertStringContainsString('name="color_text_muted"', $body);

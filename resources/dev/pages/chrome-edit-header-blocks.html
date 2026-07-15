@@ -22,19 +22,43 @@
     </div>
 
     <div class="dev-builder dev-builder--site">
-        <form method="post" action="/dev/chrome/header" class="dev-form dev-stack dev-stack--lg" id="chrome-variant-form" hx-post="/dev/chrome/header" hx-trigger="change, input delay:400ms" hx-target="#chrome-variant-status" hx-swap="innerHTML" data-dev-toast-form="En-tête enregistré">
+        <form method="post" action="/dev/chrome/header" class="dev-form dev-chrome-editor" id="chrome-variant-form" hx-post="/dev/chrome/header" hx-trigger="change, input delay:400ms" hx-target="#chrome-variant-status" hx-swap="innerHTML" data-dev-toast-form="En-tête enregistré">
             <input type="hidden" name="variant_id" value="{{variant_id}}" />
             <input type="hidden" name="header_template" value="{{header_template}}" />
 
-            <div class="dev-panel">
-                <div class="dev-field">
-                    <label class="dev-label" for="chrome_variant_name">Nom de la variante</label>
-                    <input class="dev-input" id="chrome_variant_name" type="text" name="variant_name" value="{{variant_name}}" />
+            <section class="dev-chrome-section" aria-labelledby="chrome-blocks-settings">
+                <h2 class="dev-chrome-section__label" id="chrome-blocks-settings">Paramètres</h2>
+                <div class="dev-panel dev-panel--compact">
+                    <div class="dev-chrome-meta-grid">
+                        <div class="dev-field">
+                            <label class="dev-label" for="chrome_variant_name">Nom de la variante</label>
+                            <input class="dev-input" id="chrome_variant_name" type="text" name="variant_name" value="{{variant_name}}" />
+                        </div>
+                        <div class="dev-field dev-chrome-meta-grid__hint">
+                            <p class="dev-hint">Logo et nom : Site, onglet Identité.</p>
+                        </div>
+                    </div>
+                    <div class="dev-setting-row dev-setting-row--compact">
+                        <div class="dev-setting-row__text">
+                            <span class="dev-setting-row__title">Bordure inférieure</span>
+                            <span class="dev-setting-row__desc">Séparateur sous l'en-tête.</span>
+                        </div>
+                        <label class="dev-switch">
+                            <input type="hidden" name="show_border" value="0" />
+                            <input type="checkbox" name="show_border" value="1" {{show_border_checked}} />
+                            <span class="dev-switch__track" aria-hidden="true"></span>
+                            <span class="visually-hidden">Afficher la bordure de l'en-tête</span>
+                        </label>
+                    </div>
                 </div>
-                <p class="dev-hint">Le logo et le nom du site viennent de Site, onglet Identité.</p>
-            </div>
+            </section>
 
-            {{{header_blocks_form_html}}}
+            <section class="dev-chrome-section" aria-labelledby="chrome-blocks-content">
+                <h2 class="dev-chrome-section__label" id="chrome-blocks-content">Contenu</h2>
+                <div class="dev-chrome-blocks-stack">
+                    {{{header_blocks_form_html}}}
+                </div>
+            </section>
         </form>
 
         <div class="dev-builder__preview">

@@ -69,6 +69,9 @@ final class SiteExporter
             }
 
             $html = $this->rewriteBasePath($body, $basePath);
+            if ($basePath === '') {
+                $html = $this->rewriteStaticAssetUrls($html, $this->pageAssetDepth($page));
+            }
             $target = $this->pageOutputPath($outputDir, $page);
             $dir = dirname($target);
             if (!is_dir($dir) && !mkdir($dir, 0755, true) && !is_dir($dir)) {
@@ -84,6 +87,7 @@ final class SiteExporter
         }
 
         $this->copyPublicAssets($this->publicDir, $outputDir);
+        $this->writeHtaccess($outputDir, $basePath);
         file_put_contents($outputDir . '/.nojekyll', '');
 
         return new SiteExportResult($outputDir, $pageCount, $written);
@@ -134,12 +138,59 @@ final class SiteExporter
         }
 
         $rewritten = preg_replace_callback(
-            '#(?<attr>href|src|action)=(["\'])/(?!/)#',
+            '#(?<attr>href|src|srcset|action)=(["\'])/(?!/)#',
             static fn (array $matches): string => $matches['attr'] . '=' . $matches[2] . $basePath . '/',
             $html,
         );
 
         return $rewritten ?? $html;
+    }
+
+    private function pageAssetDepth(Page $page): int
+    {
+        if ($page->slug === '') {
+            return 0;
+        }
+
+        $parts = array_filter(explode('/', trim($page->slug, '/')), static fn (string $part): bool => $part !== '');
+
+        return count($parts);
+    }
+
+    private function rewriteStaticAssetUrls(string $html, int $depth): string
+    {
+        $prefix = $depth === 0 ? '' : str_repeat('../', $depth);
+
+        $html = preg_replace_callback(
+            '#(?<attr>href|src)=(["\'])/(?!/)(?<path>(?:assets|uploads)/|favicon\.svg)#',
+            static fn (array $matches): string => $matches['attr'] . '=' . $matches[2] . $prefix . $matches['path'],
+            $html,
+        ) ?? $html;
+
+        $html = preg_replace_callback(
+            "#url\\((['\"]?)/(assets/[^)'\"]+)(\\1)\\)#",
+            static fn (array $matches): string => 'url(' . $matches[1] . $prefix . $matches[2] . $matches[3] . ')',
+            $html,
+        ) ?? $html;
+
+        $html = preg_replace_callback(
+            "#url\\((['\"]?)/(uploads/[^)'\"]+)(\\1)\\)#",
+            static fn (array $matches): string => 'url(' . $matches[1] . $prefix . $matches[2] . $matches[3] . ')',
+            $html,
+        ) ?? $html;
+
+        return $html;
+    }
+
+    /**
+     * @throws \RuntimeException
+     */
+    private function writeHtaccess(string $outputDir, string $basePath): void
+    {
+        $path = $outputDir . '/.htaccess';
+        if (file_put_contents($path, StaticExportHtaccess::content($basePath)) === false) {
+            throw new \RuntimeException('Impossible d\'écrire : ' . $path);
+        }
     }
 
     /**

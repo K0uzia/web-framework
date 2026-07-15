@@ -1,9 +1,5 @@
 /* Feature 13 : cartes horizontales avec vignette */
 
-.section-features--feature13 {
-    background: var(--color-background, #fff);
-}
-
 .section-features--feature13 .section-features__title-wrap {
     max-width: 64rem;
     margin: 0 auto 2.25rem;
@@ -24,7 +20,7 @@
     line-height: 1.1;
     letter-spacing: -0.025em;
     text-align: center;
-    color: var(--color-text, #0f172a);
+    color: var(--color-text);
     text-wrap: balance;
 }
 
@@ -49,7 +45,7 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    background: var(--color-muted, #f1f5f9);
+    background: var(--color-muted);
     border-radius: 0.5rem;
     overflow: hidden;
 }
@@ -58,7 +54,7 @@
     display: flex;
     justify-content: space-between;
     gap: 2.5rem;
-    border-bottom: 1px solid var(--color-border, #e2e8f0);
+    border-bottom: 1px solid var(--color-border);
 }
 
 .section-features--feature13 .section-features__card-copy {
@@ -85,7 +81,7 @@
 .section-features--feature13 .section-features__card-label {
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     font-size: 0.75rem;
-    color: var(--color-text-muted, #64748b);
+    color: var(--color-text-muted);
 }
 
 .section-features--feature13 .section-features__card-title-link {
@@ -121,7 +117,7 @@
 .section-features--feature13 .section-features__card-thumb {
     flex-shrink: 0;
     width: 40%;
-    border-left: 1px solid var(--color-border, #e2e8f0);
+    border-left: 1px solid var(--color-border);
     border-top-right-radius: 0.5rem;
 }
 
@@ -156,7 +152,7 @@
     padding: 1rem;
     font-size: 0.875rem;
     line-height: 1.6;
-    color: var(--color-text-muted, #64748b);
+    color: var(--color-text-muted);
 }
 
 @media (min-width: 768px) {

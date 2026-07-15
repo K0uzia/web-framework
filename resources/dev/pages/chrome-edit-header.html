@@ -22,149 +22,196 @@
     </div>
 
     <div class="dev-builder dev-builder--site">
-        <form method="post" action="/dev/chrome/header" class="dev-form dev-stack dev-stack--lg" id="chrome-variant-form" hx-post="/dev/chrome/header" hx-trigger="change, input delay:400ms" hx-target="#chrome-variant-status" hx-swap="innerHTML" data-dev-toast-form="En-tête enregistré">
+        <form method="post" action="/dev/chrome/header" class="dev-form dev-chrome-editor" id="chrome-variant-form" hx-post="/dev/chrome/header" hx-trigger="change, input delay:400ms" hx-target="#chrome-variant-status" hx-swap="innerHTML" data-dev-toast-form="En-tête enregistré">
             <input type="hidden" name="variant_id" value="{{variant_id}}" />
 
-            <div class="dev-panel">
-                <div class="dev-field">
-                    <label class="dev-label" for="chrome_variant_name">Nom de la variante</label>
-                    <input class="dev-input" id="chrome_variant_name" type="text" name="variant_name" value="{{variant_name}}" />
+            <section class="dev-chrome-section" aria-labelledby="chrome-section-settings">
+                <h2 class="dev-chrome-section__label" id="chrome-section-settings">Paramètres</h2>
+                <div class="dev-panel dev-panel--compact">
+                    <div class="dev-chrome-meta-grid">
+                        <div class="dev-field">
+                            <label class="dev-label" for="chrome_variant_name">Nom de la variante</label>
+                            <input class="dev-input" id="chrome_variant_name" type="text" name="variant_name" value="{{variant_name}}" />
+                        </div>
+                        <div class="dev-field">
+                            <label class="dev-label" for="chrome_header_bg">Couleur de fond</label>
+                            <select class="dev-input dev-select" id="chrome_header_bg" name="appearance_bg">
+                                {{{header_bg_options}}}
+                            </select>
+                            <span class="dev-hint">« Thème » : couleur En-tête dans Thème.</span>
+                        </div>
+                    </div>
+                    <div class="dev-setting-row dev-setting-row--compact">
+                        <div class="dev-setting-row__text">
+                            <span class="dev-setting-row__title">Bordure inférieure</span>
+                            <span class="dev-setting-row__desc">Séparateur sous l'en-tête.</span>
+                        </div>
+                        <label class="dev-switch">
+                            <input type="hidden" name="show_border" value="0" />
+                            <input type="checkbox" name="show_border" value="1" {{show_border_checked}} />
+                            <span class="dev-switch__track" aria-hidden="true"></span>
+                            <span class="visually-hidden">Afficher la bordure de l'en-tête</span>
+                        </label>
+                    </div>
                 </div>
-            </div>
+            </section>
 
-            <div class="dev-panel dev-chrome-element">
-                <div class="dev-chrome-element__head">
-                    <h2 class="dev-chrome-element__title"><i class="fa-solid fa-signature" aria-hidden="true"></i> Logo &amp; titre</h2>
-                    <div class="dev-field dev-chrome-element__zone">
-                        <label class="dev-label" for="chrome_zone_brand">Emplacement</label>
-                        <select class="dev-input dev-select dev-select--sm" id="chrome_zone_brand" name="zone_brand">
-                            {{{zone_brand_options}}}
-                        </select>
-                    </div>
-                </div>
-                <div class="dev-setting-row">
-                    <div class="dev-setting-row__text"><span class="dev-setting-row__title">Afficher le logo</span><span class="dev-setting-row__desc">Logo importé dans Site, onglet Identité.</span></div>
-                    <label class="dev-switch">
-                        <input type="hidden" name="brand_show_logo" value="0" />
-                        <input type="checkbox" name="brand_show_logo" value="1" {{brand_show_logo_checked}} />
-                        <span class="dev-switch__track" aria-hidden="true"></span>
-                        <span class="visually-hidden">Afficher le logo</span>
-                    </label>
-                </div>
-                <div class="dev-setting-row">
-                    <div class="dev-setting-row__text"><span class="dev-setting-row__title">Afficher le nom du site</span></div>
-                    <label class="dev-switch">
-                        <input type="hidden" name="brand_show_name" value="0" />
-                        <input type="checkbox" name="brand_show_name" value="1" {{brand_show_name_checked}} />
-                        <span class="dev-switch__track" aria-hidden="true"></span>
-                        <span class="visually-hidden">Afficher le nom du site</span>
-                    </label>
-                </div>
-                <div class="dev-setting-row">
-                    <div class="dev-setting-row__text"><span class="dev-setting-row__title">Afficher l'accroche</span><span class="dev-setting-row__desc">Sous le nom, dans l'en-tête.</span></div>
-                    <label class="dev-switch">
-                        <input type="hidden" name="brand_show_tagline" value="0" />
-                        <input type="checkbox" name="brand_show_tagline" value="1" {{brand_show_tagline_checked}} />
-                        <span class="dev-switch__track" aria-hidden="true"></span>
-                        <span class="visually-hidden">Afficher l'accroche</span>
-                    </label>
-                </div>
-            </div>
+            <section class="dev-chrome-section" aria-labelledby="chrome-section-content">
+                <h2 class="dev-chrome-section__label" id="chrome-section-content">Contenu</h2>
+                <div class="dev-panel dev-panel--compact">
+                    {{{chrome_identity_panel_html}}}
 
-            <div class="dev-panel dev-chrome-element">
-                <div class="dev-chrome-element__head">
-                    <h2 class="dev-chrome-element__title"><i class="fa-solid fa-bars" aria-hidden="true"></i> Navigation</h2>
-                    <div class="dev-field dev-chrome-element__zone">
-                        <label class="dev-label" for="chrome_zone_nav">Emplacement</label>
-                        <select class="dev-input dev-select dev-select--sm" id="chrome_zone_nav" name="zone_nav">
-                            {{{zone_nav_options}}}
-                        </select>
+                    <div class="dev-chrome-block dev-chrome-block--bordered">
+                        <div class="dev-chrome-inline-head">
+                            <h3 class="dev-chrome-block__title"><i class="fa-solid fa-signature" aria-hidden="true"></i> Marque</h3>
+                            <div class="dev-chrome-element__zone">
+                                <label class="dev-label" for="chrome_zone_brand">Zone</label>
+                                <select class="dev-input dev-select dev-select--sm" id="chrome_zone_brand" name="zone_brand">
+                                    {{{zone_brand_options}}}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="dev-chrome-toggle-grid">
+                            <div class="dev-setting-row dev-setting-row--compact">
+                                <div class="dev-setting-row__text"><span class="dev-setting-row__title">Logo</span></div>
+                                <label class="dev-switch dev-switch--sm">
+                                    <input type="hidden" name="brand_show_logo" value="0" />
+                                    <input type="checkbox" name="brand_show_logo" value="1" {{brand_show_logo_checked}} />
+                                    <span class="dev-switch__track" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Afficher le logo</span>
+                                </label>
+                            </div>
+                            <div class="dev-setting-row dev-setting-row--compact">
+                                <div class="dev-setting-row__text"><span class="dev-setting-row__title">Nom du site</span></div>
+                                <label class="dev-switch dev-switch--sm">
+                                    <input type="hidden" name="brand_show_name" value="0" />
+                                    <input type="checkbox" name="brand_show_name" value="1" {{brand_show_name_checked}} />
+                                    <span class="dev-switch__track" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Afficher le nom du site</span>
+                                </label>
+                            </div>
+                            <div class="dev-setting-row dev-setting-row--compact">
+                                <div class="dev-setting-row__text"><span class="dev-setting-row__title">Accroche</span></div>
+                                <label class="dev-switch dev-switch--sm">
+                                    <input type="hidden" name="brand_show_tagline" value="0" />
+                                    <input type="checkbox" name="brand_show_tagline" value="1" {{brand_show_tagline_checked}} />
+                                    <span class="dev-switch__track" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Afficher l'accroche</span>
+                                </label>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="dev-setting-row">
-                    <div class="dev-setting-row__text"><span class="dev-setting-row__title">Afficher la navigation</span><span class="dev-setting-row__desc">Liens gérés dans Site, onglet Navigation.</span></div>
-                    <label class="dev-switch">
-                        <input type="hidden" name="nav_visible" value="0" />
-                        <input type="checkbox" name="nav_visible" value="1" {{nav_visible_checked}} />
-                        <span class="dev-switch__track" aria-hidden="true"></span>
-                        <span class="visually-hidden">Afficher la navigation</span>
-                    </label>
-                </div>
-            </div>
+            </section>
 
-            <div class="dev-panel dev-chrome-element">
-                <div class="dev-chrome-element__head">
-                    <h2 class="dev-chrome-element__title"><i class="fa-solid fa-bullhorn" aria-hidden="true"></i> Bouton d'action</h2>
-                    <div class="dev-field dev-chrome-element__zone">
-                        <label class="dev-label" for="chrome_zone_cta">Emplacement</label>
-                        <select class="dev-input dev-select dev-select--sm" id="chrome_zone_cta" name="zone_cta">
-                            {{{zone_cta_options}}}
-                        </select>
+            <section class="dev-chrome-section" aria-labelledby="chrome-section-nav">
+                <h2 class="dev-chrome-section__label" id="chrome-section-nav">Navigation</h2>
+                <div class="dev-panel dev-panel--compact">
+                    <div class="dev-chrome-inline-head">
+                        <h3 class="dev-chrome-block__title"><i class="fa-solid fa-bars" aria-hidden="true"></i> Menu</h3>
+                        <div class="dev-chrome-inline-head__controls">
+                            <div class="dev-chrome-element__zone">
+                                <label class="dev-label" for="chrome_zone_nav">Zone</label>
+                                <select class="dev-input dev-select dev-select--sm" id="chrome_zone_nav" name="zone_nav">
+                                    {{{zone_nav_options}}}
+                                </select>
+                            </div>
+                            <label class="dev-switch dev-switch--sm" title="Afficher la navigation">
+                                <input type="hidden" name="nav_visible" value="0" />
+                                <input type="checkbox" name="nav_visible" value="1" {{nav_visible_checked}} />
+                                <span class="dev-switch__track" aria-hidden="true"></span>
+                                <span class="visually-hidden">Afficher la navigation</span>
+                            </label>
+                        </div>
                     </div>
+                    {{{chrome_nav_section_html}}}
                 </div>
-                <div class="dev-setting-row">
-                    <div class="dev-setting-row__text"><span class="dev-setting-row__title">Afficher le bouton</span></div>
-                    <label class="dev-switch">
-                        <input type="hidden" name="cta_enabled" value="0" />
-                        <input type="checkbox" name="cta_enabled" value="1" {{cta_enabled_checked}} />
-                        <span class="dev-switch__track" aria-hidden="true"></span>
-                        <span class="visually-hidden">Afficher le bouton</span>
-                    </label>
-                </div>
-                <div class="dev-form--grid dev-form--grid-2">
-                    <div class="dev-field">
-                        <label class="dev-label" for="chrome_cta_label">Libellé</label>
-                        <input class="dev-input" id="chrome_cta_label" type="text" name="cta_label" value="{{cta_label}}" />
-                    </div>
-                    <div class="dev-field">
-                        <label class="dev-label" for="chrome_cta_style">Style du bouton</label>
-                        <select class="dev-input dev-select" id="chrome_cta_style" name="cta_style">
-                            {{{cta_style_options}}}
-                        </select>
-                    </div>
-                    <div class="dev-field dev-form__full">
-                        <label class="dev-label" for="header_cta_href">Lien</label>
-                        {{{cta_target_html}}}
-                    </div>
-                </div>
-            </div>
+            </section>
 
-            <div class="dev-panel dev-chrome-element">
-                <div class="dev-chrome-element__head">
-                    <h2 class="dev-chrome-element__title"><i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i> Bouton de connexion</h2>
-                    <div class="dev-field dev-chrome-element__zone">
-                        <label class="dev-label" for="chrome_zone_login">Emplacement</label>
-                        <select class="dev-input dev-select dev-select--sm" id="chrome_zone_login" name="zone_login">
-                            {{{zone_login_options}}}
-                        </select>
+            <section class="dev-chrome-section" aria-labelledby="chrome-section-actions">
+                <h2 class="dev-chrome-section__label" id="chrome-section-actions">Boutons</h2>
+                <div class="dev-chrome-actions">
+                    <div class="dev-panel dev-panel--compact dev-chrome-action">
+                        <div class="dev-chrome-inline-head">
+                            <h3 class="dev-chrome-block__title"><i class="fa-solid fa-bullhorn" aria-hidden="true"></i> Action</h3>
+                            <div class="dev-chrome-inline-head__controls">
+                                <div class="dev-chrome-element__zone">
+                                    <label class="dev-label" for="chrome_zone_cta">Zone</label>
+                                    <select class="dev-input dev-select dev-select--sm" id="chrome_zone_cta" name="zone_cta">
+                                        {{{zone_cta_options}}}
+                                    </select>
+                                </div>
+                                <label class="dev-switch dev-switch--sm" title="Afficher le bouton">
+                                    <input type="hidden" name="cta_enabled" value="0" />
+                                    <input type="checkbox" name="cta_enabled" value="1" {{cta_enabled_checked}} />
+                                    <span class="dev-switch__track" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Afficher le bouton</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="dev-form--grid dev-form--grid-2 dev-chrome-fields">
+                            <div class="dev-field">
+                                <label class="dev-label" for="chrome_cta_label">Libellé</label>
+                                <input class="dev-input dev-input--sm" id="chrome_cta_label" type="text" name="cta_label" value="{{cta_label}}" />
+                            </div>
+                            <div class="dev-field">
+                                <label class="dev-label" for="chrome_cta_style">Style</label>
+                                <select class="dev-input dev-select dev-input--sm" id="chrome_cta_style" name="cta_style">
+                                    {{{cta_style_options}}}
+                                </select>
+                            </div>
+                            <div class="dev-field dev-form__full">
+                                <label class="dev-label" for="header_cta_href">Lien</label>
+                                {{{cta_target_html}}}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dev-panel dev-panel--compact dev-chrome-action">
+                        <div class="dev-chrome-inline-head">
+                            <h3 class="dev-chrome-block__title"><i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i> Connexion</h3>
+                            <div class="dev-chrome-inline-head__controls">
+                                <div class="dev-chrome-element__zone">
+                                    <label class="dev-label" for="chrome_zone_login">Zone</label>
+                                    <select class="dev-input dev-select dev-select--sm" id="chrome_zone_login" name="zone_login">
+                                        {{{zone_login_options}}}
+                                    </select>
+                                </div>
+                                <label class="dev-switch dev-switch--sm" title="Afficher le lien de connexion">
+                                    <input type="hidden" name="login_enabled" value="0" />
+                                    <input type="checkbox" name="login_enabled" value="1" {{login_enabled_checked}} />
+                                    <span class="dev-switch__track" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Afficher le lien de connexion</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="dev-form--grid dev-form--grid-2 dev-chrome-fields">
+                            <div class="dev-field">
+                                <label class="dev-label" for="chrome_login_label">Libellé</label>
+                                <input class="dev-input dev-input--sm" id="chrome_login_label" type="text" name="login_label" value="{{login_label}}" />
+                            </div>
+                            <div class="dev-field">
+                                <label class="dev-label" for="chrome_login_style">Style</label>
+                                <select class="dev-input dev-select dev-input--sm" id="chrome_login_style" name="login_style">
+                                    {{{login_style_options}}}
+                                </select>
+                            </div>
+                            <div class="dev-field">
+                                <label class="dev-label" for="chrome_login_display">Affichage</label>
+                                <select class="dev-input dev-select dev-input--sm" id="chrome_login_display" name="login_display" data-login-display-select>
+                                    {{{login_display_options}}}
+                                </select>
+                            </div>
+                            {{{login_block_picker_html}}}
+                            <div class="dev-field dev-form__full" data-login-href-field>
+                                <label class="dev-label" for="header_login_href">Lien</label>
+                                {{{login_target_html}}}
+                                <span class="dev-hint">Page dédiée ou repli si modal sans bloc.</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="dev-setting-row">
-                    <div class="dev-setting-row__text"><span class="dev-setting-row__title">Afficher le lien de connexion</span><span class="dev-setting-row__desc">Pointez-le vers votre page ou service de connexion.</span></div>
-                    <label class="dev-switch">
-                        <input type="hidden" name="login_enabled" value="0" />
-                        <input type="checkbox" name="login_enabled" value="1" {{login_enabled_checked}} />
-                        <span class="dev-switch__track" aria-hidden="true"></span>
-                        <span class="visually-hidden">Afficher le lien de connexion</span>
-                    </label>
-                </div>
-                <div class="dev-form--grid dev-form--grid-2">
-                    <div class="dev-field">
-                        <label class="dev-label" for="chrome_login_label">Libellé</label>
-                        <input class="dev-input" id="chrome_login_label" type="text" name="login_label" value="{{login_label}}" />
-                    </div>
-                    <div class="dev-field">
-                        <label class="dev-label" for="chrome_login_style">Style du bouton</label>
-                        <select class="dev-input dev-select" id="chrome_login_style" name="login_style">
-                            {{{login_style_options}}}
-                        </select>
-                    </div>
-                    <div class="dev-field dev-form__full">
-                        <label class="dev-label" for="header_login_href">Lien</label>
-                        {{{login_target_html}}}
-                    </div>
-                </div>
-            </div>
+            </section>
         </form>
 
         <div class="dev-builder__preview">
