@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>{{title}} - {{site_name}}</title>
+    <script>window.CapsuleBasePath={{{base_path_json}}};</script>
+    <script src="{{asset_root}}/assets/js/dev-base-path.js"></script>
+    <link rel="icon" href="{{favicon_href}}" type="image/png" />
+    <link rel="stylesheet" href="{{asset_root}}/assets/vendor/fontawesome/css/all.min.css" />
+    <link rel="stylesheet" href="{{asset_root}}/assets/css/admin.css" />
+    {{{theme_css}}}
+</head>
+<body class="admin-shell admin-shell--auth">
+    <main class="admin-auth">
+        {{{content}}}
+    </main>
+</body>
+</html>

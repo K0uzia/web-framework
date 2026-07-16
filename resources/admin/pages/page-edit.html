@@ -1,0 +1,35 @@
+<div class="admin-page">
+    <header class="admin-page__head">
+        <p class="admin-breadcrumb">
+            <a href="/admin/pages">Pages</a>
+            <span aria-hidden="true">/</span>
+            <span>Modifier</span>
+        </p>
+        <h1>{{page_title}}</h1>
+        <p class="admin-lead"><code>{{page_path}}</code> · {{sections_count}} section(s) · {{fields_count}} champ(s).</p>
+    </header>
+
+    <p class="admin-flash" role="status">{{flash}}</p>
+
+    <form
+        class="admin-form admin-edit-form"
+        method="post"
+        action="{{form_action}}"
+        toolname="admin_update_page"
+        tooldescription="Enregistre le contenu autorisé de cette page pour le client final."
+    >
+        {{{form_fields_html}}}
+        {{{medias_hint_html}}}
+        <div class="admin-actions">
+            <button type="submit" class="admin-button admin-button--primary">
+                <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i> Enregistrer
+            </button>
+            <a class="admin-button admin-button--ghost" href="{{page_path}}" target="_blank" rel="noopener noreferrer">
+                <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i> Voir cette page
+            </a>
+            <a class="admin-button admin-button--ghost" href="/admin/pages">
+                <i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Retour aux pages
+            </a>
+        </div>
+    </form>
+</div>

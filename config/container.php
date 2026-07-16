@@ -3,9 +3,16 @@
 declare(strict_types=1);
 
 use App\Http\LoginPageController;
+use App\Http\Admin\AuthController as AdminAuthController;
+use App\Http\Admin\HomeController as AdminHomeController;
+use App\Http\Admin\MediasController as AdminMediasController;
+use App\Http\Admin\PageEditContentApplier;
+use App\Http\Admin\PageEditFormRenderer;
+use App\Http\Admin\PagesController as AdminPagesController;
 use App\Http\Dev\ExportController;
 use App\Http\Dev\AuthController;
 use App\Http\Dev\ChromeController;
+use App\Http\Dev\ClientDashboardController;
 use App\Http\Dev\MediaController;
 use App\Http\Dev\FontUploader;
 use App\Http\Dev\LibraryMediaUploader;
@@ -21,12 +28,14 @@ use App\Http\Dev\SiteNavFormRenderer;
 use App\Http\Dev\ThemeController;
 use App\Http\Dev\VideoImportController;
 use App\Http\HealthController;
+use Capsule\AdminDashboard;
 use Capsule\BasePath;
 use Capsule\Container;
 use Capsule\Database;
 use Capsule\DevDashboard;
 use Capsule\Http\Factory\ResponseFactory;
 use Capsule\Middleware\BasePathMiddleware;
+use Capsule\Middleware\ClientAuth;
 use Capsule\Middleware\DevAuth;
 use Capsule\Middleware\ErrorBoundary;
 use Capsule\Middleware\SecurityHeaders;
@@ -74,7 +83,7 @@ return (function (): Container {
     $root = dirname(__DIR__);
     $resources = $root . '/resources';
 
-    /** @var array{is_dev:bool,https:bool,app_name:string,base_url:string,password_min_length:int,dev_password:string} $appConfig */
+    /** @var array{is_dev:bool,https:bool,app_name:string,base_url:string,password_min_length:int,dev_password:string,client_password:string} $appConfig */
     $appConfig = require __DIR__ . '/app.php';
 
     $c->set('config', static fn () => $appConfig);
@@ -196,10 +205,50 @@ return (function (): Container {
         $c->get(BasePath::class),
         $root . '/public/assets/css',
     ));
+    $c->set(AdminDashboard::class, static fn (Container $c) => new AdminDashboard(
+        $resources . '/admin',
+        $c->get(ResponseFactory::class),
+        $c->get(SiteRepository::class),
+        $c->get(BasePath::class),
+        $root . '/public/assets/css',
+    ));
     $c->set(AuthController::class, static fn (Container $c) => new AuthController(
         $c->get(DevDashboard::class),
         $c->get(ResponseFactory::class),
         $appConfig['dev_password'],
+    ));
+    $c->set(AdminAuthController::class, static fn (Container $c) => new AdminAuthController(
+        $c->get(AdminDashboard::class),
+        $c->get(ResponseFactory::class),
+        $appConfig['client_password'],
+    ));
+    $c->set(AdminHomeController::class, static fn (Container $c) => new AdminHomeController(
+        $c->get(AdminDashboard::class),
+    ));
+    $c->set(PageEditFormRenderer::class, static fn (Container $c) => new PageEditFormRenderer(
+        $c->get(SectionRegistry::class),
+        $c->get(SectionFieldSchema::class),
+        $c->get(MediaLibrary::class),
+        $c->get(MediaRepository::class),
+    ));
+    $c->set(PageEditContentApplier::class, static fn (Container $c) => new PageEditContentApplier(
+        $c->get(SectionFieldSchema::class),
+    ));
+    $c->set(AdminPagesController::class, static fn (Container $c) => new AdminPagesController(
+        $c->get(AdminDashboard::class),
+        $c->get(SiteRepository::class),
+        $c->get(PageRepository::class),
+        $c->get(PageEditFormRenderer::class),
+        $c->get(PageEditContentApplier::class),
+    ));
+    $c->set(AdminMediasController::class, static fn (Container $c) => new AdminMediasController(
+        $c->get(AdminDashboard::class),
+        $c->get(SiteRepository::class),
+        $c->get(MediaRepository::class),
+        $c->get(MediaLibrary::class),
+        $c->get(LibraryMediaUploader::class),
+        $c->get(MediaUsageScanner::class),
+        $root . '/public',
     ));
     $c->set(MediaRepository::class, static fn (Container $c) => new MediaRepository(
         $c->get(Database::class)->pdo(),
@@ -347,6 +396,13 @@ return (function (): Container {
         $c->get(FontUploader::class),
         $root . '/public/assets/css',
     ));
+    $c->set(ClientDashboardController::class, static fn (Container $c) => new ClientDashboardController(
+        $c->get(DevDashboard::class),
+        $c->get(SiteRepository::class),
+        $c->get(PageRepository::class),
+        $c->get(SectionRegistry::class),
+        $c->get(SectionFieldSchema::class),
+    ));
     $c->set(ThemePreviewRenderer::class, static fn (Container $c) => new ThemePreviewRenderer(
         $c->get(ResponseFactory::class),
         $c->get(View::class),
@@ -423,6 +479,11 @@ return (function (): Container {
     $c->set(DevAuth::class, static fn (Container $c) => new DevAuth(
         $c->get(ResponseFactory::class),
         $appConfig['dev_password'],
+        $appConfig['is_dev'],
+    ));
+    $c->set(ClientAuth::class, static fn (Container $c) => new ClientAuth(
+        $c->get(ResponseFactory::class),
+        $appConfig['client_password'],
         $appConfig['is_dev'],
     ));
     $c->set(SecurityHeaders::class, static fn (Container $c) => new SecurityHeaders(

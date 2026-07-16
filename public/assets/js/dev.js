@@ -3662,6 +3662,94 @@
     });
 
     /* ---------------------------------------------------------------------
+     * Client dashboard permissions tree (cascade checkboxes)
+     * ------------------------------------------------------------------- */
+
+    function initPermTree(root) {
+        const tree = root.querySelector('[data-dev-perm-tree]');
+        if (!tree || tree.dataset.permInit === '1') {
+            return;
+        }
+        tree.dataset.permInit = '1';
+
+        tree.addEventListener('click', function (event) {
+            if (event.target.closest('[data-dev-perm-check]')) {
+                event.stopPropagation();
+            }
+        });
+
+        tree.addEventListener('change', function (event) {
+            const input = event.target;
+            if (!(input instanceof HTMLInputElement) || input.type !== 'checkbox') {
+                return;
+            }
+            const level = input.getAttribute('data-dev-perm-level');
+            if (!level) {
+                return;
+            }
+
+            if (level === 'page') {
+                const page = input.closest('[data-dev-perm-page]');
+                if (!page) {
+                    return;
+                }
+                page.querySelectorAll('input.dev-perm-check').forEach(function (cb) {
+                    if (cb !== input) {
+                        cb.checked = input.checked;
+                    }
+                });
+                if (input.checked) {
+                    page.open = true;
+                }
+                return;
+            }
+
+            if (level === 'section') {
+                const section = input.closest('[data-dev-perm-section]');
+                if (!section) {
+                    return;
+                }
+                section.querySelectorAll('input[data-dev-perm-level="field"]').forEach(function (cb) {
+                    cb.checked = input.checked;
+                });
+                if (input.checked) {
+                    section.open = true;
+                }
+                syncPageFromChildren(section.closest('[data-dev-perm-page]'));
+                return;
+            }
+
+            if (level === 'field') {
+                const section = input.closest('[data-dev-perm-section]');
+                if (section) {
+                    const fields = section.querySelectorAll('input[data-dev-perm-level="field"]');
+                    const sectionCb = section.querySelector('input[data-dev-perm-level="section"]');
+                    if (sectionCb) {
+                        sectionCb.checked = Array.prototype.some.call(fields, function (cb) {
+                            return cb.checked;
+                        });
+                    }
+                }
+                syncPageFromChildren(input.closest('[data-dev-perm-page]'));
+            }
+        });
+    }
+
+    function syncPageFromChildren(page) {
+        if (!page) {
+            return;
+        }
+        const pageCb = page.querySelector('input[data-dev-perm-level="page"]');
+        if (!pageCb) {
+            return;
+        }
+        const fields = page.querySelectorAll('input[data-dev-perm-level="field"]');
+        pageCb.checked = Array.prototype.some.call(fields, function (cb) {
+            return cb.checked;
+        });
+    }
+
+    /* ---------------------------------------------------------------------
      * Init on load
      * ------------------------------------------------------------------- */
 
@@ -3677,6 +3765,7 @@
         initVideoYoutubeImportModal();
         initMediaLibraryModal();
         initSiteMediaPickers(document);
+        initPermTree(document);
         showFlashToast();
         initExportBrowse(document);
         if (window.location.hash === '#new') {

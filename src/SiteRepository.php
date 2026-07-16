@@ -10,9 +10,46 @@ final class SiteRepository
 {
     private const THEME_KEY = 'theme';
     private const SITE_KEY = 'site';
+    private const CLIENT_DASHBOARD_KEY = 'client_dashboard';
 
     public function __construct(private readonly PDO $pdo)
     {
+    }
+
+    /**
+     * @return array{medias_enabled: bool, pages: array<string, array{sections: array<string, array{fields: list<string>}>}>}
+     */
+    public function getClientDashboard(): array
+    {
+        return ClientDashboardConfig::normalize(
+            $this->getJson(self::CLIENT_DASHBOARD_KEY, ClientDashboardConfig::empty()),
+        );
+    }
+
+    /**
+     * @param array<string, mixed> $config
+     */
+    public function setClientDashboard(array $config): void
+    {
+        $this->setJson(self::CLIENT_DASHBOARD_KEY, ClientDashboardConfig::normalize($config));
+    }
+
+    public function isClientPageEditable(string $slug): bool
+    {
+        return ClientDashboardConfig::isPageEditable($this->getClientDashboard(), $slug);
+    }
+
+    public function isClientMediasEnabled(): bool
+    {
+        return ClientDashboardConfig::isMediasEnabled($this->getClientDashboard());
+    }
+
+    /**
+     * @return list<string>
+     */
+    public function clientAllowedFields(string $slug, string $sectionId): array
+    {
+        return ClientDashboardConfig::allowedFields($this->getClientDashboard(), $slug, $sectionId);
     }
 
     /**

@@ -1,0 +1,17 @@
+<div class="admin-page">
+    <header class="admin-page__head">
+        <h1>Pages</h1>
+        <p class="admin-lead">Pages que vous pouvez modifier.</p>
+    </header>
+
+    <p class="admin-flash" role="status">{{flash}}</p>
+
+    <div class="admin-empty {{empty_class}}">
+        <p class="admin-empty__title">Aucune page à éditer</p>
+        <p class="admin-hint">Votre développeur doit autoriser des pages dans /dev → Dashboard client.</p>
+    </div>
+
+    <div class="{{list_class}}">
+        {{{pages_list_html}}}
+    </div>
+</div>

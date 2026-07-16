@@ -1,0 +1,18 @@
+<div class="admin-auth-card">
+    <div class="admin-auth-card__brand">
+        {{{logo_html}}}
+        <p class="admin-auth-card__site">{{site_name}}</p>
+    </div>
+    <h1>Connexion</h1>
+    <p class="admin-auth-card__lead">Espace client. Modifiez les contenus autorisés par votre équipe.</p>
+    <p class="admin-flash" role="status">{{flash}}</p>
+    <form method="post" action="/admin/login" class="admin-form">
+        <div class="admin-field">
+            <label class="admin-label" for="admin-password">Mot de passe</label>
+            <input class="admin-input" id="admin-password" type="password" name="password" autocomplete="current-password" placeholder="••••••••" required />
+        </div>
+        <button type="submit" class="admin-button admin-button--primary">
+            <i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i> Se connecter
+        </button>
+    </form>
+</div>

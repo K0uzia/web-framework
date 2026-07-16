@@ -1,0 +1,33 @@
+<div class="admin-page">
+    <header class="admin-page__head">
+        <h1>Médias</h1>
+        <p class="admin-lead">Images et vidéos du site. Utilisables ensuite dans l'édition des pages.</p>
+    </header>
+
+    <p class="admin-flash" role="status">{{flash}}</p>
+
+    <div class="admin-tabs" role="tablist" aria-label="Types de médias">
+        <a href="/admin/medias?tab=images" class="admin-tabs__tab {{tab_images_class}}" role="tab" aria-selected="{{tab_images_selected}}">Images ({{images_count}})</a>
+        <a href="/admin/medias?tab=videos" class="admin-tabs__tab {{tab_videos_class}}" role="tab" aria-selected="{{tab_videos_selected}}">Vidéos ({{videos_count}})</a>
+    </div>
+
+    <section class="admin-media-panel {{panel_images_class}}" aria-label="Images">
+        <form class="admin-upload" method="post" action="/admin/medias/upload?kind=image" enctype="multipart/form-data">
+            <label class="admin-button admin-button--primary">
+                <i class="fa-solid fa-upload" aria-hidden="true"></i> Importer une image
+                <input type="file" name="file" accept=".png,.jpg,.jpeg,.webp,.svg,image/png,image/jpeg,image/webp,image/svg+xml" class="visually-hidden" onchange="this.form.submit()" aria-label="Importer une image" />
+            </label>
+        </form>
+        {{{images_grid_html}}}
+    </section>
+
+    <section class="admin-media-panel {{panel_videos_class}}" aria-label="Vidéos">
+        <form class="admin-upload" method="post" action="/admin/medias/upload?kind=video" enctype="multipart/form-data">
+            <label class="admin-button admin-button--primary">
+                <i class="fa-solid fa-upload" aria-hidden="true"></i> Importer une vidéo
+                <input type="file" name="file" accept=".mp4,.webm,.ogg,video/mp4,video/webm,video/ogg" class="visually-hidden" onchange="this.form.submit()" aria-label="Importer une vidéo" />
+            </label>
+        </form>
+        {{{videos_grid_html}}}
+    </section>
+</div>

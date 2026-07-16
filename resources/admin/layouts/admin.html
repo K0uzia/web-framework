@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>{{title}} - {{site_name}}</title>
+    <script>window.CapsuleBasePath={{{base_path_json}}};</script>
+    <script src="{{asset_root}}/assets/js/dev-base-path.js"></script>
+    <link rel="icon" href="{{favicon_href}}" type="image/png" />
+    <link rel="stylesheet" href="{{asset_root}}/assets/vendor/fontawesome/css/all.min.css" />
+    <link rel="stylesheet" href="{{asset_root}}/assets/css/admin.css" />
+    {{{theme_css}}}
+</head>
+<body class="admin-shell">
+    <a class="admin-skip" href="#admin-main">Aller au contenu</a>
+    <div class="admin-app">
+        <aside class="admin-sidebar" aria-label="Navigation administrateur">
+            <a class="admin-brand admin-brand--sidebar" href="/admin/pages">
+                {{{logo_html}}}
+                <span class="admin-brand__text">
+                    <span class="admin-brand__name">{{site_name}}</span>
+                    <span class="admin-brand__role">Administration</span>
+                </span>
+            </a>
+            <nav class="admin-sidebar__nav">
+                <a href="/admin/pages" class="admin-sidebar__link {{nav_active_pages}}"{{{nav_aria_pages}}}>
+                    <i class="fa-solid fa-file-lines" aria-hidden="true"></i>
+                    <span>Pages</span>
+                </a>
+                <a href="/admin/medias" class="admin-sidebar__link {{nav_active_medias}} {{nav_medias_hidden}}"{{{nav_aria_medias}}}>
+                    <i class="fa-solid fa-photo-film" aria-hidden="true"></i>
+                    <span>Médias</span>
+                </a>
+                <a href="/" class="admin-sidebar__link" target="_blank" rel="noopener noreferrer">
+                    <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+                    <span>Voir le site</span>
+                </a>
+            </nav>
+            <div class="admin-sidebar__footer">
+                <form method="post" action="/admin/logout">
+                    <button type="submit" class="admin-sidebar__link admin-sidebar__link--button">
+                        <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
+                        <span>Déconnexion</span>
+                    </button>
+                </form>
+            </div>
+        </aside>
+        <div class="admin-workspace">
+            <main id="admin-main" class="admin-main">
+                {{{content}}}
+            </main>
+        </div>
+    </div>
+</body>
+</html>

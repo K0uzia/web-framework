@@ -129,12 +129,24 @@ final class SectionRegistry
             if (!is_array($field)) {
                 continue;
             }
-            if (($field['client_editable'] ?? false) === true) {
+            if ($this->isClientEditableFlag($field['client_editable'] ?? null)) {
                 $editable[$key] = $field;
             }
         }
 
         return $editable;
+    }
+
+    private function isClientEditableFlag(mixed $value): bool
+    {
+        if ($value === true || $value === 1) {
+            return true;
+        }
+        if (!is_string($value)) {
+            return false;
+        }
+
+        return in_array(strtolower(trim($value)), ['1', 'true', 'yes', 'on'], true);
     }
 
     /** @var list<string> */

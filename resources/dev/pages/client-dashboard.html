@@ -1,0 +1,38 @@
+<div class="dev-editor">
+    <div class="dev-page-head">
+        <div>
+            <h1><i class="fa-solid fa-user-pen" aria-hidden="true"></i> Dashboard client</h1>
+            <p class="dev-lead">Définissez ce que le client peut modifier dans /admin.</p>
+        </div>
+        <div class="dev-page-head__actions">
+            <p class="dev-section-form__status" id="client-dashboard-status" aria-live="polite"></p>
+        </div>
+    </div>
+
+    <form method="post" action="/dev/client-dashboard" id="client-dashboard-form"
+          class="dev-form dev-stack dev-stack--lg"
+          hx-post="/dev/client-dashboard"
+          hx-trigger="change delay:400ms"
+          hx-target="#client-dashboard-status"
+          hx-swap="innerHTML"
+          data-dev-toast-form="Permissions enregistrées">
+
+        <section class="dev-panel" aria-labelledby="client-medias-title">
+            <h2 class="dev-panel__title" id="client-medias-title">Médias</h2>
+            <p class="dev-panel__desc">Bibliothèque globale images et vidéos. Si activé, le client y accède depuis /admin/medias et lors de l'édition d'une page.</p>
+            <label class="dev-perm-switch">
+                <input type="checkbox" name="cd_medias" value="1"{{medias_checked}} />
+                <span class="dev-perm-switch__text">
+                    <strong>Autoriser la gestion des médias</strong>
+                    <span>Import, suppression et sélection dans les champs image / vidéo.</span>
+                </span>
+            </label>
+        </section>
+
+        <section class="dev-panel" aria-labelledby="client-pages-title">
+            <h2 class="dev-panel__title" id="client-pages-title">Pages et champs</h2>
+            <p class="dev-panel__desc">Cochez une page ou un bloc pour tout autoriser, ou ouvrez-le pour choisir champ par champ. La flèche déplie / replie.</p>
+            {{{tree_html}}}
+        </section>
+    </form>
+</div>

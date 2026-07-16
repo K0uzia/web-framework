@@ -30,6 +30,15 @@ DEV_PASSWORD=votre-mot-de-passe
 
 Sans `DEV_PASSWORD` en mode dev, `/dev` est accessible sans login.
 
+Optionnel pour l'espace client :
+
+```env
+CLIENT_PASSWORD=mot-de-passe-client
+```
+
+- **Espace client** : [http://localhost:8080/admin](http://localhost:8080/admin)
+- Sans `CLIENT_PASSWORD` en mode dev, `/admin` est accessible sans login.
+
 ## Créer un site complet (parcours)
 
 1. **Initialiser** — `make init` puis `make dev` ; ouvrir `/dev`.
@@ -77,8 +86,8 @@ migrations/          Schéma + seed site par défaut
 
 | URL | Rôle |
 |-----|------|
-| `/dev` | Développeur — structure, sections, variantes, thème |
-| `/admin` | *(phase 3)* Client — contenu seulement |
+| `/dev` | Développeur : structure, sections, variantes, thème, permissions client |
+| `/admin` | Client : identité du site + édition des champs autorisés (édition complète en étape 3) |
 
 ## Commandes utiles
 

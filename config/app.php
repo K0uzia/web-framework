@@ -24,4 +24,5 @@ return [
     })(),
     'password_min_length' => (int) ($_ENV['PASSWORD_MIN_LENGTH'] ?? 8),
     'dev_password' => $_ENV['DEV_PASSWORD'] ?? '',
+    'client_password' => $_ENV['CLIENT_PASSWORD'] ?? '',
 ];

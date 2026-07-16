@@ -349,4 +349,14 @@ final class SectionRegistryTest extends TestCase
         $this->assertArrayHasKey('tagline', $registry->getContentFields('waitlist'));
         $this->assertSame('waitlist', $registry->getGroup('waitlist'));
     }
+
+    public function testGetClientEditableFieldsReadsYamlTrueAsString(): void
+    {
+        $registry = new SectionRegistry(dirname(__DIR__) . '/resources/sections/registry.yaml');
+        $editable = $registry->getClientEditableFields('hero');
+
+        $this->assertArrayHasKey('title', $editable);
+        $this->assertArrayHasKey('subtitle', $editable);
+        $this->assertArrayNotHasKey('style', $editable);
+    }
 }

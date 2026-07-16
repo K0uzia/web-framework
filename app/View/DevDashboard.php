@@ -42,6 +42,7 @@ final class DevDashboard
                 str_starts_with($template, 'chrome') => 'chrome',
                 str_starts_with($template, 'site') => 'site',
                 str_starts_with($template, 'theme') => 'theme',
+                str_starts_with($template, 'client') => 'client',
                 str_starts_with($template, 'medias') => 'medias',
                 str_starts_with($template, 'video-imports') => 'video_imports',
                 str_starts_with($template, 'export') => 'export',
@@ -72,7 +73,7 @@ final class DevDashboard
      */
     public static function withNav(array $data, string $section): array
     {
-        foreach (['overview', 'pages', 'medias', 'site', 'chrome', 'theme', 'export'] as $key) {
+        foreach (['overview', 'pages', 'medias', 'site', 'chrome', 'theme', 'client', 'export'] as $key) {
             $active = $section === $key;
             $data['nav_active_' . $key] = $active ? 'is-active' : '';
             $data['nav_aria_' . $key] = $active ? ' aria-current="page"' : '';

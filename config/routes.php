@@ -3,9 +3,14 @@
 declare(strict_types=1);
 
 use App\Http\LoginPageController;
+use App\Http\Admin\AuthController as AdminAuthController;
+use App\Http\Admin\HomeController as AdminHomeController;
+use App\Http\Admin\MediasController as AdminMediasController;
+use App\Http\Admin\PagesController as AdminPagesController;
 use App\Http\Dev\ExportController;
 use App\Http\Dev\AuthController;
 use App\Http\Dev\ChromeController;
+use App\Http\Dev\ClientDashboardController;
 use App\Http\Dev\MediaController;
 use App\Http\Dev\MediasController;
 use App\Http\Dev\OverviewController;
@@ -76,6 +81,8 @@ $devRoutes = [
     'POST /dev/theme/reset' => [ThemeController::class, 'reset'],
     'POST /dev/theme/fonts' => [ThemeController::class, 'uploadFont'],
     'POST /dev/theme/fonts/{id}/remove' => [ThemeController::class, 'removeFont'],
+    'GET /dev/client-dashboard' => [ClientDashboardController::class, 'edit'],
+    'POST /dev/client-dashboard' => [ClientDashboardController::class, 'update'],
     'GET /dev/export' => [ExportController::class, 'index'],
     'GET /dev/export/browse' => [ExportController::class, 'browse'],
     'POST /dev/export' => [ExportController::class, 'export'],
@@ -83,6 +90,17 @@ $devRoutes = [
 ];
 
 return array_merge($devRoutes, [
+    'GET /admin' => [AdminAuthController::class, 'loginForm'],
+    'GET /admin/login' => [AdminAuthController::class, 'loginForm'],
+    'POST /admin/login' => [AdminAuthController::class, 'login'],
+    'POST /admin/logout' => [AdminAuthController::class, 'logout'],
+    'GET /admin/home' => [AdminHomeController::class, 'index'],
+    'GET /admin/pages' => [AdminPagesController::class, 'index'],
+    'GET /admin/pages/{slug}' => [AdminPagesController::class, 'edit'],
+    'POST /admin/pages/{slug}' => [AdminPagesController::class, 'update'],
+    'GET /admin/medias' => [AdminMediasController::class, 'index'],
+    'POST /admin/medias/upload' => [AdminMediasController::class, 'upload'],
+    'POST /admin/medias/{id}/delete' => [AdminMediasController::class, 'destroy'],
     'GET /login' => [LoginPageController::class, 'show'],
     'GET /api/health' => [HealthController::class, 'health'],
 ]);
