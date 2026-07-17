@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Dev;
 
+use Capsule\ProcessRunner;
+
 final class MediaUploadException extends \RuntimeException
 {
 }
@@ -11,8 +13,9 @@ final class MediaUploadException extends \RuntimeException
 /**
  * Gère l'upload et l'optimisation des visuels du site (logo, favicon, image de partage).
  *
- * Convertit automatiquement les images matricielles en WebP quand l'extension GD
- * est disponible (comportement standard des hébergements PHP en production).
+ * Convertit automatiquement les images matricielles (PNG/JPEG) en WebP :
+ * 1. via l'extension GD si disponible (cas typique en production) ;
+ * 2. sinon via ffmpeg (déjà requis pour les imports vidéo).
  * Le favicon est conservé dans son format d'origine (.ico, .png ou .svg).
  */
 class MediaUploader
@@ -48,10 +51,15 @@ class MediaUploader
         'image/jpeg' => true,
     ];
 
+    private readonly ProcessRunner $processes;
+
     public function __construct(
         private readonly string $uploadsDir,
         private readonly string $publicBasePath = '/uploads/site',
+        ?ProcessRunner $processes = null,
+        private readonly string $ffmpegBin = 'ffmpeg',
     ) {
+        $this->processes = $processes ?? new ProcessRunner();
     }
 
     /**
@@ -96,7 +104,7 @@ class MediaUploader
         };
         $shouldConvertToWebp = $field !== 'favicon'
             && $field !== 'library_video'
-            && ($this::CONVERTIBLE[$mime] ?? false)
+            && (self::CONVERTIBLE[$mime] ?? false)
             && $this->webpSupportAvailable();
 
         if (!is_dir($this->uploadsDir) && !mkdir($this->uploadsDir, 0775, true) && !is_dir($this->uploadsDir)) {
@@ -112,12 +120,39 @@ class MediaUploader
         $destination = $this->uploadsDir . '/' . $filename;
 
         if ($shouldConvertToWebp) {
-            $this->convertToWebp($tmpName, $destination, $mime);
+            $this->convertToWebp($tmpName, $destination);
+            @unlink($tmpName);
         } elseif (!move_uploaded_file($tmpName, $destination)) {
             throw new MediaUploadException('Impossible d\'enregistrer le fichier.');
         }
 
         return rtrim($this->publicBasePath, '/') . '/' . $filename;
+    }
+
+    /**
+     * Métadonnées du fichier réellement stocké (après conversion éventuelle).
+     *
+     * @return array{mime: string, size: int}
+     */
+    public function storedFileMeta(string $publicUrl, string $fallbackMime = '', int $fallbackSize = 0): array
+    {
+        $filename = basename($publicUrl);
+        $path = $this->uploadsDir . '/' . $filename;
+        $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+        $mime = match ($ext) {
+            'webp' => 'image/webp',
+            'png' => 'image/png',
+            'jpg', 'jpeg' => 'image/jpeg',
+            'svg' => 'image/svg+xml',
+            'ico' => 'image/x-icon',
+            'mp4' => 'video/mp4',
+            'webm' => 'video/webm',
+            'ogg' => 'video/ogg',
+            default => $fallbackMime,
+        };
+        $size = is_file($path) ? (int) filesize($path) : $fallbackSize;
+
+        return ['mime' => $mime, 'size' => $size];
     }
 
     public function isManagedUrl(string $url): bool
@@ -150,7 +185,7 @@ class MediaUploader
 
     public function webpSupportAvailable(): bool
     {
-        return function_exists('imagewebp') && function_exists('imagecreatefromstring');
+        return $this->gdWebpAvailable() || $this->ffmpegAvailable();
     }
 
     public function acceptAttribute(string $field): string
@@ -189,7 +224,28 @@ class MediaUploader
         return 'application/octet-stream';
     }
 
-    private function convertToWebp(string $sourcePath, string $destination, string $mime): void
+    private function convertToWebp(string $sourcePath, string $destination): void
+    {
+        if ($this->gdWebpAvailable()) {
+            try {
+                $this->convertToWebpWithGd($sourcePath, $destination);
+
+                return;
+            } catch (MediaUploadException) {
+                // Fallback ffmpeg si GD échoue sur un fichier particulier.
+            }
+        }
+
+        if ($this->ffmpegAvailable()) {
+            $this->convertToWebpWithFfmpeg($sourcePath, $destination);
+
+            return;
+        }
+
+        throw new MediaUploadException('Échec de la conversion WebP (GD et ffmpeg indisponibles).');
+    }
+
+    private function convertToWebpWithGd(string $sourcePath, string $destination): void
     {
         $data = file_get_contents($sourcePath);
         $image = $data !== false ? @imagecreatefromstring($data) : false;
@@ -208,5 +264,48 @@ class MediaUploader
         }
 
         imagedestroy($image);
+    }
+
+    private function convertToWebpWithFfmpeg(string $sourcePath, string $destination): void
+    {
+        if (is_file($destination)) {
+            @unlink($destination);
+        }
+
+        $result = $this->processes->run([
+            $this->resolveFfmpegBin(),
+            '-y',
+            '-i', $sourcePath,
+            '-c:v', 'libwebp',
+            '-quality', '82',
+            '-frames:v', '1',
+            $destination,
+        ], null, 120);
+
+        if (!$result->successful() || !is_file($destination) || filesize($destination) === 0) {
+            @unlink($destination);
+
+            throw new MediaUploadException('Échec de la conversion WebP.');
+        }
+    }
+
+    private function gdWebpAvailable(): bool
+    {
+        return function_exists('imagewebp') && function_exists('imagecreatefromstring');
+    }
+
+    private function ffmpegAvailable(): bool
+    {
+        return $this->processes->isExecutable($this->resolveFfmpegBin());
+    }
+
+    private function resolveFfmpegBin(): string
+    {
+        $fromEnv = $_ENV['VIDEO_IMPORT_FFMPEG_BIN'] ?? getenv('VIDEO_IMPORT_FFMPEG_BIN');
+        if (is_string($fromEnv) && $fromEnv !== '') {
+            return $fromEnv;
+        }
+
+        return $this->ffmpegBin;
     }
 }

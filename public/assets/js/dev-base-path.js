@@ -1,7 +1,13 @@
 (function () {
     'use strict';
 
-    var base = typeof window.CapsuleBasePath === 'string' ? window.CapsuleBasePath : '';
+    var meta = document.querySelector('meta[name="capsule-base-path"]');
+    var fromMeta = meta ? (meta.getAttribute('content') || '') : '';
+    var base = typeof window.CapsuleBasePath === 'string' && window.CapsuleBasePath !== ''
+        ? window.CapsuleBasePath
+        : fromMeta;
+
+    window.CapsuleBasePath = base;
 
     window.capsuleUrl = function (url) {
         if (!url || url.charAt(0) !== '/' || base === '') {

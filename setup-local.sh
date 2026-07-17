@@ -188,7 +188,7 @@ set -euo pipefail
 PORT="${PORT:-8080}"
 PHP_OPTS="-d display_errors=1 -d error_reporting=32767 -d zend.assertions=1 -d assert.exception=1"
 echo "→ http://localhost:$PORT"
-php $PHP_OPTS -S "localhost:${PORT}" -t public
+php $PHP_OPTS -S "localhost:${PORT}" -t public public/index.php
 BASH
         chmod +x "$dev"
         ok "Créé bin/dev"
@@ -257,7 +257,7 @@ case "$cmd" in
         need php
         [[ -d "$PUBLIC_DIR" ]] || die "$PUBLIC_DIR manquant"
         echo "🔌 Serveur dev → http://localhost:${PORT:-8080}  (CTRL+C pour arrêter)"
-        php -d display_errors=1 -d error_reporting=32767 -S "localhost:${PORT:-8080}" -t "$PUBLIC_DIR"
+        php -d display_errors=1 -d error_reporting=32767 -S "localhost:${PORT:-8080}" -t "$PUBLIC_DIR" "$PUBLIC_DIR/index.php"
         ;;
     db.shell)
         need sqlite3

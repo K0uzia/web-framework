@@ -116,6 +116,7 @@ final class VideoImportProcessor
             'video/mp4',
             $size,
             $title,
+            MediaRepository::OWNER_DEV,
         );
 
         $this->imports->update($id, [

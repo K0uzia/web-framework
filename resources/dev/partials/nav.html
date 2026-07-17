@@ -9,27 +9,51 @@
         <a href="/dev/overview" class="dev-nav__link {{nav_active_overview}}"{{{nav_aria_overview}}}>
             <i class="fa-solid fa-gauge-high" aria-hidden="true"></i><span>Tableau de bord</span>
         </a>
-        <a href="/dev/pages" class="dev-nav__link {{nav_active_pages}}"{{{nav_aria_pages}}}>
-            <i class="fa-solid fa-file-lines" aria-hidden="true"></i><span>Pages</span>
-        </a>
-        <a href="/dev/medias" class="dev-nav__link {{nav_active_medias}}"{{{nav_aria_medias}}}>
-            <i class="fa-solid fa-photo-film" aria-hidden="true"></i><span>Médias</span>
-        </a>
-        <a href="/dev/site" class="dev-nav__link {{nav_active_site}}"{{{nav_aria_site}}}>
-            <i class="fa-solid fa-globe" aria-hidden="true"></i><span>Site</span>
-        </a>
-        <a href="/dev/chrome" class="dev-nav__link {{nav_active_chrome}}"{{{nav_aria_chrome}}}>
-            <i class="fa-solid fa-table-columns" aria-hidden="true"></i><span>En-tête &amp; pied</span>
-        </a>
-        <a href="/dev/theme" class="dev-nav__link {{nav_active_theme}}"{{{nav_aria_theme}}}>
-            <i class="fa-solid fa-palette" aria-hidden="true"></i><span>Thème</span>
-        </a>
-        <a href="/dev/client-dashboard" class="dev-nav__link {{nav_active_client}}"{{{nav_aria_client}}}>
-            <i class="fa-solid fa-user-pen" aria-hidden="true"></i><span>Dashboard client</span>
-        </a>
-        <a href="/dev/export" class="dev-nav__link {{nav_active_export}}"{{{nav_aria_export}}}>
-            <i class="fa-solid fa-box-archive" aria-hidden="true"></i><span>Créer le site</span>
-        </a>
+
+        <p class="dev-nav__group" id="dev-nav-public-label">
+            <i class="fa-solid fa-globe" aria-hidden="true"></i>
+            <span>Pages publiques</span>
+        </p>
+        <div class="dev-nav__group-links" role="group" aria-labelledby="dev-nav-public-label">
+            <a href="/dev/pages" class="dev-nav__link {{nav_active_pages}}"{{{nav_aria_pages}}}>
+                <i class="fa-solid fa-file-lines" aria-hidden="true"></i><span>Pages</span>
+            </a>
+            <a href="/dev/medias" class="dev-nav__link {{nav_active_medias}}"{{{nav_aria_medias}}}>
+                <i class="fa-solid fa-photo-film" aria-hidden="true"></i><span>Médias</span>
+            </a>
+            <a href="/dev/site" class="dev-nav__link {{nav_active_site}}"{{{nav_aria_site}}}>
+                <i class="fa-solid fa-sitemap" aria-hidden="true"></i><span>Site</span>
+            </a>
+            <a href="/dev/chrome" class="dev-nav__link {{nav_active_chrome}}"{{{nav_aria_chrome}}}>
+                <i class="fa-solid fa-table-columns" aria-hidden="true"></i><span>En-tête &amp; pied</span>
+            </a>
+            <a href="/dev/theme" class="dev-nav__link {{nav_active_theme}}"{{{nav_aria_theme}}}>
+                <i class="fa-solid fa-palette" aria-hidden="true"></i><span>Thème</span>
+            </a>
+        </div>
+
+        <p class="dev-nav__group" id="dev-nav-client-label">
+            <i class="fa-solid fa-lock" aria-hidden="true"></i>
+            <span>Espace client</span>
+        </p>
+        <div class="dev-nav__group-links" role="group" aria-labelledby="dev-nav-client-label">
+            <a href="/dev/client-dashboard" class="dev-nav__link {{nav_active_client}}"{{{nav_aria_client}}}>
+                <i class="fa-solid fa-user-pen" aria-hidden="true"></i><span>Configuration client</span>
+            </a>
+            <a href="/admin" class="dev-nav__link" target="_blank" rel="noopener noreferrer">
+                <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i><span>Ouvrir /admin</span>
+            </a>
+        </div>
+
+        <p class="dev-nav__group" id="dev-nav-ship-label">
+            <i class="fa-solid fa-rocket" aria-hidden="true"></i>
+            <span>Livraison</span>
+        </p>
+        <div class="dev-nav__group-links" role="group" aria-labelledby="dev-nav-ship-label">
+            <a href="/dev/export" class="dev-nav__link {{nav_active_export}}"{{{nav_aria_export}}}>
+                <i class="fa-solid fa-box-archive" aria-hidden="true"></i><span>Créer le site</span>
+            </a>
+        </div>
     </div>
     <div class="dev-nav__footer">
         <a href="/" target="_blank" rel="noopener noreferrer" class="dev-nav__ghost-btn">

@@ -1,18 +1,40 @@
-<div class="admin-auth-card">
-    <div class="admin-auth-card__brand">
-        {{{logo_html}}}
-        <p class="admin-auth-card__site">{{site_name}}</p>
-    </div>
-    <h1>Connexion</h1>
-    <p class="admin-auth-card__lead">Espace client. Modifiez les contenus autorisés par votre équipe.</p>
-    <p class="admin-flash" role="status">{{flash}}</p>
-    <form method="post" action="/admin/login" class="admin-form">
-        <div class="admin-field">
-            <label class="admin-label" for="admin-password">Mot de passe</label>
-            <input class="admin-input" id="admin-password" type="password" name="password" autocomplete="current-password" placeholder="••••••••" required />
+<div class="admin-login">
+    <section class="admin-login__hero" aria-hidden="true">
+        <div class="admin-login__hero-inner">
+            {{{logo_html}}}
+            <p class="admin-login__hero-site">{{site_name}}</p>
+            <p class="admin-login__hero-tag">Gérez vos textes, images et pages en toute simplicité.</p>
         </div>
-        <button type="submit" class="admin-button admin-button--primary">
-            <i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i> Se connecter
-        </button>
-    </form>
+    </section>
+
+    <section class="admin-login__panel">
+        <div class="admin-login__card">
+            <div class="admin-login__mobile-brand">
+                {{{logo_html}}}
+                <p class="admin-login__site">{{site_name}}</p>
+            </div>
+            <h1 class="admin-login__title">Connexion</h1>
+            <p class="admin-login__lead">Accédez à l'espace d'édition de votre site.</p>
+
+            <div class="admin-alert {{flash_mod}} {{flash_hidden}}" role="status">{{flash}}</div>
+
+            <form method="post" action="/admin/login" class="admin-form" toolname="admin_login" tooldescription="Connecte le client à l'espace d'administration du site.">
+                <div class="admin-field">
+                    <label class="admin-label" for="admin-password">Mot de passe</label>
+                    <input
+                        class="admin-input admin-input--lg"
+                        id="admin-password"
+                        type="password"
+                        name="password"
+                        autocomplete="current-password"
+                        required
+                        toolparamdescription="Mot de passe de l'espace client"
+                    />
+                </div>
+                <button type="submit" class="admin-btn admin-btn--primary admin-btn--lg admin-btn--block">
+                    Se connecter
+                </button>
+            </form>
+        </div>
+    </section>
 </div>

@@ -48,6 +48,9 @@ final class PageEditContentApplier
                 continue;
             }
 
+            $defs = $this->fieldSchema->contentFieldsForVariant($type, $variant);
+            $allowed = \App\Http\Dev\Sections\ClientAccessKinds::resolveAllowedFields($defs, $allowed);
+
             $prefix = PageEditFormRenderer::fieldPrefix($sectionId);
             $sectionData = $this->extractPrefixed($formData, $prefix);
             if ($sectionData === []) {
@@ -92,11 +95,56 @@ final class PageEditContentApplier
     {
         $content = $existing;
         foreach ($allowed as $field) {
-            if (array_key_exists($field, $parsed)) {
-                $content[$field] = $parsed[$field];
+            if (!array_key_exists($field, $parsed)) {
+                continue;
             }
+            if (is_array($parsed[$field]) && $this->isAssocList($parsed[$field])) {
+                $previous = is_array($existing[$field] ?? null) ? array_values($existing[$field]) : [];
+                $content[$field] = $this->mergeRepeaterItems($previous, array_values($parsed[$field]));
+                continue;
+            }
+            $content[$field] = $parsed[$field];
         }
 
         return $content;
+    }
+
+    /**
+     * @param list<mixed> $items
+     */
+    private function isAssocList(array $items): bool
+    {
+        if ($items === []) {
+            return true;
+        }
+        foreach ($items as $item) {
+            if (!is_array($item)) {
+                return false;
+            }
+        }
+
+        return array_is_list($items) || array_keys($items) === range(0, count($items) - 1);
+    }
+
+    /**
+     * Conserve les sous-champs absents du POST (masqués selon la variante).
+     *
+     * @param list<array<string, mixed>> $existing
+     * @param list<array<string, mixed>> $parsed
+     *
+     * @return list<array<string, mixed>>
+     */
+    private function mergeRepeaterItems(array $existing, array $parsed): array
+    {
+        $out = [];
+        foreach ($parsed as $i => $item) {
+            if (!is_array($item)) {
+                continue;
+            }
+            $base = is_array($existing[$i] ?? null) ? $existing[$i] : [];
+            $out[] = array_merge($base, $item);
+        }
+
+        return $out;
     }
 }

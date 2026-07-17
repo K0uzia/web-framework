@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Dev;
 
 /**
- * Uploads vers la bibliothèque centralisée (/uploads/media).
+ * Uploads vers la bibliothèque développeur (/uploads/media).
  */
 final class LibraryMediaUploader extends MediaUploader
 {

@@ -14,8 +14,10 @@ use Capsule\PageRepository;
 use Capsule\Section\SectionFieldSchema;
 use Capsule\SectionRegistry;
 use Capsule\SiteRepository;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
+#[CoversClass(ClientDashboardController::class)]
 final class ClientDashboardControllerTest extends TestCase
 {
     private SiteRepository $site;
@@ -89,13 +91,18 @@ final class ClientDashboardControllerTest extends TestCase
     {
         $body = (string) $this->controller->edit(new Request('GET', '/dev/client-dashboard', [], [], [], []))->getBody();
 
-        $this->assertStringContainsString('Configuration Dashboard Client', $body);
+        $this->assertStringContainsString('Configuration du dashboard client', $body);
+        $this->assertStringContainsString('Espace client', $body);
+        $this->assertStringContainsString('Prêt', $body);
         $this->assertStringContainsString('Accueil', $body);
         $this->assertStringContainsString('Contact', $body);
         $this->assertStringContainsString('name="cd::hero-abc123:title"', $body);
         $this->assertStringContainsString('dev-perm-chevron', $body);
         $this->assertStringContainsString('cd_medias', $body);
-        $this->assertStringContainsString('href="/dev/client-dashboard"', $body);
+        $this->assertStringContainsString('cd_site', $body);
+        $this->assertStringContainsString('name="cd_site" value="1" checked', $body);
+        $this->assertStringContainsString('dev-cd__stats', $body);
+        $this->assertStringContainsString('Prévisualiser /admin', $body);
         $this->assertStringContainsString('dev-nav__link is-active', $body);
     }
 
@@ -152,7 +159,7 @@ final class ClientDashboardControllerTest extends TestCase
         $this->controller->update($this->post('/dev/client-dashboard', ''));
 
         $this->assertSame(
-            ['medias_enabled' => false, 'pages' => []],
+            ['medias_enabled' => false, 'site_enabled' => false, 'pages' => []],
             $this->site->getClientDashboard(),
         );
         $this->assertFalse($this->site->isClientPageEditable(''));

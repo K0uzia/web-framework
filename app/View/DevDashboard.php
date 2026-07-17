@@ -52,6 +52,7 @@ final class DevDashboard
         }
         $data = self::withNav($data, $section);
         $data['crumb_html'] ??= '';
+        $data['body_class'] = trim(($data['body_class'] ?? '') . ($section === 'client' ? ' dev-shell--client-space' : ''));
         $data['asset_root'] = $this->basePath?->value() ?? '';
         $data['theme_css'] = $this->themeCssMarkup($data['asset_root']);
         $data['base_path'] = $data['asset_root'];

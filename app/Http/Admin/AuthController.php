@@ -23,7 +23,7 @@ final class AuthController
     public function loginForm(Request $request): Response
     {
         if (($request->cookies['capsule_client'] ?? '') === '1') {
-            return $this->ui->redirect('/admin/pages');
+            return $this->ui->redirect('/admin/home');
         }
 
         return $this->ui->renderAuth('login.html', [
@@ -41,7 +41,7 @@ final class AuthController
             return $this->ui->withFlash($this->ui->redirect('/admin'), 'Mot de passe incorrect.');
         }
 
-        $response = $this->ui->redirect('/admin/pages');
+        $response = $this->ui->redirect('/admin/home');
 
         return $this->responses->withCookie($response, Cookie::create('capsule_client', '1', [
             'path' => '/',

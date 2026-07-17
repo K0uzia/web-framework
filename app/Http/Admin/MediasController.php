@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Admin;
 
-use App\Http\Dev\LibraryMediaUploader;
+use App\Http\Dev\ClientMediaUploader;
 use App\Http\Dev\MediaUploadException;
 use Capsule\AdminDashboard;
 use Capsule\ClientDashboardConfig;
@@ -22,7 +22,7 @@ final class MediasController
         private readonly SiteRepository $site,
         private readonly MediaRepository $media,
         private readonly MediaLibrary $library,
-        private readonly LibraryMediaUploader $libraryUploader,
+        private readonly ClientMediaUploader $clientUploader,
         private readonly MediaUsageScanner $usage,
         private readonly string $publicRoot,
     ) {
@@ -36,10 +36,10 @@ final class MediasController
         }
 
         $tab = ($request->query['tab'] ?? 'images') === 'videos' ? 'videos' : 'images';
-        $this->library->syncDiscoveredRecords('image');
-        $this->library->syncDiscoveredRecords('video');
-        $images = $this->clientOwnedRecords($this->media->all('image'));
-        $videos = $this->clientOwnedRecords($this->media->all('video'));
+        $this->library->syncClientRecords('image');
+        $this->library->syncClientRecords('video');
+        $images = $this->media->all('image', MediaRepository::OWNER_CLIENT);
+        $videos = $this->media->all('video', MediaRepository::OWNER_CLIENT);
 
         return $this->ui->render('medias-index.html', [
             'title' => 'Médias',
@@ -74,15 +74,22 @@ final class MediasController
                 throw new MediaUploadException('Aucun fichier reçu.');
             }
             $url = $kind === 'video'
-                ? $this->libraryUploader->storeVideo($file)
-                : $this->libraryUploader->storeImage($file);
+                ? $this->clientUploader->storeVideo($file)
+                : $this->clientUploader->storeImage($file);
             if ($this->media->findByUrl($url) === null) {
+                $meta = $this->clientUploader->storedFileMeta(
+                    $url,
+                    (string) ($file['type'] ?? ''),
+                    (int) ($file['size'] ?? 0),
+                );
                 $this->media->create(
                     $kind,
                     $url,
                     basename($url),
-                    (string) ($file['type'] ?? ''),
-                    (int) ($file['size'] ?? 0),
+                    $meta['mime'],
+                    $meta['size'],
+                    '',
+                    MediaRepository::OWNER_CLIENT,
                 );
             }
 
@@ -106,6 +113,12 @@ final class MediasController
         }
         $tab = $record['kind'] === 'video' ? 'videos' : 'images';
 
+        if (($record['owner'] ?? '') !== MediaRepository::OWNER_CLIENT) {
+            return $this->ui->withFlash(
+                $this->ui->redirect('/admin/medias?tab=' . $tab),
+                'Ce média n\'appartient pas à votre galerie.',
+            );
+        }
         if ($this->library->isBundledAsset($record['url'])) {
             return $this->ui->withFlash(
                 $this->ui->redirect('/admin/medias?tab=' . $tab),
@@ -139,29 +152,14 @@ final class MediasController
 
     /**
      * @param list<array{id: string, kind: string, url: string, filename: string}> $records
-     *
-     * @return list<array{id: string, kind: string, url: string, filename: string}>
-     */
-    private function clientOwnedRecords(array $records): array
-    {
-        $owned = [];
-        foreach ($records as $record) {
-            if ($this->library->isBundledAsset($record['url'])) {
-                continue;
-            }
-            $owned[] = $record;
-        }
-
-        return $owned;
-    }
-
-    /**
-     * @param list<array{id: string, kind: string, url: string, filename: string}> $records
      */
     private function renderGrid(array $records): string
     {
         if ($records === []) {
-            return '<p class="admin-empty-inline">Aucun fichier importé.</p>';
+            return '<div class="admin-empty admin-empty--compact">'
+                . '<p class="admin-empty__title">Aucun fichier</p>'
+                . '<p class="admin-empty__text">Importez un fichier pour l\'utiliser dans vos pages.</p>'
+                . '</div>';
         }
 
         $cards = [];
@@ -175,12 +173,12 @@ final class MediasController
 
             $cards[] = '<article class="admin-media-card">'
                 . '<div class="admin-media-card__preview">' . $visual . '</div>'
+                . '<div class="admin-media-card__body">'
                 . '<p class="admin-media-card__name">' . $name . '</p>'
-                . '<form method="post" action="/admin/medias/' . $safeId . '/delete" class="admin-media-card__delete"'
-                . ' onsubmit="return confirm(\'Supprimer ce média ?\');">'
-                . '<button type="submit" class="admin-button admin-button--ghost admin-button--sm">'
+                . '<form method="post" action="/admin/medias/' . $safeId . '/delete" class="admin-media-card__delete" data-admin-confirm="Supprimer ce média ?">'
+                . '<button type="submit" class="admin-btn admin-btn--ghost admin-btn--sm">'
                 . '<i class="fa-solid fa-trash" aria-hidden="true"></i> Supprimer</button>'
-                . '</form></article>';
+                . '</form></div></article>';
         }
 
         return '<div class="admin-media-grid">' . implode('', $cards) . '</div>';

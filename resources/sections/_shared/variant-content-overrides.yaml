@@ -33,3 +33,34 @@ hero:
     show_for_variants: [hero206]
   flip_words:
     show_for_variants: [hero243]
+
+# Champs content réellement utilisés par chaque variante (templates + renderer).
+features:
+  title:
+    show_for_variants: [feature1, feature2, feature3, feature13, feature15, feature16, feature17, feature42, feature43, feature72, feature73, feature74, feature166, feature197, feature239]
+  subtitle:
+    show_for_variants: [feature1, feature2, feature15, feature72, feature73, feature74, feature166, feature239]
+  label:
+    show_for_variants: [feature15, feature16, feature17]
+  badge:
+    show_for_variants: [feature239]
+  image_url:
+    show_for_variants: [feature1, feature2, feature239]
+  image_url_dark:
+    show_for_variants: [feature1, feature2, feature239]
+  image_alt:
+    show_for_variants: [feature1, feature2, feature239]
+  buttons:
+    show_for_variants: [feature1, feature2, feature17, feature43, feature72, feature73, feature74, feature239]
+  items:
+    show_for_variants: [feature3, feature13, feature15, feature16, feature17, feature42, feature43, feature51, feature72, feature73, feature74, feature166, feature197]
+  overlay_date:
+    show_for_variants: [feature239]
+  overlay_title:
+    show_for_variants: [feature239]
+  overlay_text:
+    show_for_variants: [feature239]
+  overlay_link:
+    show_for_variants: [feature239]
+  overlay_link_label:
+    show_for_variants: [feature239]

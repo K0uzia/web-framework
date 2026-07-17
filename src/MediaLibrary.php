@@ -6,6 +6,7 @@ namespace Capsule;
 
 /**
  * Liste les médias disponibles pour les blocs (bibliothèque DB, uploads).
+ * Galerie dev (/uploads/media) et galerie client (/uploads/library) sont séparées.
  */
 final class MediaLibrary
 {
@@ -15,6 +16,12 @@ final class MediaLibrary
     /** @var list<string>|null */
     private ?array $videoUrlsCache = null;
 
+    /** @var list<string>|null */
+    private ?array $clientImageUrlsCache = null;
+
+    /** @var list<string>|null */
+    private ?array $clientVideoUrlsCache = null;
+
     public function __construct(
         private readonly MediaRepository $media,
         private readonly string $uploadsDir,
@@ -23,6 +30,7 @@ final class MediaLibrary
         private readonly ?SiteRepository $site = null,
         private readonly string $libraryUploadsDir = '',
         private readonly string $publicRoot = '',
+        private readonly string $clientLibraryUploadsDir = '',
     ) {
     }
 
@@ -35,9 +43,8 @@ final class MediaLibrary
             return $this->imageUrlsCache;
         }
 
-        $this->imageUrlsCache = $this->mergeUrls(
-            $this->media->urlsByKind('image'),
-            [],
+        $this->imageUrlsCache = $this->mergeDevUrls(
+            $this->media->urlsByKind('image', MediaRepository::OWNER_DEV),
         );
 
         return $this->imageUrlsCache;
@@ -52,9 +59,64 @@ final class MediaLibrary
             return $this->videoUrlsCache;
         }
 
-        $this->videoUrlsCache = $this->media->urlsByKind('video');
+        $this->videoUrlsCache = $this->media->urlsByKind('video', MediaRepository::OWNER_DEV);
 
         return $this->videoUrlsCache;
+    }
+
+    /**
+     * @return list<string>
+     */
+    public function availableClientImageUrls(): array
+    {
+        if ($this->clientImageUrlsCache !== null) {
+            return $this->clientImageUrlsCache;
+        }
+
+        $urls = $this->media->urlsByKind('image', MediaRepository::OWNER_CLIENT);
+        if ($this->clientLibraryUploadsDir !== '' && is_dir($this->clientLibraryUploadsDir)) {
+            foreach (glob($this->clientLibraryUploadsDir . '/*') ?: [] as $file) {
+                if (is_file($file)) {
+                    $urls[] = '/uploads/library/' . basename($file);
+                }
+            }
+        }
+        $urls = array_values(array_unique(array_filter(
+            $urls,
+            fn (string $url): bool => $this->isClientLibraryUrl($url) && $this->isAllowedUrl($url),
+        )));
+        sort($urls);
+        $this->clientImageUrlsCache = $urls;
+
+        return $this->clientImageUrlsCache;
+    }
+
+    /**
+     * @return list<string>
+     */
+    public function availableClientVideoUrls(): array
+    {
+        if ($this->clientVideoUrlsCache !== null) {
+            return $this->clientVideoUrlsCache;
+        }
+
+        $urls = $this->media->urlsByKind('video', MediaRepository::OWNER_CLIENT);
+        if ($this->clientLibraryUploadsDir !== '' && is_dir($this->clientLibraryUploadsDir)) {
+            foreach (glob($this->clientLibraryUploadsDir . '/*') ?: [] as $file) {
+                if (!is_file($file) || !$this->isVideoPath($file)) {
+                    continue;
+                }
+                $urls[] = '/uploads/library/' . basename($file);
+            }
+        }
+        $urls = array_values(array_unique(array_filter(
+            $urls,
+            fn (string $url): bool => $this->isClientLibraryUrl($url) && $this->isAllowedUrl($url, 'video'),
+        )));
+        sort($urls);
+        $this->clientVideoUrlsCache = $urls;
+
+        return $this->clientVideoUrlsCache;
     }
 
     /**
@@ -66,11 +128,11 @@ final class MediaLibrary
     }
 
     /**
-     * @return list<array{id: string, kind: string, url: string, filename: string, mime: string, size: int, label: string, created_at: string}>
+     * @return list<array{id: string, kind: string, url: string, filename: string, mime: string, size: int, label: string, owner: string, created_at: string}>
      */
-    public function allRecords(?string $kind = null): array
+    public function allRecords(?string $kind = null, ?string $owner = null): array
     {
-        return $this->media->all($kind);
+        return $this->media->all($kind, $owner);
     }
 
     public function syncDiscoveredRecords(?string $kind = null): void
@@ -83,6 +145,21 @@ final class MediaLibrary
 
         if ($kind === null || $kind === 'video') {
             foreach ($this->availableVideoUrls() as $url) {
+                $this->registerUrlIfMissing('video', $url);
+            }
+        }
+    }
+
+    public function syncClientRecords(?string $kind = null): void
+    {
+        if ($kind === null || $kind === 'image') {
+            foreach ($this->availableClientImageUrls() as $url) {
+                $this->registerUrlIfMissing('image', $url);
+            }
+        }
+
+        if ($kind === null || $kind === 'video') {
+            foreach ($this->availableClientVideoUrls() as $url) {
                 $this->registerUrlIfMissing('video', $url);
             }
         }
@@ -127,6 +204,7 @@ final class MediaLibrary
             }
 
             return str_starts_with($url, '/uploads/media/')
+                || str_starts_with($url, '/uploads/library/')
                 || str_starts_with($url, rtrim($this->publicBasePath, '/') . '/');
         }
 
@@ -134,6 +212,7 @@ final class MediaLibrary
 
         return str_starts_with($url, $uploadPrefix)
             || str_starts_with($url, '/uploads/media/')
+            || str_starts_with($url, '/uploads/library/')
             || str_starts_with($url, '/assets/sections/');
     }
 
@@ -144,13 +223,17 @@ final class MediaLibrary
         return str_starts_with($url, '/assets/sections/');
     }
 
+    public function isClientLibraryUrl(string $url): bool
+    {
+        return str_starts_with(trim($url), '/uploads/library/');
+    }
+
     /**
      * @param list<string> $primary
-     * @param list<string> $extra
      *
      * @return list<string>
      */
-    private function mergeUrls(array $primary, array $extra): array
+    private function mergeDevUrls(array $primary): array
     {
         $urls = $primary;
 
@@ -158,7 +241,7 @@ final class MediaLibrary
             $site = $this->site->getSite();
             foreach (['logo_url', 'favicon_url', 'og_image_url'] as $key) {
                 $url = trim((string) ($site[$key] ?? ''));
-                if ($this->isAllowedUrl($url)) {
+                if ($this->isAllowedUrl($url) && !$this->isClientLibraryUrl($url)) {
                     $urls[] = $url;
                 }
             }
@@ -190,11 +273,10 @@ final class MediaLibrary
             }
         }
 
-        foreach ($extra as $url) {
-            $urls[] = $url;
-        }
-
-        $urls = array_values(array_unique(array_filter($urls, fn (string $url): bool => $this->isAllowedUrl($url))));
+        $urls = array_values(array_unique(array_filter(
+            $urls,
+            fn (string $url): bool => $this->isAllowedUrl($url) && !$this->isClientLibraryUrl($url),
+        )));
         sort($urls);
 
         return $urls;
@@ -216,7 +298,7 @@ final class MediaLibrary
     {
         if (is_string($value)) {
             $url = trim($value);
-            if ($url !== '' && $this->isAllowedUrl($url) && !$this->isVideoPath($url)) {
+            if ($url !== '' && $this->isAllowedUrl($url) && !$this->isVideoPath($url) && !$this->isClientLibraryUrl($url)) {
                 $urls[] = $url;
             }
 
@@ -269,6 +351,7 @@ final class MediaLibrary
             $this->detectMime($path),
             $size,
             $label,
+            MediaRepository::ownerFromUrl($url),
         );
     }
 

@@ -9,12 +9,15 @@ use App\Http\Admin\MediasController as AdminMediasController;
 use App\Http\Admin\PageEditContentApplier;
 use App\Http\Admin\PageEditFormRenderer;
 use App\Http\Admin\PagesController as AdminPagesController;
+use App\Http\Admin\SiteContactSync;
+use App\Http\Admin\SiteController as AdminSiteController;
 use App\Http\Dev\ExportController;
 use App\Http\Dev\AuthController;
 use App\Http\Dev\ChromeController;
 use App\Http\Dev\ClientDashboardController;
 use App\Http\Dev\MediaController;
 use App\Http\Dev\FontUploader;
+use App\Http\Dev\ClientMediaUploader;
 use App\Http\Dev\LibraryMediaUploader;
 use App\Http\Dev\MediaUploader;
 use App\Http\Dev\MediasController;
@@ -224,12 +227,16 @@ return (function (): Container {
     ));
     $c->set(AdminHomeController::class, static fn (Container $c) => new AdminHomeController(
         $c->get(AdminDashboard::class),
+        $c->get(SiteRepository::class),
+        $c->get(PageRepository::class),
+        $c->get(MediaRepository::class),
     ));
     $c->set(PageEditFormRenderer::class, static fn (Container $c) => new PageEditFormRenderer(
         $c->get(SectionRegistry::class),
         $c->get(SectionFieldSchema::class),
         $c->get(MediaLibrary::class),
         $c->get(MediaRepository::class),
+        $c->get(PageRepository::class),
     ));
     $c->set(PageEditContentApplier::class, static fn (Container $c) => new PageEditContentApplier(
         $c->get(SectionFieldSchema::class),
@@ -246,9 +253,20 @@ return (function (): Container {
         $c->get(SiteRepository::class),
         $c->get(MediaRepository::class),
         $c->get(MediaLibrary::class),
-        $c->get(LibraryMediaUploader::class),
+        $c->get(ClientMediaUploader::class),
         $c->get(MediaUsageScanner::class),
         $root . '/public',
+    ));
+    $c->set(SiteContactSync::class, static fn (Container $c) => new SiteContactSync(
+        $c->get(PageRepository::class),
+    ));
+    $c->set(AdminSiteController::class, static fn (Container $c) => new AdminSiteController(
+        $c->get(AdminDashboard::class),
+        $c->get(SiteRepository::class),
+        $c->get(MediaLibrary::class),
+        $c->get(MediaRepository::class),
+        $c->get(MediaUploader::class),
+        $c->get(SiteContactSync::class),
     ));
     $c->set(MediaRepository::class, static fn (Container $c) => new MediaRepository(
         $c->get(Database::class)->pdo(),
@@ -315,6 +333,14 @@ return (function (): Container {
     $c->set(LibraryMediaUploader::class, static fn () => new LibraryMediaUploader(
         $root . '/public/uploads/media',
     ));
+    $c->set(ClientMediaUploader::class, static function () use ($root): ClientMediaUploader {
+        $dir = $root . '/public/uploads/library';
+        if (!is_dir($dir)) {
+            mkdir($dir, 0775, true);
+        }
+
+        return new ClientMediaUploader($dir);
+    });
     $c->set(MediaLibrary::class, static fn (Container $c) => new MediaLibrary(
         $c->get(MediaRepository::class),
         $root . '/public/uploads/site',
@@ -323,6 +349,7 @@ return (function (): Container {
         $c->get(SiteRepository::class),
         $root . '/public/uploads/media',
         $root . '/public',
+        $root . '/public/uploads/library',
     ));
     $c->set(SectionFormRenderer::class, static fn (Container $c) => new SectionFormRenderer(
         $c->get(SectionRegistry::class),
@@ -331,6 +358,7 @@ return (function (): Container {
         $c->get(LibraryMediaUploader::class),
         $c->get(SectionFieldSchema::class),
         $c->get(SectionVariantResolver::class),
+        $c->get(SiteRepository::class),
     ));
     $c->set(PagesController::class, static fn (Container $c) => new PagesController(
         $c->get(DevDashboard::class),
@@ -351,6 +379,7 @@ return (function (): Container {
         $c->get(MediaRepository::class),
         $c->get(SectionVariantResolver::class),
         $c->get(SectionFieldSchema::class),
+        $c->get(SiteRepository::class),
     ));
     $c->set(MediasController::class, static fn (Container $c) => new MediasController(
         $c->get(DevDashboard::class),

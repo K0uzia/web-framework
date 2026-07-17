@@ -3,4 +3,5 @@ set -euo pipefail
 PORT="${PORT:-8080}"
 PHP_OPTS="-d display_errors=1 -d error_reporting=32767 -d zend.assertions=1 -d assert.exception=1"
 echo "→ http://localhost:$PORT"
-php $PHP_OPTS -S "localhost:${PORT}" -t public
+# Routeur = public/index.php (favicon.ico, assets via middleware, comme Docker)
+php $PHP_OPTS -S "localhost:${PORT}" -t public public/index.php

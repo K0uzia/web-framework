@@ -76,8 +76,9 @@ final class PagesEditTest extends TestCase
             ],
         ]);
 
-        $this->media->create('image', '/uploads/library/client-logo.png', 'client-logo.png', 'image/png', 100, 'Logo client');
+        $this->media->create('image', '/uploads/library/client-logo.png', 'client-logo.png', 'image/png', 100, 'Logo client', MediaRepository::OWNER_CLIENT);
         $this->media->create('image', '/assets/sections/hero/demo.png', 'demo.png', 'image/png', 50, 'Modèle');
+        $this->media->create('image', '/uploads/media/dev-only.webp', 'dev-only.webp', 'image/webp', 50, 'Dev');
 
         $registry = new SectionRegistry(
             $this->root . '/resources/sections/registry.yaml',
@@ -100,7 +101,7 @@ final class PagesEditTest extends TestCase
             $ui,
             $this->site,
             $this->pages,
-            new PageEditFormRenderer($registry, $schema, $mediaLibrary, $this->media),
+            new PageEditFormRenderer($registry, $schema, $mediaLibrary, $this->media, $this->pages),
             new PageEditContentApplier($schema),
         );
     }
@@ -121,9 +122,21 @@ final class PagesEditTest extends TestCase
         $this->assertStringContainsString('name="s_hero-1__content_image_url"', $body);
         $this->assertStringContainsString('/uploads/library/client-logo.png', $body);
         $this->assertStringNotContainsString('/assets/sections/hero/demo.png', $body);
+        $this->assertStringNotContainsString('/uploads/media/dev-only.webp', $body);
         $this->assertStringNotContainsString('name="s_hero-1__content_badge"', $body);
         $this->assertStringContainsString('action="/admin/pages/_"', $body);
         $this->assertStringContainsString('Enregistrer', $body);
+        $this->assertStringContainsString('admin-document__header', $body);
+        $this->assertStringContainsString('admin-editor-sidebar', $body);
+        $this->assertStringContainsString('admin-document__aside', $body);
+        $this->assertStringContainsString('admin-edit-group', $body);
+        $this->assertStringContainsString('Textes', $body);
+        $this->assertStringContainsString('Images et médias', $body);
+        $this->assertStringContainsString('Bloc 1', $body);
+        $this->assertStringContainsString('data-admin-accordion', $body);
+        $this->assertStringContainsString('data-admin-media-picker', $body);
+        $this->assertStringContainsString('data-admin-media-pick', $body);
+        $this->assertStringContainsString('/uploads/library/client-logo.png', $body);
     }
 
     public function testUpdatePersistsAllowedFieldsOnly(): void

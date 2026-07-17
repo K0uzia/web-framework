@@ -54,21 +54,70 @@ final class MediaLibraryTest extends TestCase
         $this->assertContains('/uploads/site/legacy.png', $urls);
         $this->assertContains('/uploads/site/hero-custom.jpg', $urls);
         $this->assertTrue($library->isAllowedUrl('/uploads/media/image-db.webp'));
+        $this->assertTrue($library->isAllowedUrl('/uploads/library/client.webp'));
         $this->assertFalse($library->isAllowedUrl('https://example.com/x.jpg'));
         $this->assertFalse($library->isAllowedUrl('/assets/stock/exemple.jpg'));
         $this->assertTrue($library->isAllowedUrl('/assets/sections/hero/_shared/saas-hero-1-16x9.png'));
 
         $library->syncDiscoveredRecords('image');
-        $records = $mediaRepo->all('image');
+        $records = $mediaRepo->all('image', MediaRepository::OWNER_DEV);
 
         $this->assertCount(3, $records);
         $this->assertNotNull($mediaRepo->findByUrl('/uploads/site/hero-custom.jpg'));
         $this->assertNotNull($mediaRepo->findByUrl('/uploads/site/legacy.png'));
+        $this->assertSame(MediaRepository::OWNER_DEV, $mediaRepo->findByUrl('/uploads/site/legacy.png')['owner'] ?? null);
 
         @unlink($siteDir . '/legacy.png');
         @unlink($siteDir . '/hero-custom.jpg');
         @rmdir($siteDir);
         @rmdir(dirname($siteDir));
+        @rmdir($publicRoot);
+    }
+
+    public function testClientLibraryIsSeparateFromDevGallery(): void
+    {
+        $pdo = new \PDO('sqlite::memory:');
+        $pdo->exec(file_get_contents(dirname(__DIR__) . '/migrations/sqlite_init.sql') ?: '');
+        $mediaRepo = new MediaRepository($pdo);
+        $mediaRepo->create('image', '/uploads/media/dev-only.webp', 'dev-only.webp', 'image/webp', 10);
+        $mediaRepo->create(
+            'image',
+            '/uploads/library/client-only.webp',
+            'client-only.webp',
+            'image/webp',
+            10,
+            '',
+            MediaRepository::OWNER_CLIENT,
+        );
+
+        $publicRoot = sys_get_temp_dir() . '/capsule-public-' . bin2hex(random_bytes(4));
+        $clientDir = $publicRoot . '/uploads/library';
+        mkdir($clientDir, 0775, true);
+        file_put_contents($clientDir . '/disk-client.png', 'x');
+
+        $library = new MediaLibrary(
+            $mediaRepo,
+            $publicRoot . '/uploads/site',
+            '/uploads/site',
+            null,
+            null,
+            $publicRoot . '/uploads/media',
+            $publicRoot,
+            $clientDir,
+        );
+
+        $devUrls = $library->availableImageUrls();
+        $clientUrls = $library->availableClientImageUrls();
+
+        $this->assertContains('/uploads/media/dev-only.webp', $devUrls);
+        $this->assertNotContains('/uploads/library/client-only.webp', $devUrls);
+        $this->assertContains('/uploads/library/client-only.webp', $clientUrls);
+        $this->assertContains('/uploads/library/disk-client.png', $clientUrls);
+        $this->assertNotContains('/uploads/media/dev-only.webp', $clientUrls);
+
+        @unlink($clientDir . '/disk-client.png');
+        @rmdir($clientDir);
+        @rmdir(dirname($clientDir));
         @rmdir($publicRoot);
     }
 }

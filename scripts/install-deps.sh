@@ -82,7 +82,7 @@ install_apt_packages() {
     run_as_root apt-get install -y sqlite3 composer || true
 
     local ext
-    for ext in cli sqlite3 mysql intl mbstring xml curl zip; do
+    for ext in cli sqlite3 mysql intl mbstring xml curl zip gd; do
         install_apt_php_ext "$ext" || true
     done
 }
@@ -113,52 +113,99 @@ install_system_deps() {
                 php-xml \
                 php-curl \
                 php-zip \
+                php-gd \
                 composer
             ;;
         *)
             die "Gestionnaire de paquets non supporté.
 
 Installez manuellement :
-  - PHP 8.2+ avec extensions : pdo_sqlite, sqlite3, intl, mbstring, xml, dom, xmlwriter, json, tokenizer
+  - PHP 8.2+ avec extensions : pdo_sqlite, sqlite3, intl, mbstring, xml, dom, xmlwriter, json, tokenizer, gd
   - SQLite 3 (CLI)
   - Composer (dev/tests)
 
 Debian/Ubuntu / Linux Mint :
   sudo apt update
-  sudo apt install sqlite3 php-cli php-sqlite3 php-mysql php-intl php-mbstring php-xml composer
+  sudo apt install sqlite3 php-cli php-sqlite3 php-mysql php-intl php-mbstring php-xml php-gd composer
 
 Fedora/RHEL :
-  sudo dnf install sqlite php-cli php-pdo php-sqlite3 php-mysqlnd php-intl php-mbstring php-xml composer"
+  sudo dnf install sqlite php-cli php-pdo php-sqlite3 php-mysqlnd php-intl php-mbstring php-xml php-gd composer"
             ;;
     esac
 
     ok "Paquets système installés."
 }
 
+# PHP phar:// traite "#" comme fragment d'URL : un Composer.phar sous
+# /mnt/team/#TEAM/... est inutilisable. On préfère alors un chemin sans "#".
+composer_safe_bindir() {
+    if [[ "$ROOT" == *'#'* ]]; then
+        # Hors home : certains environnements restreignent l'écriture sous $HOME.
+        local safe="${TMPDIR:-/tmp}/capsule-composer-bin"
+        mkdir -p "$safe"
+        echo "$safe"
+    else
+        mkdir -p "$ROOT/tools/bin"
+        echo "$ROOT/tools/bin"
+    fi
+}
+
+# Retourne 0 si le binaire Composer est utilisable (chemin sans "#" pour un phar).
+composer_usable() {
+    local bin="$1"
+    [[ -n "$bin" ]] || return 1
+    local resolved
+    resolved="$(command -v "$bin" 2>/dev/null || true)"
+    [[ -n "$resolved" ]] || resolved="$bin"
+    [[ -x "$resolved" ]] || return 1
+    # Un .phar sous un chemin avec "#" casse phar:// (fragment URL).
+    if [[ "$resolved" == *'#'* ]]; then
+        return 1
+    fi
+    return 0
+}
+
 install_composer_if_missing() {
-    if command -v composer >/dev/null 2>&1; then
+    local existing
+    existing="$(command -v composer 2>/dev/null || true)"
+    if composer_usable "$existing"; then
         return 0
     fi
 
     warn "Composer introuvable via le gestionnaire de paquets, installation locale..."
     need php
-    local installer="$ROOT/tools/composer-setup.php"
-    mkdir -p "$ROOT/tools/bin"
+    local bindir installer
+    bindir="$(composer_safe_bindir)"
+    installer="${TMPDIR:-/tmp}/capsule-composer-setup.$$.php"
     php -r "copy('https://getcomposer.org/installer', '$installer');"
-    php "$installer" --install-dir="$ROOT/tools/bin" --filename=composer
+    php "$installer" --install-dir="$bindir" --filename=composer
     rm -f "$installer"
-    export PATH="$ROOT/tools/bin:$PATH"
-    ok "Composer installé dans tools/bin/composer"
+    export PATH="$bindir:$PATH"
+    if [[ "$ROOT" == *'#'* ]]; then
+        warn "Chemin projet contenant '#': Composer installé dans $bindir (phar PHP incompatible)."
+    fi
+    ok "Composer installé dans $bindir/composer"
 }
 
 composer_cmd() {
-    if command -v composer >/dev/null 2>&1; then
-        echo "composer"
-    elif [[ -x "$ROOT/tools/bin/composer" ]]; then
-        echo "$ROOT/tools/bin/composer"
-    else
-        echo ""
+    local existing bindir candidate
+    existing="$(command -v composer 2>/dev/null || true)"
+    if composer_usable "$existing"; then
+        echo "$existing"
+        return 0
     fi
+    bindir="$(composer_safe_bindir)"
+    candidate="$bindir/composer"
+    if composer_usable "$candidate"; then
+        echo "$candidate"
+        return 0
+    fi
+    # Ancien emplacement local (uniquement si chemin sans '#')
+    if composer_usable "$ROOT/tools/bin/composer"; then
+        echo "$ROOT/tools/bin/composer"
+        return 0
+    fi
+    echo ""
 }
 
 install_composer_vendor() {

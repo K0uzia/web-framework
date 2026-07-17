@@ -6,6 +6,7 @@ use App\Http\LoginPageController;
 use App\Http\Admin\AuthController as AdminAuthController;
 use App\Http\Admin\HomeController as AdminHomeController;
 use App\Http\Admin\MediasController as AdminMediasController;
+use App\Http\Admin\SiteController as AdminSiteController;
 use App\Http\Admin\PagesController as AdminPagesController;
 use App\Http\Dev\ExportController;
 use App\Http\Dev\AuthController;
@@ -40,6 +41,7 @@ $devRoutes = [
     'POST /dev/pages/{slug}/sections/restore' => [SectionsController::class, 'restore'],
     'POST /dev/pages/{slug}/sections' => [SectionsController::class, 'add'],
     'POST /dev/pages/{slug}/sections/{id}' => [SectionsController::class, 'update'],
+    'POST /dev/pages/{slug}/sections/{id}/client-access' => [SectionsController::class, 'updateClientAccess'],
     'POST /dev/pages/{slug}/sections/{id}/move' => [SectionsController::class, 'move'],
     'POST /dev/pages/{slug}/sections/{id}/delete' => [SectionsController::class, 'destroy'],
     'GET /dev/chrome' => [ChromeController::class, 'index'],
@@ -95,6 +97,9 @@ return array_merge($devRoutes, [
     'POST /admin/login' => [AdminAuthController::class, 'login'],
     'POST /admin/logout' => [AdminAuthController::class, 'logout'],
     'GET /admin/home' => [AdminHomeController::class, 'index'],
+    'GET /admin/site' => [AdminSiteController::class, 'edit'],
+    'POST /admin/site' => [AdminSiteController::class, 'update'],
+    'POST /admin/site/{field}/upload' => [AdminSiteController::class, 'upload'],
     'GET /admin/pages' => [AdminPagesController::class, 'index'],
     'GET /admin/pages/{slug}' => [AdminPagesController::class, 'edit'],
     'POST /admin/pages/{slug}' => [AdminPagesController::class, 'update'],

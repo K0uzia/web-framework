@@ -1,21 +1,33 @@
-<div class="admin-page">
-    <header class="admin-page__head">
-        <h1>Médias</h1>
-        <p class="admin-lead">Images et vidéos du site. Utilisables ensuite dans l'édition des pages.</p>
+<div class="admin-collection">
+    <div class="admin-alert {{flash_mod}} {{flash_hidden}}" role="status">{{flash}}</div>
+
+    <header class="admin-collection__intro">
+        <div>
+            <h2 class="admin-collection__title">Médias</h2>
+            <p class="admin-collection__desc">Importez et organisez les images et vidéos utilisables dans vos pages.</p>
+        </div>
     </header>
 
-    <p class="admin-flash" role="status">{{flash}}</p>
-
     <div class="admin-tabs" role="tablist" aria-label="Types de médias">
-        <a href="/admin/medias?tab=images" class="admin-tabs__tab {{tab_images_class}}" role="tab" aria-selected="{{tab_images_selected}}">Images ({{images_count}})</a>
-        <a href="/admin/medias?tab=videos" class="admin-tabs__tab {{tab_videos_class}}" role="tab" aria-selected="{{tab_videos_selected}}">Vidéos ({{videos_count}})</a>
+        <a href="/admin/medias?tab=images" class="admin-tabs__item {{tab_images_class}}" role="tab" aria-selected="{{tab_images_selected}}">
+            <i class="fa-solid fa-image" aria-hidden="true"></i>
+            Images
+            <span class="admin-tabs__count">{{images_count}}</span>
+        </a>
+        <a href="/admin/medias?tab=videos" class="admin-tabs__item {{tab_videos_class}}" role="tab" aria-selected="{{tab_videos_selected}}">
+            <i class="fa-solid fa-film" aria-hidden="true"></i>
+            Vidéos
+            <span class="admin-tabs__count">{{videos_count}}</span>
+        </a>
     </div>
 
     <section class="admin-media-panel {{panel_images_class}}" aria-label="Images">
         <form class="admin-upload" method="post" action="/admin/medias/upload?kind=image" enctype="multipart/form-data">
-            <label class="admin-button admin-button--primary">
-                <i class="fa-solid fa-upload" aria-hidden="true"></i> Importer une image
-                <input type="file" name="file" accept=".png,.jpg,.jpeg,.webp,.svg,image/png,image/jpeg,image/webp,image/svg+xml" class="visually-hidden" onchange="this.form.submit()" aria-label="Importer une image" />
+            <label class="admin-upload__zone">
+                <span class="admin-upload__icon" aria-hidden="true"><i class="fa-solid fa-cloud-arrow-up"></i></span>
+                <span class="admin-upload__title">Glissez une image ici, ou cliquez pour parcourir</span>
+                <span class="admin-upload__hint">PNG, JPG, WebP, SVG · max recommandé 5 Mo</span>
+                <input type="file" name="file" accept=".png,.jpg,.jpeg,.webp,.svg,image/png,image/jpeg,image/webp,image/svg+xml" class="visually-hidden" data-admin-upload aria-label="Importer une image" />
             </label>
         </form>
         {{{images_grid_html}}}
@@ -23,11 +35,15 @@
 
     <section class="admin-media-panel {{panel_videos_class}}" aria-label="Vidéos">
         <form class="admin-upload" method="post" action="/admin/medias/upload?kind=video" enctype="multipart/form-data">
-            <label class="admin-button admin-button--primary">
-                <i class="fa-solid fa-upload" aria-hidden="true"></i> Importer une vidéo
-                <input type="file" name="file" accept=".mp4,.webm,.ogg,video/mp4,video/webm,video/ogg" class="visually-hidden" onchange="this.form.submit()" aria-label="Importer une vidéo" />
+            <label class="admin-upload__zone">
+                <span class="admin-upload__icon" aria-hidden="true"><i class="fa-solid fa-cloud-arrow-up"></i></span>
+                <span class="admin-upload__title">Glissez une vidéo ici, ou cliquez pour parcourir</span>
+                <span class="admin-upload__hint">MP4, WebM ou OGG</span>
+                <input type="file" name="file" accept=".mp4,.webm,.ogg,video/mp4,video/webm,video/ogg" class="visually-hidden" data-admin-upload aria-label="Importer une vidéo" />
             </label>
         </form>
         {{{videos_grid_html}}}
     </section>
 </div>
+
+<script src="{{asset_root}}/assets/js/admin-medias.js" defer></script>

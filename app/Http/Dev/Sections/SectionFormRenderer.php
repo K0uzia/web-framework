@@ -8,6 +8,7 @@ use App\Http\Dev\LibraryMediaUploader;
 use App\Http\Dev\LinkPicker;
 use App\Http\Dev\SlugCodec;
 use App\Http\Dev\Sections\SectionDefaults;
+use Capsule\ClientDashboardConfig;
 use Capsule\FontAwesomeIcon;
 use Capsule\HeroStyle;
 use Capsule\MediaDisplaySettings;
@@ -17,6 +18,7 @@ use Capsule\PageRepository;
 use Capsule\Section\SectionFieldSchema;
 use Capsule\Section\SectionVariantResolver;
 use Capsule\SectionRegistry;
+use Capsule\SiteRepository;
 use Capsule\ThemeColor;
 
 final class SectionFormRenderer
@@ -38,6 +40,7 @@ final class SectionFormRenderer
         private readonly LibraryMediaUploader $libraryUploader,
         private readonly SectionFieldSchema $fieldSchema,
         private readonly SectionVariantResolver $variantResolver,
+        private readonly ?SiteRepository $site = null,
     ) {
     }
 
@@ -203,9 +206,98 @@ final class SectionFormRenderer
         $html .= '<p class="dev-section-form__autosave-hint"><i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i><span>Enregistrement automatique</span></p>';
         $html .= '<div class="dev-section-form__status" id="section-saved-' . $safeIdAttr . '" aria-live="polite"></div>';
         $html .= '</footer>';
-        $html .= '</form></div>';
+        $html .= '</form>';
+        $html .= $this->renderClientAccessPanel($slug, $id, $type, $variant);
+        $html .= '</div>';
 
         return $html;
+    }
+
+    private function renderClientAccessPanel(string $slug, string $sectionId, string $type, string $variant): string
+    {
+        $fields = $this->fieldSchema->contentFieldsForVariant($type, $variant);
+        $groups = ClientAccessKinds::groupFieldKeys($fields);
+        $available = [
+            'text' => $groups[ClientAccessKinds::KIND_TEXT] !== [],
+            'image' => $groups[ClientAccessKinds::KIND_IMAGE] !== [],
+            'link' => $groups[ClientAccessKinds::KIND_LINK] !== [],
+        ];
+        if (!$available['text'] && !$available['image'] && !$available['link']) {
+            return '';
+        }
+
+        $pageSlug = SlugCodec::decode($slug);
+        $config = $this->site !== null
+            ? $this->site->getClientDashboard()
+            : ClientDashboardConfig::empty();
+        $allowed = ClientDashboardConfig::allowedFields($config, $pageSlug, $sectionId);
+        $perms = ClientAccessKinds::permissionsFromAllowed($groups, $allowed);
+        $locked = !$perms['editableText'] && !$perms['editableImage'] && !$perms['editableLink'];
+
+        $safeIdAttr = htmlspecialchars($sectionId, ENT_QUOTES);
+        $action = '/dev/pages/' . $slug . '/sections/' . rawurlencode($sectionId) . '/client-access';
+        $statusId = 'client-access-status-' . $safeIdAttr;
+
+        $html = '<section class="dev-client-access" data-dev-client-access aria-labelledby="client-access-title-' . $safeIdAttr . '">';
+        $html .= '<h3 class="dev-client-access__title" id="client-access-title-' . $safeIdAttr . '">Accès Client</h3>';
+        $html .= '<p class="dev-client-access__desc">Choisissez ce que le client peut modifier sur ce bloc dans /admin.</p>';
+        $html .= '<form method="post" action="' . htmlspecialchars($action, ENT_QUOTES) . '"'
+            . ' class="dev-client-access__form"'
+            . ' hx-post="' . htmlspecialchars($action, ENT_QUOTES) . '"'
+            . ' hx-trigger="change"'
+            . ' hx-target="#' . $statusId . '"'
+            . ' hx-swap="innerHTML"'
+            . ' data-dev-toast-form="Accès client enregistré"'
+            . ' data-dev-client-access-form>';
+
+        if ($available['text']) {
+            $html .= $this->clientAccessSwitch(
+                'editable_text',
+                'Rendre le texte modifiable',
+                $perms['editableText'],
+                $safeIdAttr . '-text',
+            );
+        }
+        if ($available['image']) {
+            $html .= $this->clientAccessSwitch(
+                'editable_image',
+                'Rendre l\'image remplaçable',
+                $perms['editableImage'],
+                $safeIdAttr . '-image',
+            );
+        }
+        if ($available['link']) {
+            $html .= $this->clientAccessSwitch(
+                'editable_link',
+                'Rendre le lien modifiable',
+                $perms['editableLink'],
+                $safeIdAttr . '-link',
+            );
+        }
+
+        $html .= '<p class="dev-client-access__locked' . ($locked ? '' : ' visually-hidden') . '" data-client-access-locked>'
+            . 'Ce bloc est verrouillé en lecture seule pour le client.</p>';
+        $html .= '<div class="dev-section-form__status" id="' . $statusId . '" aria-live="polite"></div>';
+        $html .= '</form></section>';
+
+        return $html;
+    }
+
+    private function clientAccessSwitch(string $name, string $label, bool $checked, string $id): string
+    {
+        $safeId = htmlspecialchars($id, ENT_QUOTES);
+        $safeName = htmlspecialchars($name, ENT_QUOTES);
+        $safeLabel = htmlspecialchars($label, ENT_QUOTES);
+
+        return '<label class="dev-client-access__row" for="' . $safeId . '">'
+            . '<span class="dev-client-access__label">' . $safeLabel . '</span>'
+            . '<span class="dev-switch">'
+            . '<input type="hidden" name="' . $safeName . '" value="0" />'
+            . '<input type="checkbox" class="dev-switch__input" id="' . $safeId . '" name="' . $safeName . '" value="1"'
+            . ($checked ? ' checked' : '') . ' data-client-access-toggle />'
+            . '<span class="dev-switch__track" aria-hidden="true"></span>'
+            . '</span>'
+            . '</label>';
     }
 
     /**

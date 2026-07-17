@@ -1,0 +1,44 @@
+<div class="admin-dashboard">
+    <div class="admin-alert {{flash_mod}} {{flash_hidden}}" role="status">{{flash}}</div>
+
+    {{{stats_html}}}
+
+    <div class="admin-quick-actions">
+        <a class="admin-quick-tile {{site_hidden}}" href="/admin/site">
+            <span class="admin-quick-tile__icon" aria-hidden="true"><i class="fa-solid fa-id-card"></i></span>
+            <span class="admin-quick-tile__label">Identité et contact</span>
+            <i class="fa-solid fa-chevron-right admin-quick-tile__chevron" aria-hidden="true"></i>
+        </a>
+        <a class="admin-quick-tile" href="/admin/pages">
+            <span class="admin-quick-tile__icon" aria-hidden="true"><i class="fa-solid fa-layer-group"></i></span>
+            <span class="admin-quick-tile__label">Gérer mes pages</span>
+            <i class="fa-solid fa-chevron-right admin-quick-tile__chevron" aria-hidden="true"></i>
+        </a>
+        <a class="admin-quick-tile {{medias_hidden}}" href="/admin/medias">
+            <span class="admin-quick-tile__icon" aria-hidden="true"><i class="fa-solid fa-photo-film"></i></span>
+            <span class="admin-quick-tile__label">Gérer mes médias</span>
+            <i class="fa-solid fa-chevron-right admin-quick-tile__chevron" aria-hidden="true"></i>
+        </a>
+        <a class="admin-quick-tile" href="/" target="_blank" rel="noopener noreferrer">
+            <span class="admin-quick-tile__icon" aria-hidden="true"><i class="fa-solid fa-arrow-up-right-from-square"></i></span>
+            <span class="admin-quick-tile__label">Voir mon site</span>
+            <i class="fa-solid fa-chevron-right admin-quick-tile__chevron" aria-hidden="true"></i>
+        </a>
+    </div>
+
+    <div class="admin-empty {{empty_class}}">
+        <div class="admin-empty__visual" aria-hidden="true"><i class="fa-solid fa-file-circle-plus"></i></div>
+        <h2 class="admin-empty__title">Aucune page disponible</h2>
+        <p class="admin-empty__text">Demandez à votre équipe d'ouvrir des pages à l'édition. Elles apparaîtront ici.</p>
+    </div>
+
+    <section class="admin-dashboard__section {{recent_class}}">
+        <header class="admin-section-head">
+            <h2>Vos pages</h2>
+            <a class="admin-btn admin-btn--soft admin-btn--sm" href="/admin/pages">Tout voir</a>
+        </header>
+        <ul class="admin-page-grid" role="list">
+            {{{recent_rows_html}}}
+        </ul>
+    </section>
+</div>

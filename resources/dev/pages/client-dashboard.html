@@ -1,38 +1,141 @@
-<div class="dev-editor">
-    <div class="dev-page-head">
-        <div>
-            <h1><i class="fa-solid fa-user-pen" aria-hidden="true"></i> Dashboard client</h1>
-            <p class="dev-lead">Définissez ce que le client peut modifier dans /admin.</p>
+<div class="dev-cd" data-dev-client-studio>
+    <header class="dev-cd__header">
+        <div class="dev-cd__header-text">
+            <p class="dev-cd__eyebrow">Espace client</p>
+            <h1>Configuration du dashboard client</h1>
+            <p class="dev-lead">Créez l'espace d'édition simplifié livré avec le site. Le client modifie uniquement le contenu que vous autorisez ici.</p>
         </div>
-        <div class="dev-page-head__actions">
+        <div class="dev-cd__header-actions">
             <p class="dev-section-form__status" id="client-dashboard-status" aria-live="polite"></p>
+            <span class="dev-cd__badge {{status_badge_class}}">{{status_label}}</span>
+            <a class="dev-button dev-button--ghost" href="/admin" target="_blank" rel="noopener noreferrer">
+                <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+                Prévisualiser /admin
+            </a>
+        </div>
+    </header>
+
+    <div class="dev-cd__stats" aria-label="État de configuration">
+        <div class="dev-cd__stat">
+            <span class="dev-cd__stat-value">{{stat_pages}}</span>
+            <span class="dev-cd__stat-label">Page(s) ouvertes</span>
+        </div>
+        <div class="dev-cd__stat">
+            <span class="dev-cd__stat-value">{{stat_fields}}</span>
+            <span class="dev-cd__stat-label">Champ(s) autorisés</span>
+        </div>
+        <div class="dev-cd__stat">
+            <span class="dev-cd__stat-value">{{stat_medias}}</span>
+            <span class="dev-cd__stat-label">Médias client</span>
+        </div>
+        <div class="dev-cd__stat">
+            <span class="dev-cd__stat-value">{{stat_site}}</span>
+            <span class="dev-cd__stat-label">Identité / contact</span>
         </div>
     </div>
 
-    <form method="post" action="/dev/client-dashboard" id="client-dashboard-form"
-          class="dev-form dev-stack dev-stack--lg"
-          hx-post="/dev/client-dashboard"
-          hx-trigger="change delay:400ms"
-          hx-target="#client-dashboard-status"
-          hx-swap="innerHTML"
-          data-dev-toast-form="Permissions enregistrées">
+    <div class="dev-cd__layout">
+        <aside class="dev-cd__aside">
+            <section class="dev-cd__card" aria-labelledby="dev-cd-steps-title">
+                <h2 class="dev-cd__card-title" id="dev-cd-steps-title">Mise en place</h2>
+                <ol class="dev-cd__steps">
+                    <li class="dev-cd__step {{step1_class}}">
+                        <span class="dev-cd__step-num" aria-hidden="true">1</span>
+                        <span>
+                            <strong>Pages du site</strong>
+                            <span class="dev-cd__step-desc">Créez et publiez vos pages dans Pages.</span>
+                            <a class="dev-cd__step-link" href="/dev/pages">Gérer les pages</a>
+                        </span>
+                    </li>
+                    <li class="dev-cd__step {{step2_class}}">
+                        <span class="dev-cd__step-num" aria-hidden="true">2</span>
+                        <span>
+                            <strong>Autorisations</strong>
+                            <span class="dev-cd__step-desc">Cochez pages, blocs et champs éditables à droite.</span>
+                        </span>
+                    </li>
+                    <li class="dev-cd__step {{step3_class}}">
+                        <span class="dev-cd__step-num" aria-hidden="true">3</span>
+                        <span>
+                            <strong>Accès client</strong>
+                            <span class="dev-cd__step-desc">Le client se connecte sur /admin pour éditer.</span>
+                            <a class="dev-cd__step-link" href="/admin" target="_blank" rel="noopener noreferrer">Ouvrir /admin</a>
+                        </span>
+                    </li>
+                </ol>
+            </section>
 
-        <section class="dev-panel" aria-labelledby="client-medias-title">
-            <h2 class="dev-panel__title" id="client-medias-title">Médias</h2>
-            <p class="dev-panel__desc">Bibliothèque globale images et vidéos. Si activé, le client y accède depuis /admin/medias et lors de l'édition d'une page.</p>
-            <label class="dev-perm-switch">
-                <input type="checkbox" name="cd_medias" value="1"{{medias_checked}} />
-                <span class="dev-perm-switch__text">
-                    <strong>Autoriser la gestion des médias</strong>
-                    <span>Import, suppression et sélection dans les champs image / vidéo.</span>
-                </span>
-            </label>
-        </section>
+            <section class="dev-cd__card" aria-labelledby="dev-cd-tip-title">
+                <h2 class="dev-cd__card-title" id="dev-cd-tip-title">Astuce</h2>
+                <p class="dev-cd__tip">Vous pouvez aussi activer l'accès depuis l'éditeur d'un bloc : section <strong>Accès Client</strong> en bas du panneau.</p>
+                <p class="dev-cd__tip">Le thème du site (couleurs, polices) s'applique automatiquement à /admin.</p>
+                <a class="dev-button dev-button--ghost dev-button--sm" href="/dev/theme">
+                    <i class="fa-solid fa-palette" aria-hidden="true"></i>
+                    Régler le thème
+                </a>
+            </section>
+        </aside>
 
-        <section class="dev-panel" aria-labelledby="client-pages-title">
-            <h2 class="dev-panel__title" id="client-pages-title">Pages et champs</h2>
-            <p class="dev-panel__desc">Cochez une page ou un bloc pour tout autoriser, ou ouvrez-le pour choisir champ par champ. La flèche déplie / replie.</p>
-            {{{tree_html}}}
-        </section>
-    </form>
+        <div class="dev-cd__main">
+            <div class="dev-cd__empty {{setup_empty_class}}" role="status">
+                <div class="dev-cd__empty-icon" aria-hidden="true">
+                    <i class="fa-solid fa-lock-open"></i>
+                </div>
+                <h2 class="dev-cd__empty-title">Aucun accès client configuré</h2>
+                <p class="dev-cd__empty-desc">Cochez au moins une page ou un champ ci-dessous pour créer le dashboard client. Sans cela, /admin reste vide.</p>
+            </div>
+
+            <form method="post" action="/dev/client-dashboard" id="client-dashboard-form"
+                  class="dev-form dev-cd__form"
+                  hx-post="/dev/client-dashboard"
+                  hx-trigger="change delay:400ms"
+                  hx-target="#client-dashboard-status"
+                  hx-swap="innerHTML"
+                  data-dev-toast-form="Permissions enregistrées">
+
+                <section class="dev-cd__card" aria-labelledby="client-site-title">
+                    <div class="dev-cd__card-head">
+                        <div>
+                            <h2 class="dev-cd__card-title" id="client-site-title">Identité et contact</h2>
+                            <p class="dev-cd__card-desc">Si activé, le client peut modifier le nom, l'accroche, le logo, le favicon et les coordonnées depuis /admin/site.</p>
+                        </div>
+                    </div>
+                    <label class="dev-perm-switch">
+                        <input type="checkbox" name="cd_site" value="1"{{site_checked}} />
+                        <span class="dev-perm-switch__text">
+                            <strong>Autoriser l'identité et le contact</strong>
+                            <span>Nom du site, accroche, logo, favicon, email, téléphone, adresse.</span>
+                        </span>
+                    </label>
+                </section>
+
+                <section class="dev-cd__card" aria-labelledby="client-medias-title">
+                    <div class="dev-cd__card-head">
+                        <div>
+                            <h2 class="dev-cd__card-title" id="client-medias-title">Bibliothèque médias</h2>
+                            <p class="dev-cd__card-desc">Si activé, le client peut importer et choisir des images / vidéos depuis /admin/medias.</p>
+                        </div>
+                    </div>
+                    <label class="dev-perm-switch">
+                        <input type="checkbox" name="cd_medias" value="1"{{medias_checked}} />
+                        <span class="dev-perm-switch__text">
+                            <strong>Autoriser la gestion des médias</strong>
+                            <span>Import, suppression et sélection dans les champs image / vidéo.</span>
+                        </span>
+                    </label>
+                </section>
+
+                <section class="dev-cd__card" aria-labelledby="client-pages-title">
+                    <div class="dev-cd__card-head">
+                        <div>
+                            <h2 class="dev-cd__card-title" id="client-pages-title">Contenu éditable</h2>
+                            <p class="dev-cd__card-desc">Cochez une page ou un bloc pour tout autoriser, ou dépliez pour choisir champ par champ. Enregistrement automatique.</p>
+                        </div>
+                        <span class="dev-cd__card-meta">{{pages_available}} page(s) du site</span>
+                    </div>
+                    {{{tree_html}}}
+                </section>
+            </form>
+        </div>
+    </div>
 </div>

@@ -30,8 +30,8 @@ final class MediasController
         $tab = ($request->query['tab'] ?? 'images') === 'videos' ? 'videos' : 'images';
         $this->library->syncDiscoveredRecords('image');
         $this->library->syncDiscoveredRecords('video');
-        $importedImages = $this->media->all('image');
-        $videos = $this->media->all('video');
+        $importedImages = $this->media->all('image', MediaRepository::OWNER_DEV);
+        $videos = $this->media->all('video', MediaRepository::OWNER_DEV);
 
         return $this->ui->render('medias-index.html', [
             'title' => 'Médias',
@@ -64,12 +64,19 @@ final class MediasController
                 ? $this->libraryUploader->storeVideo($file)
                 : $this->libraryUploader->storeImage($file);
             if ($this->media->findByUrl($url) === null) {
+                $meta = $this->libraryUploader->storedFileMeta(
+                    $url,
+                    (string) ($file['type'] ?? ''),
+                    (int) ($file['size'] ?? 0),
+                );
                 $this->media->create(
                     $kind,
                     $url,
                     basename($url),
-                    (string) ($file['type'] ?? ''),
-                    (int) ($file['size'] ?? 0),
+                    $meta['mime'],
+                    $meta['size'],
+                    '',
+                    MediaRepository::OWNER_DEV,
                 );
             }
         } catch (MediaUploadException $e) {
@@ -88,6 +95,14 @@ final class MediasController
 
         if ($this->library->isBundledAsset($record['url'])) {
             return $this->respondGrid($request, $record['kind'] === 'video' ? 'videos' : 'images', 'Les visuels modèles intégrés ne peuvent pas être supprimés.');
+        }
+
+        if (($record['owner'] ?? '') === MediaRepository::OWNER_CLIENT) {
+            return $this->respondGrid(
+                $request,
+                $record['kind'] === 'video' ? 'videos' : 'images',
+                'Ce média appartient à la galerie client.',
+            );
         }
 
         $usages = $this->usage->usages($record['url']);
@@ -120,8 +135,8 @@ final class MediasController
     {
         $this->library->syncDiscoveredRecords($tab === 'videos' ? 'video' : 'image');
         $html = $tab === 'videos'
-            ? $this->renderGrid($this->media->all('video'))
-            : $this->renderImagesPanel($this->media->all('image'));
+            ? $this->renderGrid($this->media->all('video', MediaRepository::OWNER_DEV))
+            : $this->renderImagesPanel($this->media->all('image', MediaRepository::OWNER_DEV));
 
         if ($this->isHx($request)) {
             $kind = $tab === 'videos' ? 'video' : 'image';

@@ -1,0 +1,77 @@
+<div class="admin-site" data-admin-site>
+    <div class="admin-alert {{flash_mod}} {{flash_hidden}}" role="status">{{flash}}</div>
+
+    <form method="post" action="{{form_action}}" class="admin-form admin-site__form" id="admin-site-form"
+          toolname="update_site_identity"
+          tooldescription="Met à jour le nom, l'accroche, le logo, le favicon et les coordonnées de contact du site.">
+        <section class="admin-edit-group" aria-labelledby="admin-site-identity-title">
+            <h2 class="admin-edit-group__title" id="admin-site-identity-title">
+                <i class="fa-solid fa-id-card" aria-hidden="true"></i> Identité
+            </h2>
+            <div class="admin-edit-group__fields">
+                <div class="admin-field">
+                    <label class="admin-label" for="site_name">Nom du site</label>
+                    <input class="admin-input" id="site_name" type="text" name="site_name" value="{{site_name}}" autocomplete="organization" toolparamdescription="Nom public de la marque ou du site" />
+                </div>
+                <div class="admin-field admin-field--full">
+                    <label class="admin-label" for="site_tagline">Accroche</label>
+                    <input class="admin-input" id="site_tagline" type="text" name="site_tagline" value="{{site_tagline}}" toolparamdescription="Courte phrase d'accroche affichée sur le site" />
+                    <p class="admin-hint">Visible dans l'en-tête ou le pied de page selon le réglage du site.</p>
+                </div>
+                {{{logo_picker_html}}}
+                {{{favicon_picker_html}}}
+            </div>
+        </section>
+
+        <section class="admin-edit-group" aria-labelledby="admin-site-uploads-title">
+            <h2 class="admin-edit-group__title" id="admin-site-uploads-title">
+                <i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i> Importer un visuel
+            </h2>
+            <div class="admin-edit-group__fields admin-site__uploads">
+                <div class="admin-field">
+                    <label class="admin-label" for="site_logo_file">Nouveau logo</label>
+                    <input class="admin-input" id="site_logo_file" type="file" name="file" accept="{{logo_upload_accept}}" form="admin-site-logo-upload" />
+                    <button type="submit" class="admin-btn admin-btn--soft admin-btn--sm" form="admin-site-logo-upload">Importer le logo</button>
+                </div>
+                <div class="admin-field">
+                    <label class="admin-label" for="site_favicon_file">Nouveau favicon</label>
+                    <input class="admin-input" id="site_favicon_file" type="file" name="file" accept="{{favicon_upload_accept}}" form="admin-site-favicon-upload" />
+                    <button type="submit" class="admin-btn admin-btn--soft admin-btn--sm" form="admin-site-favicon-upload">Importer le favicon</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="admin-edit-group" aria-labelledby="admin-site-contact-title">
+            <h2 class="admin-edit-group__title" id="admin-site-contact-title">
+                <i class="fa-solid fa-address-book" aria-hidden="true"></i> Contact
+            </h2>
+            <div class="admin-edit-group__fields">
+                <div class="admin-field">
+                    <label class="admin-label" for="contact_email">Email</label>
+                    <input class="admin-input" id="contact_email" type="email" name="contact_email" value="{{contact_email}}" autocomplete="email" toolparamdescription="Adresse email de contact publique" />
+                </div>
+                <div class="admin-field">
+                    <label class="admin-label" for="contact_phone">Téléphone</label>
+                    <input class="admin-input" id="contact_phone" type="tel" name="contact_phone" value="{{contact_phone}}" autocomplete="tel" toolparamdescription="Numéro de téléphone de contact public" />
+                </div>
+                <div class="admin-field admin-field--full">
+                    <label class="admin-label" for="contact_address">Adresse</label>
+                    <input class="admin-input" id="contact_address" type="text" name="contact_address" value="{{contact_address}}" autocomplete="street-address" toolparamdescription="Adresse postale ou bureau" />
+                    <p class="admin-hint">Ces informations sont aussi reprises dans les blocs Contact du site.</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="admin-site__actions">
+            <button type="submit" class="admin-btn admin-btn--primary">
+                <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i> Enregistrer
+            </button>
+            <a class="admin-btn admin-btn--ghost" href="/" target="_blank" rel="noopener noreferrer">Voir le site</a>
+        </div>
+    </form>
+
+    <form id="admin-site-logo-upload" method="post" action="/admin/site/logo/upload" enctype="multipart/form-data" hidden></form>
+    <form id="admin-site-favicon-upload" method="post" action="/admin/site/favicon/upload" enctype="multipart/form-data" hidden></form>
+</div>
+
+<script src="{{asset_root}}/assets/js/admin-site-edit.js" defer></script>

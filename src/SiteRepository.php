@@ -122,6 +122,9 @@ final class SiteRepository
             'logo_url' => '',
             'favicon_url' => '',
             'og_image_url' => '',
+            'contact_email' => '',
+            'contact_phone' => '',
+            'contact_address' => '',
         ];
     }
 

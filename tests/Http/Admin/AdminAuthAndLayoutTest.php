@@ -31,6 +31,7 @@ final class AdminAuthAndLayoutTest extends TestCase
 {
     private SiteRepository $site;
     private PageRepository $pages;
+    private MediaRepository $media;
     private AdminDashboard $ui;
     private AuthController $auth;
     private PagesController $pagesController;
@@ -43,6 +44,7 @@ final class AdminAuthAndLayoutTest extends TestCase
 
         $this->site = new SiteRepository($pdo);
         $this->pages = new PageRepository($pdo);
+        $this->media = new MediaRepository($pdo);
         $site = $this->site->getSite();
         $site['name'] = 'Studio Nord';
         $site['logo_url'] = '/uploads/site/logo.png';
@@ -60,7 +62,7 @@ final class AdminAuthAndLayoutTest extends TestCase
             [['id' => 'hero-1', 'type' => 'hero', 'variant' => 'hero1', 'visible' => true, 'content' => [], 'style' => []]],
             [],
             true,
-            '',
+            gmdate('Y-m-d H:i:s', time() - 3600),
         ));
         $this->site->setClientDashboard([
             'medias_enabled' => true,
@@ -90,13 +92,12 @@ final class AdminAuthAndLayoutTest extends TestCase
             $root . '/resources/sections/_shared/style-fields.yaml',
         );
         $schema = new SectionFieldSchema($registry);
-        $media = new MediaRepository($pdo);
-        $mediaLibrary = new MediaLibrary($media, sys_get_temp_dir());
+        $mediaLibrary = new MediaLibrary($this->media, sys_get_temp_dir());
         $this->pagesController = new PagesController(
             $this->ui,
             $this->site,
             $this->pages,
-            new PageEditFormRenderer($registry, $schema, $mediaLibrary, $media),
+            new PageEditFormRenderer($registry, $schema, $mediaLibrary, $this->media, $this->pages),
             new PageEditContentApplier($schema),
         );
     }
@@ -133,7 +134,7 @@ final class AdminAuthAndLayoutTest extends TestCase
         ));
 
         $this->assertSame(302, $response->getStatus());
-        $this->assertStringContainsString('/admin/pages', $response->getHeader('Location')[0] ?? '');
+        $this->assertStringContainsString('/admin/home', $response->getHeader('Location')[0] ?? '');
         $cookies = $response->getHeader('Set-Cookie');
         $this->assertNotEmpty($cookies);
         $this->assertStringContainsString('capsule_client=1', $cookies[0]);
@@ -161,20 +162,29 @@ final class AdminAuthAndLayoutTest extends TestCase
 
         $this->assertStringContainsString('Pages', $body);
         $this->assertStringContainsString('Studio Nord', $body);
-        $this->assertStringContainsString('admin-sidebar', $body);
+        $this->assertStringContainsString('admin-nav', $body);
         $this->assertStringContainsString('Accueil', $body);
         $this->assertStringContainsString('/admin/pages/_', $body);
-        $this->assertStringContainsString('Modifier', $body);
+        $this->assertStringContainsString('admin-page-grid', $body);
+        $this->assertStringContainsString('admin-pagination', $body);
+        $this->assertStringContainsString('aria-label="Modifier Accueil"', $body);
         $this->assertStringContainsString('/admin/medias', $body);
         $this->assertDoesNotMatchRegularExpression('/class="[^"]*\bhidden\b[^"]*"[^>]*>\s*<i[^>]*fa-photo-film/', $body);
     }
 
-    public function testHomeRedirectsToPages(): void
+    public function testHomeShowsDashboardStatsAndQuickActions(): void
     {
-        $home = new HomeController($this->ui);
-        $response = $home->index(new Request('GET', '/admin/home', [], [], [], []));
-        $this->assertSame(302, $response->getStatus());
-        $this->assertStringContainsString('/admin/pages', $response->getHeader('Location')[0] ?? '');
+        $home = new HomeController($this->ui, $this->site, $this->pages, $this->media);
+        $body = (string) $home->index(new Request('GET', '/admin/home', [], [], [], []))->getBody();
+
+        $this->assertStringContainsString('Tableau de bord', $body);
+        $this->assertStringContainsString('admin-stat-card', $body);
+        $this->assertStringContainsString('Page', $body);
+        $this->assertStringNotContainsString('Publiée', $body);
+        $this->assertStringNotContainsString('Brouillon', $body);
+        $this->assertStringContainsString('admin-quick-tile', $body);
+        $this->assertStringContainsString('Accueil', $body);
+        $this->assertStringContainsString('admin-page-card', $body);
     }
 
     public function testClientAuthRedirectsWhenUnauthenticated(): void

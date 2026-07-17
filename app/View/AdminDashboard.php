@@ -105,26 +105,61 @@ final class AdminDashboard
         $data['site_name_escaped'] = htmlspecialchars($name, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
         $data['logo_url'] = $logoUrl;
         $data['logo_html'] = $this->logoHtml($name, $logoUrl);
-        $data['favicon_href'] = $faviconUrl !== ''
-            ? $faviconUrl
-            : $assetRoot . '/assets/favicon-dev.png';
+        $data['favicon_html'] = $this->faviconHtml($faviconUrl, $assetRoot);
+        $data['favicon_href'] = $faviconUrl !== '' ? $faviconUrl : $assetRoot . '/favicon.svg';
         $data['asset_root'] = $assetRoot;
         $data['base_path'] = $assetRoot;
         $data['base_path_json'] = json_encode($assetRoot, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         $data['theme_css'] = $this->site->themeHeadHtml($assetRoot, null, $this->publicCssDir);
-        $data['flash'] ??= '';
+        $data['main_class'] ??= '';
+
+        $flash = is_string($data['flash'] ?? null) ? $data['flash'] : '';
+        $data['flash'] = $flash;
+        $data['flash_hidden'] = $flash === '' ? 'hidden' : '';
+        $data['flash_mod'] = $this->flashModifier($flash);
 
         $nav = is_string($data['nav_section'] ?? null) ? $data['nav_section'] : 'pages';
-        foreach (['pages', 'medias'] as $key) {
+        foreach (['home', 'site', 'pages', 'medias'] as $key) {
             $active = $nav === $key;
             $data['nav_active_' . $key] = $active ? 'is-active' : '';
             $data['nav_aria_' . $key] = $active ? ' aria-current="page"' : '';
         }
 
-        $mediasEnabled = ClientDashboardConfig::isMediasEnabled($this->site->getClientDashboard());
+        $clientConfig = $this->site->getClientDashboard();
+        $mediasEnabled = ClientDashboardConfig::isMediasEnabled($clientConfig);
+        $siteEnabled = ClientDashboardConfig::isSiteEnabled($clientConfig);
         $data['nav_medias_hidden'] = $mediasEnabled ? '' : 'hidden';
+        $data['nav_site_hidden'] = $siteEnabled ? '' : 'hidden';
 
         return $data;
+    }
+
+    private function flashModifier(string $flash): string
+    {
+        if ($flash === '') {
+            return '';
+        }
+
+        $lower = mb_strtolower($flash);
+        foreach (['erreur', 'incorrect', 'impossible', 'introuvable', 'pas ouverte', 'refus', 'invalide', 'aucun fichier', 'échoué'] as $hint) {
+            if (str_contains($lower, $hint)) {
+                return 'admin-alert--error';
+            }
+        }
+
+        return 'admin-alert--success';
+    }
+
+    private function faviconHtml(string $faviconUrl, string $assetRoot): string
+    {
+        $href = $faviconUrl !== '' ? $faviconUrl : $assetRoot . '/favicon.svg';
+        $safe = htmlspecialchars($href, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+        $lower = strtolower($href);
+        $type = str_ends_with($lower, '.svg')
+            ? ' type="image/svg+xml"'
+            : (str_ends_with($lower, '.ico') ? ' type="image/x-icon"' : ' type="image/png"');
+
+        return '<link rel="icon" href="' . $safe . '"' . $type . ' />';
     }
 
     private function logoHtml(string $name, string $logoUrl): string
@@ -132,13 +167,13 @@ final class AdminDashboard
         if ($logoUrl === '') {
             $initial = mb_strtoupper(mb_substr($name, 0, 1));
 
-            return '<span class="admin-brand__mark admin-brand__mark--text" aria-hidden="true">'
+            return '<span class="admin-brand__mark" aria-hidden="true">'
                 . htmlspecialchars($initial, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')
                 . '</span>';
         }
 
         $src = htmlspecialchars($logoUrl, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 
-        return '<img class="admin-brand__logo" src="' . $src . '" alt="" width="40" height="40" />';
+        return '<img class="admin-brand__logo" src="' . $src . '" alt="" width="32" height="32" />';
     }
 }

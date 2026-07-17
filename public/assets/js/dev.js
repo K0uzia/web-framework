@@ -467,6 +467,7 @@
         syncSectionEditorHeader(card);
 
         initTabs(slot);
+        initClientAccessForms(slot);
 
         var editorBody = document.querySelector('.dev-section-editor__body');
         if (editorBody) {
@@ -3749,6 +3750,48 @@
         });
     }
 
+    function syncClientAccessLocked(form) {
+        if (!form) {
+            return;
+        }
+        var lockedEl = form.querySelector('[data-client-access-locked]');
+        if (!lockedEl) {
+            return;
+        }
+        var toggles = form.querySelectorAll('[data-client-access-toggle]');
+        var anyOn = false;
+        toggles.forEach(function (cb) {
+            if (cb.checked) {
+                anyOn = true;
+            }
+        });
+        lockedEl.classList.toggle('visually-hidden', anyOn);
+    }
+
+    function initClientAccessForms(root) {
+        (root || document).querySelectorAll('[data-dev-client-access-form]').forEach(function (form) {
+            if (form.dataset.clientAccessBound === '1') {
+                return;
+            }
+            form.dataset.clientAccessBound = '1';
+            syncClientAccessLocked(form);
+            form.addEventListener('change', function () {
+                syncClientAccessLocked(form);
+            });
+        });
+    }
+
+    document.addEventListener('change', function (event) {
+        var toggle = event.target && event.target.closest
+            ? event.target.closest('[data-client-access-toggle]')
+            : null;
+        if (!toggle) {
+            return;
+        }
+        var form = toggle.closest('[data-dev-client-access-form]');
+        syncClientAccessLocked(form);
+    });
+
     /* ---------------------------------------------------------------------
      * Init on load
      * ------------------------------------------------------------------- */
@@ -3766,6 +3809,7 @@
         initMediaLibraryModal();
         initSiteMediaPickers(document);
         initPermTree(document);
+        initClientAccessForms(document);
         showFlashToast();
         initExportBrowse(document);
         if (window.location.hash === '#new') {

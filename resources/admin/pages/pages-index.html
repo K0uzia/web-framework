@@ -1,17 +1,40 @@
-<div class="admin-page">
-    <header class="admin-page__head">
-        <h1>Pages</h1>
-        <p class="admin-lead">Pages que vous pouvez modifier.</p>
+<div class="admin-collection">
+    <div class="admin-alert {{flash_mod}} {{flash_hidden}}" role="status">{{flash}}</div>
+
+    <header class="admin-collection__intro">
+        <h2 class="admin-collection__title">Pages</h2>
+        <p class="admin-collection__stat"><strong>{{pages_count}}</strong> page(s)</p>
     </header>
 
-    <p class="admin-flash" role="status">{{flash}}</p>
-
     <div class="admin-empty {{empty_class}}">
-        <p class="admin-empty__title">Aucune page à éditer</p>
-        <p class="admin-hint">Votre développeur doit autoriser des pages dans /dev → Dashboard client.</p>
+        <div class="admin-empty__visual" aria-hidden="true">
+            <i class="fa-solid fa-file-circle-plus"></i>
+        </div>
+        <h2 class="admin-empty__title">Aucune page disponible</h2>
+        <p class="admin-empty__text">Demandez à votre équipe d'ouvrir des pages à l'édition. Elles apparaîtront ici.</p>
     </div>
 
-    <div class="{{list_class}}">
-        {{{pages_list_html}}}
-    </div>
+    <section class="{{table_class}}" aria-label="Liste des pages">
+        <div class="admin-list-toolbar">
+            <label class="admin-search">
+                <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                <span class="visually-hidden">Rechercher une page</span>
+                <input type="search" class="admin-input" id="admin-pages-search" placeholder="Rechercher" autocomplete="off" />
+            </label>
+        </div>
+
+        <ul class="admin-page-grid" id="admin-pages-rows" role="list">
+            {{{rows_html}}}
+        </ul>
+
+        <p class="admin-panel__empty hidden" id="admin-pages-no-match" role="status">Aucun résultat pour cette recherche.</p>
+
+        <nav class="admin-pagination" id="admin-pages-pagination" aria-label="Pagination">
+            <button type="button" class="admin-btn admin-btn--ghost admin-btn--sm" id="admin-pages-prev" disabled>Précédent</button>
+            <div class="admin-pagination__pages" id="admin-pages-page-numbers"></div>
+            <button type="button" class="admin-btn admin-btn--ghost admin-btn--sm" id="admin-pages-next">Suivant</button>
+        </nav>
+    </section>
 </div>
+
+<script src="{{asset_root}}/assets/js/admin-pages-index.js" defer></script>

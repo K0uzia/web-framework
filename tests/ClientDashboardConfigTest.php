@@ -26,6 +26,7 @@ final class ClientDashboardConfigTest extends TestCase
         $this->assertSame(
             [
                 'medias_enabled' => false,
+                'site_enabled' => true,
                 'pages' => [
                     'contact' => [
                         'sections' => [
@@ -76,6 +77,31 @@ final class ClientDashboardConfigTest extends TestCase
         );
 
         $this->assertTrue(ClientDashboardConfig::isMediasEnabled($config));
+        $this->assertFalse(ClientDashboardConfig::isSiteEnabled($config));
         $this->assertSame([], $config['pages']);
+    }
+
+    public function testFromFormDataPersistsSiteFlag(): void
+    {
+        $config = ClientDashboardConfig::fromFormData(
+            [ClientDashboardConfig::FORM_SITE_KEY => '1'],
+            [],
+            [''],
+        );
+
+        $this->assertTrue(ClientDashboardConfig::isSiteEnabled($config));
+        $this->assertFalse(ClientDashboardConfig::isMediasEnabled($config));
+    }
+
+    public function testNormalizeDefaultsSiteEnabledWhenAbsent(): void
+    {
+        $config = ClientDashboardConfig::normalize(['medias_enabled' => true, 'pages' => []]);
+        $this->assertTrue(ClientDashboardConfig::isSiteEnabled($config));
+
+        $configOff = ClientDashboardConfig::normalize([
+            'site_enabled' => false,
+            'pages' => [],
+        ]);
+        $this->assertFalse(ClientDashboardConfig::isSiteEnabled($configOff));
     }
 }

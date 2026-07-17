@@ -27,6 +27,7 @@ use App\Http\Dev\MediaUploader;
 final class SectionsControllerTest extends TestCase
 {
     private PageRepository $pages;
+    private SiteRepository $site;
     private SectionsController $controller;
     private MediaRepository $mediaRepo;
     private string $uploadsDir;
@@ -58,7 +59,7 @@ final class SectionsControllerTest extends TestCase
         );
         $handlers = new SectionHandlerRegistry();
         $variantResolver = new SectionVariantResolver($registry, $handlers);
-        $forms = new SectionFormRenderer($registry, $this->pages, $library, $libraryUploader, $fieldSchema, $variantResolver);
+        $forms = new SectionFormRenderer($registry, $this->pages, $library, $libraryUploader, $fieldSchema, $variantResolver, $site);
 
         $this->controller = new SectionsController(
             $ui,
@@ -71,7 +72,9 @@ final class SectionsControllerTest extends TestCase
             $this->mediaRepo,
             $variantResolver,
             $fieldSchema,
+            $site,
         );
+        $this->site = $site;
 
         $this->pages->save(new Page(
             slug: 'about',
@@ -215,6 +218,25 @@ final class SectionsControllerTest extends TestCase
         $this->controller->reorder($this->hxPost('/dev/pages/about/sections/reorder', 'order='), 'about');
         $after = $this->pages->findBySlug('about', false)->sections;
         $this->assertSame($before, $after);
+    }
+
+    public function testUpdateClientAccessPersistsTextFields(): void
+    {
+        $response = $this->controller->updateClientAccess(
+            $this->hxPost(
+                '/dev/pages/about/sections/hero-1/client-access',
+                'editable_text=1&editable_image=0&editable_link=0',
+            ),
+            'about',
+            'hero-1',
+        );
+
+        $this->assertSame(200, $response->getStatus());
+        $config = $this->site->getClientDashboard();
+        $fields = $config['pages']['about']['sections']['hero-1']['fields'] ?? [];
+        $this->assertContains('title', $fields);
+        $this->assertContains('subtitle', $fields);
+        $this->assertNotContains('image_url', $fields);
     }
 
     private function hxPost(string $path, string $body): Request

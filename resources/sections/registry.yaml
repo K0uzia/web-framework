@@ -108,7 +108,7 @@ hero:
       client_editable: true
     reviews_count:
       type: text
-      label: Nombre d''avis
+      label: Nombre d'avis
       client_editable: true
     review_avatars:
       type: repeater
@@ -280,12 +280,15 @@ features:
         label:
           type: text
           label: Label
+          show_for_variants: [feature13]
         url:
           type: image
           label: Image
+          show_for_variants: [feature3, feature13, feature51, feature72, feature73, feature74, feature166, feature197]
         href:
           type: text
           label: Lien
+          show_for_variants: [feature13, feature72, feature73]
   style_fields:
     bg:
       type: color-token

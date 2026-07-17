@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Http\Dev;
 
+use App\Http\Dev\Sections\ClientAccessKinds;
 use App\Http\Dev\Sections\SectionFormRenderer;
 use App\Http\Dev\Sections\SectionDefaults;
+use Capsule\ClientDashboardConfig;
 use Capsule\DevDashboard;
 use Capsule\Http\Message\Request;
 use Capsule\Http\Message\Response;
@@ -17,6 +19,7 @@ use Capsule\PageRepository;
 use Capsule\Section\SectionFieldSchema;
 use Capsule\Section\SectionVariantResolver;
 use Capsule\SectionRegistry;
+use Capsule\SiteRepository;
 use Capsule\HeroStyle;
 
 final class SectionsController
@@ -34,6 +37,7 @@ final class SectionsController
         private readonly MediaRepository $mediaRepository,
         private readonly SectionVariantResolver $variantResolver,
         private readonly SectionFieldSchema $fieldSchema,
+        private readonly SiteRepository $site,
     ) {
     }
 
@@ -78,6 +82,8 @@ final class SectionsController
         $data = FormData::fromRequest($request);
         $sections = $page->sections;
         $updatedSection = null;
+        $variantChanged = false;
+        $previousVariant = '';
 
         foreach ($sections as $i => $section) {
             if (!is_array($section) || ($section['id'] ?? '') !== $id) {
@@ -86,9 +92,11 @@ final class SectionsController
 
             $type = (string) ($section['type'] ?? '');
             $variant = (string) ($sections[$i]['variant'] ?? '');
+            $previousVariant = $variant;
 
             if (isset($data['variant'])) {
                 $variant = $this->resolveVariant($type, (string) $data['variant']);
+                $variantChanged = $variant !== $previousVariant;
                 $sections[$i]['variant'] = $variant;
             }
 
@@ -105,6 +113,10 @@ final class SectionsController
 
         $this->saveSections($page, $sections);
 
+        if ($variantChanged && is_array($updatedSection)) {
+            $this->remapClientAccessForVariant($page->slug, $id, $updatedSection, $previousVariant);
+        }
+
         if ($this->isHx($request) && ($data['variant_refresh'] ?? '') === '1' && is_array($updatedSection)) {
             $html = $this->sectionForms->renderSectionBody($slug, $updatedSection);
             $type = (string) ($updatedSection['type'] ?? '');
@@ -119,6 +131,62 @@ final class SectionsController
         }
 
         return $this->ui->redirect('/dev/pages/' . SlugCodec::encode($page->slug));
+    }
+
+    public function updateClientAccess(Request $request, string $slug, string $id): Response
+    {
+        $page = $this->requirePage($slug);
+        if ($page === null) {
+            return $this->ui->redirect('/dev/pages');
+        }
+
+        $section = null;
+        foreach ($page->sections as $item) {
+            if (is_array($item) && ($item['id'] ?? '') === $id) {
+                $section = $item;
+                break;
+            }
+        }
+        if ($section === null) {
+            return $this->ui->redirect('/dev/pages/' . SlugCodec::encode($page->slug));
+        }
+
+        $type = (string) ($section['type'] ?? '');
+        $variant = $this->resolveVariant($type, (string) ($section['variant'] ?? ''));
+        $fields = $this->fieldSchema->contentFieldsForVariant($type, $variant);
+        $groups = ClientAccessKinds::groupFieldKeys($fields);
+
+        $data = FormData::fromRequest($request);
+        $perms = [
+            'editableText' => ($data['editable_text'] ?? '0') === '1',
+            'editableImage' => ($data['editable_image'] ?? '0') === '1',
+            'editableLink' => ($data['editable_link'] ?? '0') === '1',
+        ];
+        $newFields = ClientAccessKinds::allowedFromPermissions($groups, $perms);
+
+        $config = $this->site->getClientDashboard();
+        $pages = $config['pages'];
+        if ($newFields === []) {
+            unset($pages[$page->slug]['sections'][$id]);
+            if (($pages[$page->slug]['sections'] ?? []) === []) {
+                unset($pages[$page->slug]);
+            }
+        } else {
+            $pages[$page->slug]['sections'][$id] = ['fields' => $newFields];
+        }
+        $this->site->setClientDashboard([
+            'medias_enabled' => ClientDashboardConfig::isMediasEnabled($config),
+            'pages' => $pages,
+        ]);
+
+        if ($this->isHx($request)) {
+            return $this->ui->partial('saved.html', ['message' => 'Accès client enregistré']);
+        }
+
+        return $this->ui->withFlash(
+            $this->ui->redirect('/dev/pages/' . SlugCodec::encode($page->slug)),
+            'Accès client enregistré.',
+        );
     }
 
     public function move(Request $request, string $slug, string $id): Response
@@ -272,6 +340,8 @@ final class SectionsController
                     basename($url),
                     (string) ($file['type'] ?? ''),
                     (int) ($file['size'] ?? 0),
+                    '',
+                    \Capsule\MediaRepository::OWNER_DEV,
                 );
             }
             $page = $this->setSectionFieldValue($page, $id, $field, $url);
@@ -489,6 +559,53 @@ final class SectionsController
     private function requirePage(string $slug): ?Page
     {
         return $this->pages->findBySlug(SlugCodec::decode($slug), false);
+    }
+
+    /**
+     * Recalcule les champs Accès Client après un changement de variante
+     * (mêmes permissions texte / image / lien, champs adaptés à la nouvelle variante).
+     *
+     * @param array<string, mixed> $section
+     */
+    private function remapClientAccessForVariant(
+        string $pageSlug,
+        string $sectionId,
+        array $section,
+        string $previousVariant,
+    ): void {
+        $config = $this->site->getClientDashboard();
+        $stored = ClientDashboardConfig::allowedFields($config, $pageSlug, $sectionId);
+        if ($stored === []) {
+            return;
+        }
+
+        $type = (string) ($section['type'] ?? '');
+        $variant = (string) ($section['variant'] ?? '');
+        if ($type === '') {
+            return;
+        }
+
+        $oldFields = $this->fieldSchema->contentFieldsForVariant($type, $previousVariant);
+        $newFields = $this->fieldSchema->contentFieldsForVariant($type, $variant);
+        $oldGroups = ClientAccessKinds::groupFieldKeys($oldFields);
+        $newGroups = ClientAccessKinds::groupFieldKeys($newFields);
+        $perms = ClientAccessKinds::permissionsFromAllowed($oldGroups, $stored);
+        $newAllowed = ClientAccessKinds::allowedFromPermissions($newGroups, $perms);
+
+        $pages = $config['pages'];
+        if ($newAllowed === []) {
+            unset($pages[$pageSlug]['sections'][$sectionId]);
+            if (($pages[$pageSlug]['sections'] ?? []) === []) {
+                unset($pages[$pageSlug]);
+            }
+        } else {
+            $pages[$pageSlug]['sections'][$sectionId] = ['fields' => $newAllowed];
+        }
+
+        $this->site->setClientDashboard([
+            'medias_enabled' => ClientDashboardConfig::isMediasEnabled($config),
+            'pages' => $pages,
+        ]);
     }
 
     /**

@@ -9,6 +9,7 @@ namespace Capsule;
  *
  * {
  *   "medias_enabled": true,
+ *   "site_enabled": true,
  *   "pages": {
  *     "contact": {
  *       "sections": {
@@ -22,19 +23,20 @@ final class ClientDashboardConfig
 {
     public const FORM_FIELD_PREFIX = 'cd:';
     public const FORM_MEDIAS_KEY = 'cd_medias';
+    public const FORM_SITE_KEY = 'cd_site';
 
     /**
-     * @return array{medias_enabled: bool, pages: array<string, array{sections: array<string, array{fields: list<string>}>}>}
+     * @return array{medias_enabled: bool, site_enabled: bool, pages: array<string, array{sections: array<string, array{fields: list<string>}>}>}
      */
     public static function empty(): array
     {
-        return ['medias_enabled' => false, 'pages' => []];
+        return ['medias_enabled' => false, 'site_enabled' => true, 'pages' => []];
     }
 
     /**
      * @param array<string, mixed> $raw
      *
-     * @return array{medias_enabled: bool, pages: array<string, array{sections: array<string, array{fields: list<string>}>}>}
+     * @return array{medias_enabled: bool, site_enabled: bool, pages: array<string, array{sections: array<string, array{fields: list<string>}>}>}
      */
     public static function normalize(array $raw): array
     {
@@ -65,6 +67,10 @@ final class ClientDashboardConfig
 
         return [
             'medias_enabled' => self::isTruthy($raw['medias_enabled'] ?? false),
+            // Absent = activé (configs existantes et espace client livré avec identité).
+            'site_enabled' => array_key_exists('site_enabled', $raw)
+                ? self::isTruthy($raw['site_enabled'])
+                : true,
             'pages' => $pages,
         ];
     }
@@ -74,7 +80,7 @@ final class ClientDashboardConfig
      * @param array<string, array{type: string, fields: list<string>}> $sectionIndex
      * @param list<string>                                             $knownSlugs
      *
-     * @return array{medias_enabled: bool, pages: array<string, array{sections: array<string, array{fields: list<string>}>}>}
+     * @return array{medias_enabled: bool, site_enabled: bool, pages: array<string, array{sections: array<string, array{fields: list<string>}>}>}
      */
     public static function fromFormData(array $formData, array $sectionIndex, array $knownSlugs): array
     {
@@ -118,6 +124,7 @@ final class ClientDashboardConfig
 
         return [
             'medias_enabled' => ($formData[self::FORM_MEDIAS_KEY] ?? '') === '1',
+            'site_enabled' => ($formData[self::FORM_SITE_KEY] ?? '') === '1',
             'pages' => $out,
         ];
     }
@@ -149,11 +156,19 @@ final class ClientDashboardConfig
     }
 
     /**
-     * @param array{medias_enabled?: bool, pages: array<string, array{sections: array<string, array{fields: list<string>}>}>} $config
+     * @param array{medias_enabled?: bool, site_enabled?: bool, pages: array<string, array{sections: array<string, array{fields: list<string>}>}>} $config
      */
     public static function isMediasEnabled(array $config): bool
     {
         return ($config['medias_enabled'] ?? false) === true;
+    }
+
+    /**
+     * @param array{medias_enabled?: bool, site_enabled?: bool, pages?: array<string, mixed>} $config
+     */
+    public static function isSiteEnabled(array $config): bool
+    {
+        return ($config['site_enabled'] ?? true) === true;
     }
 
     /**

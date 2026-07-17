@@ -1,35 +1,86 @@
-<div class="admin-page">
-    <header class="admin-page__head">
-        <p class="admin-breadcrumb">
-            <a href="/admin/pages">Pages</a>
-            <span aria-hidden="true">/</span>
-            <span>Modifier</span>
-        </p>
-        <h1>{{page_title}}</h1>
-        <p class="admin-lead"><code>{{page_path}}</code> · {{sections_count}} section(s) · {{fields_count}} champ(s).</p>
+<div class="admin-document" data-admin-editor>
+    <div class="admin-alert admin-document__alert {{flash_mod}} {{flash_hidden}}" role="status">{{flash}}</div>
+
+    <header class="admin-document__header">
+        <div class="admin-document__header-main">
+            <a class="admin-icon-btn admin-icon-btn--bordered" href="/admin/pages" aria-label="Retour aux pages">
+                <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+            </a>
+            <div class="admin-document__heading">
+                <nav class="admin-breadcrumb" aria-label="Fil d'Ariane">
+                    <a href="/admin/pages">Pages</a>
+                    <span aria-hidden="true">/</span>
+                    <span aria-current="page">{{page_title}}</span>
+                </nav>
+                <h2 class="admin-document__title">{{page_title}}</h2>
+                <p class="admin-document__path"><code>{{page_slug_display}}</code></p>
+            </div>
+        </div>
+        <div class="admin-document__actions">
+            <p class="admin-save-state" id="admin-save-status" aria-live="polite">
+                <span class="admin-save-state__ok {{save_status_saved}}" data-save-state="saved">
+                    <i class="fa-solid fa-circle-check" aria-hidden="true"></i> Enregistré
+                </span>
+                <span class="admin-save-state__warn {{save_status_dirty}}" data-save-state="dirty">
+                    <i class="fa-solid fa-circle" aria-hidden="true"></i> Modifications non enregistrées
+                </span>
+            </p>
+            <button type="button" class="admin-btn admin-btn--ghost admin-btn--sm admin-document__info-btn" id="admin-editor-sidebar-open" aria-controls="admin-editor-sidebar" aria-expanded="false">
+                Infos
+            </button>
+            <a class="admin-btn admin-btn--ghost admin-btn--sm" href="{{page_path}}" target="_blank" rel="noopener noreferrer">
+                <i class="fa-solid fa-eye" aria-hidden="true"></i>
+                Aperçu
+            </a>
+            <button type="submit" class="admin-btn admin-btn--primary admin-btn--sm" form="admin-page-form">
+                <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i>
+                Enregistrer
+            </button>
+        </div>
     </header>
 
-    <p class="admin-flash" role="status">{{flash}}</p>
-
-    <form
-        class="admin-form admin-edit-form"
-        method="post"
-        action="{{form_action}}"
-        toolname="admin_update_page"
-        tooldescription="Enregistre le contenu autorisé de cette page pour le client final."
-    >
-        {{{form_fields_html}}}
-        {{{medias_hint_html}}}
-        <div class="admin-actions">
-            <button type="submit" class="admin-button admin-button--primary">
-                <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i> Enregistrer
-            </button>
-            <a class="admin-button admin-button--ghost" href="{{page_path}}" target="_blank" rel="noopener noreferrer">
-                <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i> Voir cette page
-            </a>
-            <a class="admin-button admin-button--ghost" href="/admin/pages">
-                <i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Retour aux pages
-            </a>
+    <div class="admin-document__layout">
+        <div class="admin-document__content">
+            <form
+                id="admin-page-form"
+                class="admin-form"
+                method="post"
+                action="{{form_action}}"
+                toolname="admin_update_page"
+                tooldescription="Enregistre le contenu autorisé de cette page pour le client final."
+            >
+                {{{form_fields_html}}}
+            </form>
         </div>
-    </form>
+
+        <aside class="admin-document__aside" id="admin-editor-sidebar" aria-label="Informations de la page">
+            <div class="admin-document__aside-head">
+                <h2>Informations</h2>
+                <button type="button" class="admin-icon-btn" id="admin-editor-sidebar-close" aria-label="Fermer le panneau">
+                    <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                </button>
+            </div>
+
+            <section class="admin-aside-card">
+                <h3 class="admin-aside-card__title">Page</h3>
+                <dl class="admin-meta">
+                    <div class="admin-meta__row">
+                        <dt>Modifiée</dt>
+                        <dd><time datetime="{{page_updated_iso}}" title="{{page_updated_absolute}}">{{page_updated_relative}}</time></dd>
+                    </div>
+                    <div class="admin-meta__row">
+                        <dt>Blocs</dt>
+                        <dd>{{sections_count}}</dd>
+                    </div>
+                </dl>
+            </section>
+
+            <p class="admin-aside-tip">
+                Modifiez les textes, images et liens ouverts pour vous. Le reste du site reste géré par votre équipe.
+            </p>
+        </aside>
+        <button type="button" class="admin-document__backdrop" id="admin-editor-sidebar-backdrop" hidden aria-hidden="true"></button>
+    </div>
 </div>
+
+<script src="{{asset_root}}/assets/js/admin-page-edit.js" defer></script>
